@@ -1,0 +1,10 @@
+POST http://localhost:4004/payroll/PayrollUpload
+Content-Type: application/json
+
+{
+    "items": [
+        {
+            "fmno": "12345"
+        }
+    ]
+}
