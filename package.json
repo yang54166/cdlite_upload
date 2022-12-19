@@ -1,5 +1,5 @@
 {
-  "name": "laas-cd-upload",
+  "name": "cd_payrollupload_c",
   "version": "1.0.0",
   "description": "A simple CAP project.",
   "repository": "<Add your repository here>",
@@ -15,8 +15,8 @@
   },
   "scripts": {
     "start": "cds run",
-    "build": "mbt build --mtar mta_archives/laas-cf-upload.mtar",
-    "deploy": "cf deploy mta_archives/laas-cd-upload.mtar",
+    "build": "mbt build --mtar $npm_config_name-$npm_config_version.mtar",
+    "deploy": "cf deploy mta_archives/$npm_config_name-$npm_config_version.mtar",
     "deploy-local": "cds deploy --profile hybrid",
     "start-local": "cds watch --profile hybrid"
   },
