@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_JOURNALENTRY" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<descriptions defaultDescription="CV_JOURNALENTRY"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="PAYROLL_PAYROLLHEADER">
+    <resourceUri>PAYROLL_PAYROLLHEADER</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews/>
+
+<logicalModel id="PAYROLL_PAYROLLHEADER">
+  <attributes>
+    <attribute id="ID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ID"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="ID"/>
+    </attribute>
+    <attribute id="CREATEDAT" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDAT"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CREATEDAT"/>
+    </attribute>
+    <attribute id="CREATEDBY" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDBY"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CREATEDBY"/>
+    </attribute>
+    <attribute id="MODIFIEDAT" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDAT"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="MODIFIEDAT"/>
+    </attribute>
+    <attribute id="MODIFIEDBY" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDBY"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="MODIFIEDBY"/>
+    </attribute>
+    <attribute id="BATCHID" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHID"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="BATCHID"/>
+    </attribute>
+    <attribute id="BATCHDESCRIPTION" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHDESCRIPTION"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="BATCHDESCRIPTION"/>
+    </attribute>
+    <attribute id="BATCHSTATUS" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHSTATUS"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="BATCHSTATUS"/>
+    </attribute>
+    <attribute id="APPROVEDAT" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="APPROVEDAT"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="APPROVEDAT"/>
+    </attribute>
+    <attribute id="APPROVEDBY" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="APPROVEDBY"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="APPROVEDBY"/>
+    </attribute>
+    <attribute id="CDTRANSACTIONTYPE" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CDTRANSACTIONTYPE"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CDTRANSACTIONTYPE"/>
+    </attribute>
+    <attribute id="CONTROLAMOUNT" order="12" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CONTROLAMOUNT"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CONTROLAMOUNT"/>
+    </attribute>
+    <attribute id="CONTROLCOUNT" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CONTROLCOUNT"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CONTROLCOUNT"/>
+    </attribute>
+    <attribute id="EFFECTIVEDATE" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="EFFECTIVEDATE"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="EFFECTIVEDATE"/>
+    </attribute>
+    <attribute id="GLDATE" order="15" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLDATE"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="GLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLDATE" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLDATE"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="PAYROLLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLPERIOD" order="17" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLPERIOD"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="PAYROLLPERIOD"/>
+    </attribute>
+    <attribute id="SOURCESYSTEM" order="18" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCESYSTEM"/>
+      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="SOURCESYSTEM"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures/>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+    
+  </shapes>
+</layout>
+</Calculation:scenario>
