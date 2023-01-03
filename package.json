@@ -11,17 +11,37 @@
     "hdb": "^0.19.0"
   },
   "devDependencies": {
-    "sqlite3": "^5.0.4"
+    
   },
   "scripts": {
     "start": "cds run",
-    "build": "mbt build --mtar $npm_config_name-$npm_config_version.mtar",
-    "deploy": "cf deploy mta_archives/$npm_config_name-$npm_config_version.mtar",
+    "build": "mbt build --mtar $npm_package_name-$npm_package_version.mtar",
+    "login": "cf login -a https://api.cf.eu10.hana.ondemand.com",
+    "deploy": "cf deploy mta_archives/$npm_package_name-$npm_package_version.mtar",
     "deploy-local": "cds deploy --profile hybrid",
     "start-local": "cds watch --profile hybrid"
   },
   "engines": {
     "node": "^16.15"
+  },
+  "cds": {
+    "build":{
+      "tasks": [
+        {
+          "for": "hana",
+          "dest": "../db"
+        },
+        {  "for": "node-cf" }
+      ]
+    },
+    "requires": {
+      "db": {
+        "kind": "hana-cloud"
+      }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
+    }
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
@@ -46,25 +66,6 @@
     "rules": {
       "no-console": "off",
       "require-atomic-updates": "off"
-    }
-  },
-  "cds": {
-    "build":{
-      "tasks": [
-        {
-          "for": "hana",
-          "dest": "../db"
-        },
-        {  "for": "node-cf" }
-      ]
-    },
-    "requires": {
-      "db": {
-        "kind": "hana-cloud"
-      }
-    },
-    "hana": {
-      "deploy-format": "hdbtable"
     }
   }
 }

@@ -1,4 +1,4 @@
-_schema-version: '3.1'
+_schema-version: "3.1"
 ID: cd_compensationdetails_c
 version: 1.0.0
 description: CD/LAAS Payroll Upload Compensation Details
@@ -21,15 +21,17 @@ modules:
     provides:
       - name: srv-api
         properties:
-          srv-url: '${default-url}'
+          srv-url: "${default-url}"
     requires:
       - name: cd_compensationdetails_c-db
 
-  - name: cd_compensationdetails_cb-deployer
+  - name: cd_compensationdetails_c-db-deployer
     type: hdb
     path: db
     parameters:
       buildpack: nodejs_buildpack
+    build-parameters:
+      ignore: ["src/.DS_Store"]
     requires:
       - name: cd_compensationdetails_c-db
 
