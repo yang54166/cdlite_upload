@@ -1,6 +1,7 @@
 using { payroll.staging as staging } from '../db/payrollstaging';
 using { payroll } from '../db/payroll';
 using { mapping } from '../db/mapping';
+using { CV_JOURNALENTRY, CV_JOURNALENTRY_ITEM } from '../db/virtual';
 
 service PayrollService {
     entity StagingUploads as projection on staging.UploadHeader;
@@ -11,4 +12,10 @@ service PayrollService {
 
     entity LegalEntityGrouping as projection on mapping.LegalEntityGrouping; 
     entity PaycodeGLMapping as projection on mapping.PaycodeGLMapping;
+
+    @readonly
+    entity JournalEntry as projection on CV_JOURNALENTRY;
+    @readonly
+    entity JournalEntryItem as projection on CV_JOURNALENTRY_ITEM;
+    
 }

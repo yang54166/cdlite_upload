@@ -19,7 +19,8 @@
     "login": "cf login -a https://api.cf.eu10.hana.ondemand.com",
     "deploy": "cf deploy mta_archives/$npm_package_name-$npm_package_version.mtar",
     "deploy-local": "cds deploy --profile hybrid",
-    "start-local": "cds watch --profile hybrid"
+    "start-local": "cds watch --profile hybrid",
+    "undeploy": "cf undeploy cd_conpensationdetails_c --delete-services --delete-service-keys"
   },
   "engines": {
     "node": "^16.15"

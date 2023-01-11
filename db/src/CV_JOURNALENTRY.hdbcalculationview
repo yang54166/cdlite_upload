@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_JOURNALENTRY" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_JOURNALENTRY" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
 <descriptions defaultDescription="CV_JOURNALENTRY"/>
 <localVariables/>
 <variableMappings/>
@@ -7,86 +7,107 @@
   <DataSource id="PAYROLL_PAYROLLHEADER">
     <resourceUri>PAYROLL_PAYROLLHEADER</resourceUri>
   </DataSource>
+  <DataSource id="PAYROLL_POSTINGBATCH">
+    <resourceUri>PAYROLL_POSTINGBATCH</resourceUri>
+  </DataSource>
 </dataSources>
 <snapshotProcedures/>
-<calculationViews/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1" cardinality="CN_N" joinType="inner">
+    <viewAttributes>
+      <viewAttribute id="BATCHID"/>
+      <viewAttribute id="COMPANYCODE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="POSTINGBATCHID"/>
+      <viewAttribute id="POSTINGSTATUS"/>
+      <viewAttribute id="POSTINGSTATUSMESSAGE"/>
+      <viewAttribute id="POSTINGDOCUMENT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="PAYROLL_PAYROLLHEADER">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANYCODE" source="COMPANYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+    </input>
+    <input node="PAYROLL_POSTINGBATCH">
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGSTATUS" source="POSTINGSTATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGSTATUSMESSAGE" source="POSTINGSTATUSMESSAGE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGDOCUMENT" source="POSTINGDOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+    </input>
+    <joinAttribute name="BATCHID"/>
+  </calculationView>
+</calculationViews>
 
-<logicalModel id="PAYROLL_PAYROLLHEADER">
+<logicalModel id="Join_1">
   <attributes>
-    <attribute id="ID" order="1" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="ID"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="ID"/>
-    </attribute>
-    <attribute id="CREATEDAT" order="2" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="CREATEDAT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CREATEDAT"/>
-    </attribute>
-    <attribute id="CREATEDBY" order="3" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="CREATEDBY"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CREATEDBY"/>
-    </attribute>
-    <attribute id="MODIFIEDAT" order="4" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="MODIFIEDAT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="MODIFIEDAT"/>
-    </attribute>
-    <attribute id="MODIFIEDBY" order="5" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="MODIFIEDBY"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="MODIFIEDBY"/>
-    </attribute>
-    <attribute id="BATCHID" order="6" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="BATCHID" order="1" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHID"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="BATCHID"/>
+      <keyMapping columnObjectName="Join_1" columnName="BATCHID"/>
     </attribute>
-    <attribute id="BATCHDESCRIPTION" order="7" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="BATCHDESCRIPTION"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="BATCHDESCRIPTION"/>
+    <attribute id="COMPANYCODE" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="COMPANYCODE"/>
+      <keyMapping columnObjectName="Join_1" columnName="COMPANYCODE"/>
     </attribute>
-    <attribute id="BATCHSTATUS" order="8" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="BATCHSTATUS"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="BATCHSTATUS"/>
-    </attribute>
-    <attribute id="APPROVEDAT" order="9" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="APPROVEDAT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="APPROVEDAT"/>
-    </attribute>
-    <attribute id="APPROVEDBY" order="10" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="APPROVEDBY"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="APPROVEDBY"/>
-    </attribute>
-    <attribute id="CDTRANSACTIONTYPE" order="11" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="CDTRANSACTIONTYPE"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CDTRANSACTIONTYPE"/>
-    </attribute>
-    <attribute id="CONTROLAMOUNT" order="12" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="CONTROLAMOUNT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CONTROLAMOUNT"/>
-    </attribute>
-    <attribute id="CONTROLCOUNT" order="13" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="CONTROLCOUNT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CONTROLCOUNT"/>
-    </attribute>
-    <attribute id="EFFECTIVEDATE" order="14" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="EFFECTIVEDATE"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="EFFECTIVEDATE"/>
-    </attribute>
-    <attribute id="GLDATE" order="15" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="GLDATE"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="GLDATE"/>
-    </attribute>
-    <attribute id="PAYROLLDATE" order="16" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="PAYROLLDATE" order="3" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLDATE"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="PAYROLLDATE"/>
+      <keyMapping columnObjectName="Join_1" columnName="PAYROLLDATE"/>
     </attribute>
-    <attribute id="PAYROLLPERIOD" order="17" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="PAYROLLPERIOD"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="PAYROLLPERIOD"/>
+    <attribute id="POSTINGBATCHID" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGBATCHID"/>
+      <keyMapping columnObjectName="Join_1" columnName="POSTINGBATCHID"/>
     </attribute>
-    <attribute id="SOURCESYSTEM" order="18" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="SOURCESYSTEM"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="SOURCESYSTEM"/>
+    <attribute id="POSTINGSTATUS" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGSTATUS"/>
+      <keyMapping columnObjectName="Join_1" columnName="POSTINGSTATUS"/>
+    </attribute>
+    <attribute id="POSTINGSTATUSMESSAGE" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGSTATUSMESSAGE"/>
+      <keyMapping columnObjectName="Join_1" columnName="POSTINGSTATUSMESSAGE"/>
+    </attribute>
+    <attribute id="POSTINGDOCUMENT" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGDOCUMENT"/>
+      <keyMapping columnObjectName="Join_1" columnName="POSTINGDOCUMENT"/>
     </attribute>
   </attributes>
-  <calculatedAttributes/>
+  <calculatedAttributes>
+    <calculatedAttribute id="ACCOUNTINGDOCUMENTTYPE" order="8" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="5">
+        <formula>'ZE'</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+    <calculatedAttribute id="DOCUMENTREFERENCEID" order="9" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="16">
+        <formula>'TEST'</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+    <calculatedAttribute id="DOCUMENTHEADERTEXT" order="10" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="25">
+        <formula>'Payroll'</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+    <calculatedAttribute id="POSTINGDATE" order="11" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="DATE" expressionLanguage="SQL">
+        <formula>&quot;PAYROLLDATE&quot;</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+    <calculatedAttribute id="DOCUMENTDATE" order="12" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="DATE" expressionLanguage="SQL">
+        <formula>&quot;PAYROLLDATE&quot;</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+    <calculatedAttribute id="REFERENCE1INDOCUMENTHEADER" order="13" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="20">
+        <formula>TO_VARCHAR(&quot;BATCHID&quot;)</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+    <calculatedAttribute id="REFERENCE2INDOCUMENTHEADER" order="14" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="20">
+        <formula>TO_VARCHAR(&quot;POSTINGBATCHID&quot;)</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+  </calculatedAttributes>
   <baseMeasures/>
   <calculatedMeasures/>
   <restrictedMeasures/>
@@ -94,9 +115,24 @@
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="40" y="85"/>
+      <upperLeftCorner x="100" y="105"/>
+    
+      <rectangleSize width="160"/>
     </shape>
     
+  
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="100" y="174"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="PAYROLL_PAYROLLHEADER" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="232"/>
+    </shape>
+    <shape modelObjectName="PAYROLL_POSTINGBATCH" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="231"/>
+    </shape>
   </shapes>
 </layout>
 </Calculation:scenario>

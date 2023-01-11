@@ -2,8 +2,8 @@ using { cuid, managed } from '@sap/cds/common';
 
 namespace payroll;
 
-entity PayrollHeader: cuid, managed {
-    key batchId: UUID;
+entity PayrollHeader: managed {
+    key batchId: Integer;
     batchDescription: String;
     batchStatus: String;
     approvedAt: Timestamp;
@@ -16,17 +16,16 @@ entity PayrollHeader: cuid, managed {
     payrollDate: Date;
     payrollPeriod: String;      //MMM-YY-CC cycle is 01-24 per year
     sourceSystem: String(10);   //Payroll/AP/AR
+    companyCode: String(4);
     details: Composition of many PayrollDetails on details.parent = $self;
 };
 
 entity PayrollDetails {
-    key batchId: UUID;
-    batchLineNumber: Integer;
-    postingBatchId: UUID;
-    postingBatchItemId: Integer;
+    key batchId: Integer;
+    key batchLineNumber: Integer;
     postingAggregation: Boolean;
-    postingStatus: String;
-    postingStatusMessage: String;
+    postingBatchId: Integer;
+    postingBatchLineNumber: Integer;
     postingDocument: String;
     parent: Association to PayrollHeader;
     advanceNumber: String(20);
@@ -60,12 +59,20 @@ entity PayrollDetails {
     payrollCodeClass: String(10);
     payrollCodeType: String(10);
     projectCode: String(8);
-    qualifiedCompensation: Boolean;
-    shadowProcess: Boolean;
+    qualifiedCompensation: String(1);
+    shadowProcess: String(1);
     skillCode: String (4);
     sourceAmount: Decimal(15,2);
     sourceCompany: String(4);
     usdAmount: Decimal(15,2);
     usdConversionRate: Integer;
     usdConversionType: String(20);
+};
+
+entity PostingBatch {
+    key batchId: Integer;
+    key postingBatchId: Integer;
+        postingStatus: String;
+        postingStatusMessage: String;
+        postingDocument: String;
 };

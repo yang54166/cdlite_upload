@@ -18,7 +18,7 @@ entity PaycodeGLMapping: managed {
     glAccount: Integer;
     payrollCodeClass: String(10);
     payrollCodeType: String(10);
-    qualifiedCompensation: Boolean;
+    qualifiedCompensation: String(1);
     transactionDescription: String(240);
     usPsrpCategory: String(10);
     aggregation: Boolean;
