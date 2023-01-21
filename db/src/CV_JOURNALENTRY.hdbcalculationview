@@ -10,10 +10,13 @@
   <DataSource id="PAYROLL_POSTINGBATCH">
     <resourceUri>PAYROLL_POSTINGBATCH</resourceUri>
   </DataSource>
+  <DataSource id="MAPPING_PAYROLLLEDGERCONTROL">
+    <resourceUri>MAPPING_PAYROLLLEDGERCONTROL</resourceUri>
+  </DataSource>
 </dataSources>
 <snapshotProcedures/>
 <calculationViews>
-  <calculationView xsi:type="Calculation:JoinView" id="Join_1" cardinality="CN_N" joinType="inner">
+  <calculationView xsi:type="Calculation:JoinView" id="Join_PostingBatch" cardinality="CN_N" joinType="inner">
     <viewAttributes>
       <viewAttribute id="BATCHID"/>
       <viewAttribute id="COMPANYCODE"/>
@@ -22,12 +25,18 @@
       <viewAttribute id="POSTINGSTATUS"/>
       <viewAttribute id="POSTINGSTATUSMESSAGE"/>
       <viewAttribute id="POSTINGDOCUMENT"/>
+    
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="PAYROLL_PAYROLLHEADER">
       <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="COMPANYCODE" source="COMPANYCODE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="CDTRANSACTIONTYPE" source="CDTRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHDESCRIPTION" source="BATCHDESCRIPTION"/>
     </input>
     <input node="PAYROLL_POSTINGBATCH">
       <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHID"/>
@@ -38,74 +47,129 @@
     </input>
     <joinAttribute name="BATCHID"/>
   </calculationView>
+  <calculationView id="Join_2">
+    <viewAttributes/>
+    <calculatedViewAttributes/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_Mapping_Control" cardinality="CN_N" joinType="inner">
+    <viewAttributes>
+      <viewAttribute id="BATCHID"/>
+      <viewAttribute id="POSTINGBATCHID"/>
+      <viewAttribute id="COMPANYCODE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="POSTINGSTATUS"/>
+      <viewAttribute id="POSTINGSTATUSMESSAGE"/>
+      <viewAttribute id="POSTINGDOCUMENT"/>
+      <viewAttribute id="DOCTYPE"/>
+      <viewAttribute id="LEDGERGROUP"/>
+      <viewAttribute id="DOCHEADERTEXT"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
+      <viewAttribute hidden="true" id="JOIN$CDTRANSACTIONTYPE$TRANSACTIONTYPE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Join_PostingBatch">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANYCODE" source="COMPANYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGSTATUS" source="POSTINGSTATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGSTATUSMESSAGE" source="POSTINGSTATUSMESSAGE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGDOCUMENT" source="POSTINGDOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHDESCRIPTION" source="BATCHDESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CDTRANSACTIONTYPE$TRANSACTIONTYPE" source="CDTRANSACTIONTYPE"/>
+    </input>
+    <input node="MAPPING_PAYROLLLEDGERCONTROL">
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCTYPE" source="DOCTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEDGERGROUP" source="LEDGERGROUP"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCHEADERTEXT" source="DOCHEADERTEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CDTRANSACTIONTYPE$TRANSACTIONTYPE" source="TRANSACTIONTYPE"/>
+    </input>
+    <joinAttribute name="JOIN$CDTRANSACTIONTYPE$TRANSACTIONTYPE"/>
+  </calculationView>
 </calculationViews>
 
-<logicalModel id="Join_1">
+<logicalModel id="Join_Mapping_Control">
   <attributes>
-    <attribute id="BATCHID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="BATCHID" order="6" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHID"/>
-      <keyMapping columnObjectName="Join_1" columnName="BATCHID"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="BATCHID"/>
     </attribute>
-    <attribute id="COMPANYCODE" order="2" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="COMPANYCODE"/>
-      <keyMapping columnObjectName="Join_1" columnName="COMPANYCODE"/>
-    </attribute>
-    <attribute id="PAYROLLDATE" order="3" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="PAYROLLDATE"/>
-      <keyMapping columnObjectName="Join_1" columnName="PAYROLLDATE"/>
-    </attribute>
-    <attribute id="POSTINGBATCHID" order="4" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="POSTINGBATCHID" order="7" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="POSTINGBATCHID"/>
-      <keyMapping columnObjectName="Join_1" columnName="POSTINGBATCHID"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="POSTINGBATCHID"/>
     </attribute>
-    <attribute id="POSTINGSTATUS" order="5" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="COMPANYCODE" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="COMPANYCODE"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="COMPANYCODE"/>
+    </attribute>
+    <attribute id="PAYROLLDATE" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLDATE"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="PAYROLLDATE"/>
+    </attribute>
+    <attribute id="POSTINGSTATUS" order="10" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="POSTINGSTATUS"/>
-      <keyMapping columnObjectName="Join_1" columnName="POSTINGSTATUS"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="POSTINGSTATUS"/>
     </attribute>
-    <attribute id="POSTINGSTATUSMESSAGE" order="6" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="POSTINGSTATUSMESSAGE" order="11" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="POSTINGSTATUSMESSAGE"/>
-      <keyMapping columnObjectName="Join_1" columnName="POSTINGSTATUSMESSAGE"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="POSTINGSTATUSMESSAGE"/>
     </attribute>
-    <attribute id="POSTINGDOCUMENT" order="7" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="POSTINGDOCUMENT" order="12" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="POSTINGDOCUMENT"/>
-      <keyMapping columnObjectName="Join_1" columnName="POSTINGDOCUMENT"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="POSTINGDOCUMENT"/>
+    </attribute>
+    <attribute id="DOCTYPE" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DOCTYPE"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="DOCTYPE"/>
+    </attribute>
+    <attribute id="LEDGERGROUP" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LEDGERGROUP"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="LEDGERGROUP"/>
+    </attribute>
+    <attribute id="DOCHEADERTEXT" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DOCHEADERTEXT"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="DOCHEADERTEXT"/>
+    </attribute>
+    <attribute id="BATCHDESCRIPTION" order="17" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHDESCRIPTION"/>
+      <keyMapping columnObjectName="Join_Mapping_Control" columnName="BATCHDESCRIPTION"/>
     </attribute>
   </attributes>
   <calculatedAttributes>
-    <calculatedAttribute id="ACCOUNTINGDOCUMENTTYPE" order="8" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
-      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="5">
-        <formula>'ZE'</formula>
-      </keyCalculation>
-    </calculatedAttribute>
-    <calculatedAttribute id="DOCUMENTREFERENCEID" order="9" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+    <calculatedAttribute id="DOCUMENTREFERENCEID" order="1" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="16">
         <formula>'TEST'</formula>
       </keyCalculation>
     </calculatedAttribute>
-    <calculatedAttribute id="DOCUMENTHEADERTEXT" order="10" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
-      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="25">
-        <formula>'Payroll'</formula>
-      </keyCalculation>
-    </calculatedAttribute>
-    <calculatedAttribute id="POSTINGDATE" order="11" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+    <calculatedAttribute id="POSTINGDATE" order="2" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="DATE" expressionLanguage="SQL">
         <formula>&quot;PAYROLLDATE&quot;</formula>
       </keyCalculation>
     </calculatedAttribute>
-    <calculatedAttribute id="DOCUMENTDATE" order="12" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+    <calculatedAttribute id="DOCUMENTDATE" order="3" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="DATE" expressionLanguage="SQL">
         <formula>&quot;PAYROLLDATE&quot;</formula>
       </keyCalculation>
     </calculatedAttribute>
-    <calculatedAttribute id="REFERENCE1INDOCUMENTHEADER" order="13" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+    <calculatedAttribute id="REFERENCE1INDOCUMENTHEADER" order="4" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="20">
         <formula>TO_VARCHAR(&quot;BATCHID&quot;)</formula>
       </keyCalculation>
     </calculatedAttribute>
-    <calculatedAttribute id="REFERENCE2INDOCUMENTHEADER" order="14" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+    <calculatedAttribute id="REFERENCE2INDOCUMENTHEADER" order="5" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="20">
         <formula>TO_VARCHAR(&quot;POSTINGBATCHID&quot;)</formula>
       </keyCalculation>
+    </calculatedAttribute>
+  
+    <calculatedAttribute id="DOCUMENTHEADERTEXT" order="15" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+  
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="25">
+  
+        <formula>&quot;DOCHEADERTEXT&quot;||' - '||&quot;BATCHDESCRIPTION&quot;</formula>
+  
+      </keyCalculation>
+  
     </calculatedAttribute>
   </calculatedAttributes>
   <baseMeasures/>
@@ -115,23 +179,40 @@
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="100" y="105"/>
+      <upperLeftCorner x="92" y="112"/>
     
       <rectangleSize width="160"/>
     </shape>
     
   
-    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="100" y="174"/>
+    <shape expanded="true" modelObjectName="Join_PostingBatch" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="357"/>
       <rectangleSize height="30" width="160"/>
     </shape>
-    <shape modelObjectName="PAYROLL_PAYROLLHEADER" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+    <shape modelObjectName="PAYROLL_PAYROLLHEADER" modelObjectNameSpace="Join_PostingBatch" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="20" y="30"/>
       <rectangleSize width="232"/>
     </shape>
-    <shape modelObjectName="PAYROLL_POSTINGBATCH" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+    <shape modelObjectName="PAYROLL_POSTINGBATCH" modelObjectNameSpace="Join_PostingBatch" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="320" y="30"/>
       <rectangleSize width="231"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="217"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_Mapping_Control" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="217"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="Join_PostingBatch" modelObjectNameSpace="Join_Mapping_Control" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="231"/>
+    </shape>
+    <shape modelObjectName="MAPPING_PAYROLLLEDGERCONTROL" modelObjectNameSpace="Join_Mapping_Control" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="291"/>
     </shape>
   </shapes>
 </layout>

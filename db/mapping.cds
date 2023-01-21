@@ -23,3 +23,10 @@ entity PaycodeGLMapping: managed {
     usPsrpCategory: String(10);
     aggregation: Boolean;
 }
+
+entity PayrollLedgerControl: managed {
+    key transactionType: String(02);
+        docType: String(10);
+        ledgerGroup: String(4);
+        docHeaderText: String(25);
+}

@@ -20,8 +20,7 @@
       <viewAttribute id="GLACCOUNT"/>
       <viewAttribute id="SOURCEAMOUNT" aggregationType="sum"/>
       <viewAttribute id="GLPOSTCOSTCENTER"/>
-    
-      <viewAttribute id="BATCHID"/>
+      <viewAttribute id="BATCHID_BATCHID" aggregationType="sum"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <restrictedViewAttributes/>
@@ -39,8 +38,8 @@
       <viewAttribute id="POSTINGAGGREGATION"/>
       <viewAttribute id="ADVANCENUMBER"/>
       <viewAttribute id="LOANNUMBER"/>
-    
-      <viewAttribute id="BATCHID"/>
+      <viewAttribute id="BATCHID_BATCHID"/>
+      <viewAttribute hidden="true" id="JOIN$BATCHID_BATCHID$BATCHID_BATCHID"/>
     </viewAttributes>
     <calculatedViewAttributes>
       <calculatedViewAttribute id="DEBITCREDITCODE" datatype="NVARCHAR" length="1" expressionLanguage="SQL">
@@ -64,8 +63,7 @@ END</formula>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
-    
-      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BATCHID_BATCHID$BATCHID_BATCHID" source="BATCHID_BATCHID"/>
     </input>
     <input node="Join_1$$$$PAYROLL_PAYROLLDETAILS$$">
       <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
@@ -73,63 +71,69 @@ END</formula>
       <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHID"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHLINENUMBER" source="POSTINGBATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BATCHID_BATCHID$BATCHID_BATCHID" source="BATCHID_BATCHID"/>
     </input>
     <joinAttribute name="POSTINGBATCHID"/>
     <joinAttribute name="POSTINGBATCHLINENUMBER"/>
+    <joinAttribute name="JOIN$BATCHID_BATCHID$BATCHID_BATCHID"/>
   </calculationView>
 </calculationViews>
 
 <logicalModel id="Join_1">
   <attributes>
-    <attribute id="BATCHID" order="1" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="BATCHID"/>
-      <keyMapping columnObjectName="Join_1" columnName="BATCHID"/>
-    </attribute>
-    <attribute id="POSTINGBATCHID" order="2" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="POSTINGBATCHID" order="1" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="POSTINGBATCHID"/>
       <keyMapping columnObjectName="Join_1" columnName="POSTINGBATCHID"/>
     </attribute>
-    <attribute id="REFERENCEDOCUMENTITEM" order="3" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="REFERENCEDOCUMENTITEM" order="2" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="REFERENCEDOCUMENTITEM"/>
       <keyMapping columnObjectName="Join_1" columnName="POSTINGBATCHLINENUMBER"/>
     </attribute>
-    <attribute id="GLACCOUNT" order="4" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="GLACCOUNT" order="3" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLACCOUNT"/>
       <keyMapping columnObjectName="Join_1" columnName="GLACCOUNT"/>
     </attribute>
-    <attribute id="AMOUNTINTRANSACTIONCURRENCY" order="5" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="AMOUNTINTRANSACTIONCURRENCY" order="4" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="AMOUNTINTRANSACTIONCURRENCY"/>
       <keyMapping columnObjectName="Join_1" columnName="SOURCEAMOUNT"/>
     </attribute>
-    <attribute id="GLPOSTCOSTCENTER" order="6" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="GLPOSTCOSTCENTER" order="5" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLPOSTCOSTCENTER"/>
       <keyMapping columnObjectName="Join_1" columnName="GLPOSTCOSTCENTER"/>
     </attribute>
-    <attribute id="AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE" order="7" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE" order="6" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE"/>
       <keyMapping columnObjectName="Join_1" columnName="GLCURRENCYCODE"/>
     </attribute>
-    <attribute id="WBSELEMENT" order="8" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="WBSELEMENT" order="7" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="WBSELEMENT"/>
       <keyMapping columnObjectName="Join_1" columnName="PROJECTCODE"/>
     </attribute>
-    <attribute id="DEBITCREDITCODE" order="9" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="DEBITCREDITCODE" order="8" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="DEBITCREDITCODE"/>
       <keyMapping columnObjectName="Join_1" columnName="DEBITCREDITCODE"/>
     </attribute>
-    <attribute id="DOCUMENTITEMTEXT" order="10" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="DOCUMENTITEMTEXT" order="9" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="DOCUMENTITEMTEXT"/>
       <keyMapping columnObjectName="Join_1" columnName="DOCUMENTITEMTEXT"/>
     </attribute>
-    <attribute id="ASSIGNMENTREFERENCE" order="11" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="ASSIGNMENTREFERENCE" order="10" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="ASSIGNMENTREFERENCE"/>
       <keyMapping columnObjectName="Join_1" columnName="ASSIGNMENTREFERENCE"/>
     </attribute>
-    <attribute id="FUNCTIONALAREA" order="12" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="FUNCTIONALAREA" order="11" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="FUNCTIONALAREA"/>
       <keyMapping columnObjectName="Join_1" columnName="FUNCTIONALAREA"/>
+    </attribute>
+  
+    <attribute id="BATCHID" order="12" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHID_BATCHID"/>
+  
+      <keyMapping columnObjectName="Join_1" columnName="BATCHID_BATCHID"/>
+  
     </attribute>
   </attributes>
   <calculatedAttributes/>

@@ -4,7 +4,10 @@ using { mapping } from '../db/mapping';
 using { CV_JOURNALENTRY, CV_JOURNALENTRY_ITEM } from '../db/virtual';
 
 service PayrollService {
-    entity StagingUploads as projection on staging.UploadHeader;
+    entity StagingUploads as projection on staging.UploadHeader 
+        actions{
+            action approve();
+        };
     entity StagingUploadItems as projection on staging.UploadItems;
 
     entity PayrollHeader as projection on payroll.PayrollHeader;
@@ -13,9 +16,9 @@ service PayrollService {
     entity LegalEntityGrouping as projection on mapping.LegalEntityGrouping; 
     entity PaycodeGLMapping as projection on mapping.PaycodeGLMapping;
 
-    @readonly
-    entity JournalEntry as projection on CV_JOURNALENTRY;
-    @readonly
-    entity JournalEntryItem as projection on CV_JOURNALENTRY_ITEM;
+   // @readonly
+   // entity JournalEntry as projection on CV_JOURNALENTRY;
+   // @readonly
+   // entity JournalEntryItem as projection on CV_JOURNALENTRY_ITEM;
     
 }

@@ -1,0 +1,5 @@
+POST http://localhost:4004/payroll/StagingUploads(2)/approve
+Content-Type: application/json
+
+{}
+

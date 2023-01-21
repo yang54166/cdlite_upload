@@ -1,8 +1,9 @@
-using { cuid, managed } from '@sap/cds/common';
+using { managed } from '@sap/cds/common';
 
 namespace payroll.staging;
 
-entity UploadHeader: cuid,managed {
+entity UploadHeader: managed {
+    key ID: Integer;
     status: String;
     statusMessage: String;
     deleted: Boolean;

@@ -17,17 +17,16 @@ entity PayrollHeader: managed {
     payrollPeriod: String;      //MMM-YY-CC cycle is 01-24 per year
     sourceSystem: String(10);   //Payroll/AP/AR
     companyCode: String(4);
-    details: Composition of many PayrollDetails on details.parent = $self;
+    details: Composition of many PayrollDetails on details.batchId = $self;
 };
 
 entity PayrollDetails {
-    key batchId: Integer;
+    key batchId: Association to PayrollHeader;
     key batchLineNumber: Integer;
     postingAggregation: Boolean;
     postingBatchId: Integer;
     postingBatchLineNumber: Integer;
     postingDocument: String;
-    parent: Association to PayrollHeader;
     advanceNumber: String(20);
     apArId: String(20);      //future?
     cashAmount: Decimal(15,2);
