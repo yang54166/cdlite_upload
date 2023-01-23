@@ -1,4 +1,4 @@
-POST http://localhost:4004/payroll/StagingUploads(2)/approve
+POST http://localhost:4004/payroll/StagingUploads(1)/approve
 Content-Type: application/json
 
 {}

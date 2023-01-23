@@ -3,25 +3,26 @@
 @cds.persistence.calcview 
 Entity CV_JOURNALENTRY {
 key     BATCHID: Integer  @title: 'BATCHID: BATCHID' ; 
-        COMPANYCODE: String(4)  @title: 'COMPANYCODE: COMPANYCODE' ; 
-        PAYROLLDATE: Date  @title: 'PAYROLLDATE: PAYROLLDATE' ; 
-        POSTINGBATCHID: Integer  @title: 'POSTINGBATCHID: POSTINGBATCHID' ; 
+key     POSTINGBATCHID: Integer  @title: 'POSTINGBATCHID: POSTINGBATCHID' ; 
         POSTINGSTATUS: String(5000)  @title: 'POSTINGSTATUS: POSTINGSTATUS' ; 
         POSTINGSTATUSMESSAGE: String(5000)  @title: 'POSTINGSTATUSMESSAGE: POSTINGSTATUSMESSAGE' ; 
         POSTINGDOCUMENT: String(5000)  @title: 'POSTINGDOCUMENT: POSTINGDOCUMENT' ; 
-        AccountingDocumentType: String(5)  @title: 'AccountingDocumentType: AccountingDocumentType' ; 
-        DocumentReferenceID: String(16)  @title: 'DocumentReferenceID: DocumentReferenceID' ; 
-        DocumentHeaderText: String(25)  @title: 'DocumentHeaderText: DocumentHeaderText' ; 
-        PostingDate: Date  @title: 'PostingDate: PostingDate' ; 
-        DocumentDate: Date  @title: 'DocumentDate: DocumentDate' ; 
-        Reference1InDocumentHeader: String(20)  @title: 'Reference1InDocumentHeader: Reference1InDocumentHeader' ; 
-        Reference2InDocumentHeader: String(20)  @title: 'Reference2InDocumentHeader: Reference2InDocumentHeader' ; 
+        COMPANYCODE: String(4)  @title: 'COMPANYCODE: COMPANYCODE' ; 
+        PAYROLLDATE: Date  @title: 'PAYROLLDATE: PAYROLLDATE' ; 
+        ACCOUNTINGDOCUMENTTYPE: String(5)  @title: 'AccountingDocumentType: AccountingDocumentType' ; 
+        DOCUMENTREFERENCEID: String(16)  @title: 'DocumentReferenceID: DocumentReferenceID' ; 
+        DOCUMENTHEADERTEXT: String(25)  @title: 'DocumentHeaderText: DocumentHeaderText' ; 
+        POSTINGDATE: Date  @title: 'PostingDate: PostingDate' ; 
+        DOCUMENTDATE: Date  @title: 'DocumentDate: DocumentDate' ; 
+        REFERENCE1INDOCUMENTHEADER: String(20)  @title: 'Reference1InDocumentHeader: Reference1InDocumentHeader' ; 
+        REFERENCE2INDOCUMENTHEADER: String(20)  @title: 'Reference2InDocumentHeader: Reference2InDocumentHeader' ; 
+        items: Association to many CV_JOURNALENTRY_ITEM on items.BATCHID = BATCHID;
 };
 
 @cds.persistence.exists 
 @cds.persistence.calcview 
 Entity CV_JOURNALENTRY_ITEM {
-key     BATCHID: Integer  @title: 'BATCHID: BATCHID' ;
+key     BATCHID:  Integer  @title: 'BATCHID: BATCHID' ; 
 key     POSTINGBATCHID: Integer  @title: 'POSTINGBATCHID: POSTINGBATCHID' ; 
 key     REFERENCEDOCUMENTITEM: Integer  @title: 'REFERENCEDOCUMENTITEM: REFERENCEDOCUMENTITEM' ; 
         GLACCOUNT: Integer  @title: 'GLACCOUNT: GLACCOUNT' ; 
@@ -32,5 +33,6 @@ key     REFERENCEDOCUMENTITEM: Integer  @title: 'REFERENCEDOCUMENTITEM: REFERENC
         DEBITCREDITCODE: String(1)  @title: 'DEBITCREDITCODE: DEBITCREDITCODE' ; 
         DOCUMENTITEMTEXT: String(50)  @title: 'DOCUMENTITEMTEXT: DOCUMENTITEMTEXT' ; 
         ASSIGNMENTREFERENCE: String(18)  @title: 'ASSIGNMENTREFERENCE: ASSIGNMENTREFERENCE' ; 
+        ADDITIONALATTRIBUTES_PERSONNELNUMBER: String(8) @title: 'ADDITIONALATTRIBUTES_PERSONNELNUMBER: ADDITIONALATTRIBUTES_PERSONNELNUMBER' ; 
         FUNCTIONALAREA: String(16)  @title: 'FUNCTIONALAREA: FUNCTIONALAREA' ; 
 }

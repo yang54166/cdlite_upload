@@ -16,9 +16,9 @@ service PayrollService {
     entity LegalEntityGrouping as projection on mapping.LegalEntityGrouping; 
     entity PaycodeGLMapping as projection on mapping.PaycodeGLMapping;
 
-   // @readonly
-   // entity JournalEntry as projection on CV_JOURNALENTRY;
-   // @readonly
-   // entity JournalEntryItem as projection on CV_JOURNALENTRY_ITEM;
+   @readonly
+   entity JournalEntry as projection on CV_JOURNALENTRY;
+   @readonly
+   entity JournalEntryItem as projection on CV_JOURNALENTRY_ITEM;
     
 }

@@ -7,136 +7,215 @@
   <DataSource id="PAYROLL_PAYROLLDETAILS">
     <resourceUri>PAYROLL_PAYROLLDETAILS</resourceUri>
   </DataSource>
-  <DataSource id="Join_1$$$$PAYROLL_PAYROLLDETAILS$$">
+  <DataSource id="Projection_NonAggregated$$$$PAYROLL_PAYROLLDETAILS$$">
     <resourceUri>PAYROLL_PAYROLLDETAILS</resourceUri>
   </DataSource>
 </dataSources>
 <snapshotProcedures/>
 <calculationViews>
-  <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_1">
+  <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_Amounts" filterExpressionLanguage="SQL">
     <viewAttributes>
       <viewAttribute id="POSTINGBATCHID"/>
-      <viewAttribute id="POSTINGBATCHLINENUMBER"/>
       <viewAttribute id="GLACCOUNT"/>
       <viewAttribute id="SOURCEAMOUNT" aggregationType="sum"/>
       <viewAttribute id="GLPOSTCOSTCENTER"/>
-      <viewAttribute id="BATCHID_BATCHID" aggregationType="sum"/>
+      <viewAttribute id="BATCHID_BATCHID"/>
+    
+      <viewAttribute id="POSTINGAGGREGATION"/>
+    
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="FCAT"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <restrictedViewAttributes/>
     <input node="PAYROLL_PAYROLLDETAILS"/>
+    <filter>&quot;POSTINGAGGREGATION&quot;=true</filter>
   </calculationView>
-  <calculationView xsi:type="Calculation:JoinView" id="Join_1" cardinality="CN_N" joinType="inner">
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_NonAggregated" filterExpressionLanguage="SQL">
     <viewAttributes>
+      <viewAttribute id="BATCHID_BATCHID"/>
       <viewAttribute id="POSTINGBATCHID"/>
-      <viewAttribute id="POSTINGBATCHLINENUMBER"/>
       <viewAttribute id="GLACCOUNT"/>
       <viewAttribute id="SOURCEAMOUNT"/>
       <viewAttribute id="GLPOSTCOSTCENTER"/>
-      <viewAttribute id="GLCURRENCYCODE"/>
-      <viewAttribute id="PROJECTCODE"/>
       <viewAttribute id="POSTINGAGGREGATION"/>
-      <viewAttribute id="ADVANCENUMBER"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="FCAT"/>
+      <viewAttribute id="FMNO"/>
       <viewAttribute id="LOANNUMBER"/>
-      <viewAttribute id="BATCHID_BATCHID"/>
-      <viewAttribute hidden="true" id="JOIN$BATCHID_BATCHID$BATCHID_BATCHID"/>
+      <viewAttribute id="ADVANCENUMBER"/>
+      <viewAttribute id="PROJECTCODE"/>
     </viewAttributes>
-    <calculatedViewAttributes>
-      <calculatedViewAttribute id="DEBITCREDITCODE" datatype="NVARCHAR" length="1" expressionLanguage="SQL">
-        <formula>CASE WHEN SIGN(&quot;SOURCEAMOUNT&quot;) &gt; 0 then 'S' 
-	 ELSE 'H' 
-END</formula>
-      </calculatedViewAttribute>
-      <calculatedViewAttribute id="DOCUMENTITEMTEXT" datatype="NVARCHAR" length="50" expressionLanguage="SQL">
-        <formula>''</formula>
-      </calculatedViewAttribute>
-      <calculatedViewAttribute id="ASSIGNMENTREFERENCE" datatype="NVARCHAR" length="18" expressionLanguage="SQL">
-        <formula>COALESCE(&quot;LOANNUMBER&quot;,&quot;ADVANCENUMBER&quot;)</formula>
-      </calculatedViewAttribute>
-      <calculatedViewAttribute id="FUNCTIONALAREA" datatype="NVARCHAR" length="16" expressionLanguage="SQL">
-        <formula>''</formula>
-      </calculatedViewAttribute>
-    </calculatedViewAttributes>
-    <input node="Aggregation_1">
+    <calculatedViewAttributes/>
+    <input node="Projection_NonAggregated$$$$PAYROLL_PAYROLLDETAILS$$"/>
+    <filter>&quot;POSTINGAGGREGATION&quot;=false</filter>
+  </calculationView>
+  <calculationView xsi:type="Calculation:UnionView" id="Union_1">
+    <viewAttributes>
+      <viewAttribute id="POSTINGBATCHID"/>
+      <viewAttribute id="GLACCOUNT"/>
+      <viewAttribute id="SOURCEAMOUNT"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="BATCHID_BATCHID"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="FCAT"/>
+    
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="LOANNUMBER"/>
+      <viewAttribute id="ADVANCENUMBER"/>
+      <viewAttribute id="PROJECTCODE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Aggregation_Amounts" emptyUnionBehavior="NO_ROW">
       <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHID"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHLINENUMBER" source="POSTINGBATCHLINENUMBER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BATCHID_BATCHID$BATCHID_BATCHID" source="BATCHID_BATCHID"/>
-    </input>
-    <input node="Join_1$$$$PAYROLL_PAYROLLDETAILS$$">
-      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHID"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHLINENUMBER" source="POSTINGBATCHLINENUMBER"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BATCHID_BATCHID$BATCHID_BATCHID" source="BATCHID_BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
+    
+      <mapping xsi:type="Calculation:ConstantAttributeMapping" target="FMNO" null="true" value=""/>
+      <mapping xsi:type="Calculation:ConstantAttributeMapping" target="LOANNUMBER" null="true" value=""/>
+      <mapping xsi:type="Calculation:ConstantAttributeMapping" target="ADVANCENUMBER" null="true" value=""/>
+      <mapping xsi:type="Calculation:ConstantAttributeMapping" target="PROJECTCODE" null="true" value=""/>
     </input>
-    <joinAttribute name="POSTINGBATCHID"/>
-    <joinAttribute name="POSTINGBATCHLINENUMBER"/>
-    <joinAttribute name="JOIN$BATCHID_BATCHID$BATCHID_BATCHID"/>
+  
+    <input node="Projection_NonAggregated">
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:WindowFunctionView" id="ROWNUMBERS">
+    <viewAttributes>
+      <viewAttribute id="POSTINGBATCHID"/>
+      <viewAttribute id="GLACCOUNT"/>
+      <viewAttribute id="SOURCEAMOUNT"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="BATCHID_BATCHID"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="FCAT"/>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="LOANNUMBER"/>
+      <viewAttribute id="ADVANCENUMBER"/>
+      <viewAttribute id="PROJECTCODE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Union_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
+    </input>
+    <function name="ROW_NUMBER"/>
+    <windowFunctionResultColumn>REFERENCEDOCUMENTITEM</windowFunctionResultColumn>
+    <orderAttributes>
+      <orderAttribute direction="ASC">BATCHID_BATCHID</orderAttribute>
+    </orderAttributes>
+    <partitionAttributes>
+      <partitionAttribute>POSTINGBATCHID</partitionAttribute>
+    </partitionAttributes>
   </calculationView>
 </calculationViews>
 
-<logicalModel id="Join_1">
+<logicalModel id="ROWNUMBERS">
   <attributes>
-    <attribute id="POSTINGBATCHID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="BATCHID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHID"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="BATCHID_BATCHID"/>
+    </attribute>
+    <attribute id="POSTINGBATCHID" order="2" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="POSTINGBATCHID"/>
-      <keyMapping columnObjectName="Join_1" columnName="POSTINGBATCHID"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="POSTINGBATCHID"/>
     </attribute>
-    <attribute id="REFERENCEDOCUMENTITEM" order="2" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="REFERENCEDOCUMENTITEM" order="3" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="REFERENCEDOCUMENTITEM"/>
-      <keyMapping columnObjectName="Join_1" columnName="POSTINGBATCHLINENUMBER"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="REFERENCEDOCUMENTITEM"/>
     </attribute>
-    <attribute id="GLACCOUNT" order="3" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="GLACCOUNT" order="4" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLACCOUNT"/>
-      <keyMapping columnObjectName="Join_1" columnName="GLACCOUNT"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="GLACCOUNT"/>
     </attribute>
-    <attribute id="AMOUNTINTRANSACTIONCURRENCY" order="4" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="AMOUNTINTRANSACTIONCURRENCY" order="6" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="AMOUNTINTRANSACTIONCURRENCY"/>
-      <keyMapping columnObjectName="Join_1" columnName="SOURCEAMOUNT"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="SOURCEAMOUNT"/>
     </attribute>
-    <attribute id="GLPOSTCOSTCENTER" order="5" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="GLPOSTCOSTCENTER"/>
-      <keyMapping columnObjectName="Join_1" columnName="GLPOSTCOSTCENTER"/>
-    </attribute>
-    <attribute id="AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE" order="6" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE" order="7" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE"/>
-      <keyMapping columnObjectName="Join_1" columnName="GLCURRENCYCODE"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="GLCURRENCYCODE"/>
     </attribute>
-    <attribute id="WBSELEMENT" order="7" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="WBSELEMENT"/>
-      <keyMapping columnObjectName="Join_1" columnName="PROJECTCODE"/>
+    <attribute id="GLPOSTCOSTCENTER" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOSTCENTER"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="GLPOSTCOSTCENTER"/>
     </attribute>
-    <attribute id="DEBITCREDITCODE" order="8" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="DEBITCREDITCODE"/>
-      <keyMapping columnObjectName="Join_1" columnName="DEBITCREDITCODE"/>
-    </attribute>
-    <attribute id="DOCUMENTITEMTEXT" order="9" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="DOCUMENTITEMTEXT"/>
-      <keyMapping columnObjectName="Join_1" columnName="DOCUMENTITEMTEXT"/>
-    </attribute>
-    <attribute id="ASSIGNMENTREFERENCE" order="10" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="ASSIGNMENTREFERENCE"/>
-      <keyMapping columnObjectName="Join_1" columnName="ASSIGNMENTREFERENCE"/>
-    </attribute>
-    <attribute id="FUNCTIONALAREA" order="11" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="FUNCTIONALAREA" order="9" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="FUNCTIONALAREA"/>
-      <keyMapping columnObjectName="Join_1" columnName="FUNCTIONALAREA"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="FCAT"/>
     </attribute>
-  
-    <attribute id="BATCHID" order="12" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="BATCHID_BATCHID"/>
-  
-      <keyMapping columnObjectName="Join_1" columnName="BATCHID_BATCHID"/>
-  
+    <attribute id="FMNO" hidden="true" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FMNO"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="FMNO"/>
+    </attribute>
+    <attribute id="LOANNUMBER" hidden="true" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LOANNUMBER"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="LOANNUMBER"/>
+    </attribute>
+    <attribute id="ADVANCENUMBER" hidden="true" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ADVANCENUMBER"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="ADVANCENUMBER"/>
+    </attribute>
+    <attribute id="PROJECTCODE" hidden="true" order="15" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PROJECTCODE"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="PROJECTCODE"/>
     </attribute>
   </attributes>
-  <calculatedAttributes/>
+  <calculatedAttributes>
+    <calculatedAttribute id="DEBITCREDITCODE" order="5" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="1">
+        <formula>CASE WHEN SIGN(&quot;AMOUNTINTRANSACTIONCURRENCY&quot;) &gt; 0 
+    THEN 'S' 
+    ELSE 'H' 
+END</formula>
+      </keyCalculation>
+      </calculatedAttribute>
+  
+    <calculatedAttribute id="DOCUMENTITEMTEXT" order="11" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="50">
+        <formula>&quot;FMNO&quot;</formula>
+      </keyCalculation>
+      </calculatedAttribute>
+    <calculatedAttribute id="ASSIGNMENTREFERENCE" order="12" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="18">
+        <formula>COALESCE(&quot;LOANNUMBER&quot;,&quot;ADVANCENUMBER&quot;)</formula>
+      </keyCalculation>
+      </calculatedAttribute>
+    <calculatedAttribute id="ADDITIONALATTRIBUTES_PERSONNELNUMBER" order="16" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="8">
+        <formula>&quot;FMNO&quot;</formula>
+      </keyCalculation>
+      </calculatedAttribute>
+    <calculatedAttribute id="WBSELEMENT" order="17" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="24">
+        <formula>&quot;PROJECTCODE&quot;</formula>
+      </keyCalculation>
+      </calculatedAttribute>
+  </calculatedAttributes>
   <baseMeasures/>
   <calculatedMeasures/>
   <restrictedMeasures/>
@@ -144,27 +223,28 @@ END</formula>
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="92" y="112"/>
+      <upperLeftCorner x="267.7300990035993" y="112"/>
     
       <rectangleSize width="160"/>
     </shape>
     
   
-    <shape expanded="true" modelObjectName="Aggregation_1" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="92" y="322"/>
+    <shape expanded="true" modelObjectName="Aggregation_Amounts" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="91.99999999999996" y="481.9999976158142"/>
+      <rectangleSize height="30" width="191"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="248.10065967881926" y="341.9999988079071"/>
       <rectangleSize height="30" width="160"/>
     </shape>
-    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="92" y="217"/>
+  
+    <shape expanded="true" modelObjectName="Projection_NonAggregated" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="333" y="481.9999976158142"/>
       <rectangleSize height="30" width="160"/>
     </shape>
-    <shape modelObjectName="Aggregation_1" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
-      <upperLeftCorner x="20" y="30"/>
-      <rectangleSize width="250"/>
-    </shape>
-    <shape modelObjectName="PAYROLL_PAYROLLDETAILS" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
-      <upperLeftCorner x="320" y="30"/>
-      <rectangleSize width="244"/>
+    <shape expanded="true" modelObjectName="ROWNUMBERS" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="248.10065967881923" y="236.9999988079071"/>
+      <rectangleSize height="30" width="160"/>
     </shape>
   </shapes>
 </layout>

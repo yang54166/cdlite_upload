@@ -6,6 +6,7 @@ class PayrollService extends cds.ApplicationService {
         const db = await cds.connect.to('db')
         const { PayrollHeader, PayrollDetails } = db.entities('payroll');
         const { UploadHeader, UploadItems } = db.entities('payroll.staging');
+        const { PaycodeGLMapping } = db.entities('mapping');
 
         this.on('PUT', "PayrollUpload", async (req, next) => {
             console.log("upload started");
@@ -61,6 +62,7 @@ class PayrollService extends cds.ApplicationService {
                 // Get Data to Copy
                 const dataHeader = await SELECT.one.from(UploadHeader).where({ ID: batchToApprove, STATUS: 'APPROVED'});
                 const dataItems = await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED'});
+                const dataMapping = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: dataHeader.glCompanyCode});
 
                 if (dataHeader) {
                     // COPY DATA TO PERSISTENT TABLES
@@ -91,8 +93,10 @@ class PayrollService extends cds.ApplicationService {
                     // ITEMS
                     let lineCounter = 0;
                     const payloadItems = dataItems.map((item) =>({
-                        batchID: batchToApprove,
+                        batchID_batchID: batchToApprove,
                         batchLineNumber: lineCounter +=1,
+                        postingBatchID: batchToApprove,
+                        postingBatchLineNumner: lineCounter,
                         fmno: item.fmno,
                         payrollCode: item.payrollCode,
                         payrollCodeSequence: item.payrollCodeSequence,
@@ -100,7 +104,8 @@ class PayrollService extends cds.ApplicationService {
                         paymentID: item.paymentID,
                         projectCode: item.projectCode,
                         glAccount: item.glAccount,
-                        glPostCostCenter: item.glCostCenter
+                        glPostCostCenter: item.glCostCenter,
+                        postingAggregation: dataMapping.find((mapItem)=> mapItem.payrollCode = item.payrollCode).aggregation
                     }));
                     const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
 
