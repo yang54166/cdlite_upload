@@ -8,11 +8,11 @@
   "dependencies": {
     "@sap/cds": "^6",
     "express": "^4",
-    "hdb": "^0.19.0"
+    "hdb": "^0.19.0",
+    "@sap/xssec": "^3",
+    "passport": "^0"
   },
-  "devDependencies": {
-    
-  },
+  "devDependencies": {},
   "scripts": {
     "start": "cds run",
     "build": "mbt build --mtar $npm_package_name-$npm_package_version.mtar",
@@ -20,24 +20,44 @@
     "deploy": "cf deploy mta_archives/$npm_package_name-$npm_package_version.mtar",
     "deploy-local": "cds deploy --profile hybrid",
     "start-local": "cds watch --profile hybrid",
-    "undeploy": "cf undeploy cd_conpensationdetails_c --delete-services --delete-service-keys"
+    "undeploy": "cf undeploy cd_conpensationdetails_c --delete-services --delete-service-keys",
+    "bind-db": "cds bind --to cd_compensationdetails_c-db",
+    "bind-uaa": "cds bind uaa --to cd_compensationdetails_c-auth"
   },
   "engines": {
     "node": "^16.15"
   },
   "cds": {
-    "build":{
+    "build": {
       "tasks": [
         {
           "for": "hana",
           "dest": "../db"
         },
-        {  "for": "node-cf" }
+        {
+          "for": "node-cf"
+        }
       ]
     },
     "requires": {
       "db": {
         "kind": "hana-cloud"
+      },
+      "auth": {
+        "kind": "xsuaa"
+      },
+      "[hybrid]": {
+        "auth": {
+          "kind": "xsuaa"
+        }
+      },
+      "fdm_masterdata": {
+        "kind": "odata",
+        "model": "srv/external/fdm_masterdata",
+        "credentials": {
+          "destination": "FDM",
+          "path": "/masterdata"
+      }
       }
     },
     "hana": {

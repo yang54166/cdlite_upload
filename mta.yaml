@@ -24,6 +24,8 @@ modules:
           srv-url: "${default-url}"
     requires:
       - name: cd_compensationdetails_c-db
+      - name: cd_compensationdetails_c-auth
+      - name: cd_compensationdetails_c-dest
 
   - name: cd_compensationdetails_c-db-deployer
     type: hdb
@@ -31,7 +33,8 @@ modules:
     parameters:
       buildpack: nodejs_buildpack
     build-parameters:
-      ignore: ["src/.DS_Store"]
+      ignore:
+        - "src/.DS_Store"
     requires:
       - name: cd_compensationdetails_c-db
 
@@ -41,3 +44,43 @@ resources:
     parameters:
       service: hana
       service-plan: hdi-shared
+      
+  - name: cd_compensationdetails_c-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: cd_compensationdetails_c-${org}-${space}
+        tenant-mode: dedicated
+      service-keys: 
+      - name: cpi_key
+        config:
+          permissions: read-write
+
+  - name: cd_compensationdetails_c-dest
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+            - Authentication: NoAuthentication
+              Name: ui5
+              ProxyType: Internet
+              Type: HTTP
+              URL: https://ui5.sap.com
+            - Authentication: OAuth2ClientCredentials
+              Name: FDM
+              ProxyType: Internet
+              Type: HTTP
+              clientId: sb-raa_calviewodata_c!t107005
+              clientSecret: ZrKuF/1j4YiZm7jFb1ew52UgQJ0=
+              tokenServiceURL: https://analyticsfindwdev-9jd3l1b3.authentication.eu10.hana.ondemand.com/oauth/token
+              URL: https://analyticsfindwdev-analyticsfindwdev-api-raa-calviewodata-c-srv.cfapps.eu10.hana.ondemand.com
+            existing_destinations_policy: update
+        version: 1.0.0
+      service: destination
+      service-plan: lite

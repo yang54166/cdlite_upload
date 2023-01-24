@@ -1,0 +1,1860 @@
+{
+  "meta": {
+    "creator": "cds-dk 6.4.0"
+  },
+  "$version": "2.0",
+  "definitions": {
+    "fdm_masterdata.COST_CENTER_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "controllingAreaCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "CONTROLLING_AREA_CODE: KOKRS"
+        },
+        "controllingAreaDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 25,
+          "@Common.Label": "CONTROLLING_AREA_DESCRIPTION: BEZEI"
+        },
+        "costCenterCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "COST_CENTER_CODE: Cost Center"
+        },
+        "costCenterName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "COST_CENTER_NAME: COST_CENTER_NAME"
+        },
+        "departmentCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 12,
+          "@Common.Label": "DEPARTMENT_CODE: ABTEI"
+        },
+        "departmentName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "DEPARTMENT_NAME: KTEXT"
+        },
+        "gocCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 35,
+          "@Common.Label": "GOC_CODE: NAME2"
+        },
+        "gocName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 35,
+          "@Common.Label": "GOC_NAME: NAME3"
+        },
+        "companyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "COMPANY_CODE: Company Code"
+        },
+        "profitCenterCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "PROFIT_CENTER_CODE: Profit Center"
+        },
+        "costCenterGroup": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 12,
+          "@Common.Label": "COST_CENTER_GROUP: Standard Hierarchy Area"
+        },
+        "costCenterCategory": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "COST_CENTER_CATEGORY: General Name"
+        },
+        "categoryId": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "CATEGORY_ID: KOSAR"
+        },
+        "currencyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "CURRENCY_CODE: Currency Key"
+        },
+        "validFrom": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "VALID_FROM: DATAB_1"
+        },
+        "validTo": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "VALID_TO: DATBI_1"
+        },
+        "updateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "UPDATE_DATE: UPDATE_DATE"
+        },
+        "lockIndicatorForPlanSecondaryCost": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "LOCK_INDICATOR_FOR_PLAN_SECONDARY_COST: PKZKS"
+        },
+        "lockIndicatorForPlanningRevenues": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "LOCK_INDICATOR_FOR_PLANNING_REVENUES: PKZER"
+        },
+        "lockIndicatorForActualSecondaryCost": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "LOCK_INDICATOR_FOR_ACTUAL_SECONDARY_COSTS: BKZKS"
+        },
+        "lockIndicatorForActualRevenuePosting": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "LOCK_INDICATOR_FOR_ACTUAL_REVENUE_POSTING: BKZER"
+        },
+        "client": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "CLIENT: MANDT"
+        },
+        "billingOffice": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 13,
+          "@Common.Label": "C_BILLING_OFFICE: C_BILLING_OFFICE"
+        },
+        "personResponsible": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "PERSON_RESPONSIBLE: VERAK"
+        },
+        "projectGps": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "PROJECT_GPS: PROJECT_GPS"
+        },
+        "projectType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "PROJECT_TYPE: PROJECT_TYPE"
+        }
+      }
+    },
+    "fdm_masterdata.GL_ACCT_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "glAccount": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "GL_ACCOUNT: G/L Account Number"
+        },
+        "glAccountName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 50,
+          "@Common.Label": "GL_ACCOUNT_NAME: G/L Account Long Text"
+        },
+        "glAccountGroup": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "GL_ACCOUNT_GROUP: G/L Account Group"
+        },
+        "glAccountType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 60,
+          "@Common.Label": "GL_ACCOUNT_TYPE: Short Text for Fixed Values"
+        },
+        "accountMarkedForDeletion": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "ACCOUNT_MARKED_FOR_DELETION: XLOEV"
+        },
+        "accountBlockedForPosting": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "ACCOUNT_BLOCKED_FOR_POSTING: XSPEB"
+        },
+        "createDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "CREATE_DATE: CREATE_DATE"
+        },
+        "updateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "UPDATE_DATE: UPDATE_DATE"
+        },
+        "client": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "CLIENT: MANDT"
+        }
+      }
+    },
+    "fdm_masterdata.COMPANY_CODE_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "companyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "COMPANY_CODE: BUKRS"
+        },
+        "companyCodeName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 25,
+          "@Common.Label": "COMPANY_CODE_NAME: BUTXT"
+        },
+        "description": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 60,
+          "@Common.Label": "DESCRIPTION: DESCRIPTION"
+        },
+        "currencyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "CURRENCY_CODE: WAERS"
+        },
+        "validFrom": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "VALID_FROM: DATE_FROM"
+        },
+        "validTo": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "VALID_TO: DATE_TO"
+        },
+        "addressLine1": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 60,
+          "@Common.Label": "ADDRESS_LINE1: STREET"
+        },
+        "addressLine2": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "ADDRESS_LINE2: STR_SUPPL1"
+        },
+        "addressLine3": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "ADDRESS_LINE3: STR_SUPPL2"
+        },
+        "addressLine4": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "ADDRESS_LINE4: STR_SUPPL3"
+        },
+        "district": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "DISTRICT: CITY2"
+        },
+        "city": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "CITY: CITY1"
+        },
+        "postalCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "POSTAL_CODE: POST_CODE1"
+        },
+        "regionCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "REGION_CODE: REGION"
+        },
+        "countryCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "COUNTRY_CODE: LAND1"
+        },
+        "updateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "UPDATE_DATE: UPDATE_DATE"
+        },
+        "mandt": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "MANDT: MANDT"
+        }
+      }
+    },
+    "fdm_masterdata.PROFIT_CENTER_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "controllingAreaCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "CONTROLLING_AREA_CODE: KOKRS"
+        },
+        "controllingAreaDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 25,
+          "@Common.Label": "CONTROLLING_AREA_DESCRIPTION: BEZEI"
+        },
+        "profitCenterCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "PROFIT_CENTER_CODE: PRCTR"
+        },
+        "profitCenterName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "PROFIT_CENTER_NAME: KTEXT"
+        },
+        "validFrom": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "VALID_FROM: DATE_FROM"
+        },
+        "validTo": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "VALID_TO: DATE_TO"
+        },
+        "profitCenterGroup": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 12,
+          "@Common.Label": "PROFIT_CENTER_GROUP: KHINR"
+        },
+        "companyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "COMPANY_CODE: BUKRS"
+        },
+        "updateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "UPDATE_DATE: UPDATE_DATE"
+        }
+      }
+    },
+    "fdm_masterdata.INTERNAL_ORDER_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "client": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "CLIENT: MANDT"
+        },
+        "orderNumber": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 12,
+          "@Common.Label": "ORDER_NUMBER: AUFNR"
+        },
+        "orderType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "ORDER_TYPE: AUART"
+        },
+        "orderCategory": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 2,
+          "@Common.Label": "ORDER_CATEGORY: AUTYP"
+        },
+        "enteredBy": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 12,
+          "@Common.Label": "ENTERED_BY: ERNAM"
+        },
+        "description": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "DESCRIPTION: KTEXT"
+        },
+        "companyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "COMPANY_CODE: BUKRS"
+        },
+        "controllingArea": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "CONTROLLING_AREA: KOKRS"
+        },
+        "responsibleCostCenter": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "RESPONSIBLE_COST_CENTER: KOSTV"
+        },
+        "orderCurrency": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "ORDER_CURRENCY: WAERS"
+        },
+        "orderStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 2,
+          "@Common.Label": "ORDER_STATUS: ASTNR"
+        },
+        "closeDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "CLOSE_DATE: CLOSE_DATE"
+        },
+        "createdOn": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "CREATED_ON: CREATED_ON"
+        },
+        "lastUpdateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "LAST_UPDATED_DATE: LAST_UPDATED_DATE"
+        },
+        "objectNumber": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 22,
+          "@Common.Label": "OBJECT_NUMBER: Object number"
+        },
+        "objectStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "OBJECT_STATUS: Object status"
+        },
+        "inactiveStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "INACTIVE_STATUS: Indicator: Status Is Inactive"
+        },
+        "ioActInactStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 13,
+          "@Common.Label": "IO_ACT_INACT_STATUS: LOCK_STATUS"
+        }
+      }
+    },
+    "fdm_masterdata.CURRENCY_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "currencyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "CURRENCY_CODE: Currency Key"
+        },
+        "currencyLongDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "CURRENCY_LONG_DESCRIPTION: Long Text"
+        },
+        "currencyShortDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 15,
+          "@Common.Label": "CURRENCY_SHORT_DESCRIPTION: Short text"
+        },
+        "isoCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "ISO_CODE: ISO currency code"
+        },
+        "validTo": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "VALID_TO: VALID_TO"
+        },
+        "updateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "UPDATE_DATE: UPDATE_DATE"
+        }
+      }
+    },
+    "fdm_masterdata.PRMTTD_PSTNG_PRD_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "client": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "CLIENT: Client"
+        },
+        "recordType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "RECORD_TYPE: Record Type"
+        },
+        "postingPeriodVariant": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "POSTING_PERIOD_VARIANT: Posting Period Variant"
+        },
+        "accountType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "ACCOUNT_TYPE: Account Type or Masking"
+        },
+        "toAccount": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "TO_ACCOUNT: To Account"
+        },
+        "fromAccount": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "FROM_ACCOUNT: From Account"
+        },
+        "fyOfFirstPeriodPermittedInt1": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "FY_OF_FIRST_PERIOD_PERMITTED_INT1: Fiscal Year for First Period Allowed (in Interval 1)"
+        },
+        "firstPostingPeriodPermittedInt1": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "FIRST_POSTING_PERIOD_PERMITTED_INT1: First Posting Period Allowed (in Interval 1)"
+        },
+        "fyOfLastPeriodPermittedInt1": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "FY_OF_LAST_PERIOD_PERMITTED_INT1: Fiscal Year for Last Period Allowed (in Interval 1)"
+        },
+        "lastPostingPeriodPermittedInt1": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "LAST_POSTING_PERIOD_PERMITTED_INT1: Last Posting Period Allowed (in Interval 1)"
+        },
+        "fyOfFirstPeriodPermittedInt2": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "FY_OF_FIRST_PERIOD_PERMITTED_INT2: Fiscal Year for First Period Allowed (in Interval 2)"
+        },
+        "firstPostingPeriodPermittedInt2": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "FIRST_POSTING_PERIOD_PERMITTED_INT2: First Posting Period Allowed (in Interval 2)"
+        },
+        "fyOfLastPeriodPermittedInt2": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "FY_OF_LAST_PERIOD_PERMITTED_INT2: Fiscal Year for Last Period Allowed (in Interval 2)"
+        },
+        "lastPostingPeriodPermittedInt2": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "LAST_POSTING_PERIOD_PERMITTED_INT2: Last Posting Period Allowed (in Interval 2)"
+        },
+        "authorizationGroup": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "AUTHORIZATION_GROUP: Authorization Group"
+        },
+        "fyOfFirstPeriodPermittedInt3": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "FY_OF_FIRST_PERIOD_PERMITTED_INT3: Fiscal Year of First Period Permitted (Interval 3)"
+        },
+        "firstPostingPeriodPermittedInt3": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "FIRST_POSTING_PERIOD_PERMITTED_INT3: First Posting Period Permitted (Interval 3)"
+        },
+        "fyOfLastPeriodPermittedInt3": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "FY_OF_LAST_PERIOD_PERMITTED_INT3: Fiscal Year of Last Period Permitted (Interval 3)"
+        },
+        "lastPostingPeriodPermittedInt3": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "LAST_POSTING_PERIOD_PERMITTED_INT3: Last Posting Period Permitted (Interval 3)"
+        },
+        "lastUpdatedDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "LAST_UPDATED_DATE: LAST_UPDATED_DATE"
+        }
+      }
+    },
+    "fdm_masterdata.PROJECT_WBS_MASTER_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "wbsElementCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "WBS_ELEMENT_CODE: PSPNR"
+        },
+        "validFrom": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "VALID_FROM: WBS element: Basic start date"
+        },
+        "validTo": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "VALID_TO: WBS element: Basic finish date"
+        },
+        "companyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "COMPANY_CODE: PBUKR"
+        },
+        "lastUpdatedDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "LAST_UPDATED_DATE: UPDATE_DATE"
+        },
+        "wbsElementName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "WBS_ELEMENT_NAME: POST1"
+        },
+        "objectNumber": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 22,
+          "@Common.Label": "OBJECT_NUMBER: Object number"
+        },
+        "objectStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "STATUS: Object status"
+        },
+        "inactive": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "INACTIVE: Indicator: Status Is Inactive"
+        },
+        "wbsActiveFlag": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 13,
+          "@Common.Label": "WBS_ACTIVE_FLAG: LOCKED_STATUS"
+        },
+        "projectActivity": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 2,
+          "@Common.Label": "PROJECT_ACTIVITY: PRART"
+        },
+        "projectGoc": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "PROJECT_GOC"
+        },
+        "costCenter": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "COST_CENTER_CODE: FKSTL"
+        },
+        "projectGps": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "PROJECT_GPS"
+        },
+        "projectType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "PROJECT_TYPE"
+        }
+      }
+    },
+    "fdm_masterdata.DAILY_EXCHG_RATE_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "fromCurrency": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "FROM_CURRENCY: FROM_CURRENCY"
+        },
+        "toCurrency": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "TO_CURRENCY: TO_CURRENCY"
+        },
+        "exchangeRateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Date",
+          "@Common.Label": "EXCHANGE_RATE_DATE: EXCHANGE_RATE_DATE"
+        },
+        "exchangeRate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Decimal",
+          "scale": 5,
+          "precision": 9,
+          "@Common.Label": "EXCHANGE_RATE: EXCHANGE_RATE"
+        },
+        "updateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "UPDATE_DATE: UPDATE_DATE"
+        }
+      }
+    },
+    "fdm_masterdata.COUNTRY_STATE_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "countryCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "COUNTRY_CODE: Country/Region Key"
+        },
+        "countryName": {
+          "type": "cds.String",
+          "length": 50,
+          "@Common.Label": "COUNTRY_NAME: Country/Region Name"
+        },
+        "stateCode": {
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "REGION_CODE: Region (State, Province, County)"
+        },
+        "stateName": {
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "REGION_NAME: Description"
+        },
+        "updateDate": {
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "UPDATE_DATE: UPDATE_DATE"
+        }
+      }
+    },
+    "fdm_masterdata.S4_FMNO_MASTER_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "client": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "CLIENT: Client"
+        },
+        "fmno": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "FMNO: Personnel Number"
+        },
+        "firstName": {
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "FIRST_NAME: First Name"
+        },
+        "lastName": {
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "LAST_NAME: Last Name"
+        },
+        "country": {
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "COUNTRY: Country/Region Key"
+        },
+        "groupId": {
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "GROUP_ID: Employee Group"
+        },
+        "groupName": {
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "GROUP_NAME: Employee Group Text"
+        },
+        "workerSatus": {
+          "type": "cds.String",
+          "length": 13,
+          "@Common.Label": "WORKER_STATUS: FMNO STATUS"
+        },
+        "userLocation": {
+          "type": "cds.String",
+          "length": 32,
+          "@Common.Label": "USER_LOCATION: Location Office"
+        },
+        "roleCategory": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "ROLE_CATEGORY:  Role Category (CSP, ESP, FSP)"
+        },
+        "skillCodeText": {
+          "type": "cds.String",
+          "length": 25,
+          "@Common.Label": "SKILL_CODE_TEXT: SKILL_CODE_TEXT"
+        },
+        "email": {
+          "type": "cds.String",
+          "length": 241,
+          "@Common.Label": "EMAIL: Email Address"
+        },
+        "costCenter": {
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "COST_CENTER_CODE: Cost Center"
+        },
+        "effectiveStartDate": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "EFFECTIVE_START_DATE: Assignment Start Date"
+        },
+        "effectiveEndDate": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "EFFECTIVE_END_DATE: Assignment End Date"
+        },
+        "branchId": {
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "BRANCH_ID: Company Code"
+        },
+        "preferredName": {
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "PREFERRED_NAME: Nickname"
+        },
+        "terminationDate": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "TERMINATION_DATE: Termination Date"
+        },
+        "updateDate": {
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "UPDATE_DATE: UPDATE_DATE"
+        }
+      }
+    },
+    "fdm_masterdata.MNTHLY_EXCHG_RATE_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "fromCurrency": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "FROM_CURRENCY: FROM_CURRENCY"
+        },
+        "toCurrency": {
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "TO_CURRENCY: TO_CURRENCY"
+        },
+        "period": {
+          "type": "cds.String",
+          "length": 6,
+          "@Common.Label": "PERIOD: PERIOD"
+        },
+        "exchangeRate": {
+          "type": "cds.Decimal",
+          "@Common.Label": "EXCHANGE_RATE: EEXCHANGE_RATE"
+        },
+        "updateDate": {
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "UPDATE_DATE: UPDATE_DATE"
+        },
+        "mandt": {
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "MANDT: MANDT"
+        }
+      }
+    },
+    "fdm_masterdata.PROJECT_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "client": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "CLIENT: CLIENT"
+        },
+        "wbsCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 24,
+          "@Common.Label": "WBS_CODE: POSID"
+        },
+        "wbsDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "WBS_DESCRIPTION: PKOKR"
+        },
+        "controllingArea": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "CONTROLLING_AREA: PKOKR"
+        },
+        "companyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "COMPANY_CODE: PBUKR"
+        },
+        "profitCenter": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "PROFIT_CENTER: PRCTR"
+        },
+        "costCenter": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "COST_CENTER: KOSTL"
+        },
+        "projectType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 2,
+          "@Common.Label": "PROJECT_TYPE: PRART"
+        },
+        "addressNumber": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "ADDRESS_NUMBER: ADRNR"
+        },
+        "projectCurrency": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "PROJECT_CURRENCY: PROJ_CURRENCY"
+        },
+        "languageKey": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "LANGUAGE_KEY: TXTSP"
+        },
+        "userFieldFirst": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "USER_FIELD_FIRST: USR00"
+        },
+        "createdByFmno": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 12,
+          "@Common.Label": "CREATED_BY_FMNO: ERNAM_PRPS"
+        },
+        "changedByFmno": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 12,
+          "@Common.Label": "CHANGED_BY_FMNO: AENAM_PRPS"
+        },
+        "responsiblePmFmno": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "RESPONSIBLE_PM_FMNO: VERNR"
+        },
+        "systemStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "SYSTEM_STATUS: ISTAT"
+        },
+        "objectStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "OBJECT_STATUS: STAT"
+        },
+        "objectStatusName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 30,
+          "@Common.Label": "OBJECT_STATUS_NAME: TXT30"
+        },
+        "objectStatusDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 30,
+          "@Common.Label": "OBJECT_STATUS_DESCRIPTION: TXT30_TJ30T"
+        },
+        "userStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "USER_STATUS: ESTAT"
+        },
+        "individualStatusOfAnObject": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "INDIVIDUAL_STATUS_OF_AN_OBJECT: TXT04"
+        },
+        "individualStatusOfAnObjectDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "INDIVIDUAL_STATUS_OF_AN_OBJECT_DESCRIPTION: TXT04_TJ30T"
+        },
+        "statusProfile": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "STATUS_PROFILE: STSMA"
+        },
+        "startDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "START_DATE: START_DATE"
+        },
+        "endDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "END_DATE: END_DATE"
+        },
+        "updateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 30,
+          "@Common.Label": "UPDATE_DATE: ZTIMESTAMP_PRPS"
+        }
+      }
+    },
+    "fdm_masterdata.PROJECT_CLASSIFICATION_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "wbsCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 24,
+          "@Common.Label": "WBS_CODE: POSID"
+        },
+        "createdAtClassification": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "CREATEDAT_CLASSIFICATION: CREATEDAT"
+        },
+        "createdByClassification": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 255,
+          "@Common.Label": "CREATEDBY_CLASSIFICATION: CREATEDBY"
+        },
+        "modifiedAtClassification": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "MODIFIEDAT_CLASSIFICATION: MODIFIEDAT"
+        },
+        "modifiedByClassification": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 255,
+          "@Common.Label": "MODIFIEDBY_CLASSIFICATION: MODIFIEDBY"
+        },
+        "uri": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 30,
+          "@Common.Label": "URI: URI"
+        },
+        "termId": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 250,
+          "@Common.Label": "TERMID: TERMID"
+        },
+        "classificationName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 30,
+          "@Common.Label": "CLASSIFICATIONTYPE: CLASSIFICATIONTYPE"
+        },
+        "classificationType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 250,
+          "@Common.Label": "CLASSIFICATIONNAME: CLASSIFICATIONNAME"
+        },
+        "isPrimary": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "ISPRIMARY: ISPRIMARY"
+        },
+        "isDisplayed": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "ISDISPLAYED: ISDISPLAYED"
+        }
+      }
+    },
+    "fdm_masterdata.PROJECT_LOCATION_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "wbsCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 24,
+          "@Common.Label": "WBS_CODE: POSID"
+        },
+        "createdAtLocation": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "CREATEDAT_LOCATION: CREATEDAT_1"
+        },
+        "createdByLocation": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 255,
+          "@Common.Label": "CREATEDBY_LOCATION: CREATEDBY_1"
+        },
+        "modifiedAtLocation": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Timestamp",
+          "@odata.Precision": 7,
+          "@odata.Type": "Edm.DateTimeOffset",
+          "@Common.Label": "MODIFIEDAT_LOCATION: MODIFIEDAT_1"
+        },
+        "modifiedbyLocation": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 255,
+          "@Common.Label": "MODIFIEDBY_LOCATION: MODIFIEDBY_1"
+        },
+        "locationType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 16,
+          "@Common.Label": "LOCATIONTYPE: LOCATIONTYPE"
+        },
+        "locationCity": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 200,
+          "@Common.Label": "LOCATIONCITY: LOCATIONCITY"
+        },
+        "locationCountry": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 320,
+          "@Common.Label": "LOCATIONCOUNTRY: LOCATIONCOUNTRY"
+        },
+        "locationState": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 320,
+          "@Common.Label": "LOCATIONSTATE: LOCATIONSTATE"
+        },
+        "locationId": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.Integer",
+          "@Common.Label": "LOCATIONID: LOCATIONID"
+        }
+      }
+    },
+    "fdm_masterdata.PROJECT_INTERNAL_ENGAGEMENT_API": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "client": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "CLIENT: CLIENT"
+        },
+        "wbsCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 24,
+          "@Common.Label": "WBS_CODE: POSID"
+        },
+        "wbsDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "WBS_DESCRIPTION: POST1_PRPS"
+        },
+        "controllingArea": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "CONTROLLING_AREA: PKOKR"
+        },
+        "companyCode": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "COMPANY_CODE: PBUKR"
+        },
+        "profitCenter": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "PROFIT_CENTER: PRCTR"
+        },
+        "costCenter": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "COST_CENTER: KOSTL"
+        },
+        "projectType": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 2,
+          "@Common.Label": "PROJECT_TYPE: PRART"
+        },
+        "addressNumber": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "ADDRESS_NUMBER: ADRNR"
+        },
+        "projectCurrency": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "PROJECT_CURRENCY: PROJ_CURRENCY"
+        },
+        "languageKey": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 1,
+          "@Common.Label": "LANGUAGE_KEY: TXTSP"
+        },
+        "userFieldFirst": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "USER_FIELD_FIRST: USR00"
+        },
+        "createdByFmno": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 12,
+          "@Common.Label": "CREATED_BY_FMNO: ERNAM_PRPS"
+        },
+        "changedByFmno": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 12,
+          "@Common.Label": "CHANGED_BY_FMNO: AENAM_PRPS"
+        },
+        "responsiblePmFmno": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "RESPONSIBLE_PM_FMNO: VERNR"
+        },
+        "systemStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "SYSTEM_STATUS: ISTAT"
+        },
+        "objectStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "OBJECT_STATUS: STAT"
+        },
+        "objectStatusName": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 30,
+          "@Common.Label": "OBJECT_STATUS_NAME: TXT30"
+        },
+        "objectStatusDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 30,
+          "@Common.Label": "OBJECT_STATUS_DESCRIPTION: TXT30_TJ30T"
+        },
+        "userStatus": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 5,
+          "@Common.Label": "USER_STATUS: ESTAT"
+        },
+        "individualStatusOfAnObject": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "INDIVIDUAL_STATUS_OF_AN_OBJECT: TXT04"
+        },
+        "individualStatusOfAnObjectDescription": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "INDIVIDUAL_STATUS_OF_AN_OBJECT_DESCRIPTION: TXT04_TJ30T"
+        },
+        "statusProfile": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "STATUS_PROFILE: STSMA"
+        },
+        "startDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "START_DATE: START_DATE"
+        },
+        "endDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "END_DATE: END_DATE"
+        },
+        "updateDate": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 30,
+          "@Common.Label": "UPDATE_DATE: ZTIMESTAMP_PRPS"
+        }
+      }
+    },
+    "fdm_masterdata.FMNO_MASTER_PAS": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "IP_PERIOD": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 8,
+          "@Common.FieldControl": {
+            "#": "Mandatory"
+          }
+        },
+        "Set": {
+          "type": "cds.Association",
+          "@cds.ambiguous": "missing on condition?",
+          "target": "fdm_masterdata.FMNO_MASTER_PASType",
+          "cardinality": {
+            "max": "*"
+          },
+          "keys": []
+        }
+      }
+    },
+    "fdm_masterdata.FMNO_MASTER_PASType": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "elements": {
+        "client": {
+          "key": true,
+          "notNull": true,
+          "type": "cds.String",
+          "length": 3,
+          "@Common.Label": "CLIENT: CLIENT"
+        },
+        "fmno": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "FMNO: FMNO"
+        },
+        "preferredName": {
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "PREFERRED_NAME: NICK_NAME"
+        },
+        "firstName": {
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "FIRST_NAME: FIRST_NAME"
+        },
+        "middleName": {
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "MIDDLE_NAME: MIDDLE_NAME"
+        },
+        "costCenter": {
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "COST_CENTER: COST_CENTER"
+        },
+        "costCenterName": {
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "COST_CENTER_NAME: COST_CENTER_NAME"
+        },
+        "positionCode": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "POSITION_CODE: POSITION"
+        },
+        "positionCodeDescription": {
+          "type": "cds.String",
+          "length": 25,
+          "@Common.Label": "POSITION_CODE_DESCRIPTION: POSITION_DESC"
+        },
+        "fcat": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "FCAT: FCAT"
+        },
+        "roleCategory": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "ROLE_CATEGORY: ROLE_CATEGORY"
+        },
+        "fmnoStatus": {
+          "type": "cds.String",
+          "length": 13,
+          "@Common.Label": "FMNO_STATUS: CC_FMNO_STATUS"
+        },
+        "taxLegalEntity": {
+          "type": "cds.String",
+          "length": 32,
+          "@Common.Label": "TAX_LEGAL_ENTITY: TAX_LEGAL_ENTITY"
+        },
+        "partnerAndNonPartner": {
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "PARTNER_AND_NON_PARTNER: EMP_GROUP_DESC"
+        },
+        "positionStartDate": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "POSITION_START_DATE: ASSIGNMENT_START_DATE"
+        },
+        "positionEndDate": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "POSITION_END_DATE: ASSIGNMENT_END_DATE"
+        },
+        "AssignmentType": {
+          "type": "cds.String",
+          "length": 32,
+          "@Common.Label": "ASSIGNMENT_TYPE: ASSIGNMENT_TYPE"
+        },
+        "skillCode": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "SKILL_CODE: SKILL_CODE"
+        },
+        "skillCodeDesc": {
+          "type": "cds.String",
+          "length": 25,
+          "@Common.Label": "SKILL_CODE_DESC: SKILL_CODE_DESC"
+        },
+        "skillGroup": {
+          "type": "cds.String",
+          "length": 16,
+          "@Common.Label": "SKILL_GROUP: SKILL_GROUP"
+        },
+        "terminationDate": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "TERMINATION_DATE: CC_TERMINATION_DATE"
+        },
+        "profitCenter": {
+          "type": "cds.String",
+          "length": 10,
+          "@Common.Label": "PROFIT_CENTER: PROFIT_CENTER"
+        },
+        "profitCenterName": {
+          "type": "cds.String",
+          "length": 20,
+          "@Common.Label": "PROFIT_CENTER_NAME: PROFIT_CENTER_NAME"
+        },
+        "companyCode": {
+          "type": "cds.String",
+          "length": 4,
+          "@Common.Label": "COMPANY_CODE: COMPANY_CODE"
+        },
+        "companyName": {
+          "type": "cds.String",
+          "length": 25,
+          "@Common.Label": "COMPANY_NAME: COMPANY_NAME"
+        },
+        "avgProrationInPeriod": {
+          "type": "cds.String",
+          "length": 13,
+          "@Common.Label": "AVG_PRORATION_IN_PERIOD: AVG_PRORATION_IN_PERIOD"
+        },
+        "period": {
+          "type": "cds.String",
+          "length": 6,
+          "@Common.Label": "PERIOD: PERIOD"
+        },
+        "unpaidLoaDays": {
+          "type": "cds.Integer",
+          "@Common.Label": "UNPAID_LOA_DAYS: CC_UNPAID_LOA_DAYS"
+        },
+        "lastName": {
+          "type": "cds.String",
+          "length": 40,
+          "@Common.Label": "LAST_NAME: LAST_NAME"
+        },
+        "hireDate": {
+          "type": "cds.String",
+          "length": 8,
+          "@Common.Label": "HIRE_DATE: CC_START_DATE"
+        },
+        "Parameters": {
+          "type": "cds.Association",
+          "@cds.ambiguous": "missing on condition?",
+          "target": "fdm_masterdata.FMNO_MASTER_PAS",
+          "cardinality": {
+            "max": 1
+          },
+          "keys": []
+        }
+      }
+    },
+    "fdm_masterdata": {
+      "kind": "service",
+      "@cds.external": true
+    }
+  }
+}

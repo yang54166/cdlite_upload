@@ -1,0 +1,60 @@
+{
+  "xsappname": "cd_compensationdetails_c",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.upload",
+      "description": "Display and Upload files"
+    },
+    {
+      "name": "$XSAPPNAME.delete",
+      "description": "delete"
+    },
+    {
+      "name": "$XSAPPNAME.approve",
+      "description": "approve uploads for posting"
+    },
+    {
+      "name": "$XSAPPNAME.admin",
+      "description": "admin"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "companycode",
+      "description": "companycode",
+      "valueType": "s"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "Accounting",
+      "scope-references": [
+        "$XSAPPNAME.upload",
+        "$XSAPPNAME.delete"
+      ],
+      "description": "accounting user role",
+      "attribute-references" : ["companycode"] 
+    },
+    {
+      "name": "Approver",
+      "scope-references": [
+        "$XSAPPNAME.admin",
+        "$XSAPPNAME.approve",
+        "$XSAPPNAME.upload",
+        "$XSAPPNAME.delete"
+      ],
+      "description": "approver role",
+      "attribute-references" : ["companycode"] 
+    },
+    {
+      "name": "Admin",
+      "scope-references": [
+        "$XSAPPNAME.admin",
+        "$XSAPPNAME.upload",
+        "$XSAPPNAME.delete"
+      ],
+      "description": "admin role"
+    }
+  ]
+}

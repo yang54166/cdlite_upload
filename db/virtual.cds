@@ -16,7 +16,7 @@ key     POSTINGBATCHID: Integer  @title: 'POSTINGBATCHID: POSTINGBATCHID' ;
         DOCUMENTDATE: Date  @title: 'DocumentDate: DocumentDate' ; 
         REFERENCE1INDOCUMENTHEADER: String(20)  @title: 'Reference1InDocumentHeader: Reference1InDocumentHeader' ; 
         REFERENCE2INDOCUMENTHEADER: String(20)  @title: 'Reference2InDocumentHeader: Reference2InDocumentHeader' ; 
-        items: Association to many CV_JOURNALENTRY_ITEM on items.BATCHID = BATCHID;
+        items: Association to many CV_JOURNALENTRY_ITEM on items.BATCHID = BATCHID and items.POSTINGBATCHID = POSTINGBATCHID;
 };
 
 @cds.persistence.exists 

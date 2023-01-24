@@ -1,0 +1,1344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="masterdata" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="COST_CENTER_API" EntityType="masterdata.COST_CENTER_API"/>
+        <EntitySet Name="GL_ACCT_API" EntityType="masterdata.GL_ACCT_API"/>
+        <EntitySet Name="COMPANY_CODE_API" EntityType="masterdata.COMPANY_CODE_API"/>
+        <EntitySet Name="PROFIT_CENTER_API" EntityType="masterdata.PROFIT_CENTER_API"/>
+        <EntitySet Name="INTERNAL_ORDER_API" EntityType="masterdata.INTERNAL_ORDER_API"/>
+        <EntitySet Name="CURRENCY_API" EntityType="masterdata.CURRENCY_API"/>
+        <EntitySet Name="PRMTTD_PSTNG_PRD_API" EntityType="masterdata.PRMTTD_PSTNG_PRD_API"/>
+        <EntitySet Name="PROJECT_WBS_MASTER_API" EntityType="masterdata.PROJECT_WBS_MASTER_API"/>
+        <EntitySet Name="DAILY_EXCHG_RATE_API" EntityType="masterdata.DAILY_EXCHG_RATE_API"/>
+        <EntitySet Name="COUNTRY_STATE_API" EntityType="masterdata.COUNTRY_STATE_API"/>
+        <EntitySet Name="S4_FMNO_MASTER_API" EntityType="masterdata.S4_FMNO_MASTER_API"/>
+        <EntitySet Name="MNTHLY_EXCHG_RATE_API" EntityType="masterdata.MNTHLY_EXCHG_RATE_API"/>
+        <EntitySet Name="PROJECT_API" EntityType="masterdata.PROJECT_API"/>
+        <EntitySet Name="PROJECT_CLASSIFICATION_API" EntityType="masterdata.PROJECT_CLASSIFICATION_API"/>
+        <EntitySet Name="PROJECT_LOCATION_API" EntityType="masterdata.PROJECT_LOCATION_API"/>
+        <EntitySet Name="PROJECT_INTERNAL_ENGAGEMENT_API" EntityType="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API"/>
+        <EntitySet Name="FMNO_MASTER_PAS" EntityType="masterdata.FMNO_MASTER_PASParameters">
+          <NavigationPropertyBinding Path="Set/Parameters" Target="FMNO_MASTER_PAS"/>
+        </EntitySet>
+      </EntityContainer>
+      <EntityType Name="COST_CENTER_API">
+        <Key>
+          <PropertyRef Name="controllingAreaCode"/>
+          <PropertyRef Name="controllingAreaDescription"/>
+          <PropertyRef Name="costCenterCode"/>
+          <PropertyRef Name="costCenterName"/>
+          <PropertyRef Name="departmentCode"/>
+          <PropertyRef Name="departmentName"/>
+          <PropertyRef Name="gocCode"/>
+          <PropertyRef Name="gocName"/>
+          <PropertyRef Name="companyCode"/>
+          <PropertyRef Name="profitCenterCode"/>
+          <PropertyRef Name="costCenterGroup"/>
+          <PropertyRef Name="costCenterCategory"/>
+          <PropertyRef Name="categoryId"/>
+          <PropertyRef Name="currencyCode"/>
+          <PropertyRef Name="validFrom"/>
+          <PropertyRef Name="validTo"/>
+          <PropertyRef Name="updateDate"/>
+          <PropertyRef Name="lockIndicatorForPlanSecondaryCost"/>
+          <PropertyRef Name="lockIndicatorForPlanningRevenues"/>
+          <PropertyRef Name="lockIndicatorForActualSecondaryCost"/>
+          <PropertyRef Name="lockIndicatorForActualRevenuePosting"/>
+          <PropertyRef Name="client"/>
+          <PropertyRef Name="billingOffice"/>
+          <PropertyRef Name="personResponsible"/>
+          <PropertyRef Name="projectGps"/>
+          <PropertyRef Name="projectType"/>
+        </Key>
+        <Property Name="controllingAreaCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="controllingAreaDescription" Type="Edm.String" MaxLength="25" Nullable="false"/>
+        <Property Name="costCenterCode" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="costCenterName" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="departmentCode" Type="Edm.String" MaxLength="12" Nullable="false"/>
+        <Property Name="departmentName" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <Property Name="gocCode" Type="Edm.String" MaxLength="35" Nullable="false"/>
+        <Property Name="gocName" Type="Edm.String" MaxLength="35" Nullable="false"/>
+        <Property Name="companyCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="profitCenterCode" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="costCenterGroup" Type="Edm.String" MaxLength="12" Nullable="false"/>
+        <Property Name="costCenterCategory" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <Property Name="categoryId" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="currencyCode" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="validFrom" Type="Edm.Date" Nullable="false"/>
+        <Property Name="validTo" Type="Edm.Date" Nullable="false"/>
+        <Property Name="updateDate" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+        <Property Name="lockIndicatorForPlanSecondaryCost" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="lockIndicatorForPlanningRevenues" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="lockIndicatorForActualSecondaryCost" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="lockIndicatorForActualRevenuePosting" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="client" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="billingOffice" Type="Edm.String" MaxLength="13" Nullable="false"/>
+        <Property Name="personResponsible" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <Property Name="projectGps" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="projectType" Type="Edm.String" MaxLength="1" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="GL_ACCT_API">
+        <Key>
+          <PropertyRef Name="glAccount"/>
+          <PropertyRef Name="glAccountName"/>
+          <PropertyRef Name="glAccountGroup"/>
+          <PropertyRef Name="glAccountType"/>
+          <PropertyRef Name="accountMarkedForDeletion"/>
+          <PropertyRef Name="accountBlockedForPosting"/>
+          <PropertyRef Name="createDate"/>
+          <PropertyRef Name="updateDate"/>
+          <PropertyRef Name="client"/>
+        </Key>
+        <Property Name="glAccount" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="glAccountName" Type="Edm.String" MaxLength="50" Nullable="false"/>
+        <Property Name="glAccountGroup" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="glAccountType" Type="Edm.String" MaxLength="60" Nullable="false"/>
+        <Property Name="accountMarkedForDeletion" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="accountBlockedForPosting" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="createDate" Type="Edm.Date" Nullable="false"/>
+        <Property Name="updateDate" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+        <Property Name="client" Type="Edm.String" MaxLength="3" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="COMPANY_CODE_API">
+        <Key>
+          <PropertyRef Name="companyCode"/>
+          <PropertyRef Name="companyCodeName"/>
+          <PropertyRef Name="description"/>
+          <PropertyRef Name="currencyCode"/>
+          <PropertyRef Name="validFrom"/>
+          <PropertyRef Name="validTo"/>
+          <PropertyRef Name="addressLine1"/>
+          <PropertyRef Name="addressLine2"/>
+          <PropertyRef Name="addressLine3"/>
+          <PropertyRef Name="addressLine4"/>
+          <PropertyRef Name="district"/>
+          <PropertyRef Name="city"/>
+          <PropertyRef Name="postalCode"/>
+          <PropertyRef Name="regionCode"/>
+          <PropertyRef Name="countryCode"/>
+          <PropertyRef Name="updateDate"/>
+          <PropertyRef Name="mandt"/>
+        </Key>
+        <Property Name="companyCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="companyCodeName" Type="Edm.String" MaxLength="25" Nullable="false"/>
+        <Property Name="description" Type="Edm.String" MaxLength="60" Nullable="false"/>
+        <Property Name="currencyCode" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="validFrom" Type="Edm.Date" Nullable="false"/>
+        <Property Name="validTo" Type="Edm.Date" Nullable="false"/>
+        <Property Name="addressLine1" Type="Edm.String" MaxLength="60" Nullable="false"/>
+        <Property Name="addressLine2" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="addressLine3" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="addressLine4" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="district" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="city" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="postalCode" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="regionCode" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="countryCode" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="updateDate" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+        <Property Name="mandt" Type="Edm.String" MaxLength="3" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="PROFIT_CENTER_API">
+        <Key>
+          <PropertyRef Name="controllingAreaCode"/>
+          <PropertyRef Name="controllingAreaDescription"/>
+          <PropertyRef Name="profitCenterCode"/>
+          <PropertyRef Name="profitCenterName"/>
+          <PropertyRef Name="validFrom"/>
+          <PropertyRef Name="validTo"/>
+          <PropertyRef Name="profitCenterGroup"/>
+          <PropertyRef Name="companyCode"/>
+          <PropertyRef Name="updateDate"/>
+        </Key>
+        <Property Name="controllingAreaCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="controllingAreaDescription" Type="Edm.String" MaxLength="25" Nullable="false"/>
+        <Property Name="profitCenterCode" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="profitCenterName" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <Property Name="validFrom" Type="Edm.Date" Nullable="false"/>
+        <Property Name="validTo" Type="Edm.Date" Nullable="false"/>
+        <Property Name="profitCenterGroup" Type="Edm.String" MaxLength="12" Nullable="false"/>
+        <Property Name="companyCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="updateDate" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="INTERNAL_ORDER_API">
+        <Key>
+          <PropertyRef Name="client"/>
+          <PropertyRef Name="orderNumber"/>
+          <PropertyRef Name="orderType"/>
+          <PropertyRef Name="orderCategory"/>
+          <PropertyRef Name="enteredBy"/>
+          <PropertyRef Name="description"/>
+          <PropertyRef Name="companyCode"/>
+          <PropertyRef Name="controllingArea"/>
+          <PropertyRef Name="responsibleCostCenter"/>
+          <PropertyRef Name="orderCurrency"/>
+          <PropertyRef Name="orderStatus"/>
+          <PropertyRef Name="closeDate"/>
+          <PropertyRef Name="createdOn"/>
+          <PropertyRef Name="lastUpdateDate"/>
+          <PropertyRef Name="objectNumber"/>
+          <PropertyRef Name="objectStatus"/>
+          <PropertyRef Name="inactiveStatus"/>
+          <PropertyRef Name="ioActInactStatus"/>
+        </Key>
+        <Property Name="client" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="orderNumber" Type="Edm.String" MaxLength="12" Nullable="false"/>
+        <Property Name="orderType" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="orderCategory" Type="Edm.String" MaxLength="2" Nullable="false"/>
+        <Property Name="enteredBy" Type="Edm.String" MaxLength="12" Nullable="false"/>
+        <Property Name="description" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="companyCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="controllingArea" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="responsibleCostCenter" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="orderCurrency" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="orderStatus" Type="Edm.String" MaxLength="2" Nullable="false"/>
+        <Property Name="closeDate" Type="Edm.Date" Nullable="false"/>
+        <Property Name="createdOn" Type="Edm.Date" Nullable="false"/>
+        <Property Name="lastUpdateDate" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+        <Property Name="objectNumber" Type="Edm.String" MaxLength="22" Nullable="false"/>
+        <Property Name="objectStatus" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="inactiveStatus" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="ioActInactStatus" Type="Edm.String" MaxLength="13" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="CURRENCY_API">
+        <Key>
+          <PropertyRef Name="currencyCode"/>
+          <PropertyRef Name="currencyLongDescription"/>
+          <PropertyRef Name="currencyShortDescription"/>
+          <PropertyRef Name="isoCode"/>
+          <PropertyRef Name="validTo"/>
+          <PropertyRef Name="updateDate"/>
+        </Key>
+        <Property Name="currencyCode" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="currencyLongDescription" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="currencyShortDescription" Type="Edm.String" MaxLength="15" Nullable="false"/>
+        <Property Name="isoCode" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="validTo" Type="Edm.Date" Nullable="false"/>
+        <Property Name="updateDate" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="PRMTTD_PSTNG_PRD_API">
+        <Key>
+          <PropertyRef Name="client"/>
+          <PropertyRef Name="recordType"/>
+          <PropertyRef Name="postingPeriodVariant"/>
+          <PropertyRef Name="accountType"/>
+          <PropertyRef Name="toAccount"/>
+          <PropertyRef Name="fromAccount"/>
+          <PropertyRef Name="fyOfFirstPeriodPermittedInt1"/>
+          <PropertyRef Name="firstPostingPeriodPermittedInt1"/>
+          <PropertyRef Name="fyOfLastPeriodPermittedInt1"/>
+          <PropertyRef Name="lastPostingPeriodPermittedInt1"/>
+          <PropertyRef Name="fyOfFirstPeriodPermittedInt2"/>
+          <PropertyRef Name="firstPostingPeriodPermittedInt2"/>
+          <PropertyRef Name="fyOfLastPeriodPermittedInt2"/>
+          <PropertyRef Name="lastPostingPeriodPermittedInt2"/>
+          <PropertyRef Name="authorizationGroup"/>
+          <PropertyRef Name="fyOfFirstPeriodPermittedInt3"/>
+          <PropertyRef Name="firstPostingPeriodPermittedInt3"/>
+          <PropertyRef Name="fyOfLastPeriodPermittedInt3"/>
+          <PropertyRef Name="lastPostingPeriodPermittedInt3"/>
+          <PropertyRef Name="lastUpdatedDate"/>
+        </Key>
+        <Property Name="client" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="recordType" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="postingPeriodVariant" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="accountType" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="toAccount" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="fromAccount" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="fyOfFirstPeriodPermittedInt1" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="firstPostingPeriodPermittedInt1" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="fyOfLastPeriodPermittedInt1" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="lastPostingPeriodPermittedInt1" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="fyOfFirstPeriodPermittedInt2" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="firstPostingPeriodPermittedInt2" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="fyOfLastPeriodPermittedInt2" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="lastPostingPeriodPermittedInt2" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="authorizationGroup" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="fyOfFirstPeriodPermittedInt3" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="firstPostingPeriodPermittedInt3" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="fyOfLastPeriodPermittedInt3" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="lastPostingPeriodPermittedInt3" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="lastUpdatedDate" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="PROJECT_WBS_MASTER_API">
+        <Key>
+          <PropertyRef Name="wbsElementCode"/>
+          <PropertyRef Name="validFrom"/>
+          <PropertyRef Name="validTo"/>
+          <PropertyRef Name="companyCode"/>
+          <PropertyRef Name="lastUpdatedDate"/>
+          <PropertyRef Name="wbsElementName"/>
+          <PropertyRef Name="objectNumber"/>
+          <PropertyRef Name="objectStatus"/>
+          <PropertyRef Name="inactive"/>
+          <PropertyRef Name="wbsActiveFlag"/>
+          <PropertyRef Name="projectActivity"/>
+          <PropertyRef Name="projectGoc"/>
+          <PropertyRef Name="costCenter"/>
+          <PropertyRef Name="projectGps"/>
+          <PropertyRef Name="projectType"/>
+        </Key>
+        <Property Name="wbsElementCode" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <Property Name="validFrom" Type="Edm.Date" Nullable="false"/>
+        <Property Name="validTo" Type="Edm.Date" Nullable="false"/>
+        <Property Name="companyCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="lastUpdatedDate" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+        <Property Name="wbsElementName" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="objectNumber" Type="Edm.String" MaxLength="22" Nullable="false"/>
+        <Property Name="objectStatus" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="inactive" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="wbsActiveFlag" Type="Edm.String" MaxLength="13" Nullable="false"/>
+        <Property Name="projectActivity" Type="Edm.String" MaxLength="2" Nullable="false"/>
+        <Property Name="projectGoc" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="costCenter" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="projectGps" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="projectType" Type="Edm.String" MaxLength="1" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="DAILY_EXCHG_RATE_API">
+        <Key>
+          <PropertyRef Name="fromCurrency"/>
+          <PropertyRef Name="toCurrency"/>
+          <PropertyRef Name="exchangeRateDate"/>
+          <PropertyRef Name="exchangeRate"/>
+          <PropertyRef Name="updateDate"/>
+        </Key>
+        <Property Name="fromCurrency" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="toCurrency" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="exchangeRateDate" Type="Edm.Date" Nullable="false"/>
+        <Property Name="exchangeRate" Type="Edm.Decimal" Scale="5" Precision="9" Nullable="false"/>
+        <Property Name="updateDate" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="COUNTRY_STATE_API">
+        <Key>
+          <PropertyRef Name="countryCode"/>
+        </Key>
+        <Property Name="countryCode" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="countryName" Type="Edm.String" MaxLength="50"/>
+        <Property Name="stateCode" Type="Edm.String" MaxLength="3"/>
+        <Property Name="stateName" Type="Edm.String" MaxLength="20"/>
+        <Property Name="updateDate" Type="Edm.DateTimeOffset" Precision="7"/>
+      </EntityType>
+      <EntityType Name="S4_FMNO_MASTER_API">
+        <Key>
+          <PropertyRef Name="client"/>
+        </Key>
+        <Property Name="client" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="fmno" Type="Edm.String" MaxLength="8"/>
+        <Property Name="firstName" Type="Edm.String" MaxLength="40"/>
+        <Property Name="lastName" Type="Edm.String" MaxLength="40"/>
+        <Property Name="country" Type="Edm.String" MaxLength="3"/>
+        <Property Name="groupId" Type="Edm.String" MaxLength="1"/>
+        <Property Name="groupName" Type="Edm.String" MaxLength="20"/>
+        <Property Name="workerSatus" Type="Edm.String" MaxLength="13"/>
+        <Property Name="userLocation" Type="Edm.String" MaxLength="32"/>
+        <Property Name="roleCategory" Type="Edm.String" MaxLength="8"/>
+        <Property Name="skillCodeText" Type="Edm.String" MaxLength="25"/>
+        <Property Name="email" Type="Edm.String" MaxLength="241"/>
+        <Property Name="costCenter" Type="Edm.String" MaxLength="10"/>
+        <Property Name="effectiveStartDate" Type="Edm.String" MaxLength="8"/>
+        <Property Name="effectiveEndDate" Type="Edm.String" MaxLength="8"/>
+        <Property Name="branchId" Type="Edm.String" MaxLength="4"/>
+        <Property Name="preferredName" Type="Edm.String" MaxLength="40"/>
+        <Property Name="terminationDate" Type="Edm.String" MaxLength="8"/>
+        <Property Name="updateDate" Type="Edm.DateTimeOffset" Precision="7"/>
+      </EntityType>
+      <EntityType Name="MNTHLY_EXCHG_RATE_API">
+        <Key>
+          <PropertyRef Name="fromCurrency"/>
+        </Key>
+        <Property Name="fromCurrency" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="toCurrency" Type="Edm.String" MaxLength="5"/>
+        <Property Name="period" Type="Edm.String" MaxLength="6"/>
+        <Property Name="exchangeRate" Type="Edm.Decimal" Precision="9"/>
+        <Property Name="updateDate" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="mandt" Type="Edm.String" MaxLength="3"/>
+      </EntityType>
+      <EntityType Name="PROJECT_API">
+        <Key>
+          <PropertyRef Name="client"/>
+          <PropertyRef Name="wbsCode"/>
+          <PropertyRef Name="wbsDescription"/>
+          <PropertyRef Name="controllingArea"/>
+          <PropertyRef Name="companyCode"/>
+          <PropertyRef Name="profitCenter"/>
+          <PropertyRef Name="costCenter"/>
+          <PropertyRef Name="projectType"/>
+          <PropertyRef Name="addressNumber"/>
+          <PropertyRef Name="projectCurrency"/>
+          <PropertyRef Name="languageKey"/>
+          <PropertyRef Name="userFieldFirst"/>
+          <PropertyRef Name="createdByFmno"/>
+          <PropertyRef Name="changedByFmno"/>
+          <PropertyRef Name="responsiblePmFmno"/>
+          <PropertyRef Name="systemStatus"/>
+          <PropertyRef Name="objectStatus"/>
+          <PropertyRef Name="objectStatusName"/>
+          <PropertyRef Name="objectStatusDescription"/>
+          <PropertyRef Name="userStatus"/>
+          <PropertyRef Name="individualStatusOfAnObject"/>
+          <PropertyRef Name="individualStatusOfAnObjectDescription"/>
+          <PropertyRef Name="statusProfile"/>
+          <PropertyRef Name="startDate"/>
+          <PropertyRef Name="endDate"/>
+          <PropertyRef Name="updateDate"/>
+        </Key>
+        <Property Name="client" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="wbsCode" Type="Edm.String" MaxLength="24" Nullable="false"/>
+        <Property Name="wbsDescription" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="controllingArea" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="companyCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="profitCenter" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="costCenter" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="projectType" Type="Edm.String" MaxLength="2" Nullable="false"/>
+        <Property Name="addressNumber" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="projectCurrency" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="languageKey" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="userFieldFirst" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <Property Name="createdByFmno" Type="Edm.String" MaxLength="12" Nullable="false"/>
+        <Property Name="changedByFmno" Type="Edm.String" MaxLength="12" Nullable="false"/>
+        <Property Name="responsiblePmFmno" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <Property Name="systemStatus" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="objectStatus" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="objectStatusName" Type="Edm.String" MaxLength="30" Nullable="false"/>
+        <Property Name="objectStatusDescription" Type="Edm.String" MaxLength="30" Nullable="false"/>
+        <Property Name="userStatus" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="individualStatusOfAnObject" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="individualStatusOfAnObjectDescription" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="statusProfile" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <Property Name="startDate" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <Property Name="endDate" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <Property Name="updateDate" Type="Edm.String" MaxLength="30" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="PROJECT_CLASSIFICATION_API">
+        <Key>
+          <PropertyRef Name="wbsCode"/>
+          <PropertyRef Name="createdAtClassification"/>
+          <PropertyRef Name="createdByClassification"/>
+          <PropertyRef Name="modifiedAtClassification"/>
+          <PropertyRef Name="modifiedByClassification"/>
+          <PropertyRef Name="uri"/>
+          <PropertyRef Name="termId"/>
+          <PropertyRef Name="classificationName"/>
+          <PropertyRef Name="classificationType"/>
+          <PropertyRef Name="isPrimary"/>
+          <PropertyRef Name="isDisplayed"/>
+        </Key>
+        <Property Name="wbsCode" Type="Edm.String" MaxLength="24" Nullable="false"/>
+        <Property Name="createdAtClassification" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+        <Property Name="createdByClassification" Type="Edm.String" MaxLength="255" Nullable="false"/>
+        <Property Name="modifiedAtClassification" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+        <Property Name="modifiedByClassification" Type="Edm.String" MaxLength="255" Nullable="false"/>
+        <Property Name="uri" Type="Edm.String" MaxLength="30" Nullable="false"/>
+        <Property Name="termId" Type="Edm.String" MaxLength="250" Nullable="false"/>
+        <Property Name="classificationName" Type="Edm.String" MaxLength="30" Nullable="false"/>
+        <Property Name="classificationType" Type="Edm.String" MaxLength="250" Nullable="false"/>
+        <Property Name="isPrimary" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="isDisplayed" Type="Edm.String" MaxLength="1" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="PROJECT_LOCATION_API">
+        <Key>
+          <PropertyRef Name="wbsCode"/>
+          <PropertyRef Name="createdAtLocation"/>
+          <PropertyRef Name="createdByLocation"/>
+          <PropertyRef Name="modifiedAtLocation"/>
+          <PropertyRef Name="modifiedbyLocation"/>
+          <PropertyRef Name="locationType"/>
+          <PropertyRef Name="locationCity"/>
+          <PropertyRef Name="locationCountry"/>
+          <PropertyRef Name="locationState"/>
+          <PropertyRef Name="locationId"/>
+        </Key>
+        <Property Name="wbsCode" Type="Edm.String" MaxLength="24" Nullable="false"/>
+        <Property Name="createdAtLocation" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+        <Property Name="createdByLocation" Type="Edm.String" MaxLength="255" Nullable="false"/>
+        <Property Name="modifiedAtLocation" Type="Edm.DateTimeOffset" Precision="7" Nullable="false"/>
+        <Property Name="modifiedbyLocation" Type="Edm.String" MaxLength="255" Nullable="false"/>
+        <Property Name="locationType" Type="Edm.String" MaxLength="16" Nullable="false"/>
+        <Property Name="locationCity" Type="Edm.String" MaxLength="200" Nullable="false"/>
+        <Property Name="locationCountry" Type="Edm.String" MaxLength="320" Nullable="false"/>
+        <Property Name="locationState" Type="Edm.String" MaxLength="320" Nullable="false"/>
+        <Property Name="locationId" Type="Edm.Int32" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="PROJECT_INTERNAL_ENGAGEMENT_API">
+        <Key>
+          <PropertyRef Name="client"/>
+          <PropertyRef Name="wbsCode"/>
+          <PropertyRef Name="wbsDescription"/>
+          <PropertyRef Name="controllingArea"/>
+          <PropertyRef Name="companyCode"/>
+          <PropertyRef Name="profitCenter"/>
+          <PropertyRef Name="costCenter"/>
+          <PropertyRef Name="projectType"/>
+          <PropertyRef Name="addressNumber"/>
+          <PropertyRef Name="projectCurrency"/>
+          <PropertyRef Name="languageKey"/>
+          <PropertyRef Name="userFieldFirst"/>
+          <PropertyRef Name="createdByFmno"/>
+          <PropertyRef Name="changedByFmno"/>
+          <PropertyRef Name="responsiblePmFmno"/>
+          <PropertyRef Name="systemStatus"/>
+          <PropertyRef Name="objectStatus"/>
+          <PropertyRef Name="objectStatusName"/>
+          <PropertyRef Name="objectStatusDescription"/>
+          <PropertyRef Name="userStatus"/>
+          <PropertyRef Name="individualStatusOfAnObject"/>
+          <PropertyRef Name="individualStatusOfAnObjectDescription"/>
+          <PropertyRef Name="statusProfile"/>
+          <PropertyRef Name="startDate"/>
+          <PropertyRef Name="endDate"/>
+          <PropertyRef Name="updateDate"/>
+        </Key>
+        <Property Name="client" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="wbsCode" Type="Edm.String" MaxLength="24" Nullable="false"/>
+        <Property Name="wbsDescription" Type="Edm.String" MaxLength="40" Nullable="false"/>
+        <Property Name="controllingArea" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="companyCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="profitCenter" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="costCenter" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="projectType" Type="Edm.String" MaxLength="2" Nullable="false"/>
+        <Property Name="addressNumber" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="projectCurrency" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="languageKey" Type="Edm.String" MaxLength="1" Nullable="false"/>
+        <Property Name="userFieldFirst" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <Property Name="createdByFmno" Type="Edm.String" MaxLength="12" Nullable="false"/>
+        <Property Name="changedByFmno" Type="Edm.String" MaxLength="12" Nullable="false"/>
+        <Property Name="responsiblePmFmno" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <Property Name="systemStatus" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="objectStatus" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="objectStatusName" Type="Edm.String" MaxLength="30" Nullable="false"/>
+        <Property Name="objectStatusDescription" Type="Edm.String" MaxLength="30" Nullable="false"/>
+        <Property Name="userStatus" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="individualStatusOfAnObject" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="individualStatusOfAnObjectDescription" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="statusProfile" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <Property Name="startDate" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <Property Name="endDate" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <Property Name="updateDate" Type="Edm.String" MaxLength="30" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="FMNO_MASTER_PASParameters">
+        <Key>
+          <PropertyRef Name="IP_PERIOD"/>
+        </Key>
+        <Property Name="IP_PERIOD" Type="Edm.String" MaxLength="8" Nullable="false"/>
+        <NavigationProperty Name="Set" Type="Collection(masterdata.FMNO_MASTER_PASType)" Partner="Parameters" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="FMNO_MASTER_PASType">
+        <Key>
+          <PropertyRef Name="client"/>
+        </Key>
+        <Property Name="client" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="fmno" Type="Edm.String" MaxLength="8"/>
+        <Property Name="preferredName" Type="Edm.String" MaxLength="40"/>
+        <Property Name="firstName" Type="Edm.String" MaxLength="40"/>
+        <Property Name="middleName" Type="Edm.String" MaxLength="40"/>
+        <Property Name="costCenter" Type="Edm.String" MaxLength="10"/>
+        <Property Name="costCenterName" Type="Edm.String" MaxLength="20"/>
+        <Property Name="positionCode" Type="Edm.String" MaxLength="8"/>
+        <Property Name="positionCodeDescription" Type="Edm.String" MaxLength="25"/>
+        <Property Name="fcat" Type="Edm.String" MaxLength="8"/>
+        <Property Name="roleCategory" Type="Edm.String" MaxLength="8"/>
+        <Property Name="fmnoStatus" Type="Edm.String" MaxLength="13"/>
+        <Property Name="taxLegalEntity" Type="Edm.String" MaxLength="32"/>
+        <Property Name="partnerAndNonPartner" Type="Edm.String" MaxLength="20"/>
+        <Property Name="positionStartDate" Type="Edm.String" MaxLength="8"/>
+        <Property Name="positionEndDate" Type="Edm.String" MaxLength="8"/>
+        <Property Name="AssignmentType" Type="Edm.String" MaxLength="32"/>
+        <Property Name="skillCode" Type="Edm.String" MaxLength="8"/>
+        <Property Name="skillCodeDesc" Type="Edm.String" MaxLength="25"/>
+        <Property Name="skillGroup" Type="Edm.String" MaxLength="16"/>
+        <Property Name="terminationDate" Type="Edm.String" MaxLength="8"/>
+        <Property Name="profitCenter" Type="Edm.String" MaxLength="10"/>
+        <Property Name="profitCenterName" Type="Edm.String" MaxLength="20"/>
+        <Property Name="companyCode" Type="Edm.String" MaxLength="4"/>
+        <Property Name="companyName" Type="Edm.String" MaxLength="25"/>
+        <Property Name="avgProrationInPeriod" Type="Edm.String" MaxLength="13"/>
+        <Property Name="period" Type="Edm.String" MaxLength="6"/>
+        <Property Name="unpaidLoaDays" Type="Edm.Int32"/>
+        <Property Name="lastName" Type="Edm.String" MaxLength="40"/>
+        <Property Name="hireDate" Type="Edm.String" MaxLength="8"/>
+        <NavigationProperty Name="Parameters" Type="masterdata.FMNO_MASTER_PASParameters" Partner="Set"/>
+      </EntityType>
+      <Annotations Target="masterdata.COST_CENTER_API/controllingAreaCode">
+        <Annotation Term="Common.Label" String="CONTROLLING_AREA_CODE: KOKRS"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/controllingAreaDescription">
+        <Annotation Term="Common.Label" String="CONTROLLING_AREA_DESCRIPTION: BEZEI"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/costCenterCode">
+        <Annotation Term="Common.Label" String="COST_CENTER_CODE: Cost Center"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/costCenterName">
+        <Annotation Term="Common.Label" String="COST_CENTER_NAME: COST_CENTER_NAME"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/departmentCode">
+        <Annotation Term="Common.Label" String="DEPARTMENT_CODE: ABTEI"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/departmentName">
+        <Annotation Term="Common.Label" String="DEPARTMENT_NAME: KTEXT"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/gocCode">
+        <Annotation Term="Common.Label" String="GOC_CODE: NAME2"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/gocName">
+        <Annotation Term="Common.Label" String="GOC_NAME: NAME3"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/companyCode">
+        <Annotation Term="Common.Label" String="COMPANY_CODE: Company Code"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/profitCenterCode">
+        <Annotation Term="Common.Label" String="PROFIT_CENTER_CODE: Profit Center"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/costCenterGroup">
+        <Annotation Term="Common.Label" String="COST_CENTER_GROUP: Standard Hierarchy Area"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/costCenterCategory">
+        <Annotation Term="Common.Label" String="COST_CENTER_CATEGORY: General Name"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/categoryId">
+        <Annotation Term="Common.Label" String="CATEGORY_ID: KOSAR"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/currencyCode">
+        <Annotation Term="Common.Label" String="CURRENCY_CODE: Currency Key"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/validFrom">
+        <Annotation Term="Common.Label" String="VALID_FROM: DATAB_1"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/validTo">
+        <Annotation Term="Common.Label" String="VALID_TO: DATBI_1"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/lockIndicatorForPlanSecondaryCost">
+        <Annotation Term="Common.Label" String="LOCK_INDICATOR_FOR_PLAN_SECONDARY_COST: PKZKS"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/lockIndicatorForPlanningRevenues">
+        <Annotation Term="Common.Label" String="LOCK_INDICATOR_FOR_PLANNING_REVENUES: PKZER"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/lockIndicatorForActualSecondaryCost">
+        <Annotation Term="Common.Label" String="LOCK_INDICATOR_FOR_ACTUAL_SECONDARY_COSTS: BKZKS"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/lockIndicatorForActualRevenuePosting">
+        <Annotation Term="Common.Label" String="LOCK_INDICATOR_FOR_ACTUAL_REVENUE_POSTING: BKZER"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/client">
+        <Annotation Term="Common.Label" String="CLIENT: MANDT"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/billingOffice">
+        <Annotation Term="Common.Label" String="C_BILLING_OFFICE: C_BILLING_OFFICE"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/personResponsible">
+        <Annotation Term="Common.Label" String="PERSON_RESPONSIBLE: VERAK"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/projectGps">
+        <Annotation Term="Common.Label" String="PROJECT_GPS: PROJECT_GPS"/>
+      </Annotations>
+      <Annotations Target="masterdata.COST_CENTER_API/projectType">
+        <Annotation Term="Common.Label" String="PROJECT_TYPE: PROJECT_TYPE"/>
+      </Annotations>
+      <Annotations Target="masterdata.GL_ACCT_API/glAccount">
+        <Annotation Term="Common.Label" String="GL_ACCOUNT: G/L Account Number"/>
+      </Annotations>
+      <Annotations Target="masterdata.GL_ACCT_API/glAccountName">
+        <Annotation Term="Common.Label" String="GL_ACCOUNT_NAME: G/L Account Long Text"/>
+      </Annotations>
+      <Annotations Target="masterdata.GL_ACCT_API/glAccountGroup">
+        <Annotation Term="Common.Label" String="GL_ACCOUNT_GROUP: G/L Account Group"/>
+      </Annotations>
+      <Annotations Target="masterdata.GL_ACCT_API/glAccountType">
+        <Annotation Term="Common.Label" String="GL_ACCOUNT_TYPE: Short Text for Fixed Values"/>
+      </Annotations>
+      <Annotations Target="masterdata.GL_ACCT_API/accountMarkedForDeletion">
+        <Annotation Term="Common.Label" String="ACCOUNT_MARKED_FOR_DELETION: XLOEV"/>
+      </Annotations>
+      <Annotations Target="masterdata.GL_ACCT_API/accountBlockedForPosting">
+        <Annotation Term="Common.Label" String="ACCOUNT_BLOCKED_FOR_POSTING: XSPEB"/>
+      </Annotations>
+      <Annotations Target="masterdata.GL_ACCT_API/createDate">
+        <Annotation Term="Common.Label" String="CREATE_DATE: CREATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.GL_ACCT_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.GL_ACCT_API/client">
+        <Annotation Term="Common.Label" String="CLIENT: MANDT"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/companyCode">
+        <Annotation Term="Common.Label" String="COMPANY_CODE: BUKRS"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/companyCodeName">
+        <Annotation Term="Common.Label" String="COMPANY_CODE_NAME: BUTXT"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/description">
+        <Annotation Term="Common.Label" String="DESCRIPTION: DESCRIPTION"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/currencyCode">
+        <Annotation Term="Common.Label" String="CURRENCY_CODE: WAERS"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/validFrom">
+        <Annotation Term="Common.Label" String="VALID_FROM: DATE_FROM"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/validTo">
+        <Annotation Term="Common.Label" String="VALID_TO: DATE_TO"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/addressLine1">
+        <Annotation Term="Common.Label" String="ADDRESS_LINE1: STREET"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/addressLine2">
+        <Annotation Term="Common.Label" String="ADDRESS_LINE2: STR_SUPPL1"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/addressLine3">
+        <Annotation Term="Common.Label" String="ADDRESS_LINE3: STR_SUPPL2"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/addressLine4">
+        <Annotation Term="Common.Label" String="ADDRESS_LINE4: STR_SUPPL3"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/district">
+        <Annotation Term="Common.Label" String="DISTRICT: CITY2"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/city">
+        <Annotation Term="Common.Label" String="CITY: CITY1"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/postalCode">
+        <Annotation Term="Common.Label" String="POSTAL_CODE: POST_CODE1"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/regionCode">
+        <Annotation Term="Common.Label" String="REGION_CODE: REGION"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/countryCode">
+        <Annotation Term="Common.Label" String="COUNTRY_CODE: LAND1"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.COMPANY_CODE_API/mandt">
+        <Annotation Term="Common.Label" String="MANDT: MANDT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROFIT_CENTER_API/controllingAreaCode">
+        <Annotation Term="Common.Label" String="CONTROLLING_AREA_CODE: KOKRS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROFIT_CENTER_API/controllingAreaDescription">
+        <Annotation Term="Common.Label" String="CONTROLLING_AREA_DESCRIPTION: BEZEI"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROFIT_CENTER_API/profitCenterCode">
+        <Annotation Term="Common.Label" String="PROFIT_CENTER_CODE: PRCTR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROFIT_CENTER_API/profitCenterName">
+        <Annotation Term="Common.Label" String="PROFIT_CENTER_NAME: KTEXT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROFIT_CENTER_API/validFrom">
+        <Annotation Term="Common.Label" String="VALID_FROM: DATE_FROM"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROFIT_CENTER_API/validTo">
+        <Annotation Term="Common.Label" String="VALID_TO: DATE_TO"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROFIT_CENTER_API/profitCenterGroup">
+        <Annotation Term="Common.Label" String="PROFIT_CENTER_GROUP: KHINR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROFIT_CENTER_API/companyCode">
+        <Annotation Term="Common.Label" String="COMPANY_CODE: BUKRS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROFIT_CENTER_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/client">
+        <Annotation Term="Common.Label" String="CLIENT: MANDT"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/orderNumber">
+        <Annotation Term="Common.Label" String="ORDER_NUMBER: AUFNR"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/orderType">
+        <Annotation Term="Common.Label" String="ORDER_TYPE: AUART"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/orderCategory">
+        <Annotation Term="Common.Label" String="ORDER_CATEGORY: AUTYP"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/enteredBy">
+        <Annotation Term="Common.Label" String="ENTERED_BY: ERNAM"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/description">
+        <Annotation Term="Common.Label" String="DESCRIPTION: KTEXT"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/companyCode">
+        <Annotation Term="Common.Label" String="COMPANY_CODE: BUKRS"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/controllingArea">
+        <Annotation Term="Common.Label" String="CONTROLLING_AREA: KOKRS"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/responsibleCostCenter">
+        <Annotation Term="Common.Label" String="RESPONSIBLE_COST_CENTER: KOSTV"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/orderCurrency">
+        <Annotation Term="Common.Label" String="ORDER_CURRENCY: WAERS"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/orderStatus">
+        <Annotation Term="Common.Label" String="ORDER_STATUS: ASTNR"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/closeDate">
+        <Annotation Term="Common.Label" String="CLOSE_DATE: CLOSE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/createdOn">
+        <Annotation Term="Common.Label" String="CREATED_ON: CREATED_ON"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/lastUpdateDate">
+        <Annotation Term="Common.Label" String="LAST_UPDATED_DATE: LAST_UPDATED_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/objectNumber">
+        <Annotation Term="Common.Label" String="OBJECT_NUMBER: Object number"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/objectStatus">
+        <Annotation Term="Common.Label" String="OBJECT_STATUS: Object status"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/inactiveStatus">
+        <Annotation Term="Common.Label" String="INACTIVE_STATUS: Indicator: Status Is Inactive"/>
+      </Annotations>
+      <Annotations Target="masterdata.INTERNAL_ORDER_API/ioActInactStatus">
+        <Annotation Term="Common.Label" String="IO_ACT_INACT_STATUS: LOCK_STATUS"/>
+      </Annotations>
+      <Annotations Target="masterdata.CURRENCY_API/currencyCode">
+        <Annotation Term="Common.Label" String="CURRENCY_CODE: Currency Key"/>
+      </Annotations>
+      <Annotations Target="masterdata.CURRENCY_API/currencyLongDescription">
+        <Annotation Term="Common.Label" String="CURRENCY_LONG_DESCRIPTION: Long Text"/>
+      </Annotations>
+      <Annotations Target="masterdata.CURRENCY_API/currencyShortDescription">
+        <Annotation Term="Common.Label" String="CURRENCY_SHORT_DESCRIPTION: Short text"/>
+      </Annotations>
+      <Annotations Target="masterdata.CURRENCY_API/isoCode">
+        <Annotation Term="Common.Label" String="ISO_CODE: ISO currency code"/>
+      </Annotations>
+      <Annotations Target="masterdata.CURRENCY_API/validTo">
+        <Annotation Term="Common.Label" String="VALID_TO: VALID_TO"/>
+      </Annotations>
+      <Annotations Target="masterdata.CURRENCY_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/client">
+        <Annotation Term="Common.Label" String="CLIENT: Client"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/recordType">
+        <Annotation Term="Common.Label" String="RECORD_TYPE: Record Type"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/postingPeriodVariant">
+        <Annotation Term="Common.Label" String="POSTING_PERIOD_VARIANT: Posting Period Variant"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/accountType">
+        <Annotation Term="Common.Label" String="ACCOUNT_TYPE: Account Type or Masking"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/toAccount">
+        <Annotation Term="Common.Label" String="TO_ACCOUNT: To Account"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/fromAccount">
+        <Annotation Term="Common.Label" String="FROM_ACCOUNT: From Account"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/fyOfFirstPeriodPermittedInt1">
+        <Annotation Term="Common.Label" String="FY_OF_FIRST_PERIOD_PERMITTED_INT1: Fiscal Year for First Period Allowed (in Interval 1)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/firstPostingPeriodPermittedInt1">
+        <Annotation Term="Common.Label" String="FIRST_POSTING_PERIOD_PERMITTED_INT1: First Posting Period Allowed (in Interval 1)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/fyOfLastPeriodPermittedInt1">
+        <Annotation Term="Common.Label" String="FY_OF_LAST_PERIOD_PERMITTED_INT1: Fiscal Year for Last Period Allowed (in Interval 1)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/lastPostingPeriodPermittedInt1">
+        <Annotation Term="Common.Label" String="LAST_POSTING_PERIOD_PERMITTED_INT1: Last Posting Period Allowed (in Interval 1)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/fyOfFirstPeriodPermittedInt2">
+        <Annotation Term="Common.Label" String="FY_OF_FIRST_PERIOD_PERMITTED_INT2: Fiscal Year for First Period Allowed (in Interval 2)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/firstPostingPeriodPermittedInt2">
+        <Annotation Term="Common.Label" String="FIRST_POSTING_PERIOD_PERMITTED_INT2: First Posting Period Allowed (in Interval 2)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/fyOfLastPeriodPermittedInt2">
+        <Annotation Term="Common.Label" String="FY_OF_LAST_PERIOD_PERMITTED_INT2: Fiscal Year for Last Period Allowed (in Interval 2)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/lastPostingPeriodPermittedInt2">
+        <Annotation Term="Common.Label" String="LAST_POSTING_PERIOD_PERMITTED_INT2: Last Posting Period Allowed (in Interval 2)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/authorizationGroup">
+        <Annotation Term="Common.Label" String="AUTHORIZATION_GROUP: Authorization Group"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/fyOfFirstPeriodPermittedInt3">
+        <Annotation Term="Common.Label" String="FY_OF_FIRST_PERIOD_PERMITTED_INT3: Fiscal Year of First Period Permitted (Interval 3)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/firstPostingPeriodPermittedInt3">
+        <Annotation Term="Common.Label" String="FIRST_POSTING_PERIOD_PERMITTED_INT3: First Posting Period Permitted (Interval 3)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/fyOfLastPeriodPermittedInt3">
+        <Annotation Term="Common.Label" String="FY_OF_LAST_PERIOD_PERMITTED_INT3: Fiscal Year of Last Period Permitted (Interval 3)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/lastPostingPeriodPermittedInt3">
+        <Annotation Term="Common.Label" String="LAST_POSTING_PERIOD_PERMITTED_INT3: Last Posting Period Permitted (Interval 3)"/>
+      </Annotations>
+      <Annotations Target="masterdata.PRMTTD_PSTNG_PRD_API/lastUpdatedDate">
+        <Annotation Term="Common.Label" String="LAST_UPDATED_DATE: LAST_UPDATED_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/wbsElementCode">
+        <Annotation Term="Common.Label" String="WBS_ELEMENT_CODE: PSPNR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/validFrom">
+        <Annotation Term="Common.Label" String="VALID_FROM: WBS element: Basic start date"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/validTo">
+        <Annotation Term="Common.Label" String="VALID_TO: WBS element: Basic finish date"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/companyCode">
+        <Annotation Term="Common.Label" String="COMPANY_CODE: PBUKR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/lastUpdatedDate">
+        <Annotation Term="Common.Label" String="LAST_UPDATED_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/wbsElementName">
+        <Annotation Term="Common.Label" String="WBS_ELEMENT_NAME: POST1"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/objectNumber">
+        <Annotation Term="Common.Label" String="OBJECT_NUMBER: Object number"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/objectStatus">
+        <Annotation Term="Common.Label" String="STATUS: Object status"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/inactive">
+        <Annotation Term="Common.Label" String="INACTIVE: Indicator: Status Is Inactive"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/wbsActiveFlag">
+        <Annotation Term="Common.Label" String="WBS_ACTIVE_FLAG: LOCKED_STATUS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/projectActivity">
+        <Annotation Term="Common.Label" String="PROJECT_ACTIVITY: PRART"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/projectGoc">
+        <Annotation Term="Common.Label" String="PROJECT_GOC"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/costCenter">
+        <Annotation Term="Common.Label" String="COST_CENTER_CODE: FKSTL"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/projectGps">
+        <Annotation Term="Common.Label" String="PROJECT_GPS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_WBS_MASTER_API/projectType">
+        <Annotation Term="Common.Label" String="PROJECT_TYPE"/>
+      </Annotations>
+      <Annotations Target="masterdata.DAILY_EXCHG_RATE_API/fromCurrency">
+        <Annotation Term="Common.Label" String="FROM_CURRENCY: FROM_CURRENCY"/>
+      </Annotations>
+      <Annotations Target="masterdata.DAILY_EXCHG_RATE_API/toCurrency">
+        <Annotation Term="Common.Label" String="TO_CURRENCY: TO_CURRENCY"/>
+      </Annotations>
+      <Annotations Target="masterdata.DAILY_EXCHG_RATE_API/exchangeRateDate">
+        <Annotation Term="Common.Label" String="EXCHANGE_RATE_DATE: EXCHANGE_RATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.DAILY_EXCHG_RATE_API/exchangeRate">
+        <Annotation Term="Common.Label" String="EXCHANGE_RATE: EXCHANGE_RATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.DAILY_EXCHG_RATE_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.COUNTRY_STATE_API/countryCode">
+        <Annotation Term="Common.Label" String="COUNTRY_CODE: Country/Region Key"/>
+      </Annotations>
+      <Annotations Target="masterdata.COUNTRY_STATE_API/countryName">
+        <Annotation Term="Common.Label" String="COUNTRY_NAME: Country/Region Name"/>
+      </Annotations>
+      <Annotations Target="masterdata.COUNTRY_STATE_API/stateCode">
+        <Annotation Term="Common.Label" String="REGION_CODE: Region (State, Province, County)"/>
+      </Annotations>
+      <Annotations Target="masterdata.COUNTRY_STATE_API/stateName">
+        <Annotation Term="Common.Label" String="REGION_NAME: Description"/>
+      </Annotations>
+      <Annotations Target="masterdata.COUNTRY_STATE_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/client">
+        <Annotation Term="Common.Label" String="CLIENT: Client"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/fmno">
+        <Annotation Term="Common.Label" String="FMNO: Personnel Number"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/firstName">
+        <Annotation Term="Common.Label" String="FIRST_NAME: First Name"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/lastName">
+        <Annotation Term="Common.Label" String="LAST_NAME: Last Name"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/country">
+        <Annotation Term="Common.Label" String="COUNTRY: Country/Region Key"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/groupId">
+        <Annotation Term="Common.Label" String="GROUP_ID: Employee Group"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/groupName">
+        <Annotation Term="Common.Label" String="GROUP_NAME: Employee Group Text"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/workerSatus">
+        <Annotation Term="Common.Label" String="WORKER_STATUS: FMNO STATUS"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/userLocation">
+        <Annotation Term="Common.Label" String="USER_LOCATION: Location Office"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/roleCategory">
+        <Annotation Term="Common.Label" String="ROLE_CATEGORY:  Role Category (CSP, ESP, FSP)"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/skillCodeText">
+        <Annotation Term="Common.Label" String="SKILL_CODE_TEXT: SKILL_CODE_TEXT"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/email">
+        <Annotation Term="Common.Label" String="EMAIL: Email Address"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/costCenter">
+        <Annotation Term="Common.Label" String="COST_CENTER_CODE: Cost Center"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/effectiveStartDate">
+        <Annotation Term="Common.Label" String="EFFECTIVE_START_DATE: Assignment Start Date"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/effectiveEndDate">
+        <Annotation Term="Common.Label" String="EFFECTIVE_END_DATE: Assignment End Date"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/branchId">
+        <Annotation Term="Common.Label" String="BRANCH_ID: Company Code"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/preferredName">
+        <Annotation Term="Common.Label" String="PREFERRED_NAME: Nickname"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/terminationDate">
+        <Annotation Term="Common.Label" String="TERMINATION_DATE: Termination Date"/>
+      </Annotations>
+      <Annotations Target="masterdata.S4_FMNO_MASTER_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.MNTHLY_EXCHG_RATE_API/fromCurrency">
+        <Annotation Term="Common.Label" String="FROM_CURRENCY: FROM_CURRENCY"/>
+      </Annotations>
+      <Annotations Target="masterdata.MNTHLY_EXCHG_RATE_API/toCurrency">
+        <Annotation Term="Common.Label" String="TO_CURRENCY: TO_CURRENCY"/>
+      </Annotations>
+      <Annotations Target="masterdata.MNTHLY_EXCHG_RATE_API/period">
+        <Annotation Term="Common.Label" String="PERIOD: PERIOD"/>
+      </Annotations>
+      <Annotations Target="masterdata.MNTHLY_EXCHG_RATE_API/exchangeRate">
+        <Annotation Term="Common.Label" String="EXCHANGE_RATE: EEXCHANGE_RATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.MNTHLY_EXCHG_RATE_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: UPDATE_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.MNTHLY_EXCHG_RATE_API/mandt">
+        <Annotation Term="Common.Label" String="MANDT: MANDT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/client">
+        <Annotation Term="Common.Label" String="CLIENT: CLIENT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/wbsCode">
+        <Annotation Term="Common.Label" String="WBS_CODE: POSID"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/wbsDescription">
+        <Annotation Term="Common.Label" String="WBS_DESCRIPTION: PKOKR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/controllingArea">
+        <Annotation Term="Common.Label" String="CONTROLLING_AREA: PKOKR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/companyCode">
+        <Annotation Term="Common.Label" String="COMPANY_CODE: PBUKR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/profitCenter">
+        <Annotation Term="Common.Label" String="PROFIT_CENTER: PRCTR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/costCenter">
+        <Annotation Term="Common.Label" String="COST_CENTER: KOSTL"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/projectType">
+        <Annotation Term="Common.Label" String="PROJECT_TYPE: PRART"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/addressNumber">
+        <Annotation Term="Common.Label" String="ADDRESS_NUMBER: ADRNR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/projectCurrency">
+        <Annotation Term="Common.Label" String="PROJECT_CURRENCY: PROJ_CURRENCY"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/languageKey">
+        <Annotation Term="Common.Label" String="LANGUAGE_KEY: TXTSP"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/userFieldFirst">
+        <Annotation Term="Common.Label" String="USER_FIELD_FIRST: USR00"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/createdByFmno">
+        <Annotation Term="Common.Label" String="CREATED_BY_FMNO: ERNAM_PRPS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/changedByFmno">
+        <Annotation Term="Common.Label" String="CHANGED_BY_FMNO: AENAM_PRPS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/responsiblePmFmno">
+        <Annotation Term="Common.Label" String="RESPONSIBLE_PM_FMNO: VERNR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/systemStatus">
+        <Annotation Term="Common.Label" String="SYSTEM_STATUS: ISTAT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/objectStatus">
+        <Annotation Term="Common.Label" String="OBJECT_STATUS: STAT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/objectStatusName">
+        <Annotation Term="Common.Label" String="OBJECT_STATUS_NAME: TXT30"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/objectStatusDescription">
+        <Annotation Term="Common.Label" String="OBJECT_STATUS_DESCRIPTION: TXT30_TJ30T"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/userStatus">
+        <Annotation Term="Common.Label" String="USER_STATUS: ESTAT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/individualStatusOfAnObject">
+        <Annotation Term="Common.Label" String="INDIVIDUAL_STATUS_OF_AN_OBJECT: TXT04"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/individualStatusOfAnObjectDescription">
+        <Annotation Term="Common.Label" String="INDIVIDUAL_STATUS_OF_AN_OBJECT_DESCRIPTION: TXT04_TJ30T"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/statusProfile">
+        <Annotation Term="Common.Label" String="STATUS_PROFILE: STSMA"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/startDate">
+        <Annotation Term="Common.Label" String="START_DATE: START_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/endDate">
+        <Annotation Term="Common.Label" String="END_DATE: END_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: ZTIMESTAMP_PRPS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/wbsCode">
+        <Annotation Term="Common.Label" String="WBS_CODE: POSID"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/createdAtClassification">
+        <Annotation Term="Common.Label" String="CREATEDAT_CLASSIFICATION: CREATEDAT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/createdByClassification">
+        <Annotation Term="Common.Label" String="CREATEDBY_CLASSIFICATION: CREATEDBY"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/modifiedAtClassification">
+        <Annotation Term="Common.Label" String="MODIFIEDAT_CLASSIFICATION: MODIFIEDAT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/modifiedByClassification">
+        <Annotation Term="Common.Label" String="MODIFIEDBY_CLASSIFICATION: MODIFIEDBY"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/uri">
+        <Annotation Term="Common.Label" String="URI: URI"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/termId">
+        <Annotation Term="Common.Label" String="TERMID: TERMID"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/classificationName">
+        <Annotation Term="Common.Label" String="CLASSIFICATIONTYPE: CLASSIFICATIONTYPE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/classificationType">
+        <Annotation Term="Common.Label" String="CLASSIFICATIONNAME: CLASSIFICATIONNAME"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/isPrimary">
+        <Annotation Term="Common.Label" String="ISPRIMARY: ISPRIMARY"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_CLASSIFICATION_API/isDisplayed">
+        <Annotation Term="Common.Label" String="ISDISPLAYED: ISDISPLAYED"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/wbsCode">
+        <Annotation Term="Common.Label" String="WBS_CODE: POSID"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/createdAtLocation">
+        <Annotation Term="Common.Label" String="CREATEDAT_LOCATION: CREATEDAT_1"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/createdByLocation">
+        <Annotation Term="Common.Label" String="CREATEDBY_LOCATION: CREATEDBY_1"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/modifiedAtLocation">
+        <Annotation Term="Common.Label" String="MODIFIEDAT_LOCATION: MODIFIEDAT_1"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/modifiedbyLocation">
+        <Annotation Term="Common.Label" String="MODIFIEDBY_LOCATION: MODIFIEDBY_1"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/locationType">
+        <Annotation Term="Common.Label" String="LOCATIONTYPE: LOCATIONTYPE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/locationCity">
+        <Annotation Term="Common.Label" String="LOCATIONCITY: LOCATIONCITY"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/locationCountry">
+        <Annotation Term="Common.Label" String="LOCATIONCOUNTRY: LOCATIONCOUNTRY"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/locationState">
+        <Annotation Term="Common.Label" String="LOCATIONSTATE: LOCATIONSTATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_LOCATION_API/locationId">
+        <Annotation Term="Common.Label" String="LOCATIONID: LOCATIONID"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/client">
+        <Annotation Term="Common.Label" String="CLIENT: CLIENT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/wbsCode">
+        <Annotation Term="Common.Label" String="WBS_CODE: POSID"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/wbsDescription">
+        <Annotation Term="Common.Label" String="WBS_DESCRIPTION: POST1_PRPS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/controllingArea">
+        <Annotation Term="Common.Label" String="CONTROLLING_AREA: PKOKR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/companyCode">
+        <Annotation Term="Common.Label" String="COMPANY_CODE: PBUKR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/profitCenter">
+        <Annotation Term="Common.Label" String="PROFIT_CENTER: PRCTR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/costCenter">
+        <Annotation Term="Common.Label" String="COST_CENTER: KOSTL"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/projectType">
+        <Annotation Term="Common.Label" String="PROJECT_TYPE: PRART"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/addressNumber">
+        <Annotation Term="Common.Label" String="ADDRESS_NUMBER: ADRNR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/projectCurrency">
+        <Annotation Term="Common.Label" String="PROJECT_CURRENCY: PROJ_CURRENCY"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/languageKey">
+        <Annotation Term="Common.Label" String="LANGUAGE_KEY: TXTSP"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/userFieldFirst">
+        <Annotation Term="Common.Label" String="USER_FIELD_FIRST: USR00"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/createdByFmno">
+        <Annotation Term="Common.Label" String="CREATED_BY_FMNO: ERNAM_PRPS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/changedByFmno">
+        <Annotation Term="Common.Label" String="CHANGED_BY_FMNO: AENAM_PRPS"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/responsiblePmFmno">
+        <Annotation Term="Common.Label" String="RESPONSIBLE_PM_FMNO: VERNR"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/systemStatus">
+        <Annotation Term="Common.Label" String="SYSTEM_STATUS: ISTAT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/objectStatus">
+        <Annotation Term="Common.Label" String="OBJECT_STATUS: STAT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/objectStatusName">
+        <Annotation Term="Common.Label" String="OBJECT_STATUS_NAME: TXT30"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/objectStatusDescription">
+        <Annotation Term="Common.Label" String="OBJECT_STATUS_DESCRIPTION: TXT30_TJ30T"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/userStatus">
+        <Annotation Term="Common.Label" String="USER_STATUS: ESTAT"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/individualStatusOfAnObject">
+        <Annotation Term="Common.Label" String="INDIVIDUAL_STATUS_OF_AN_OBJECT: TXT04"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/individualStatusOfAnObjectDescription">
+        <Annotation Term="Common.Label" String="INDIVIDUAL_STATUS_OF_AN_OBJECT_DESCRIPTION: TXT04_TJ30T"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/statusProfile">
+        <Annotation Term="Common.Label" String="STATUS_PROFILE: STSMA"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/startDate">
+        <Annotation Term="Common.Label" String="START_DATE: START_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/endDate">
+        <Annotation Term="Common.Label" String="END_DATE: END_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.PROJECT_INTERNAL_ENGAGEMENT_API/updateDate">
+        <Annotation Term="Common.Label" String="UPDATE_DATE: ZTIMESTAMP_PRPS"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASParameters/IP_PERIOD">
+        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/client">
+        <Annotation Term="Common.Label" String="CLIENT: CLIENT"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/fmno">
+        <Annotation Term="Common.Label" String="FMNO: FMNO"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/preferredName">
+        <Annotation Term="Common.Label" String="PREFERRED_NAME: NICK_NAME"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/firstName">
+        <Annotation Term="Common.Label" String="FIRST_NAME: FIRST_NAME"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/middleName">
+        <Annotation Term="Common.Label" String="MIDDLE_NAME: MIDDLE_NAME"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/costCenter">
+        <Annotation Term="Common.Label" String="COST_CENTER: COST_CENTER"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/costCenterName">
+        <Annotation Term="Common.Label" String="COST_CENTER_NAME: COST_CENTER_NAME"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/positionCode">
+        <Annotation Term="Common.Label" String="POSITION_CODE: POSITION"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/positionCodeDescription">
+        <Annotation Term="Common.Label" String="POSITION_CODE_DESCRIPTION: POSITION_DESC"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/fcat">
+        <Annotation Term="Common.Label" String="FCAT: FCAT"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/roleCategory">
+        <Annotation Term="Common.Label" String="ROLE_CATEGORY: ROLE_CATEGORY"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/fmnoStatus">
+        <Annotation Term="Common.Label" String="FMNO_STATUS: CC_FMNO_STATUS"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/taxLegalEntity">
+        <Annotation Term="Common.Label" String="TAX_LEGAL_ENTITY: TAX_LEGAL_ENTITY"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/partnerAndNonPartner">
+        <Annotation Term="Common.Label" String="PARTNER_AND_NON_PARTNER: EMP_GROUP_DESC"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/positionStartDate">
+        <Annotation Term="Common.Label" String="POSITION_START_DATE: ASSIGNMENT_START_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/positionEndDate">
+        <Annotation Term="Common.Label" String="POSITION_END_DATE: ASSIGNMENT_END_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/AssignmentType">
+        <Annotation Term="Common.Label" String="ASSIGNMENT_TYPE: ASSIGNMENT_TYPE"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/skillCode">
+        <Annotation Term="Common.Label" String="SKILL_CODE: SKILL_CODE"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/skillCodeDesc">
+        <Annotation Term="Common.Label" String="SKILL_CODE_DESC: SKILL_CODE_DESC"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/skillGroup">
+        <Annotation Term="Common.Label" String="SKILL_GROUP: SKILL_GROUP"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/terminationDate">
+        <Annotation Term="Common.Label" String="TERMINATION_DATE: CC_TERMINATION_DATE"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/profitCenter">
+        <Annotation Term="Common.Label" String="PROFIT_CENTER: PROFIT_CENTER"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/profitCenterName">
+        <Annotation Term="Common.Label" String="PROFIT_CENTER_NAME: PROFIT_CENTER_NAME"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/companyCode">
+        <Annotation Term="Common.Label" String="COMPANY_CODE: COMPANY_CODE"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/companyName">
+        <Annotation Term="Common.Label" String="COMPANY_NAME: COMPANY_NAME"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/avgProrationInPeriod">
+        <Annotation Term="Common.Label" String="AVG_PRORATION_IN_PERIOD: AVG_PRORATION_IN_PERIOD"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/period">
+        <Annotation Term="Common.Label" String="PERIOD: PERIOD"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/unpaidLoaDays">
+        <Annotation Term="Common.Label" String="UNPAID_LOA_DAYS: CC_UNPAID_LOA_DAYS"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/lastName">
+        <Annotation Term="Common.Label" String="LAST_NAME: LAST_NAME"/>
+      </Annotations>
+      <Annotations Target="masterdata.FMNO_MASTER_PASType/hireDate">
+        <Annotation Term="Common.Label" String="HIRE_DATE: CC_START_DATE"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

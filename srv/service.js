@@ -1,12 +1,16 @@
 const cds = require('@sap/cds');
 const utils = require('./utils');
 
+
 class PayrollService extends cds.ApplicationService {
     async init() {
         const db = await cds.connect.to('db')
+        const fdm = await cds.connect.to('fdm_masterdata');
+
         const { PayrollHeader, PayrollDetails } = db.entities('payroll');
         const { UploadHeader, UploadItems } = db.entities('payroll.staging');
         const { PaycodeGLMapping } = db.entities('mapping');
+        const { FMNO_MASTER_PAS } = fdm.entities;
 
         this.on('PUT', "PayrollUpload", async (req, next) => {
             console.log("upload started");
@@ -48,6 +52,12 @@ class PayrollService extends cds.ApplicationService {
             } else {
                 return next();
             }
+        });
+
+        this.on('enrich', async req =>{
+            const [batchID] = req.params;
+            const result = await fdm.get(`/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set`);
+               
         });
 
         this.on('approve', async req => {
@@ -116,7 +126,7 @@ class PayrollService extends cds.ApplicationService {
             } else {
                 req.error({ code: 400, message: `Unable to approve batch ID:${batchToApprove}.` });
             }
-        })
+        });
 
         // required
         await super.init()
