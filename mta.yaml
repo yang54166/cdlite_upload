@@ -24,7 +24,6 @@ modules:
           srv-url: "${default-url}"
     requires:
       - name: cd_compensationdetails_c-db
-      - name: cd_compensationdetails_c-auth
       - name: cd_compensationdetails_c-dest
 
   - name: cd_compensationdetails_c-db-deployer

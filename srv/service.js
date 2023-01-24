@@ -1,5 +1,6 @@
 const cds = require('@sap/cds');
 const utils = require('./utils');
+const { HANAUtils } = require('./utils/HANAUtils');
 
 
 class PayrollService extends cds.ApplicationService {
@@ -11,6 +12,11 @@ class PayrollService extends cds.ApplicationService {
         const { UploadHeader, UploadItems } = db.entities('payroll.staging');
         const { PaycodeGLMapping } = db.entities('mapping');
         const { FMNO_MASTER_PAS } = fdm.entities;
+
+        this.before("CREATE", "StagingUploads", async (context) => {
+            const batchId = await HANAUtils.getNextBatchId(db);
+            context.data.ID = batchId;
+        });
 
         this.on('PUT', "PayrollUpload", async (req, next) => {
             console.log("upload started");
