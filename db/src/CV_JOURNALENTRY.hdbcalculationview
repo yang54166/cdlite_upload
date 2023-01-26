@@ -170,7 +170,7 @@
     </calculatedAttribute>
     <calculatedAttribute id="DOCUMENTHEADERTEXT" order="8" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="25">
-        <formula>&quot;DOCHEADERTEXT&quot; || '-' || &quot;BATCHDESCRIPTION&quot;</formula>
+        <formula>&quot;DOCHEADERTEXT&quot;</formula>
       </keyCalculation>
     </calculatedAttribute>
     <calculatedAttribute id="DOCUMENTDATE" hidden="false" order="11" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">

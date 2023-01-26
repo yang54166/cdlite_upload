@@ -12,6 +12,8 @@
     "@sap/hdbext": "^7.7.2",
     "@sap/xsenv": "^3.4.0",
     "@sap/xssec": "^3",
+    "cookie-parser": "^1.4.6",
+    "csurf": "^1.11.0",
     "express": "^4",
     "express-fileupload": "^1.4.0",
     "hdb": "^0.19.0",
@@ -48,9 +50,6 @@
       "db": {
         "kind": "hana-cloud"
       },
-      "auth": {
-        "kind": "xsuaa"
-      },
       "[hybrid]": {
         "auth": {
           "kind": "xsuaa"
@@ -60,7 +59,11 @@
         "kind": "odata",
         "model": "srv/external/fdm_masterdata",
         "credentials": {
-          "destination": "FDM",
+          "url": "https://analyticsfindwdev-analyticsfindwdev-api-raa-calviewodata-c-srv.cfapps.eu10.hana.ondemand.com",
+          "authentication": "OAuth2ClientCredentials",
+          "clientId": "sb-raa_calviewodata_c!t107005",
+          "clientSecret": "ZrKuF/1j4YiZm7jFb1ew52UgQJ0=",
+          "tokenServiceURL": "https://analyticsfindwdev-9jd3l1b3.authentication.eu10.hana.ondemand.com/oauth/token",
           "path": "/masterdata"
         }
       }

@@ -4,7 +4,6 @@ using { mapping } from '../db/mapping';
 using { CV_JOURNALENTRY, CV_JOURNALENTRY_ITEM } from '../db/virtual';
 using { fdm_masterdata } from './external/fdm_masterdata';
 
-//@requires: 'authenticated-user'
 service PayrollService {
     entity StagingUploads as projection on staging.UploadHeader 
         actions{

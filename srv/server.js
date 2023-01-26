@@ -4,8 +4,37 @@ const { data } = require("hdb/lib/protocol");
 const xsenv = require("@sap/xsenv");
 const hdb = xsenv.getServices({ hana: { tag: "hana" } }).hana;
 const { HANAUtils } = require('./utils/HANAUtils');
+var csrf = require('csurf')
+var express = require('express');
+var cookieParser = require('cookie-parser')
 
 cds.on('bootstrap', app => {
+    var csrfProtection = csrf({ cookie: true })
+    var parseForm = express.urlencoded({ extended: false })
+
+    app.use(cookieParser())
+
+    // Must: Provide actual <service endpoint>s of served services.
+    // Optional: Adapt for non-Fiori Elements UIs.
+    app.head('/payroll', csrfProtection, function (req, res) {
+        res.set('X-CSRF-Token', req.csrfToken())
+        res.send()
+    })
+
+    // Must: Provide actual <service endpoint>s of served services.
+    // Optional: Adapt for non-Fiori Elements UIs.
+    app.post('/payroll/$batch', parseForm, csrfProtection, function (req, res, next) {
+        next()
+    })
+
+    app.use(function (err, req, res, next) {
+        if (err.code !== 'EBADCSRFTOKEN') return next(err)
+
+        res.status(403)
+        res.set('X-CSRF-Token', 'required')
+        res.send()
+    })
+
     app.use(fileUpload());
 
     app.post("/upload/:id", async (req, res) => {
@@ -26,7 +55,7 @@ cds.on('bootstrap', app => {
                 arrCols = line.split('\t');
                 return {
                     PARENT_ID: batchId,
-                    ROW: lineNum +=1,
+                    ROW: lineNum += 1,
                     FMNO: arrCols[0],
                     PAYROLLCODE: arrCols[1],
                     PAYROLLCODESEQUENCE: arrCols[2] || null,
