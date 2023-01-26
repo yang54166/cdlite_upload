@@ -21,7 +21,8 @@ entity UploadHeader: managed {
 };
 
 entity UploadItems: managed {
-    parent: Association to UploadHeader;
+    key parent: Association to UploadHeader;
+    key row: Integer not null;
     status: String;
     statusMessage: String;
     deleted: Boolean;

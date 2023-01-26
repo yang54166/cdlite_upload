@@ -1,9 +1,9 @@
-POST http://localhost:4004/upload/4 HTTP/1.1
+POST http://localhost:4004/upload/12 HTTP/1.1
 Content-Type: multipart/form-data; boundary=MyBoundary
 
 --MyBoundary
-Content-Disposition: form-data; name="content"; filename="SmallerSample1 v2.txt"
+Content-Disposition: form-data; name="content"; filename="DE10-1.txt"
 Content-Type: application/octet-stream
 
-< ./SmallerSample1 v2.txt
+< ./DE10-1.txt
 --MyBoundary--

@@ -2,12 +2,12 @@ POST http://localhost:4004/payroll/StagingUploads
 Content-Type: application/json
 
 {
-   "glCompanyCode": "US10",
+   "glCompanyCode": "DE10",
    "transactionType": "01",
    "currencyCode": "USD",
    "payrollDate": "2023-01-15",
    "glPeriod": "202301",
    "effectivePeriod": "202301",
-   "batchDescription": "Payroll Testing US",
+   "batchDescription": "Payroll Testing DE",
    "remarks": "Dan Testing"
 }

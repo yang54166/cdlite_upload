@@ -21,10 +21,12 @@ cds.on('bootstrap', app => {
             const fileName = uploadFileObj.name;
             const fileData = uploadFileObj.data;
             const sLines = fileData.toString().split('\r\n');
+            let lineNum = 0;
             dataToImport = sLines.map((line) => {
                 arrCols = line.split('\t');
                 return {
                     PARENT_ID: batchId,
+                    ROW: lineNum +=1,
                     FMNO: arrCols[0],
                     PAYROLLCODE: arrCols[1],
                     PAYROLLCODESEQUENCE: arrCols[2] || null,
@@ -48,6 +50,7 @@ cds.on('bootstrap', app => {
                 "SP_UPLOADINSERT",
                 dataToImport
             );
+
             return res.send({ status: "success" });
 
         } catch (err) {

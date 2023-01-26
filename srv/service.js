@@ -8,9 +8,9 @@ class PayrollService extends cds.ApplicationService {
         const db = await cds.connect.to('db')
         const fdm = await cds.connect.to('fdm_masterdata');
 
-        const { PayrollHeader, PayrollDetails } = db.entities('payroll');
+        const { PayrollHeader, PayrollDetails, PostingBatch } = db.entities('payroll');
         const { UploadHeader, UploadItems } = db.entities('payroll.staging');
-        const { PaycodeGLMapping } = db.entities('mapping');
+        const { LegalEntityGrouping, PaycodeGLMapping } = db.entities('mapping');
         const { FMNO_MASTER_PAS } = fdm.entities;
 
         this.before("CREATE", "StagingUploads", async (context) => {
@@ -18,52 +18,57 @@ class PayrollService extends cds.ApplicationService {
             context.data.ID = batchId;
         });
 
-        this.on('PUT', "PayrollUpload", async (req, next) => {
-            console.log("upload started");
-            if (req.data.file) {
-                var entity = req.headers.slug;
-                const stream = new PassThrough();
-                var buffers = [];
-                req.data.file.pipe(stream);
-                await new Promise((resolve, reject) => {
-                    stream.on('data', dataChunk => {
-                        buffers.push(dataChunk);
-                    });
-                    stream.on('end', async () => {
-                        var buffer = Buffer.concat(buffers);
-                        // var workbook = XLSX.read(buffer, { type: "buffer", cellText: true, cellDates: true, dateNF: 'dd"."mm"."yyyy', cellNF: true, rawNumbers: false });
-                        // let data = []
-                        // const sheets = workbook.SheetNames
-                        // for (let i = 0; i < sheets.length; i++) {
-                        //     const temp = XLSX.utils.sheet_to_json(
-                        //         workbook.Sheets[workbook.SheetNames[i]], { cellText: true, cellDates: true, dateNF: 'dd"."mm"."yyyy', rawNumbers: false })
-                        //     temp.forEach((res, index) => {
-                        //         if (index === 0) return;
-                        //         data.push(JSON.parse(JSON.stringify(res)))
-                        //     })
-                        // }
-                        if (data) {
-                            const responseCall = await CallEntity(entity, data);
-                            if (responseCall == -1)
-                                reject(req.error(400, JSON.stringify(data)));
-                            else {
-                                resolve(req.notify({
-                                    message: 'Upload Successful',
-                                    status: 200
-                                }));
-                            }
-                        }
-                    });
-                });
-            } else {
-                return next();
-            }
-        });
+        // this.after("CREATE", "StagingUploads", async (req)=>{
+        //     this.emit("enrich", { batchID: req.ID });
+        // });
 
         this.on('enrich', async req =>{
-            const [batchID] = req.params;
-            const result = await fdm.get(`/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set`);
-               
+            const [batchID] = req.data.batchId || req.params;
+            // TODO:  Calculate Period
+            // Get User Info from FDM
+            const resultUsers = await fdm.get(`/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set`);
+            
+            // Get Staging Data
+            const stagingHeader = await SELECT.one.from(UploadHeader).where({ ID: batchID});
+            const stagingDataItems = await SELECT.from(UploadItems)
+                .columns("PARENT_ID","ROW","STATUS","STATUSMESSAGE","FMNO","PAYROLLCODE","PAYROLLCODESEQUENCE",
+                "NAME","AMOUNT","PAYMENTNUMBER","PAYMENTID","PAYMENTFORM","USERFIELD1","USERFIELD2","REMARKS",
+                "LOANADVANCEREFERENCENUMBER","PROJECTCODE","PROJECTTASK","GLACCOUNT","GLCOSTCENTER")
+                .where({ PARENT_ID: batchID});
+
+            // Get Mapping Data
+            const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode});
+            const mappingData = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE});
+            
+            // Update Staging Data
+            let updatedItems = stagingDataItems.map((item) => {
+                let errorsForRow = [];
+                const userObj = resultUsers.find((user)=>user.fmno == item.FMNO.padStart(8,'0'));
+                if (!userObj) {
+                    errorsForRow.push(`User ${item.FMNO} not found or invalid.`);
+                }
+                const mappedAccount = mappingData.find((mappingRow)=>
+                    (mappingRow.payrollCode == item.PAYROLLCODE) 
+                    && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1) ));
+                
+                if (!mappedAccount) {
+                    errorsForRow.push(`Unable to find GL account for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
+                }
+                
+                if (errorsForRow.length) {
+                    return {...item, STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}`}
+                } else {
+                    return {...item, STATUS: 'VALID', STATUSMESSAGE: '', GLCOSTCENTER: userObj.costCenter, GLACCOUNT: mappedAccount.glAccount}
+                }
+            });
+
+            // Save back to DB
+            return HANAUtils.callStoredProc(  
+                db.options.credentials,
+                db.options.credentials.schema,
+                "SP_UPLOADINSERT",
+                updatedItems
+            ); 
         });
 
         this.on('approve', async req => {
@@ -82,6 +87,13 @@ class PayrollService extends cds.ApplicationService {
 
                 if (dataHeader) {
                     // COPY DATA TO PERSISTENT TABLES
+                    // POSTING BATCH
+                    const postingBatch = 1;
+                    const resultCreatePostingBatch = await INSERT.into(PostingBatch).entries({
+                        batchId: dataHeader.ID,
+                        postingBatchId: postingBatch
+                    });
+
                     // HEADER
                     const { createdAt, createdBy, modifiedAt, modifiedBy, glCompanyCode, batchDescription, transactionType, currencyCode, payrollDate, glPeriod, effectivePeriod, filename, remarks } = dataHeader;
                     const payloadHeader = {
@@ -111,8 +123,8 @@ class PayrollService extends cds.ApplicationService {
                     const payloadItems = dataItems.map((item) =>({
                         batchID_batchID: batchToApprove,
                         batchLineNumber: lineCounter +=1,
-                        postingBatchID: batchToApprove,
-                        postingBatchLineNumner: lineCounter,
+                        postingBatchID: postingBatch,
+                        postingBatchLineNumber: lineCounter,
                         fmno: item.fmno,
                         payrollCode: item.payrollCode,
                         payrollCodeSequence: item.payrollCodeSequence,
@@ -121,7 +133,10 @@ class PayrollService extends cds.ApplicationService {
                         projectCode: item.projectCode,
                         glAccount: item.glAccount,
                         glPostCostCenter: item.glCostCenter,
-                        postingAggregation: dataMapping.find((mapItem)=> mapItem.payrollCode = item.payrollCode).aggregation
+                        postingAggregation: (()=>{
+                            const mapObj = dataMapping.find((mapItem)=> (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
+                            if ((mapObj.payrollCodeSequence == 'ADVANCE') || mapObj.payrollCodeSequence == 'LOAN') { return false } else { return true }
+                        })()
                     }));
                     const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
 

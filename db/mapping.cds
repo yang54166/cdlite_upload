@@ -21,7 +21,6 @@ entity PaycodeGLMapping: managed {
     qualifiedCompensation: String(1);
     transactionDescription: String(240);
     usPsrpCategory: String(10);
-    aggregation: Boolean;
 }
 
 entity PayrollLedgerControl: managed {
