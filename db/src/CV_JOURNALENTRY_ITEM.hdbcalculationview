@@ -80,7 +80,7 @@
       <mapping xsi:type="Calculation:ConstantAttributeMapping" target="FMNO" null="true" value=""/>
       <mapping xsi:type="Calculation:ConstantAttributeMapping" target="LOANNUMBER" null="true" value=""/>
       <mapping xsi:type="Calculation:ConstantAttributeMapping" target="ADVANCENUMBER" null="true" value=""/>
-      <mapping xsi:type="Calculation:ConstantAttributeMapping" target="PROJECTCODE" null="true" value=""/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
     </input>
   
     <input node="Projection_NonAggregated" emptyUnionBehavior="NO_ROW">

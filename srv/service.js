@@ -1,6 +1,7 @@
 const cds = require('@sap/cds');
 const xsenv = require("@sap/xsenv")
 const axios = require("axios");
+const { response } = require('express');
 const utils = require('./utils');
 const { HANAUtils } = require('./utils/HANAUtils');
 const { SecurityUtils } = require('./utils/SecurityUtils');
@@ -139,29 +140,44 @@ class PayrollService extends cds.ApplicationService {
 
                     // ITEMS
                     let lineCounter = 0;
-                    const payloadItems = dataItems.map((item) => ({
-                        batchID_batchID: batchToApprove,
-                        batchLineNumber: lineCounter += 1,
-                        postingBatchID: postingBatch,
-                        postingBatchLineNumber: lineCounter,
-                        fmno: item.fmno,
-                        payrollCode: item.payrollCode,
-                        payrollCodeSequence: item.payrollCodeSequence,
-                        sourceAmount: item.amount,
-                        paymentID: item.paymentID,
-                        projectCode: item.projectCode,
-                        glAccount: item.glAccount,
-                        glPostCostCenter: item.glCostCenter,
-                        glCurrencyCode: currencyCode,
-                        postingAggregation: (() => {
-                            const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
-                            if ((mapObj.payrollCodeType == 'ADVANCE') || mapObj.payrollCodeType == 'LOAN') { return false } else { return true }
-                        })()
-                    }));
+                    const payloadItems = dataItems.map((item) => {
+                        const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
+
+                        return {
+                            batchID_batchID: batchToApprove,
+                            batchLineNumber: lineCounter += 1,
+                            postingBatchID: postingBatch,
+                            postingBatchLineNumber: lineCounter,
+                            fmno: item.fmno,
+                            payrollCode: item.payrollCode,
+                            payrollCodeSequence: item.payrollCodeSequence,
+                            sourceAmount: item.amount,
+                            paymentID: item.paymentID,
+                            projectCode: item.projectCode,
+                            glAccount: item.glAccount,
+                            glPostCostCenter: item.glCostCenter,
+                            glCurrencyCode: currencyCode,
+                            postingAggregation: (mapObj.payrollCodeType == 'ADVANCE' || mapObj.payrollCodeType == 'LOAN') ?  false : true,
+                            advanceNumber: mapObj.payrollCodeType =='ADVANCE' ? item.LOANADVANCEREFERENCENUMBER : null,
+                            loanNumber: mapObj.payrollCodeType =='LOAN' ? item.LOANADVANCEREFERENCENUMBER : null,
+                        }
+                    });
 
                     const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
 
-                    return;
+                    // NOTIFY CPI
+                    const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912','07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
+                    try {
+                        axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
+                        axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
+                        const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchToApprove}`;
+                        const responseCPI = await axios.get(cpiURL);
+                        console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}:${responseCPI.data}`);
+                    } catch (ex) {
+                        console.log("error retrieving data from FDM");
+                    };
+
+                    return true;
                 } else {
                     req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
                 }
