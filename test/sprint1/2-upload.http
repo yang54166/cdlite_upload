@@ -1,4 +1,4 @@
-POST http://localhost:4004/upload/33 HTTP/1.1
+POST http://localhost:4004/payroll/StagingUploads(33)/upload HTTP/1.1
 Content-Type: multipart/form-data; boundary=MyBoundary
 
 --MyBoundary

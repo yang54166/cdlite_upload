@@ -1,8 +1,9 @@
 const cds = require('@sap/cds');
+const { PassThrough } = require('node:stream');
 const xsenv = require("@sap/xsenv")
 const axios = require("axios");
 const { response } = require('express');
-const utils = require('./utils');
+const utils = require('./utils/utils');
 const { HANAUtils } = require('./utils/HANAUtils');
 const { SecurityUtils } = require('./utils/SecurityUtils');
 
@@ -17,17 +18,69 @@ class PayrollService extends cds.ApplicationService {
         const { LegalEntityGrouping, PaycodeGLMapping } = db.entities('mapping');
         const { FMNO_MASTER_PAS } = fdm.entities;
 
+        this.on("PUT", "PayrollUploadFile", async (req) => {
+            if (req.data.content) {
+                const contentType = req._.req.headers['content-type'];
+                const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
+                    return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
+                }));
+                const batchID = contentPropertyMap.get("batchID");
+                let content = '';
+                const stream = new PassThrough();
+                req.data.content.pipe(stream);
+                await new Promise((resolve, reject) => {
+
+                    // Read stream
+                    req.data.content.on("data", dataChunk => {
+                        content += dataChunk;
+                    });
+
+                    // Output stream
+                    req.data.content.on("end", async () => {
+                        const fileRows = content.split("\r\n").filter((row) => row != '');
+                        let lineNum = 0;
+
+                        let dataToImport = fileRows.map((line) => {
+                            let arrCols = line.split('\t');
+                            return {
+                                PARENT_ID: batchID,
+                                ROW: lineNum += 1,
+                                FMNO: arrCols[0],
+                                PAYROLLCODE: arrCols[1],
+                                PAYROLLCODESEQUENCE: arrCols[2] || null,
+                                NAME: arrCols[3],
+                                AMOUNT: arrCols[4],
+                                PAYMENTNUMBER: arrCols[5] || null,
+                                PAYMENTID: arrCols[6],
+                                PAYMENTFORM: arrCols[7],
+                                USERFIELD1: arrCols[8],
+                                USERFIELD2: arrCols[9],
+                                REMARKS: arrCols[10],
+                                LOANADVANCEREFERENCENUMBER: arrCols[11],
+                                PROJECTCODE: arrCols[12],
+                                PROJECTTASK: arrCols[13]
+                            };
+                        });
+                        const result = await HANAUtils.callStoredProc(
+                            db.options.credentials,
+                            db.options.credentials.schema,
+                            "SP_UPLOADINSERT",
+                            dataToImport
+                        );
+                        this.emit("enrich", { batchID });
+                        return result;
+                    });
+                });
+            }
+        });
+
         this.before("CREATE", "StagingUploads", async (context) => {
             const batchId = await HANAUtils.getNextBatchId(db);
             context.data.ID = batchId;
         });
 
-        // this.after("CREATE", "StagingUploads", async (req)=>{
-        //     this.emit("enrich", { batchID: req.ID });
-        // });
-
         this.on('enrich', async req => {
-            const batchID = req.data.batchId || req.params[0];
+            const batchID = req.data.batchID || req.params[0];
             console.log("enriching batchId: " + batchID);
 
             // TODO:  Calculate Period
@@ -157,16 +210,16 @@ class PayrollService extends cds.ApplicationService {
                             glAccount: item.glAccount,
                             glPostCostCenter: item.glCostCenter,
                             glCurrencyCode: currencyCode,
-                            postingAggregation: (mapObj.payrollCodeType == 'ADVANCE' || mapObj.payrollCodeType == 'LOAN') ?  false : true,
-                            advanceNumber: mapObj.payrollCodeType =='ADVANCE' ? item.LOANADVANCEREFERENCENUMBER : null,
-                            loanNumber: mapObj.payrollCodeType =='LOAN' ? item.LOANADVANCEREFERENCENUMBER : null,
+                            postingAggregation: (mapObj.payrollCodeType == 'ADVANCE' || mapObj.payrollCodeType == 'LOAN') ? false : true,
+                            advanceNumber: mapObj.payrollCodeType == 'ADVANCE' ? item.LOANADVANCEREFERENCENUMBER : null,
+                            loanNumber: mapObj.payrollCodeType == 'LOAN' ? item.LOANADVANCEREFERENCENUMBER : null,
                         }
                     });
 
                     const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
 
                     // NOTIFY CPI
-                    const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912','07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
+                    const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
                     try {
                         axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
                         axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };

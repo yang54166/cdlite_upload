@@ -13,6 +13,10 @@ const utils = {
         const cycleThisMonth = lastDayOfMonth / currentDayOfMonth <= 2 ? 2 : 1;
         const cc = ('0' + ((payrollDate.getUTCMonth() * 2) + cycleThisMonth)).slice(-2);
         return `${mmm}-${yy}-${cc}`;
+    },
+
+    parseUploadPayload: (payload)=>{
+        
     }
 };
 
