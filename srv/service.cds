@@ -1,4 +1,4 @@
-using {payroll.staging as staging} from '../db/payrollstaging';
+using {staging} from '../db/staging';
 using {payroll} from '../db/payroll';
 using {mapping} from '../db/mapping';
 using {

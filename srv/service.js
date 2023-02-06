@@ -14,7 +14,7 @@ class PayrollService extends cds.ApplicationService {
         //const svcs = xsenv.getServices({ label: "user-provided"});
 
         const { PayrollHeader, PayrollDetails, PostingBatch } = db.entities('payroll');
-        const { UploadHeader, UploadItems } = db.entities('payroll.staging');
+        const { UploadHeader, UploadItems } = db.entities('staging');
         const { LegalEntityGrouping, PaycodeGLMapping } = db.entities('mapping');
         const { FMNO_MASTER_PAS } = fdm.entities;
 
@@ -28,48 +28,60 @@ class PayrollService extends cds.ApplicationService {
                 let content = '';
                 const stream = new PassThrough();
                 req.data.content.pipe(stream);
+
+                console.log(`DEBUG: Upload started for batch ${batchID}.`);
                 await new Promise((resolve, reject) => {
-
-                    // Read stream
-                    req.data.content.on("data", dataChunk => {
-                        content += dataChunk;
-                    });
-
-                    // Output stream
-                    req.data.content.on("end", async () => {
-                        const fileRows = content.split("\r\n").filter((row) => row != '');
-                        let lineNum = 0;
-
-                        let dataToImport = fileRows.map((line) => {
-                            let arrCols = line.split('\t');
-                            return {
-                                PARENT_ID: batchID,
-                                ROW: lineNum += 1,
-                                FMNO: arrCols[0],
-                                PAYROLLCODE: arrCols[1],
-                                PAYROLLCODESEQUENCE: arrCols[2] || null,
-                                NAME: arrCols[3],
-                                AMOUNT: arrCols[4],
-                                PAYMENTNUMBER: arrCols[5] || null,
-                                PAYMENTID: arrCols[6],
-                                PAYMENTFORM: arrCols[7],
-                                USERFIELD1: arrCols[8],
-                                USERFIELD2: arrCols[9],
-                                REMARKS: arrCols[10],
-                                LOANADVANCEREFERENCENUMBER: arrCols[11],
-                                PROJECTCODE: arrCols[12],
-                                PROJECTTASK: arrCols[13]
-                            };
+                    try {
+                        // Read stream
+                        req.data.content.on("data", dataChunk => {
+                            content += dataChunk;
                         });
-                        const result = await HANAUtils.callStoredProc(
-                            db.options.credentials,
-                            db.options.credentials.schema,
-                            "SP_UPLOADINSERT",
-                            dataToImport
-                        );
-                        this.emit("enrich", { batchID });
-                        return result;
-                    });
+
+                        // Output stream
+                        req.data.content.on("end", async () => {
+                            console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
+                            const fileRows = content.split("\r\n").filter((row) => row != '');
+                            let lineNum = 0;
+
+                            let dataToImport = fileRows.map((line) => {
+                                let arrCols = line.split('\t');
+                                return {
+                                    PARENT_ID: batchID,
+                                    ROW: lineNum += 1,
+                                    FMNO: arrCols[0],
+                                    PAYROLLCODE: arrCols[1],
+                                    PAYROLLCODESEQUENCE: arrCols[2] || null,
+                                    NAME: arrCols[3],
+                                    AMOUNT: arrCols[4],
+                                    PAYMENTNUMBER: arrCols[5] || null,
+                                    PAYMENTID: arrCols[6],
+                                    PAYMENTFORM: arrCols[7],
+                                    USERFIELD1: arrCols[8],
+                                    USERFIELD2: arrCols[9],
+                                    REMARKS: arrCols[10],
+                                    LOANADVANCEREFERENCENUMBER: arrCols[11],
+                                    PROJECTCODE: arrCols[12],
+                                    PROJECTTASK: arrCols[13]
+                                };
+                            });
+
+                            console.log(`DEBUG: File parsed for batch ${batchID}.`);
+                            const result = await HANAUtils.callStoredProc(
+                                db.options.credentials,
+                                db.options.credentials.schema,
+                                "SP_UPLOADINSERT",
+                                dataToImport
+                            );
+                            console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+
+                            this.emit("enrich", { batchID });
+                            console.log("enrich triggered. Now returning result.")
+
+                            resolve(result);
+                        });
+                    } catch (ex) {
+                        reject(ex);
+                    }
                 });
             }
         });

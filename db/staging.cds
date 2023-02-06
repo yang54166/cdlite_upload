@@ -1,6 +1,6 @@
 using { managed } from '@sap/cds/common';
 
-namespace payroll.staging;
+namespace staging;
 
 entity UploadHeader: managed {
     key ID: Integer;
