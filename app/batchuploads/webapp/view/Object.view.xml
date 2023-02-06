@@ -1,0 +1,250 @@
+<mvc:View controllerName="batchuploads.controller.Object" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns="sap.uxap" xmlns:m="sap.m" xmlns:core="sap.ui.core" height="100%">
+    <ObjectPageLayout id="ObjectPageLayout" showTitleInHeaderContent="true" upperCaseAnchorBar="false">
+        <headerTitle>
+            <ObjectPageDynamicHeaderTitle id="objPageHeaderTitle">
+                <expandedHeading>
+                    <m:Title id="expandedHeadingTitle" text="{
+					parts: [
+						'i18n>commonItemTitle',
+						'ID'
+					],
+					formatter: 'jQuery.sap.formatMessage'
+				}" wrapping="true" />
+                </expandedHeading>
+
+                <snappedHeading>
+                    <m:VBox id="snappedHeadingV">
+                        <m:Title id="snappedHeadingTitle" text="{
+					parts: [
+						'i18n>commonItemTitle',
+						'ID'
+					],
+					formatter: 'jQuery.sap.formatMessage'
+				}" wrapping="true" />
+                        <m:Label id="snappedHeadingSubTitle" text="{batchDescription}" />
+                    </m:VBox>
+                </snappedHeading>
+
+                <expandedContent>
+                    <m:Label id="extendedSubtitle" text="{batchDescription}" />
+                </expandedContent>
+                <actions>
+                    <m:Button id="approveBtn" text="Approve" type="Emphasized" />
+                    <m:OverflowToolbarButton id="shareBtn" icon="sap-icon://action" type="Transparent" text="Share" tooltip="action" />
+                </actions>
+            </ObjectPageDynamicHeaderTitle>
+        </headerTitle>
+
+        <headerContent>
+            <m:HeaderContainer id="headerContainer" scrollStep="200" showDividers="false">
+                <m:HBox id="headerContainerH" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                    <m:VBox id="uploadHeaderSec1" class="sapUiSmallMarginBottom">
+                        <m:HBox id="uploadHeaderSec1V1" class="sapUiTinyMarginBottom" renderType="Bare">
+                            <m:Label id="companyCodeLbl" text="{i18n>detailCompanyCode}" class="sapUiTinyMarginEnd" />
+                            <m:Text id="companyCodeTxt" text="{glCompanyCode}" />
+                        </m:HBox>
+                        <m:HBox id="uploadHeaderSec1V2" class="sapUiTinyMarginBottom">
+                            <m:Label id="currencyCodeLbl" text="{i18n>detailCurrencyCode}" class="sapUiTinyMarginEnd" />
+                            <m:Text id="currencyCodeTxt" text="{currencyCode}" />
+                        </m:HBox>
+                        <m:HBox id="uploadHeaderSec1V3" class="sapUiTinyMarginBottom">
+                            <m:Label id="detailTransTypeLbl" text="{i18n>transType}" class="sapUiTinyMarginEnd" />
+                            <m:Text id="detailTransTypeTxt" text="{transactionType}" />
+                        </m:HBox>
+                    </m:VBox>
+                </m:HBox>
+
+                <m:VBox id="uploadHeaderSec2" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                    <m:HBox id="uploadHeaderSec2V1" class="sapUiTinyMarginBottom">
+                        <m:Label id="payrollDateLbl" text="{i18n>detailPayrollDate}" class="sapUiTinyMarginEnd" />
+                        <m:Text id="payrollDateTxt" text="{payrollDate}" />
+                    </m:HBox>
+
+                    <m:HBox id="uploadHeaderSec2V2" class="sapUiTinyMarginBottom">
+                        <m:Label id="effectivePeriodLbl" text="{i18n>detailEffectivePeriod}" class="sapUiTinyMarginEnd" />
+                        <m:Text id="effectivePeriodTxt" text="{effectivePeriod}" />
+                    </m:HBox>
+
+                    <m:HBox id="uploadHeaderSec2V3" class="sapUiTinyMarginBottom">
+                        <m:Label id="glPeriodLbl" text="{i18n>detailGLPeriod}" class="sapUiTinyMarginEnd" />
+                        <m:Text id="glPeriodTxt" text="{glPeriod}" />
+                    </m:HBox>
+                </m:VBox>
+                <m:VBox id="uploadHeaderSec3" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                    <m:HBox id="uploadHeaderSec3V1" class="sapUiTinyMarginBottom">
+                        <m:Label id="detailStatusLbl" text="{i18n>detailStatus}" class="sapUiTinyMarginEnd" />
+                        <m:Text id="detailStatusTxt" text="{status}" />
+                    </m:HBox>
+
+                    <m:HBox id="uploadHeaderSec3V2" class="sapUiTinyMarginBottom">
+                        <m:Label id="fileNameLbl" text="{i18n>fileName}" class="sapUiTinyMarginEnd" />
+                        <m:Text id="fileNameTxt" text="{fileName}" />
+                    </m:HBox>
+                </m:VBox>
+
+                <m:VBox id="uploadHeaderSec4" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                    <m:HBox id="uploadHeaderSec4V1" class="sapUiTinyMarginBottom">
+                        <m:Label id="createdByLbl" text="{i18n>createdBy}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="createdByTxt" text="Dan Antonio" />
+                    </m:HBox>
+
+                    <m:HBox id="uploadHeaderSec4V2" class="sapUiTinyMarginBottom" renderType="Bare">
+                        <m:Label id="createdAtLbl" text="{i18n>createdAt}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="createAtTxt" text=" {createdAt}" />
+                    </m:HBox>
+                </m:VBox>
+                <m:VBox id="uploadHeaderSec5" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                    <m:HBox id="uploadHeaderSec5V1" class="sapUiTinyMarginBottom">
+                        <m:Label id="modifiedByLbl" text="{i18n>modifiedBy}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="modifiedByTxt" text="Dan Antonio" />
+                    </m:HBox>
+
+                    <m:HBox id="uploadHeaderSec5V2" class="sapUiTinyMarginBottom">
+                        <m:Label id="modifiedAtLbl" text="{i18n>modifiedAt}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="modifiedAtTxt" text=" {modifiedAt}" />
+                    </m:HBox>
+                </m:VBox>
+            </m:HeaderContainer>
+        </headerContent>
+
+        <sections>
+            <ObjectPageSection titleUppercase="false" id="personalSection" title="Posting Batch/Status">
+                <subSections>
+                    <ObjectPageSubSection id="personalSectionSS1" titleUppercase="false">
+                        <blocks>
+                            <m:VBox id="postingStatusV1" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                                <m:HBox id="postingStatusDtl" class="sapUiTinyMarginBottom">
+                                    <m:Label id="postingStatusLbl" text="{i18n>detailStatus}" class="sapUiTinyMarginEnd" />
+                                    <m:Text id="postingStatusTxt" text="{status}" />
+                                </m:HBox>
+
+                                <m:HBox id="postingStatusV2" class="sapUiTinyMarginBottom">
+                                    <m:Label id="postingFileNameLbl" text="{i18n>fileName}" class="sapUiTinyMarginEnd" />
+                                    <m:Text id="postingFileNameTxt" text="{fileName}" />
+                                </m:HBox>
+                            </m:VBox>
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+
+            <ObjectPageSection titleUppercase="false" id="summaryByCostCenter" title="Summary By Cost Center">
+                <subSections>
+                    <ObjectPageSubSection id="summaryByCostCenterSS1" titleUppercase="false">
+                        <blocks>
+                            <m:VBox id="summaryByCostCenterV1" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                                <m:HBox id="summaryByCostCenterDtl" class="sapUiTinyMarginBottom">
+                                    <m:Label id="summaryByCostCenterCompanyCodeLbl" text="{i18n>detailCompanyCode}" class="sapUiTinyMarginEnd" />
+                                    <m:Text id="summaryByCostCenterCompanyCodeTxt" text="{glCompanyCode}" />
+                                </m:HBox>
+                            </m:VBox>
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+
+            <ObjectPageSection titleUppercase="false" id="uploadDetails" title="Details">
+                <subSections>
+                    <ObjectPageSubSection id="uploadDetailSS" titleUppercase="false">
+                        <blocks>
+                            <l:VerticalLayout id="verticalTabLayout">
+                                <m:IconTabBar id="iconTabBar" select=".onQuickFilter" expandable="false">
+                                    <m:items>
+                                        <m:IconTabFilter id="allFilter" key="all" showAll="true" count="{objectView>/countAll}" text="All" />
+                                        <m:IconTabFilter id="allTabSeparator" />
+                                        <m:IconTabFilter id="successFilter" key="success" icon="sap-icon://message-success" iconColor="Positive" count="{objectView>/success}" text="Success" />
+                                        <m:IconTabFilter id="errorFilter" key="inError" icon="sap-icon://message-error" iconColor="Negative" count="{objectView>/inError}" text="Error" />
+                                    </m:items>
+                                </m:IconTabBar>
+                                <m:Table
+                                    id="lineItemsList"
+                                    sticky="HeaderToolbar,ColumnHeaders"
+                                    class="sapUiSmallMarginTop"
+                                    mode="MultiSelect"
+                                    width="auto"
+                                    items="{
+							path: 'items',
+							sorter: {
+								path: 'fmno',
+								descending: false
+							}
+						}"
+                                    updateFinished=".onListUpdateFinished"
+                                    noDataText="{i18n>detailLineItemTableNoDataText}"
+                                    busyIndicatorDelay="{objectView>/tableBusyDelay}"
+                                    growing="true"
+                                    growingScrollToLoad="true"
+                                >
+                                    <m:headerToolbar>
+                                        <m:Toolbar id="lineItemsToolbar">
+                                            <m:Title id="lineItemsHeader" text="{objectView>/lineItemListTitle}" />
+                                            <m:ToolbarSpacer id="toolbarspacer" />
+                                            <m:Button id="dataExportBtn" icon="sap-icon://download" press="onExport" visible="{objectView>/showExport}" />
+                                            <m:SearchField id="searchField" tooltip="{i18n>itemlistSearchTooltip}" search=".onSearch" width="auto" />
+                                        </m:Toolbar>
+                                    </m:headerToolbar>
+                                    <m:columns>
+                                        <m:Column id="fmnoDtlColumn">
+                                            <m:Text id="FMNO" text="FMNO" />
+                                        </m:Column>
+                                        <m:Column id="payrollDtlCodeColumn" demandPopin="false" minScreenWidth="Tablet">
+                                            <m:Text id="payrollCode" text="Payroll Code" />
+                                        </m:Column>
+                                        <m:Column id="payrollDtlCodeSeqColumn" hAlign="End" demandPopin="true" minScreenWidth="Tablet">
+                                            <m:Text id="payrollCodeSeq" text="Payroll Code Sequence" />
+                                        </m:Column>
+                                        <m:Column id="nameDtlColumn" hAlign="End">
+                                            <m:Text id="nameDtlCol" text="Name" />
+                                        </m:Column>
+                                        <m:Column id="amountDtlColumn" hAlign="End">
+                                            <m:Text id="amount" text="Amount" />
+                                        </m:Column>
+                                        <m:Column id="glCostCenterColumn" hAlign="End">
+                                            <m:Text id="glCostCenter" text="GL Cost Center" />
+                                        </m:Column>
+                                        <m:Column id="paymentNoDtlColumn" hAlign="End">
+                                            <m:Text id="paymentNoCol" text="Payment No" />
+                                        </m:Column>
+                                        <m:Column id="paymentIdDtlColumn" hAlign="End">
+                                            <m:Text id="paymentIdCol" text="Payment ID" />
+                                        </m:Column>
+                                        <m:Column id="paymentFormDtlColumn" hAlign="End">
+                                            <m:Text id="paymentFormCol" text="Payment Form" />
+                                        </m:Column>
+                                        <m:Column id="loanAdvNoDtlColumn" hAlign="End">
+                                            <m:Text id="loanAdvNo" text="Loan or Advance No" />
+                                        </m:Column>
+                                        <m:Column id="projCodeDtlColumn" hAlign="End">
+                                            <m:Text id="projCode" text="Project Code" />
+                                        </m:Column>
+                                        <m:Column id="projTaskDtlColumn" hAlign="End">
+                                            <m:Text id="projTask" text="Project Task" />
+                                        </m:Column>
+                                    </m:columns>
+                                    <m:items>
+                                        <m:ColumnListItem id="colListItm">
+                                            <m:cells>
+                                                <m:Text id="txtDtlFMNO" text="{fmno}" />
+                                                <m:Text id="txtDtlPayoffCode" text="{payrollCode}" />
+                                                <m:Text id="txtDtlPayoffCodeSq" text="{payrollCodeSequence}" />
+                                                <m:Text id="txtName" text="{name}" />
+                                                <m:Text id="txtDtlAmount" text="{amount}" />
+                                                <m:Text id="txtDtlglCostCenter" text="{glCostCenter}" />
+                                                <m:Text id="txtDtlPaymentNo" text="{paymentNumber}" />
+                                                <m:Text id="txtDtlPaymentId" text="{paymentId}" />
+                                                <m:Text id="txtDtlPaymentForm" text="{paymentForm}" />
+                                                <m:Text id="txtDtlLoanAdvNo" text="{loanAdvanceReferenceNumber}" />
+                                                <m:Text id="txtDtlProjCode" text="{projectCode}" />
+                                                <m:Text id="txtDtlProjTask" text="{projectTask}" />
+                                            </m:cells>
+                                        </m:ColumnListItem>
+                                    </m:items>
+                                </m:Table>
+                            </l:VerticalLayout>
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+        </sections>
+    </ObjectPageLayout>
+</mvc:View>

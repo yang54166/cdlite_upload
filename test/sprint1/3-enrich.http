@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 POST http://localhost:4004/payroll/StagingUploads(33)/enrich
 Content-Type: application/json
 
 {}
+=======
+POST http://localhost:4004/payroll/StagingUploads(22)/enrich
+Content-Type: application/json
+
+{}
+
+>>>>>>> c860a56 (initial commit)

@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 POST http://localhost:4004/upload/33 HTTP/1.1
 Content-Type: multipart/form-data; boundary=MyBoundary
 
 --MyBoundary
 Content-Disposition: form-data; name="content"; filename="US10-3.txt"
+=======
+POST http://localhost:4004/upload/22 HTTP/1.1
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; name="content"; filename="DE10-1.txt"
+>>>>>>> c860a56 (initial commit)
 Content-Type: application/octet-stream
 
 < ./US10-3.txt

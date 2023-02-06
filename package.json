@@ -27,7 +27,7 @@
     "deploy": "cf deploy mta_archives/$npm_package_name-$npm_package_version.mtar",
     "deploy-local": "cds deploy --profile hybrid",
     "start-local": "cds watch --profile hybrid",
-    "undeploy": "cf undeploy cd_conpensationdetails_c --delete-services --delete-service-keys",
+    "undeploy": "cf undeploy cd_compensationdetails_c --delete-services --delete-service-keys",
     "bind-db": "cds bind --to cd_compensationdetails_c-db",
     "bind-uaa": "cds bind uaa --to cd_compensationdetails_c-auth"
   },
@@ -66,6 +66,9 @@
           "tokenServiceURL": "https://analyticsfindwdev-9jd3l1b3.authentication.eu10.hana.ondemand.com/oauth/token",
           "path": "/masterdata"
         }
+      },
+      "messaging": {
+        "kind": "local-messaging"
       }
     },
     "hana": {
@@ -96,5 +99,12 @@
       "no-console": "off",
       "require-atomic-updates": "off"
     }
+  },
+  "sapux": [
+    "app/batchuploads"
+  ],
+  "devDependencies": {
+    "@sap/ux-specification": "^1.102.15",
+    "rimraf": "^3.0.2"
   }
 }

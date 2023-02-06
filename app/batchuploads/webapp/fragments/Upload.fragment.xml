@@ -1,0 +1,58 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:u="sap.ui.unified">
+    <Dialog id="uploadDialog" title="Upload">
+        <beginButton>
+            <Button id="submitBtn" text="Submit" press="submitUploads" />
+        </beginButton>
+        <endButton>
+            <Button id="closeBtn" text="Close" press="closeDialog" />
+        </endButton>
+
+        <f:SimpleForm
+            id="uploadForm"
+            editable="false"
+            layout="ResponsiveGridLayout"
+            title=""
+            labelSpanXL="4"
+            labelSpanL="4"
+            labelSpanM="4"
+            labelSpanS="12"
+            adjustLabelSpan="false"
+            emptySpanXL="0"
+            emptySpanL="0"
+            emptySpanM="0"
+            emptySpanS="0"
+            columnsXL="3"
+            columnsL="2"
+            columnsM="2"
+            singleContainerFullSize="false"
+        >
+            <f:content>
+                <Label id="companyCodeLbl" text="Company Code" labelFor="companyCode" design="Bold" />
+                <Input id="companyCodeDlg" />
+                <Label id="transTypeLbl" text="Posting file type" labelFor="transType" design="Bold" />
+                <Select id="transTypeDlg" forceSelection="false" selectedKey="{transTypes>/0/Type}" items="{transTypes>/}" change="onTransTypeChange">
+                    <core:Item id="transItems" key="{transTypes>Type}" text="{transTypes>Name}" />
+                </Select>
+                <!--    <Input id="transType" /> -->
+                <!--      <Label id="sourceOfficeLbl" text="Source Office" labelFor="sourceOffice" design="Bold" />
+                <Input id="sourceOffice" /> -->
+                <Label id="currencyLbl" text="Payroll Currency" labelFor="currency" design="Bold" />
+                <Input id="currencyDlg" />
+                <Label id="payrollDatebl" text="Payroll Date (DD-MMM-YYYY)" labelFor="payrollDate" design="Bold" />
+                <Input id="payrollDateDlg" />
+                <Label id="glPeriodLbl" text="GL Period" labelFor="glPeriod" design="Bold" />
+                <DatePicker id="glPeriodDlg" displayFormat="MM-y" change="handleChange" class="sapUiSmallMarginBottom" />
+                <Label id="effectivePeriodLbl" text="Effective Period" labelFor="effectivePeriod" design="Bold" />
+                <DatePicker id="effectivePeriodDlg" displayFormat="MM-y" change="handleChange" class="sapUiSmallMarginBottom" />
+                <!--      <Label id="batchNoLbl" text="Batch Number" labelFor="batchNo" design="Bold" />
+                <Input id="batchNo" /> -->
+                <Label id="batchDescLbl" text="Batch Description" labelFor="batchDesc" design="Bold" />
+                <Input id="batchDescDlg" />
+     <!--         <Label id="remarksLbl" text="Remarks" labelFor="uploadRemarks" design="Bold" />
+                <Input id="uploadRemarks" /> -->
+                <Label id="uploadLbl" text="User File Name" labelFor="fileUploader" design="Bold" />
+                <u:FileUploader id="fileUploader" name="myFileUpload" uploadUrl="upload/" tooltip="Upload your file to the local server" change="onChangeFUP" uploadComplete="handleUploadComplete" />
+            </f:content>
+        </f:SimpleForm>
+    </Dialog>
+</core:FragmentDefinition>

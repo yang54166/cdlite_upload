@@ -1,7 +1,10 @@
 const cds = require('@sap/cds');
 const xsenv = require("@sap/xsenv")
 const axios = require("axios");
+<<<<<<< HEAD
 const { response } = require('express');
+=======
+>>>>>>> c860a56 (initial commit)
 const utils = require('./utils');
 const { HANAUtils } = require('./utils/HANAUtils');
 const { SecurityUtils } = require('./utils/SecurityUtils');
@@ -140,6 +143,7 @@ class PayrollService extends cds.ApplicationService {
 
                     // ITEMS
                     let lineCounter = 0;
+<<<<<<< HEAD
                     const payloadItems = dataItems.map((item) => {
                         const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
 
@@ -178,6 +182,31 @@ class PayrollService extends cds.ApplicationService {
                     };
 
                     return true;
+=======
+                    const payloadItems = dataItems.map((item) => ({
+                        batchID_batchID: batchToApprove,
+                        batchLineNumber: lineCounter += 1,
+                        postingBatchID: postingBatch,
+                        postingBatchLineNumber: lineCounter,
+                        fmno: item.fmno,
+                        payrollCode: item.payrollCode,
+                        payrollCodeSequence: item.payrollCodeSequence,
+                        sourceAmount: item.amount,
+                        paymentID: item.paymentID,
+                        projectCode: item.projectCode,
+                        glAccount: item.glAccount,
+                        glPostCostCenter: item.glCostCenter,
+                        glCurrencyCode: currencyCode,
+                        postingAggregation: (() => {
+                            const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
+                            if ((mapObj.payrollCodeType == 'ADVANCE') || mapObj.payrollCodeType == 'LOAN') { return false } else { return true }
+                        })()
+                    }));
+
+                    const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
+
+                    return;
+>>>>>>> c860a56 (initial commit)
                 } else {
                     req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
                 }

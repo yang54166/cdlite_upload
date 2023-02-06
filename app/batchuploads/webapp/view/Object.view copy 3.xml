@@ -1,0 +1,145 @@
+<mvc:View controllerName="batchuploads.controller.Object" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.f.semantic" xmlns:l="sap.ui.layout">
+    <semantic:SemanticPage id="page" headerPinnable="false" toggleHeaderOnTitleClick="false" busy="{objectView>/busy}" busyIndicatorDelay="{objectView>/delay}">
+        <semantic:titleHeading>
+            <Title id="detailHeaderTitle" text="{
+					parts: [
+						'i18n>commonItemTitle',
+						'ID'
+					],
+					formatter: 'jQuery.sap.formatMessage'
+				}" level="H2" />
+        </semantic:titleHeading>
+
+        <semantic:headerContent>
+            <l:HorizontalLayout id="horizonLayout">
+                <l:VerticalLayout id="companyLayout" class="sapUiMediumMarginEnd">
+                    <ObjectAttribute id="payrollDesc" title="{i18n>detailPayrollDesc}" text="{batchDescription}" />
+                    <ObjectAttribute id="companyCode" title="{i18n>detailCompanyCode}" text="{glCompanyCode}" />
+                    <ObjectAttribute id="currencyCode" title="{i18n>detailCurrencyCode}" text="{currencyCode}" />
+                </l:VerticalLayout>
+                <l:VerticalLayout id="dateLayout" class="sapUiMediumMarginEnd">
+                    <ObjectAttribute id="payrollDate" title="{i18n>detailPayrollDate}" text="{payrollDate}" />
+                    <ObjectAttribute id="effectivePeriod" title="{i18n>detailEffectivePeriod}" text="{effectivePeriod}" />
+                    <ObjectAttribute id="glPeriod" title="{i18n>detailGLPeriod}" text="{glPeriod}" />
+                </l:VerticalLayout>
+                <l:VerticalLayout id="statusLayout" class="sapUiMediumMarginEnd">
+                    <ObjectAttribute id="status" title="{i18n>detailStatus}" text="{status}" />
+                    <ObjectAttribute id="fileName" title="{i18n>fileName}" text="{fileName}" />
+                    <ObjectAttribute id="transType" title="{i18n>transType}" text="{transactionType}" />
+                </l:VerticalLayout>
+                <l:VerticalLayout id="createByLayout" class="sapUiMediumMarginEnd">
+                    <ObjectAttribute id="createBy" title="{i18n>createdBy}" text="Dan Antonio" />
+                    <ObjectAttribute id="createAt" title="{i18n>createdAt}" text="{createdAt}" />
+                    <ObjectAttribute id="modifiedBy" title="{i18n>modifiedBy}" text="Dan Antonio" />
+                    <ObjectAttribute id="modifiedAt" title="{i18n>modifiedAt}" text="{modifiedAt}" />
+                </l:VerticalLayout>
+            </l:HorizontalLayout>
+        </semantic:headerContent>
+        <semantic:content>
+            <l:VerticalLayout id="verticalTabLayout">
+                <IconTabBar id="iconTabBar" select=".onQuickFilter" expandable="false">
+                    <items>
+                        <IconTabFilter id="allFilter" key="all" showAll="true" count="{objectView>/countAll}" text="All" />
+                        <IconTabSeparator id="allTabSeparator" />
+                        <IconTabFilter id="successFilter" key="success" icon="sap-icon://message-success" iconColor="Positive" count="{objectView>/success}" text="Success" />
+                        <IconTabFilter id="errorFilter" key="inError" icon="sap-icon://message-error" iconColor="Negative" count="{objectView>/inError}" text="Error" />
+                    </items>
+                </IconTabBar>
+                <Table
+                    id="lineItemsList"
+                    sticky="HeaderToolbar,ColumnHeaders"
+                    class="sapUiSmallMarginTop"
+                    mode="MultiSelect"
+                    width="auto"
+                    items="{
+							path: 'items',
+							sorter: {
+								path: 'fmno',
+								descending: false
+							}
+						}"
+                    updateFinished=".onListUpdateFinished"
+                    noDataText="{i18n>detailLineItemTableNoDataText}"
+                    busyIndicatorDelay="{objectView>/tableBusyDelay}"
+                    growing="true"
+                    growingScrollToLoad="true"
+                >
+                    <headerToolbar>
+                        <Toolbar id="lineItemsToolbar">
+                            <Title id="lineItemsHeader" text="{objectView>/lineItemListTitle}" />
+                            <ToolbarSpacer id="toolbarspacer" />
+                            <Button id="dataExportBtn" icon="sap-icon://download" press="onExport" visible="{objectView>/showExport}" />
+                            <SearchField id="searchField" tooltip="{i18n>itemlistSearchTooltip}" search=".onSearch" width="auto" />
+                        </Toolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column id="fmnoDtlColumn">
+                            <Text id="FMNO" text="FMNO" />
+                        </Column>
+                        <Column id="payrollDtlCodeColumn" demandPopin="false" minScreenWidth="Tablet">
+                            <Text id="payrollCode" text="Payroll Code" />
+                        </Column>
+                        <Column id="payrollDtlCodeSeqColumn" hAlign="End" demandPopin="true" minScreenWidth="Tablet">
+                            <Text id="payrollCodeSeq" text="Payroll Code Sequence" />
+                        </Column>
+                        <Column id="nameDtlColumn" hAlign="End">
+                            <Text id="nameDtlCol" text="Name" />
+                        </Column>
+                        <Column id="amountDtlColumn" hAlign="End">
+                            <Text id="amount" text="Amount" />
+                        </Column>
+                        <Column id="glCostCenterColumn" hAlign="End">
+                            <Text id="glCostCenter" text="GL Cost Center" />
+                        </Column>
+                        <Column id="paymentNoDtlColumn" hAlign="End">
+                            <Text id="paymentNoCol" text="Payment No" />
+                        </Column>
+                        <Column id="paymentIdDtlColumn" hAlign="End">
+                            <Text id="paymentIdCol" text="Payment ID" />
+                        </Column>
+                        <Column id="paymentFormDtlColumn" hAlign="End">
+                            <Text id="paymentFormCol" text="Payment Form" />
+                        </Column>
+                        <Column id="loanAdvNoDtlColumn" hAlign="End">
+                            <Text id="loanAdvNo" text="Loan or Advance No" />
+                        </Column>
+                        <Column id="projCodeDtlColumn" hAlign="End">
+                            <Text id="projCode" text="Project Code" />
+                        </Column>
+                        <Column id="projTaskDtlColumn" hAlign="End">
+                            <Text id="projTask" text="Project Task" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem id="colListItm">
+                            <cells>
+                                <Text id="txtDtlFMNO" text="{fmno}" />
+                                <Text id="txtDtlPayoffCode" text="{payrollCode}" />
+                                <Text id="txtDtlPayoffCodeSq" text="{payrollCodeSequence}" />
+                                <Text id="txtName" text="{name}" />
+                                <Text id="txtDtlAmount" text="{amount}" />
+                                <Text id="txtDtlglCostCenter" text="{glCostCenter}" />
+                                <Text id="txtDtlPaymentNo" text="{paymentNumber}" />
+                                <Text id="txtDtlPaymentId" text="{paymentId}" />
+                                <Text id="txtDtlPaymentForm" text="{paymentForm}" />
+                                <Text id="txtDtlLoanAdvNo" text="{loanAdvanceReferenceNumber}" />
+                                <Text id="txtDtlProjCode" text="{projectCode}" />
+                                <Text id="txtDtlProjTask" text="{projectTask}" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </l:VerticalLayout>
+        </semantic:content>
+        <semantic:titleMainAction>
+            <semantic:TitleMainAction id="approveAction" text="Approve" press=".onApprove" />
+        </semantic:titleMainAction>
+
+        <semantic:fullScreenAction>
+            <semantic:FullScreenAction id="enterFullScreen" visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}" press="toggleFullScreen" />
+        </semantic:fullScreenAction>
+        <semantic:exitFullScreenAction>
+            <semantic:ExitFullScreenAction id="exitFullScreen" visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}" press="toggleFullScreen" />
+        </semantic:exitFullScreenAction>
+    </semantic:SemanticPage>
+</mvc:View>
