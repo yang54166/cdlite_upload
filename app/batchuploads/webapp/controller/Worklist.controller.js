@@ -152,6 +152,39 @@ sap.ui.define([
             }
         },
 
+        onPressApprove: function (oEvent) {
+
+           // var sMsg = "BATCH " + oEvent.getSource().getBindingContext().getProperty("BATCHNUMBER") + " got approved successfully!";
+           // MessageBox.success(sMsg);
+
+           var oView = this.getView();
+
+           // create dialog lazily
+           if (!this.byId("approveDialog")) {
+               // load asynchronous XML fragment
+               Fragment.load({
+                   id: oView.getId(),
+                   name: "batchuploads.fragments.Approve",
+                   controller: this
+               }).then(function (oDialog) {
+                   // connect dialog to the root view 
+                   //of this component (models, lifecycle)
+                   oView.addDependent(oDialog);
+                   oDialog.open();
+               });
+           } else {
+               this.byId("approveDialog").open();
+           }
+        },
+
+        closeApprovalDialog: function () {
+            if (this.byId("approveDialog")) {
+                this.byId("approveDialog").close();
+                this.byId("approveDialog").destroy();
+            }
+        },
+
+
         onUpload: function () {
             var oView = this.getView();
 
