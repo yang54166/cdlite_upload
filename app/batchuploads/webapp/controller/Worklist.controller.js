@@ -11,6 +11,7 @@ sap.ui.define([
     return BaseController.extend("batchuploads.controller.Worklist", {
 
         formatter: formatter,
+        _oDialog: null,
 
         /* =========================================================== */
         /* lifecycle methods                                           */
@@ -98,7 +99,7 @@ sap.ui.define([
                 var sQuery = oEvent.getParameter("query");
 
                 var filters = [];
-            
+
                 filters.push(new Filter("batchDescription", FilterOperator.Contains, sQuery));
                 filters.push(new Filter("companyCode", FilterOperator.Contains, sQuery));
 
@@ -106,7 +107,7 @@ sap.ui.define([
                 if (sQuery && sQuery.length > 0) {
                     aTableSearchState = orFilters;
                 }
-                
+
                 this._applySearch(aTableSearchState);
             }
 
@@ -154,36 +155,57 @@ sap.ui.define([
 
         onPressApprove: function (oEvent) {
 
-           // var sMsg = "BATCH " + oEvent.getSource().getBindingContext().getProperty("BATCHNUMBER") + " got approved successfully!";
-           // MessageBox.success(sMsg);
+            // var sMsg = "BATCH " + oEvent.getSource().getBindingContext().getProperty("BATCHNUMBER") + " got approved successfully!";
+            // MessageBox.success(sMsg);
 
-           var oView = this.getView();
+            var sID = oEvent.getSource().getParent().getBindingContext().getProperty("ID");
+            var sBatchDesc = oEvent.getSource().getParent().getBindingContext().getProperty("batchDescription");
+            var sGLCompanyCode = oEvent.getSource().getParent().getBindingContext().getProperty("glCompanyCode");
+            var sCurrencyCode = oEvent.getSource().getParent().getBindingContext().getProperty("currencyCode");
+            var sPayrollDate = oEvent.getSource().getParent().getBindingContext().getProperty("payrollDate");
+            var sEffectivePeriod = oEvent.getSource().getParent().getBindingContext().getProperty("effectivePeriod");
 
-           // create dialog lazily
-           if (!this.byId("approveDialog")) {
-               // load asynchronous XML fragment
-               Fragment.load({
-                   id: oView.getId(),
-                   name: "batchuploads.fragments.Approve",
-                   controller: this
-               }).then(function (oDialog) {
-                   // connect dialog to the root view 
-                   //of this component (models, lifecycle)
-                   oView.addDependent(oDialog);
-                   oDialog.open();
-               });
-           } else {
-               this.byId("approveDialog").open();
-           }
-        },
+            var oView = this.getView();
+            var that = this;
 
-        closeApprovalDialog: function () {
-            if (this.byId("approveDialog")) {
-                this.byId("approveDialog").close();
-                this.byId("approveDialog").destroy();
+            // create dialog lazily
+            if (!that._oDialog) {
+                // load asynchronous XML fragment
+                Fragment.load({
+                    id: oView.getId(),
+                    name: "batchuploads.fragments.Approve",
+                    controller: that
+                }).then(function (oDialog) {
+                    that._oDialog = oDialog;
+                    oView.addDependent(oDialog);
+                    oView.byId("approvePageTitle").setText("Upload Batch " + sID);
+                    oView.byId("approveDesc").setText(sBatchDesc);
+                    oView.byId("aprroveCurrency").setText(sCurrencyCode);
+                    oView.byId("approveCompanyCode").setText(sGLCompanyCode);
+                    oView.byId("approvePayrollDate").setText(sPayrollDate);
+                    oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
+                    oDialog.open();
+                });
+            } else {
+                that._oDialog.open();
             }
         },
 
+        closeApprovalDialog: function () {
+            if (this._oDialog) {
+                this._oDialog.close();
+                //    this._oDialog.destroy();
+                //this._oDialog = null;
+            }
+        },
+
+        onAfterClose: function (oEvent) {
+            oEvent.getSource().destroyBeginButton();
+            oEvent.getSource().destroyEndButton();
+            oEvent.getSource().destroyContent();
+            oEvent.getSource().destroy();
+            this._oDialog = null;
+        },
 
         onUpload: function () {
             var oView = this.getView();
@@ -210,27 +232,27 @@ sap.ui.define([
         submitUploads: function () {
             var sCompanyCode = this.getView().byId("companyCode").getValue();
             var sTransType = this.getView().byId("transType").getSelectedItem().getText();
-       //     var sCurrency = this.getView().byId("currency").getValue();
+            //     var sCurrency = this.getView().byId("currency").getValue();
             var sPayrollDate = this.getView().byId("payrollDate").getValue();
             var sGLPeriod = this.getView().byId("glPeriod").getValue();
             var sEffectivePeriod = this.getView().byId("effectivePeriod").getValue();
             //    var sBatchNo = this.getView().byId("batchNo").getValue();
             var sBatchDesc = this.getView().byId("batchDesc").getValue();
-    //        var sRemarks = this.getView().byId("uploadRemarks").getValue();
+            //        var sRemarks = this.getView().byId("uploadRemarks").getValue();
 
             var oUploadData = {
                 "batchDescription": sBatchDesc,
                 "BATCHNUMBER": this._newID,
-      //          "CURRENCYCODE": sCurrency,
+                //          "CURRENCYCODE": sCurrency,
                 "effectiveDate": sEffectivePeriod,
                 "companyCode": sCompanyCode,
                 "glDate": sGLPeriod,
                 "ID": this._newID.toString(),
                 "payrollDate": sPayrollDate,
-       //         "REMARKS": sRemarks,
+                //         "REMARKS": sRemarks,
                 "batchStatus": "STAGED",
-          //      "STATUSMESSAGE": "Uploaded",
-          //      "TRANSACTIONTYPE": sTransType
+                //      "STATUSMESSAGE": "Uploaded",
+                //      "TRANSACTIONTYPE": sTransType
             };
 
             var oModel = this.getView().getModel();
@@ -243,7 +265,7 @@ sap.ui.define([
                 this.byId("uploadDialog").destroy();
             }
         },
-        
+
         closeDialog: function () {
             if (this.byId("uploadDialog")) {
                 this.byId("uploadDialog").close();

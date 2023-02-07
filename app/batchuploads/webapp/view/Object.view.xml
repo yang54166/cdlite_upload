@@ -29,7 +29,7 @@
                     <m:Label id="extendedSubtitle" text="{batchDescription}" />
                 </expandedContent>
                 <actions>
-                    <m:Button id="approveBtn" text="Approve" type="Emphasized" />
+                    <m:Button id="approveBtn" text="Approve" press="onPressApprove" type="Emphasized" />
                     <m:OverflowToolbarButton id="shareBtn" icon="sap-icon://action" type="Transparent" text="Share" tooltip="action" />
                 </actions>
             </ObjectPageDynamicHeaderTitle>
@@ -151,7 +151,7 @@
                                 <m:IconTabBar id="iconTabBar" select=".onQuickFilter" expandable="false">
                                     <m:items>
                                         <m:IconTabFilter id="allFilter" key="all" showAll="true" count="{objectView>/countAll}" text="All" />
-                                        <m:IconTabFilter id="allTabSeparator" />
+                                      	<m:IconTabSeparator id="filterSeparator"/>
                                         <m:IconTabFilter id="successFilter" key="success" icon="sap-icon://message-success" iconColor="Positive" count="{objectView>/success}" text="Success" />
                                         <m:IconTabFilter id="errorFilter" key="inError" icon="sap-icon://message-error" iconColor="Negative" count="{objectView>/inError}" text="Error" />
                                     </m:items>
@@ -163,12 +163,12 @@
                                     mode="MultiSelect"
                                     width="auto"
                                     items="{
-							path: 'items',
-							sorter: {
-								path: 'fmno',
-								descending: false
-							}
-						}"
+                                        path: 'items',
+                                        sorter: {
+                                            path: 'fmno',
+                                            descending: false
+                                        }
+                                    }"
                                     updateFinished=".onListUpdateFinished"
                                     noDataText="{i18n>detailLineItemTableNoDataText}"
                                     busyIndicatorDelay="{objectView>/tableBusyDelay}"
@@ -222,7 +222,7 @@
                                         </m:Column>
                                     </m:columns>
                                     <m:items>
-                                        <m:ColumnListItem id="colListItm">
+                                        <m:ColumnListItem id="colBatchItems">
                                             <m:cells>
                                                 <m:Text id="txtDtlFMNO" text="{fmno}" />
                                                 <m:Text id="txtDtlPayoffCode" text="{payrollCode}" />

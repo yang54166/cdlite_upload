@@ -6,11 +6,12 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/m/MessageBox",
+    "sap/ui/core/Fragment",
     "sap/ui/export/library",
     "sap/ui/export/Spreadsheet",
     "sap/ui/core/util/Export",
     "sap/ui/core/util/ExportTypeCSV"
-], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, exportLibrary, Spreadsheet, Export, ExportTypeCSV) {
+], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV) {
     "use strict";
 
     return BaseController.extend("batchuploads.controller.Object", {
@@ -87,6 +88,7 @@ sap.ui.define([
          */
         _onObjectMatched: function (oEvent) {
             var sObjectId = oEvent.getParameter("arguments").objectId;
+            this._ID = sObjectId.replace(/[{()}]/g, '');
             this._bindView("/StagingUploads" + sObjectId);
         },
 
@@ -161,7 +163,7 @@ sap.ui.define([
                 oViewModel.setProperty("/countAll", iTotalItems);
 
                 this._sURL = oItemsBinding.sReducedPath;
-                var sURL = '/payroll' + this._sURL + "?$filter=fmno eq '" + '101118' + "'";
+                var sURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'VALID' + "'";
                 $.get({
                     url: sURL,
                     success: function(data) {
@@ -223,6 +225,48 @@ sap.ui.define([
             var oTable = this.byId("lineItemsList");
             oTable.getBinding("items").refresh();
         },
+
+        onPressApprove: function (oEvent) {
+
+            var oView = this.getView();
+            var that = this;
+            var sID = that._ID;
+            var sBatchDesc = oView.byId("snappedHeadingSubTitle").getText();
+            var sGLCompanyCode = oView.byId("companyCodeTxt").getText();
+            var sCurrencyCode = oView.byId("currencyCodeTxt").getText();
+            var sPayrollDate = oView.byId("payrollDateTxt").getText();
+            var sEffectivePeriod = oView.byId("effectivePeriodTxt").getText();
+
+
+            // create dialog lazily
+            if (!that.byId("approveDialog")) {
+                // load asynchronous XML fragment
+                Fragment.load({
+                    id: oView.getId(),
+                    name: "batchuploads.fragments.Approve",
+                    controller: that
+                }).then(function (oDialog) {
+                    oView.addDependent(oDialog);
+                    oView.byId("approvePageTitle").setText("Upload Batch " + sID);
+                    oView.byId("approveDesc").setText(sBatchDesc);
+                    oView.byId("aprroveCurrency").setText(sCurrencyCode);
+                    oView.byId("approveCompanyCode").setText(sGLCompanyCode);
+                    oView.byId("approvePayrollDate").setText(sPayrollDate);
+                    oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
+                    oDialog.open();
+                });
+            } else {
+                that.byId("approveDialog").open();
+            }
+        },
+
+        closeApprovalDialog: function () {
+            if (this.byId("approveDialog")) {
+                this.byId("approveDialog").close();
+                this.byId("approveDialog").destroy();
+            }
+        },
+
     });
 
 });

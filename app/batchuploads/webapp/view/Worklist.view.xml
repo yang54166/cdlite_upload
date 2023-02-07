@@ -6,7 +6,7 @@
         <semantic:headerContent>
             <l:HorizontalLayout id="horizonLayout">
                 <l:VerticalLayout id="companyCodeFilterLayout" class="sapUiMediumMarginEnd">
-                    <Label id="compCodeLabel" text="Company Code" design="Bold"/>
+                    <Label id="compCodeLabel" text="Company Code" design="Bold" />
                     <MultiComboBox id="companyCodeList" name="Name" selectionChange=".onSelectionChange" items="{
 												path: '',
 												templateShareable: true
@@ -15,7 +15,7 @@
                     </MultiComboBox>
                 </l:VerticalLayout>
                 <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">
-                    <Label id="monthYearLabel" text="Upload Month/Year" design="Bold"/>
+                    <Label id="monthYearLabel" text="Upload Month/Year" design="Bold" />
                     <MultiComboBox id="monthYearList" name="Category" selectionChange=".onSelectionChange" items="{
 												path: '',
 												templateShareable: true
@@ -65,10 +65,10 @@
                     <Column id="batchDescColumn" demandPopin="false" minScreenWidth="Tablet">
                         <Text id="BATCHDESCRIPTION" text="Batch Description" />
                     </Column>
-
-                    <Column id="statusColumn" demandPopin="true" minScreenWidth="Tablet" hAlign="End">
-                        <Text id="headerStatus" text="Status" />
+                    <Column id="glCompanyCodedColumn" hAlign="End">
+                        <Text id="glCompanyCodeCol" text="Company Code" />
                     </Column>
+
                     <Column id="payrollDateColumn" hAlign="End">
                         <Text id="payrollDateCol" text="Payroll Date" />
                     </Column>
@@ -84,11 +84,12 @@
                     <Column id="effectivePeriodColumn" hAlign="End">
                         <Text id="effectivePeriod" text="Effective Period" />
                     </Column>
-
-                    <Column id="createdByColumn" hAlign="End">
-                        <Text id="creaatedByCol" text="created By" />
+                    <Column id="statusColumn" demandPopin="true" minScreenWidth="Tablet" hAlign="End">
+                        <Text id="headerStatus" text="Status" />
                     </Column>
-
+                    <Column id="createdByColumn" hAlign="End">
+                        <Text id="creaatedByCol" text="Created By" />
+                    </Column>
                     <Column id="createdAtColumn" hAlign="End">
                         <Text id="createdAtCol" text="Created At" />
                     </Column>
@@ -101,12 +102,13 @@
                         <cells>
                             <Text id="txtBatchNo" text="{ID}" />
                             <Text id="txtBatchDesc" text="{batchDescription}" />
-                            <Text id="txtStatus" text="{status}" />
+                            <Text id="txtGLCompanyCode" text="{glCompanyCode}" />
                             <Text id="txtPayrollDate" text="{payrollDate}" />
                             <Text id="txtTransType" text="{transactionType}" />
                             <Text id="txtCurrencyCode" text="{currencyCode}" />
                             <Text id="txtGLPeriod" text="{glPeriod}" />
                             <Text id="txtEffectivePeriod" text="{effectivePeriod}" />
+                            <Text id="txtStatus" text="{status}" />
                             <Text id="txtCreatedBy" text="Dan Antonio" />
                             <Text id="txtCreatedAt" text="{createdAt}" />
 
