@@ -11,7 +11,6 @@ class PayrollService extends cds.ApplicationService {
     async init() {
         const db = await cds.connect.to('db')
         const fdm = await cds.connect.to('fdm_masterdata');
-        //const svcs = xsenv.getServices({ label: "user-provided"});
 
         const { PayrollHeader, PayrollDetails, PostingBatch } = db.entities('payroll');
         const { UploadHeader, UploadItems } = db.entities('staging');
@@ -97,15 +96,16 @@ class PayrollService extends cds.ApplicationService {
 
             // TODO:  Calculate Period
             // Get User Info from FDM
-            const fdmToken = await SecurityUtils.getOauthTokenClientCredentials(fdm.options.credentials.tokenServiceURL, fdm.options.credentials.clientId, fdm.options.credentials.clientSecret);
+            //const fdmToken = await SecurityUtils.getOauthTokenClientCredentials(fdm.options.credentials.tokenServiceURL, fdm.options.credentials.clientId, fdm.options.credentials.clientSecret);
 
             let resultUsers = [];
             try {
-                //resultUsers = await fdm.get(`/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set`);
-                axios.defaults.baseURL = `${fdm.options.credentials.url}${fdm.options.credentials.path}`;
-                axios.defaults.headers.common = { 'Authorization': `Bearer ${fdmToken}` };
-                const responseUsers = await axios.get(`${fdm.options.credentials.url}${fdm.options.credentials.path}/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set`);
-                resultUsers = responseUsers.data.value;
+                resultUsers = await fdm.get(`/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set`);
+                // axios.defaults.baseURL = `${fdm.options.credentials.url}${fdm.options.credentials.path}`;
+                // axios.defaults.headers.common = { 'Authorization': `Bearer ${fdmToken}` };
+                // const responseUsers = await axios.get(`${fdm.options.credentials.url}${fdm.options.credentials.path}/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set`);
+                // resultUsers = responseUsers.data.value;
+
             } catch (ex) {
                 console.log("error retrieving data from FDM");
             };

@@ -59,11 +59,7 @@
         "kind": "odata",
         "model": "srv/external/fdm_masterdata",
         "credentials": {
-          "url": "https://analyticsfindwdev-analyticsfindwdev-api-raa-calviewodata-c-srv.cfapps.eu10.hana.ondemand.com",
-          "authentication": "OAuth2ClientCredentials",
-          "clientId": "sb-raa_calviewodata_c!t107005",
-          "clientSecret": "ZrKuF/1j4YiZm7jFb1ew52UgQJ0=",
-          "tokenServiceURL": "https://analyticsfindwdev-9jd3l1b3.authentication.eu10.hana.ondemand.com/oauth/token",
+          "destination":"FDM",
           "path": "/masterdata"
         }
       },
