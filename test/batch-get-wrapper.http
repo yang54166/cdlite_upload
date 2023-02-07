@@ -1,0 +1,5 @@
+POST /payroll/$batch HTTP/1.1
+Host: localhost:4004
+Content-Type: multipart/mixed; boundary=batch_id-1
+
+< ./batch-get-content.payload
