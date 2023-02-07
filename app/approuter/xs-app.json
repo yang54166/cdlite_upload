@@ -1,0 +1,20 @@
+{
+  "authenticationMethod": "route",
+  "welcomeFile":"index.html",
+  "routes": [
+    {
+      "source": "^/payroll/(.*)$",
+      "target": "/payroll/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true
+    },
+    {
+      "source": "(.*)",
+      "target": "/batchuploads/$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa",
+      "cacheControl": "no-cache, no-store, must-revalidate"
+    }
+  ]
+}

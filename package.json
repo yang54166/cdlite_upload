@@ -69,6 +69,12 @@
       },
       "messaging": {
         "kind": "local-messaging"
+      },
+      "auth": {
+        "kind": "xsuaa"
+      },
+      "approuter": {
+        "kind": "cloudfoundry"
       }
     },
     "hana": {

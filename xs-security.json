@@ -34,7 +34,9 @@
         "$XSAPPNAME.delete"
       ],
       "description": "accounting user role",
-      "attribute-references" : ["companycode"] 
+      "attribute-references": [
+        "companycode"
+      ]
     },
     {
       "name": "Approver",
@@ -45,7 +47,9 @@
         "$XSAPPNAME.delete"
       ],
       "description": "approver role",
-      "attribute-references" : ["companycode"] 
+      "attribute-references": [
+        "companycode"
+      ]
     },
     {
       "name": "Admin",
