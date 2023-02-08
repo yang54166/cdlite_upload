@@ -29,7 +29,7 @@
                     <m:Label id="extendedSubtitle" text="{batchDescription}" />
                 </expandedContent>
                 <actions>
-                    <m:Button id="approveBtn" text="Approve" press="onPressApprove" type="Emphasized" />
+                    <m:Button id="dtlApproveBtn" text="Approve" press="onPressApprove" type="Emphasized" />
                     <m:OverflowToolbarButton id="shareBtn" icon="sap-icon://action" type="Transparent" text="Share" tooltip="action" />
                 </actions>
             </ObjectPageDynamicHeaderTitle>
