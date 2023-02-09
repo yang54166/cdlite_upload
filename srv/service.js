@@ -257,6 +257,21 @@ class PayrollService extends cds.ApplicationService {
             };
         });
 
+        // this.on("READ", "StagingUploads", async (req) =>{
+        //     //console.log(req);
+        //     const tx = db.tx(req);
+        //     const query = req.query;
+        //     //query.SELECT.count = true;
+        //     return tx.run(query);
+        // }); 
+
+        this.after("READ", "StagingUploads", async (result) =>{
+            if (result.items) {
+                result = result.items.map((item)=>({...item, "items@odata.count": result.items.length}));
+            };
+            return result;
+        }); 
+
         // required
         await super.init()
     }
