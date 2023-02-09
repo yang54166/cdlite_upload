@@ -33,4 +33,4 @@ mta_archives/
 # auto generated wildcard
 db/.env
 app/batchuploads/dist/
-resources/batchuploads.zip
+resources/
