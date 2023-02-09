@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-POST http://localhost:4004/payroll/StagingUploads(33)/approve
-=======
-POST http://localhost:4004/payroll/StagingUploads(22)/approve
->>>>>>> c860a56 (initial commit)
+POST http://localhost:4004/payroll/StagingUploads(19)/approve
 Content-Type: application/json
 
 {}

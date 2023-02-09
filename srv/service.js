@@ -26,7 +26,7 @@ class PayrollService extends cds.ApplicationService {
                 const batchID = contentPropertyMap.get("batchID");
                 let content = '';
                 const stream = new PassThrough();
-                req.data.content.pipe(stream);
+                req.data.content.pipe(stream, { end: false });
 
                 console.log(`DEBUG: Upload started for batch ${batchID}.`);
                 await new Promise((resolve, reject) => {
@@ -34,6 +34,7 @@ class PayrollService extends cds.ApplicationService {
                         // Read stream
                         req.data.content.on("data", dataChunk => {
                             content += dataChunk;
+                            stream.resume();
                         });
 
                         // Output stream
@@ -94,22 +95,6 @@ class PayrollService extends cds.ApplicationService {
             const batchID = req.data.batchID || req.params[0];
             console.log("enriching batchId: " + batchID);
 
-            // TODO:  Calculate Period
-            // Get User Info from FDM
-            //const fdmToken = await SecurityUtils.getOauthTokenClientCredentials(fdm.options.credentials.tokenServiceURL, fdm.options.credentials.clientId, fdm.options.credentials.clientSecret);
-
-            let resultUsers = [];
-            try {
-                resultUsers = await fdm.get(`/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set`);
-                // axios.defaults.baseURL = `${fdm.options.credentials.url}${fdm.options.credentials.path}`;
-                // axios.defaults.headers.common = { 'Authorization': `Bearer ${fdmToken}` };
-                // const responseUsers = await axios.get(`${fdm.options.credentials.url}${fdm.options.credentials.path}/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set`);
-                // resultUsers = responseUsers.data.value;
-
-            } catch (ex) {
-                console.log("error retrieving data from FDM");
-            };
-
             // Get Staging Data
             const stagingHeader = await SELECT.one.from(UploadHeader).where({ ID: batchID });
             const stagingDataItems = await SELECT.from(UploadItems)
@@ -117,6 +102,18 @@ class PayrollService extends cds.ApplicationService {
                     "NAME", "AMOUNT", "PAYMENTNUMBER", "PAYMENTID", "PAYMENTFORM", "USERFIELD1", "USERFIELD2", "REMARKS",
                     "LOANADVANCEREFERENCENUMBER", "PROJECTCODE", "PROJECTTASK", "GLACCOUNT", "GLCOSTCENTER")
                 .where({ PARENT_ID: batchID });
+
+            let resultUsers = [];
+            try {
+                let result = await fdm.get(`/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set?$filter=client eq '200' and companyCode eq '${stagingHeader.glCompanyCode}'`);
+                resultUsers.push(...result);
+                while (result.$nextLink) {
+                    result = await fdm.get(`/${result.$nextLink}`);
+                    resultUsers.push(...result);
+                }
+            } catch (ex) {
+                console.log("error retrieving data from FDM");
+            };
 
             // Get Mapping Data
             const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
@@ -157,98 +154,107 @@ class PayrollService extends cds.ApplicationService {
             const [batchToApprove] = req.params;
             console.log(batchToApprove);
 
-            // Mark records approved
-            const resultApproveHeader = await UPDATE(UploadHeader).set({ STATUS: 'APPROVED' }).where({ ID: batchToApprove });
-            const resultApproveItems = await UPDATE(UploadItems).set({ STATUS: 'APPROVED' }).where({ PARENT_ID: batchToApprove, STATUS: 'VALID' });
+            // If already approved just trigger CPI
+            const currentBatchStatus = await SELECT.one.from(UploadHeader).columns("STATUS").where({ ID: batchToApprove });
+            if (currentBatchStatus.STATUS != 'APPROVED') {
 
-            if (resultApproveHeader > 0 && resultApproveItems > 0) {
-                // Get Data to Copy
-                const dataHeader = await SELECT.one.from(UploadHeader).where({ ID: batchToApprove, STATUS: 'APPROVED' });
-                const dataItems = await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' });
+                // Mark records approved
+                const resultApproveHeader = await UPDATE(UploadHeader).set({ STATUS: 'APPROVED' }).where({ ID: batchToApprove });
+                const resultApproveItems = await UPDATE(UploadItems).set({ STATUS: 'APPROVED' }).where({ PARENT_ID: batchToApprove, STATUS: 'VALID' });
 
-                // Get Mapping Data
-                const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: dataHeader.glCompanyCode });
-                const dataMapping = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
+                if (resultApproveHeader > 0 && resultApproveItems > 0) {
+                    // Get Data to Copy
+                    const dataHeader = await SELECT.one.from(UploadHeader).where({ ID: batchToApprove, STATUS: 'APPROVED' });
+                    const dataItems = await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' });
 
-                if (dataHeader) {
-                    // COPY DATA TO PERSISTENT TABLES
-                    // POSTING BATCH
-                    const postingBatch = 1;
-                    const resultCreatePostingBatch = await INSERT.into(PostingBatch).entries({
-                        batchId: dataHeader.ID,
-                        postingBatchId: postingBatch
-                    });
+                    // Get Mapping Data
+                    const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: dataHeader.glCompanyCode });
+                    const dataMapping = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
 
-                    // HEADER
-                    const { createdAt, createdBy, modifiedAt, modifiedBy, glCompanyCode, batchDescription, transactionType, currencyCode, payrollDate, glPeriod, effectivePeriod, filename, remarks } = dataHeader;
-                    const payloadHeader = {
-                        batchID: dataHeader.ID,
-                        createdAt,
-                        createdBy,
-                        modifiedAt,
-                        modifiedBy,
-                        batchDescription,
-                        batchStatus: 'APPROVED',
-                        approvedAt: new Date(),
-                        approvedBy: req.user.id,
-                        cdTransactionType: transactionType,
-                        controlAmount: dataItems.reduce((prev, curr) => (parseFloat(prev) + parseFloat(curr.amount)).toFixed(2), 0),
-                        controlCount: dataItems.length || 0,
-                        effectiveDate: utils.convertPeriodToDate(effectivePeriod),
-                        glDate: utils.convertPeriodToDate(glPeriod),
-                        payrollDate,
-                        payrollPeriod: utils.convertDateToPayPeriod(new Date(payrollDate)),
-                        sourceSystem: 'PAYROLL',
-                        companyCode: glCompanyCode
-                    };
-                    const resultCopyHeader = await INSERT.into(PayrollHeader).entries(payloadHeader);
+                    if (dataHeader) {
+                        // COPY DATA TO PERSISTENT TABLES
+                        // POSTING BATCH
+                        const postingBatch = 1;
+                        const resultCreatePostingBatch = await INSERT.into(PostingBatch).entries({
+                            batchId: dataHeader.ID,
+                            postingBatchId: postingBatch
+                        });
 
-                    // ITEMS
-                    let lineCounter = 0;
-                    const payloadItems = dataItems.map((item) => {
-                        const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
+                        // HEADER
+                        const { createdAt, createdBy, modifiedAt, modifiedBy, glCompanyCode, batchDescription, transactionType, currencyCode, payrollDate, glPeriod, effectivePeriod, filename, remarks } = dataHeader;
+                        const payloadHeader = {
+                            batchID: dataHeader.ID,
+                            createdAt,
+                            createdBy,
+                            modifiedAt,
+                            modifiedBy,
+                            batchDescription,
+                            batchStatus: 'APPROVED',
+                            approvedAt: new Date(),
+                            approvedBy: req.user.id,
+                            cdTransactionType: transactionType,
+                            controlAmount: dataItems.reduce((prev, curr) => (parseFloat(prev) + parseFloat(curr.amount)).toFixed(2), 0),
+                            controlCount: dataItems.length || 0,
+                            effectiveDate: utils.convertPeriodToDate(effectivePeriod),
+                            glDate: utils.convertPeriodToDate(glPeriod),
+                            payrollDate,
+                            payrollPeriod: utils.convertDateToPayPeriod(new Date(payrollDate)),
+                            sourceSystem: 'PAYROLL',
+                            companyCode: glCompanyCode
+                        };
+                        const resultCopyHeader = await INSERT.into(PayrollHeader).entries(payloadHeader);
 
-                        return {
-                            batchID_batchID: batchToApprove,
-                            batchLineNumber: lineCounter += 1,
-                            postingBatchID: postingBatch,
-                            postingBatchLineNumber: lineCounter,
-                            fmno: item.fmno,
-                            payrollCode: item.payrollCode,
-                            payrollCodeSequence: item.payrollCodeSequence,
-                            sourceAmount: item.amount,
-                            paymentID: item.paymentID,
-                            projectCode: item.projectCode,
-                            glAccount: item.glAccount,
-                            glPostCostCenter: item.glCostCenter,
-                            glCurrencyCode: currencyCode,
-                            postingAggregation: (mapObj.payrollCodeType == 'ADVANCE' || mapObj.payrollCodeType == 'LOAN') ? false : true,
-                            advanceNumber: mapObj.payrollCodeType == 'ADVANCE' ? item.LOANADVANCEREFERENCENUMBER : null,
-                            loanNumber: mapObj.payrollCodeType == 'LOAN' ? item.LOANADVANCEREFERENCENUMBER : null,
-                        }
-                    });
+                        // ITEMS
+                        let lineCounter = 0;
+                        const payloadItems = dataItems.map((item) => {
+                            const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
 
-                    const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
+                            return {
+                                batchID_batchID: batchToApprove,
+                                batchLineNumber: lineCounter += 1,
+                                postingBatchID: postingBatch,
+                                postingBatchLineNumber: lineCounter,
+                                fmno: item.fmno,
+                                payrollCode: item.payrollCode,
+                                payrollCodeSequence: item.payrollCodeSequence,
+                                sourceAmount: item.amount,
+                                paymentID: item.paymentID,
+                                projectCode: item.projectCode,
+                                glAccount: item.glAccount,
+                                glPostCostCenter: item.glCostCenter,
+                                glCurrencyCode: currencyCode,
+                                postingAggregation: (mapObj.payrollCodeType == 'ADVANCE' || mapObj.payrollCodeType == 'LOAN') ? false : true,
+                                advanceNumber: mapObj.payrollCodeType == 'ADVANCE' ? item.LOANADVANCEREFERENCENUMBER : null,
+                                loanNumber: mapObj.payrollCodeType == 'LOAN' ? item.LOANADVANCEREFERENCENUMBER : null,
+                            }
+                        });
 
-                    // NOTIFY CPI
-                    const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
-                    try {
-                        axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
-                        axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
-                        const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchToApprove}`;
-                        const responseCPI = await axios.get(cpiURL);
-                        console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}:${responseCPI.data}`);
-                    } catch (ex) {
-                        console.log("error retrieving data from FDM");
-                    };
+                        const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
 
-                    return true;
+
+
+                        return true;
+                    } else {
+                        req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
+                    }
                 } else {
-                    req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
+                    req.error({ code: 400, message: `Unable to approve batch ID:${batchToApprove}.` });
                 }
             } else {
-                req.error({ code: 400, message: `Unable to approve batch ID:${batchToApprove}.` });
+                console.log("Already approved, just triggering CPI again.");
             }
+
+            // NOTIFY CPI
+            const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
+            try {
+                axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
+                axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
+                const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchToApprove}`;
+                const responseCPI = await axios.get(cpiURL);
+                console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
+            } catch (ex) {
+                console.log("error retrieving data from FDM");
+            };
         });
 
         // required
