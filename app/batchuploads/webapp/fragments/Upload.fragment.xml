@@ -48,10 +48,24 @@
                 <Input id="batchNo" /> -->
                 <Label id="batchDescLbl" text="Batch Description" labelFor="batchDesc" design="Bold" />
                 <Input id="batchDescDlg" />
-     <!--         <Label id="remarksLbl" text="Remarks" labelFor="uploadRemarks" design="Bold" />
-                <Input id="uploadRemarks" /> -->
+                <!--    <Label id="remarksLbl" text="Remarks" labelFor="uploadRemarks" design="Bold" />
+                <Input id="uploadRemarksDlg" /> -->
                 <Label id="uploadLbl" text="User File Name" labelFor="fileUploader" design="Bold" />
-                <u:FileUploader id="fileUploader" name="myFileUpload" uploadUrl="upload/" tooltip="Upload your file to the local server" change="onChangeFUP" uploadComplete="handleUploadComplete" />
+                <u:FileUploader
+                    id="fileUploader"
+                    name="myFileUpload"
+                    uploadUrl=""
+                    typeMissmatch=".onTypeMismatch"
+                    placeholder="Choose a txt file..."
+                    uploadComplete="handleUploadComplete"
+                    change=".onChangeFUP"
+                    multiple="false"
+                    fileAllowed=".onFileAllowed"
+                    fileEmpty=".onFileEmpty"
+                    sendXHR="true"
+                    useMultipart="false"
+                    httpRequestMethod="Put"
+                />
             </f:content>
         </f:SimpleForm>
     </Dialog>

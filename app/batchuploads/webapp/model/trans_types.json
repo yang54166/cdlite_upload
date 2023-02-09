@@ -1,0 +1,18 @@
+[
+    {
+        "Type": "01",
+        "Name": "Regular payroll"
+    },
+    {
+        "Type": "02",
+        "Name": "Taxes"
+    },
+    {
+        "Type": "03",
+        "Name": "US ledger only"
+    },
+    {
+        "Type": "04",
+        "Name": "Adjustments"
+    }
+]

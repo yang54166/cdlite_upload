@@ -24,6 +24,10 @@
           "localUri": "localService/metadata.xml",
           "odataVersion": "4.0"
         }
+      },
+      "transTypesData": {
+        "uri": "model/trans_types.json",
+        "type": "JSON"
       }
     }
   },
@@ -80,6 +84,10 @@
           "earlyRequests": true,
           "groupId": "$direct"
         }
+      },
+      "transTypesData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "transTypesData"
       }
     },
     "resources": {

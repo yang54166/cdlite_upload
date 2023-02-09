@@ -26,7 +26,7 @@ sap.ui.define([
 
             // keeps the search state
             this._aTableSearchState = [];
-
+            var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
             // Model used to manipulate control states
             oViewModel = new JSONModel({
                 worklistTableTitle: this.getResourceBundle().getText("worklistTableTitle"),
@@ -35,6 +35,7 @@ sap.ui.define([
                 tableNoDataText: this.getResourceBundle().getText("tableNoDataText")
             });
             this.setModel(oViewModel, "worklistView");
+            this.setModel(transTypesModel, "transTypes");
 
         },
 
@@ -228,8 +229,131 @@ sap.ui.define([
             }
         },
 
-
         submitUploads: function () {
+            var sCompanyCode = this.getView().byId("companyCodeDlg").getValue();
+            var sTransType = this.getView().byId("transTypeDlg").getSelectedItem().getKey();
+            var sCurrency = this.getView().byId("currencyDlg").getValue();
+            var sPayrollDate = this.getView().byId("payrollDateDlg").getValue();
+            var sGLPeriod = this.formatDateString(this.getView().byId("glPeriodDlg").getValue());
+            var sEffectivePeriod = this.formatDateString(this.getView().byId("effectivePeriodDlg").getValue());
+            var sBatchDesc = this.getView().byId("batchDescDlg").getValue();
+            var sRemarks = "";
+
+            var oContext = this.byId("table").getBinding("items").create({
+                glCompanyCode: sCompanyCode,
+                transactionType: sTransType,
+                currencyCode: sCurrency,
+                payrollDate: sPayrollDate,
+                glPeriod: sGLPeriod,
+                effectivePeriod: sEffectivePeriod,
+                batchDescription: sBatchDesc,
+                remarks: sRemarks
+            });
+
+            var oUploadDialog = this.byId("uploadDialog");
+            var oFileUploader = this.byId("fileUploader");
+           
+            var that = this;
+            oContext.created().then(function () {
+
+                console.log(that._uploadFileName.name);
+                var sBatchId = oContext.getProperty("ID");
+                var sValue = 'form-data; filename="' + that._uploadFileName.name + '"; batchID=' + sBatchId;
+                oUploadDialog.setBusy(true);
+                var headPar = new sap.ui.unified.FileUploaderParameter();
+                headPar.setName('content-disposition');
+                headPar.setValue(sValue);
+                oFileUploader.removeHeaderParameter('content-disposition');
+                oFileUploader.addHeaderParameter(headPar);
+                oFileUploader.setUploadUrl("/payroll/PayrollUploadFile/content");
+                oFileUploader
+                    .checkFileReadable()
+                    .then(function () {
+                        oFileUploader.upload();
+                        that.onRefresh();
+                        oUploadDialog.setBusy(false);
+                    })
+                    .catch(function (error) {
+                        showError("The file cannot be read.");
+                        oUploadDialog.setBusy(false);
+                    })
+
+            }, function (oError) {
+                console.log("error");
+                // var sMsg = "BATCH " + oEvent.getSource().getBindingContext().getProperty("BATCHNUMBER") + " got approved successfully!";
+                // MessageBox.success(sMsg);
+            })
+        },
+
+        formatDateString: function (sDate) {
+            var d = new Date(sDate);
+            var sMonth = d.getMonth() + 1;
+            var sYear = d.getFullYear();
+
+            return sMonth.toString().length === 2 ? sYear.toString() + sMonth.toString() : sYear.toString() + '0' + sMonth.toString();
+
+        },
+
+        onChangeFUP: function (e) {
+            this._uploadFileName = e.getParameter("files") && e.getParameter("files")[0];
+        },
+
+        old_onChangeFUP: function (e) {
+
+            var file = e.getParameter("files") && e.getParameter("files")[0];
+            this._newID = parseInt(this._nHeaderCnt) + 1;
+            var itemsData = this.getOwnerComponent().getModel("uploadJsonData");
+            var oModelData = itemsData.getProperty("/");
+            if (file && window.FileReader) {
+                var reader = new FileReader();
+
+                var that = this;
+                reader.onload = function (e) {
+                    var strCSV = e.target.result; //string in CSV
+                    var allRows = strCSV.split('\n');
+                    that._dataset = [];
+                    for (let i = 1; i < allRows.length; i++) {
+
+                        var currentLine = allRows[i].split("\t");
+                        var oUploadItem = {
+                            "CREATEDAT": "",
+                            "CREATEDBY": "",
+                            "MODIFIEDAT": "",
+                            "MODIFIEDBY": "",
+                            "PARENT_ID": that._newID,
+                            "STATUS": "STAGED",
+                            "STATUSMESSAGE": "",
+                            "DELETED": "",
+                            "FMNO": currentLine[0],
+                            "PAYROLLCODE": currentLine[1],
+                            "PAYROLLCODESEQUENCE": "",
+                            "NAME": "",
+                            "AMOUNT": currentLine[4],
+                            "PAYMENTNUMBER": "",
+                            "PAYMENTID": currentLine[6],
+                            "PAYMENTFORM": "",
+                            "USERFIELD1": "",
+                            "USERFIELD2": "",
+                            "REMARKS": "",
+                            "LOANADVANCEREFERENCENUMBER": currentLine[11],
+                            "PROJECTCODE": currentLine[12],
+                            "PROJECTTASK": "",
+                            "GLACCOUNT": "",
+                            "GLCOSTCENTER": ""
+                        };
+
+                        oModelData.push(oUploadItem);
+                        itemsData.setProperty("/", oModelData);
+
+                    }
+                };
+
+                reader.readAsText(file);
+                //  console.log(reader.result);
+            }
+        },
+
+        old_submitUploads: function () {
             var sCompanyCode = this.getView().byId("companyCode").getValue();
             var sTransType = this.getView().byId("transType").getSelectedItem().getText();
             //     var sCurrency = this.getView().byId("currency").getValue();
