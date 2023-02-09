@@ -46,11 +46,6 @@ sap.ui.define([
 
             this._oTable = oTable;
 
-            this._mFilters = {
-                "success": [new Filter("STATUS", FilterOperator.EQ, 'APPROVED')],
-                "inError": [new Filter("STATUS", FilterOperator.EQ, 'ERROR')],
-                "all": []
-            };
             this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
             this.setModel(oViewModel, "objectView");
 
@@ -128,19 +123,24 @@ sap.ui.define([
 
             var oResourceBundle = this.getResourceBundle(),
                 oObject = oView.getBindingContext().getObject();
-            
+
 
             oViewModel.setProperty("/busy", false);
-        
+
         },
 
 
         onQuickFilter: function (oEvent) {
-      
+
             var oViewModel = this.getModel("objectView");
             var oBinding = this._oTable.getBinding("items"),
                 sKey = oEvent.getParameter("selectedKey");
-
+            
+            this._mFilters = {
+                "success": [new Filter('status', FilterOperator.EQ, 'APPROVED')],
+                "inError": [new Filter('status', FilterOperator.EQ, 'INVALID')],
+                "all": []
+            };
             if (sKey === "inError") {
                 oViewModel.setProperty("/showExport", true);
             } else {
@@ -155,7 +155,7 @@ sap.ui.define([
                 iTotalItems = oEvent.getParameter("total"),
                 oViewModel = this.getModel("objectView"),
                 oItemsBinding = oEvent.getSource().getBinding("items");
-          
+
             // only update the counter if the length is final
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
 
@@ -163,17 +163,17 @@ sap.ui.define([
                 oViewModel.setProperty("/countAll", iTotalItems);
 
                 this._sURL = oItemsBinding.sReducedPath;
-                var sURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'VALID' + "'";
+                var sURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'APPROVED' + "'";
                 $.get({
                     url: sURL,
-                    success: function(data) {
+                    success: function (data) {
                         oViewModel.setProperty("/success", data.value.length);
                     },
-                    error: function(error) {
+                    error: function (error) {
 
                     }
                 });
-             
+
             } else {
                 //Display 'Line Items' instead of 'Line items (0)'
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
@@ -199,15 +199,15 @@ sap.ui.define([
                     variable: "details",
                     condition: new Filter("glPostCostCenter", FilterOperator.Contains, sQuery)
                 });
-               // console.log(this._sURL);
-             //   filters.push(new Filter(this._sURL + '/glPostCostCenter', FilterOperator.Contains, sQuery));
-             //   filters.push(new Filter(this._sURL + '/payrollCode', FilterOperator.Contains, sQuery));
+                // console.log(this._sURL);
+                //   filters.push(new Filter(this._sURL + '/glPostCostCenter', FilterOperator.Contains, sQuery));
+                //   filters.push(new Filter(this._sURL + '/payrollCode', FilterOperator.Contains, sQuery));
 
-      //          var orFilters = new Filter(filters, false);
+                //          var orFilters = new Filter(filters, false);
                 if (sQuery && sQuery.length > 0) {
                     aTableSearchState = companyCodeFilter;
                 }
-                
+
                 this._applySearch(aTableSearchState);
             }
 

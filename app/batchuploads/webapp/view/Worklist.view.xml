@@ -93,8 +93,7 @@
                     <Column id="createdAtColumn" hAlign="End">
                         <Text id="createdAtCol" text="Created At" />
                     </Column>
-
-                    <Column id="approveColumn" hAlign="End" />
+                    <!--<Column id="approveColumn" hAlign="End" /> -->
                 </columns>
 
                 <items>
@@ -112,7 +111,7 @@
                             <Text id="txtCreatedBy" text="Dan Antonio" />
                             <Text id="txtCreatedAt" text="{createdAt}" />
 
-                            <Button id="approvalBtn" type="Accept" text="Approve" press="onPressApprove" ariaDescribedBy="acceptButtonDescription genericButtonDescription" />
+                            <!--<Button id="approvalBtn" type="Accept" text="Approve" press="onPressApprove" ariaDescribedBy="acceptButtonDescription genericButtonDescription" /> -->
                         </cells>
                     </ColumnListItem>
                 </items>
