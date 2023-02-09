@@ -1,0 +1,76 @@
+_schema-version: "3.1"
+ID: cd_compensationdetails_c
+version: 1.0.0
+description: CD/LAAS Payroll Upload Compensation Details
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npx -p @sap/cds-dk cds build --production
+
+modules:
+  - name: cd_compensationdetails_c
+    type: approuter.nodejs
+    path: app/approuter
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 512M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: cd_compensationdetails_c-auth
+      - name: cd_compensationdetails_c-repo-runtime
+    build-parameters:
+      ignore: [ "node_modules/"]
+  
+  - name: batchuploads
+    type: html5
+    path: app/batchuploads
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+  
+  - name: cd_compensationdetails_c-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: cd_compensationdetails_c-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - batchuploads.zip
+          name: batchuploads
+          target-path: resources/
+
+resources:
+  - name: cd_compensationdetails_c-auth
+    type: org.cloudfoundry.existing-service
+    
+  - name: cd_compensationdetails_c-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: cd_compensationdetails_c-html5-srv
+      service-plan: app-host
+
+  - name: cd_compensationdetails_c-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+    

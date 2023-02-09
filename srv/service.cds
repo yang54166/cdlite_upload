@@ -8,6 +8,7 @@ using {
 using {fdm_masterdata} from './external/fdm_masterdata';
 
 service PayrollService {
+    // For Upload Only, not persisted to db as binary
     @cds.persistence.skip
     @odata.singleton
     entity PayrollUploadFile {
@@ -15,21 +16,26 @@ service PayrollService {
         @Core.IsMediaType: true mediaType: String;
     };
 
+    // Staging
     entity StagingUploads      as projection on staging.UploadHeader actions {
         action approve();
         action enrich();
     };
-
     entity StagingUploadItems  as projection on staging.UploadItems;
+
+    // Payroll (Persistent)
     entity PayrollHeader       as projection on payroll.PayrollHeader;
     entity PayrollDetails      as projection on payroll.PayrollDetails;
     entity PostingBatch        as projection on payroll.PostingBatch;
+
+    // Mapping
     entity LegalEntityGrouping as projection on mapping.LegalEntityGrouping;
     entity PaycodeGLMapping    as projection on mapping.PaycodeGLMapping;
+    entity TransactionTypes as projection on mapping.PayrollLedgerControl;
 
+    // JournalEntries for Posting
     @readonly
     entity JournalEntry        as projection on CV_JOURNALENTRY;
-
     @readonly
     entity JournalEntryItem    as projection on CV_JOURNALENTRY_ITEM;
 
