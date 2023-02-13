@@ -24,6 +24,7 @@ class PayrollService extends cds.ApplicationService {
                     return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
                 }));
                 const batchID = contentPropertyMap.get("batchID");
+                const fileName = contentPropertyMap.get("filename");
                 let content = '';
                 const stream = new PassThrough();
                 req.data.content.pipe(stream, { end: false });
@@ -77,6 +78,9 @@ class PayrollService extends cds.ApplicationService {
                             this.emit("enrich", { batchID });
                             console.log("enrich triggered. Now returning result.")
 
+                            // Update filename
+                            const resultUpdate = await UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
+
                             resolve(result);
                         });
                     } catch (ex) {
@@ -123,8 +127,11 @@ class PayrollService extends cds.ApplicationService {
             let updatedItems = stagingDataItems.map((item) => {
                 let errorsForRow = [];
                 const userObj = resultUsers.find((user) => user.fmno == item.FMNO.padStart(8, '0'));
+                // Validations
                 if (!userObj) {
                     errorsForRow.push(`User ${item.FMNO} not found or invalid.`);
+                } else if (!userObj.costCenter || userObj.costCenter == "") {
+                    errorsForRow.push(`User ${item.FMNO} does not have cost center.`);
                 }
                 const mappedAccount = mappingData.find((mappingRow) =>
                     (mappingRow.payrollCode == item.PAYROLLCODE)
@@ -161,6 +168,7 @@ class PayrollService extends cds.ApplicationService {
                 // Mark records approved
                 const resultApproveHeader = await UPDATE(UploadHeader).set({ STATUS: 'APPROVED' }).where({ ID: batchToApprove });
                 const resultApproveItems = await UPDATE(UploadItems).set({ STATUS: 'APPROVED' }).where({ PARENT_ID: batchToApprove, STATUS: 'VALID' });
+                const resultSkipItems = await UPDATE(UploadItems).set({ STATUS: 'SKIPPED' }).where({ PARENT_ID: batchToApprove, STATUS: 'INVALID' });
 
                 if (resultApproveHeader > 0 && resultApproveItems > 0) {
                     // Get Data to Copy
@@ -233,7 +241,7 @@ class PayrollService extends cds.ApplicationService {
 
 
 
-                        return true;
+                        //return true;
                     } else {
                         req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
                     }
@@ -255,6 +263,8 @@ class PayrollService extends cds.ApplicationService {
             } catch (ex) {
                 console.log("error retrieving data from FDM");
             };
+
+            return true;
         });
 
         // this.on("READ", "StagingUploads", async (req) =>{
@@ -265,12 +275,12 @@ class PayrollService extends cds.ApplicationService {
         //     return tx.run(query);
         // }); 
 
-        this.after("READ", "StagingUploads", async (result) =>{
+        this.after("READ", "StagingUploads", async (result) => {
             if (result.items) {
-                result = result.items.map((item)=>({...item, "items@odata.count": result.items.length}));
+                result = result.items.map((item) => ({ ...item, "items@odata.count": result.items.length }));
             };
             return result;
-        }); 
+        });
 
         // required
         await super.init()
