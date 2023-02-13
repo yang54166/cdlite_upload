@@ -104,12 +104,12 @@ class PayrollService extends cds.ApplicationService {
             const stagingDataItems = await SELECT.from(UploadItems)
                 .columns("PARENT_ID", "ROW", "STATUS", "STATUSMESSAGE", "FMNO", "PAYROLLCODE", "PAYROLLCODESEQUENCE",
                     "NAME", "AMOUNT", "PAYMENTNUMBER", "PAYMENTID", "PAYMENTFORM", "USERFIELD1", "USERFIELD2", "REMARKS",
-                    "LOANADVANCEREFERENCENUMBER", "PROJECTCODE", "PROJECTTASK", "GLACCOUNT", "GLCOSTCENTER")
+                    "LOANADVANCEREFERENCENUMBER", "PROJECTCODE", "PROJECTTASK", "GLACCOUNT", "GLCOSTCENTER", "FCAT")
                 .where({ PARENT_ID: batchID });
 
             let resultUsers = [];
             try {
-                let result = await fdm.get(`/FMNO_MASTER_PAS(IP_PERIOD='202301')/Set?$filter=client eq '200' and companyCode eq '${stagingHeader.glCompanyCode}'`);
+                let result = await fdm.get(`/S4_FMNO_MASTER_API?$filter=client eq '200' and branchId eq '${stagingHeader.glCompanyCode}'`);
                 resultUsers.push(...result);
                 while (result.$nextLink) {
                     result = await fdm.get(`/${result.$nextLink}`);
@@ -126,13 +126,40 @@ class PayrollService extends cds.ApplicationService {
             // Update Staging Data
             let updatedItems = stagingDataItems.map((item) => {
                 let errorsForRow = [];
-                const userObj = resultUsers.find((user) => user.fmno == item.FMNO.padStart(8, '0'));
+                const userObj = resultUsers.find((user) => user.fmno == item.FMNO);//.padStart(8, '0'));
+                let userFCAT = "0";
+
                 // Validations
                 if (!userObj) {
                     errorsForRow.push(`User ${item.FMNO} not found or invalid.`);
                 } else if (!userObj.costCenter || userObj.costCenter == "") {
                     errorsForRow.push(`User ${item.FMNO} does not have cost center.`);
+                } else if (!userObj.groupId || userObj.groupId == "") {
+                    errorsForRow.push(`User ${item.FMNO} does not have FCAT.`);
                 }
+
+                // TODO: This is temporary logic for determing an FMNO
+                switch (userObj?.groupId) {
+                    case "F":
+                        userFCAT = "400";
+                        break;
+                    case "1":
+                    case "N":
+                    case "G":
+                    case "I":
+                        userFCAT = "300";
+                        break;
+                    case "C":
+                    case "D":
+                    case "H":
+                        userFCAT = "200";
+                    case "P":
+                        userFCAT = "100";
+                        break;
+                    default:
+                        userFCAT = "0";
+                }
+
                 const mappedAccount = mappingData.find((mappingRow) =>
                     (mappingRow.payrollCode == item.PAYROLLCODE)
                     && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1)));
@@ -144,7 +171,7 @@ class PayrollService extends cds.ApplicationService {
                 if (errorsForRow.length) {
                     return { ...item, STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
                 } else {
-                    return { ...item, STATUS: 'VALID', STATUSMESSAGE: '', GLCOSTCENTER: userObj.costCenter, GLACCOUNT: mappedAccount.glAccount }
+                    return { ...item, STATUS: 'VALID', STATUSMESSAGE: '', GLCOSTCENTER: userObj.costCenter, GLACCOUNT: mappedAccount.glAccount, FCAT: userFCAT }
                 }
             });
 
@@ -160,6 +187,19 @@ class PayrollService extends cds.ApplicationService {
         this.on('approve', async req => {
             const [batchToApprove] = req.params;
             console.log(batchToApprove);
+
+            const cpiTrigger = async () => {
+                const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
+                try {
+                    axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
+                    axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
+                    const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchToApprove}`;
+                    const responseCPI = await axios.get(cpiURL);
+                    console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
+                } catch (ex) {
+                    console.log("error retrieving data from FDM");
+                };
+            }
 
             // If already approved just trigger CPI
             const currentBatchStatus = await SELECT.one.from(UploadHeader).columns("STATUS").where({ ID: batchToApprove });
@@ -222,6 +262,7 @@ class PayrollService extends cds.ApplicationService {
                                 batchLineNumber: lineCounter += 1,
                                 postingBatchID: postingBatch,
                                 postingBatchLineNumber: lineCounter,
+                                fcat: item.fcat,
                                 fmno: item.fmno,
                                 payrollCode: item.payrollCode,
                                 payrollCodeSequence: item.payrollCodeSequence,
@@ -231,17 +272,16 @@ class PayrollService extends cds.ApplicationService {
                                 glAccount: item.glAccount,
                                 glPostCostCenter: item.glCostCenter,
                                 glCurrencyCode: currencyCode,
-                                postingAggregation: (mapObj.payrollCodeType == 'ADVANCE' || mapObj.payrollCodeType == 'LOAN') ? false : true,
-                                advanceNumber: mapObj.payrollCodeType == 'ADVANCE' ? item.LOANADVANCEREFERENCENUMBER : null,
-                                loanNumber: mapObj.payrollCodeType == 'LOAN' ? item.LOANADVANCEREFERENCENUMBER : null,
+                                postingAggregation: (mapObj.payrollCodeClass == 'ADVANCE' || mapObj.payrollCodeClass == 'LOAN') ? false : true,
+                                advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.LOANADVANCEREFERENCENUMBER : null,
+                                loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.LOANADVANCEREFERENCENUMBER : null,
                             }
                         });
 
                         const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
+                        await cpiTrigger();
 
-
-
-                        //return true;
+                        return true;
                     } else {
                         req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
                     }
@@ -250,21 +290,9 @@ class PayrollService extends cds.ApplicationService {
                 }
             } else {
                 console.log("Already approved, just triggering CPI again.");
+                cpiTrigger();
+                return true;
             }
-
-            // NOTIFY CPI
-            const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
-            try {
-                axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
-                axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
-                const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchToApprove}`;
-                const responseCPI = await axios.get(cpiURL);
-                console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
-            } catch (ex) {
-                console.log("error retrieving data from FDM");
-            };
-
-            return true;
         });
 
         // this.on("READ", "StagingUploads", async (req) =>{

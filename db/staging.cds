@@ -42,4 +42,5 @@ entity UploadItems: managed {
     projectTask: String(2);
     glAccount: Integer;     // 8
     glCostCenter: String(8);
+    fcat: String(3);
 };

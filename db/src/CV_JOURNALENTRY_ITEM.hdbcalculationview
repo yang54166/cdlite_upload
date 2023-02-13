@@ -195,7 +195,7 @@
     ELSE 'H' 
 END</formula>
       </keyCalculation>
-    </calculatedAttribute>
+      </calculatedAttribute>
   
     <calculatedAttribute id="DOCUMENTITEMTEXT" order="11" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
   
@@ -205,22 +205,22 @@ END</formula>
   
       </keyCalculation>
   
-    </calculatedAttribute>
+      </calculatedAttribute>
     <calculatedAttribute id="ASSIGNMENTREFERENCE" order="12" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="18">
         <formula>COALESCE(&quot;LOANNUMBER&quot;,&quot;ADVANCENUMBER&quot;)</formula>
       </keyCalculation>
-    </calculatedAttribute>
+      </calculatedAttribute>
     <calculatedAttribute id="ADDITIONALATTRIBUTES_PERSONNELNUMBER" order="16" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="8">
         <formula>&quot;FMNO&quot;</formula>
       </keyCalculation>
-    </calculatedAttribute>
+      </calculatedAttribute>
     <calculatedAttribute id="WBSELEMENT" order="17" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="24">
         <formula>&quot;PROJECTCODE&quot;</formula>
       </keyCalculation>
-    </calculatedAttribute>
+      </calculatedAttribute>
   </calculatedAttributes>
   <baseMeasures/>
   <calculatedMeasures/>
