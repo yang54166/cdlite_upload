@@ -273,8 +273,8 @@ class PayrollService extends cds.ApplicationService {
                                 glPostCostCenter: item.glCostCenter,
                                 glCurrencyCode: currencyCode,
                                 postingAggregation: (mapObj.payrollCodeClass == 'ADVANCE' || mapObj.payrollCodeClass == 'LOAN') ? false : true,
-                                advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.LOANADVANCEREFERENCENUMBER : null,
-                                loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.LOANADVANCEREFERENCENUMBER : null,
+                                advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.loanAdvanceReferenceNumber : null,
+                                loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.loanAdvanceReferenceNumber : null,
                             }
                         });
 
