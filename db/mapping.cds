@@ -10,10 +10,10 @@ entity LegalEntityGrouping {
 entity PaycodeGLMapping: managed {
     key legalEntityGroupCode: String(4);
     key payrollCode: String(10);
-    key payrollCodeSequence: Integer default 1;
+    key payrollCodeSequence: Integer;
     defaultDepartment: String(5);
     description: String;
-    effectiveDate: Date;
+    key effectiveDate: Date;
     endDate: Date;
     glAccount: Integer;
     payrollCodeClass: String(10);

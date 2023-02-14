@@ -1,9 +1,0 @@
-POST http://localhost:4004/payroll/StagingUploads(33)/upload HTTP/1.1
-Content-Type: multipart/form-data; boundary=MyBoundary
-
---MyBoundary
-Content-Disposition: form-data; name="content"; filename="US10-3.txt"
-Content-Type: application/octet-stream
-
-< ./US10-3.txt
---MyBoundary--

@@ -139,6 +139,7 @@ resources:
               clientSecret: ZrKuF/1j4YiZm7jFb1ew52UgQJ0=
               tokenServiceURL: https://analyticsfindwdev-9jd3l1b3.authentication.eu10.hana.ondemand.com/oauth/token
               URL: https://analyticsfindwdev-analyticsfindwdev-api-raa-calviewodata-c-srv.cfapps.eu10.hana.ondemand.com
+              sap-client: 200
             existing_destinations_policy: update
         version: 1.0.0
       service: destination

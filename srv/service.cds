@@ -16,6 +16,13 @@ service PayrollService {
         @Core.IsMediaType: true mediaType: String;
     };
 
+    @cds.persistence.skip
+    @odata.singleton
+    entity MappingUploadFile {
+        @Core.MediaType : mediaType content : LargeBinary;
+        @Core.IsMediaType: true mediaType: String;
+    };
+
     // Staging
     entity StagingUploads      as projection on staging.UploadHeader actions {
         action approve();

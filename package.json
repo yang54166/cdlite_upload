@@ -28,8 +28,10 @@
     "deploy-local": "cds deploy --profile hybrid",
     "start-local": "cds watch --profile hybrid",
     "undeploy": "cf undeploy cd_compensationdetails_c --delete-services --delete-service-keys",
+    "bind": "run-s bind-db bind-uaa bind-dest",
     "bind-db": "cds bind --to cd_compensationdetails_c-db",
-    "bind-uaa": "cds bind uaa --to cd_compensationdetails_c-auth"
+    "bind-uaa": "cds bind uaa --to cd_compensationdetails_c-auth",
+    "bind-dest": "cds bind --to cd_compensationdetails_c-dest"
   },
   "engines": {
     "node": "^16.15"
@@ -59,8 +61,11 @@
         "kind": "odata",
         "model": "srv/external/fdm_masterdata",
         "credentials": {
-          "destination":"FDM",
-          "path": "/masterdata"
+          "destination": "FDM",
+          "path": "/masterdata",
+          "queries":{
+            "sap-client": "200"
+          }
         }
       },
       "messaging": {
@@ -107,6 +112,7 @@
   ],
   "devDependencies": {
     "@sap/ux-specification": "^1.102.15",
+    "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2"
   }
 }

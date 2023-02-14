@@ -62,6 +62,13 @@
       <viewAttribute id="POSTINGSTATUS"/>
       <viewAttribute id="POSTINGSTATUSMESSAGE"/>
       <viewAttribute id="POSTINGDOCUMENT"/>
+    
+      <viewAttribute id="GLCONVERSIONRATE"/>
+      <viewAttribute id="SOURCECURRENCYCODE"/>
+      <viewAttribute id="USPSRPREPORTINGCODE"/>
+    
+      <viewAttribute id="MODIFIEDAT"/>
+      <viewAttribute id="MODIFIEDBY"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="PAYROLL_PAYROLLDETAILS">
@@ -109,6 +116,13 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="USDAMOUNT" source="USDAMOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONRATE" source="USDCONVERSIONRATE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONTYPE" source="USDCONVERSIONTYPE"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCONVERSIONRATE" source="GLCONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCECURRENCYCODE" source="SOURCECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USPSRPREPORTINGCODE" source="USPSRPREPORTINGCODE"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDAT" source="MODIFIEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDBY" source="MODIFIEDBY"/>
     </input>
     <input node="PAYROLL_POSTINGBATCH">
       <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGSTATUS" source="POSTINGSTATUS"/>
@@ -312,6 +326,27 @@
       <descriptions defaultDescription="USDCONVERSIONTYPE"/>
       <keyMapping columnObjectName="Join_1" columnName="USDCONVERSIONTYPE"/>
     </attribute>
+  
+    <attribute id="GLCONVERSIONRATE" order="48" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLCONVERSIONRATE"/>
+      <keyMapping columnObjectName="Join_1" columnName="GLCONVERSIONRATE"/>
+    </attribute>
+    <attribute id="SOURCECURRENCYCODE" order="49" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCECURRENCYCODE"/>
+      <keyMapping columnObjectName="Join_1" columnName="SOURCECURRENCYCODE"/>
+    </attribute>
+    <attribute id="USPSRPREPORTINGCODE" order="50" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="USPSRPREPORTINGCODE"/>
+      <keyMapping columnObjectName="Join_1" columnName="USPSRPREPORTINGCODE"/>
+    </attribute>
+    <attribute id="MODIFIEDAT" order="51" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDAT"/>
+      <keyMapping columnObjectName="Join_1" columnName="MODIFIEDAT"/>
+    </attribute>
+    <attribute id="MODIFIEDBY" order="52" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDBY"/>
+      <keyMapping columnObjectName="Join_1" columnName="MODIFIEDBY"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
   <baseMeasures/>
@@ -321,21 +356,23 @@
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="40" y="85"/>
+      <upperLeftCorner x="92" y="112"/>
+    
+      <rectangleSize width="160"/>
     </shape>
     
   
     <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="100" y="180"/>
+      <upperLeftCorner x="92" y="217"/>
       <rectangleSize height="30" width="160"/>
     </shape>
     <shape modelObjectName="PAYROLL_PAYROLLDETAILS" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="20" y="30"/>
-      <rectangleSize width="244.0927734375"/>
+      <rectangleSize width="244"/>
     </shape>
     <shape modelObjectName="PAYROLL_POSTINGBATCH" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="320" y="30"/>
-      <rectangleSize width="231.66943359375"/>
+      <rectangleSize width="231"/>
     </shape>
   </shapes>
 </layout>

@@ -1,0 +1,20 @@
+### LegalEntityGrouping
+PUT http://localhost:4004/payroll/MappingUploadFile/content HTTP/1.1
+Content-Type: text/csv
+Content-Disposition: form-data; filename="pay code mapping - le.csv"; mappingTable="LegalEntityGrouping"
+
+< ./pay code mapping - le.csv
+
+### PaycodeGLMapping
+PUT http://localhost:4004/payroll/MappingUploadFile/content HTTP/1.1
+Content-Type: text/csv
+Content-Disposition: form-data; filename="pay code mapping - gl.csv"; mappingTable="PaycodeGLMapping"
+
+< ./pay code mapping - gl.csv
+
+### LegdgerControl
+PUT http://localhost:4004/payroll/MappingUploadFile/content HTTP/1.1
+Content-Type: text/csv
+Content-Disposition: form-data; filename="pay code mapping - lc.csv"; mappingTable="PayrollLedgerControl"
+
+< ./pay code mapping - lc.csv

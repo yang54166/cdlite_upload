@@ -20,7 +20,7 @@ entity PayrollHeader: managed {
     details: Composition of many PayrollDetails on details.batchId = $self;
 };
 
-entity PayrollDetails {
+entity PayrollDetails: managed {
     key batchId: Association to PayrollHeader;
     key batchLineNumber: Integer;
     postingAggregation: Boolean;
@@ -44,6 +44,7 @@ entity PayrollDetails {
     fmno: String(9);
     glAccount: Integer;
     glCurrencyCode: String(4);
+    glConversionRate: Decimal(9,5);
     glPostAmount: Decimal(15,2);
     glPostCompany: String(4);
     glPostCostCenter: String(8);
@@ -63,9 +64,11 @@ entity PayrollDetails {
     skillCode: String (4);
     sourceAmount: Decimal(15,2);
     sourceCompany: String(4);
+    sourceCurrencyCode: String(4);
     usdAmount: Decimal(15,2);
     usdConversionRate: Integer;
     usdConversionType: String(20);
+    usPsrpReportingCode: String(10);
 };
 
 entity PostingBatch {

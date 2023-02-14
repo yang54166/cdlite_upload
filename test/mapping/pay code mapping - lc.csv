@@ -1,0 +1,7 @@
+﻿CD_TRANSACTION_TYPE,DOC_TYPE,LEDGER_GROUP,DOC_HEADER_TEXT
+01,ZE,,Regular Payroll
+02,ZE,,Employer Tax
+03,ZE,0L,US Ledger Only
+04,ZE,,Adjustments
+10,ZE,,Accounts Payable
+11,ZE,,Accounts Receivable

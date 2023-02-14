@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_PAYROLLRESULTS_HEADER" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_PAYROLLRESULTS_HEADER" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
 <descriptions defaultDescription="CV_PAYROLLRESULTS_HEADER"/>
 <localVariables/>
 <variableMappings/>
@@ -7,83 +7,153 @@
   <DataSource id="PAYROLL_PAYROLLHEADER">
     <resourceUri>PAYROLL_PAYROLLHEADER</resourceUri>
   </DataSource>
+  <DataSource id="MAPPING_PAYROLLLEDGERCONTROL">
+    <resourceUri>MAPPING_PAYROLLLEDGERCONTROL</resourceUri>
+  </DataSource>
 </dataSources>
 <snapshotProcedures/>
-<calculationViews/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_LedgerControl" cardinality="CN_N" joinType="inner">
+    <viewAttributes>
+      <viewAttribute id="CREATEDAT"/>
+      <viewAttribute id="CREATEDBY"/>
+      <viewAttribute id="MODIFIEDAT"/>
+      <viewAttribute id="MODIFIEDBY"/>
+      <viewAttribute id="BATCHID"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
+      <viewAttribute id="BATCHSTATUS"/>
+      <viewAttribute id="APPROVEDAT"/>
+      <viewAttribute id="APPROVEDBY"/>
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="CONTROLAMOUNT"/>
+      <viewAttribute id="CONTROLCOUNT"/>
+      <viewAttribute id="EFFECTIVEDATE"/>
+      <viewAttribute id="GLDATE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
+      <viewAttribute id="SOURCESYSTEM"/>
+      <viewAttribute id="COMPANYCODE"/>
+      <viewAttribute id="DOCTYPE"/>
+      <viewAttribute id="LEDGERGROUP"/>
+      <viewAttribute id="DOCHEADERTEXT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="PAYROLL_PAYROLLHEADER">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDAT" source="CREATEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDBY" source="CREATEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDAT" source="MODIFIEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDBY" source="MODIFIEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHDESCRIPTION" source="BATCHDESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHSTATUS" source="BATCHSTATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDAT" source="APPROVEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDBY" source="APPROVEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CDTRANSACTIONTYPE" source="CDTRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLAMOUNT" source="CONTROLAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLCOUNT" source="CONTROLCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEDATE" source="EFFECTIVEDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLDATE" source="GLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLPERIOD" source="PAYROLLPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCESYSTEM" source="SOURCESYSTEM"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANYCODE" source="COMPANYCODE"/>
+    </input>
+    <input node="MAPPING_PAYROLLLEDGERCONTROL">
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCTYPE" source="DOCTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEDGERGROUP" source="LEDGERGROUP"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCHEADERTEXT" source="DOCHEADERTEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CDTRANSACTIONTYPE" source="TRANSACTIONTYPE"/>
+    </input>
+    <joinAttribute name="CDTRANSACTIONTYPE"/>
+  </calculationView>
+</calculationViews>
 
-<logicalModel id="PAYROLL_PAYROLLHEADER">
+<logicalModel id="Join_LedgerControl">
   <attributes>
     <attribute id="CREATEDAT" order="1" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CREATEDAT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CREATEDAT"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="CREATEDAT"/>
     </attribute>
     <attribute id="CREATEDBY" order="2" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CREATEDBY"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CREATEDBY"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="CREATEDBY"/>
     </attribute>
     <attribute id="MODIFIEDAT" order="3" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="MODIFIEDAT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="MODIFIEDAT"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="MODIFIEDAT"/>
     </attribute>
     <attribute id="MODIFIEDBY" order="4" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="MODIFIEDBY"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="MODIFIEDBY"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="MODIFIEDBY"/>
     </attribute>
     <attribute id="BATCHID" order="5" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHID"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="BATCHID"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="BATCHID"/>
     </attribute>
     <attribute id="BATCHDESCRIPTION" order="6" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHDESCRIPTION"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="BATCHDESCRIPTION"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="BATCHDESCRIPTION"/>
     </attribute>
     <attribute id="BATCHSTATUS" order="7" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHSTATUS"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="BATCHSTATUS"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="BATCHSTATUS"/>
     </attribute>
     <attribute id="APPROVEDAT" order="8" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="APPROVEDAT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="APPROVEDAT"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="APPROVEDAT"/>
     </attribute>
     <attribute id="APPROVEDBY" order="9" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="APPROVEDBY"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="APPROVEDBY"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="APPROVEDBY"/>
     </attribute>
     <attribute id="CDTRANSACTIONTYPE" order="10" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CDTRANSACTIONTYPE"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CDTRANSACTIONTYPE"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="CDTRANSACTIONTYPE"/>
     </attribute>
     <attribute id="CONTROLAMOUNT" order="11" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CONTROLAMOUNT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CONTROLAMOUNT"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="CONTROLAMOUNT"/>
     </attribute>
     <attribute id="CONTROLCOUNT" order="12" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CONTROLCOUNT"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="CONTROLCOUNT"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="CONTROLCOUNT"/>
     </attribute>
     <attribute id="EFFECTIVEDATE" order="13" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="EFFECTIVEDATE"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="EFFECTIVEDATE"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="EFFECTIVEDATE"/>
     </attribute>
     <attribute id="GLDATE" order="14" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLDATE"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="GLDATE"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="GLDATE"/>
     </attribute>
     <attribute id="PAYROLLDATE" order="15" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLDATE"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="PAYROLLDATE"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="PAYROLLDATE"/>
     </attribute>
     <attribute id="PAYROLLPERIOD" order="16" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLPERIOD"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="PAYROLLPERIOD"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="PAYROLLPERIOD"/>
     </attribute>
     <attribute id="SOURCESYSTEM" order="17" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="SOURCESYSTEM"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="SOURCESYSTEM"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="SOURCESYSTEM"/>
     </attribute>
     <attribute id="COMPANYCODE" order="18" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="COMPANYCODE"/>
-      <keyMapping columnObjectName="PAYROLL_PAYROLLHEADER" columnName="COMPANYCODE"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="COMPANYCODE"/>
+    </attribute>
+  
+    <attribute id="GLDOCTYPE" order="19" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DOCTYPE"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="DOCTYPE"/>
+    </attribute>
+    <attribute id="GLLEDGERGROUP" order="20" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LEDGERGROUP"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="LEDGERGROUP"/>
+    </attribute>
+    <attribute id="GLDOCHEADERTEXT" order="21" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DOCHEADERTEXT"/>
+      <keyMapping columnObjectName="Join_LedgerControl" columnName="DOCHEADERTEXT"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>
@@ -94,11 +164,24 @@
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="91.99999999999997" y="112"/>
+      <upperLeftCorner x="91" y="112"/>
     
       <rectangleSize width="160"/>
     </shape>
     
+  
+    <shape expanded="true" modelObjectName="Join_LedgerControl" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="110" y="204"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="PAYROLL_PAYROLLHEADER" modelObjectNameSpace="Join_LedgerControl" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="232.029296875"/>
+    </shape>
+    <shape modelObjectName="MAPPING_PAYROLLLEDGERCONTROL" modelObjectNameSpace="Join_LedgerControl" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="291.349609375"/>
+    </shape>
   </shapes>
 </layout>
 </Calculation:scenario>
