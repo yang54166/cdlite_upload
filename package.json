@@ -62,7 +62,10 @@
         "model": "srv/external/fdm_masterdata",
         "credentials": {
           "destination": "FDM",
-          "path": "/masterdata"
+          "path": "/masterdata",
+          "queries":{
+            "sap-client": "200"
+          }
         }
       },
       "messaging": {

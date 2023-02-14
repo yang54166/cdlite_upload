@@ -1,11 +1,11 @@
-const cds = require('@sap/cds');
 const { PassThrough } = require('node:stream');
-const xsenv = require("@sap/xsenv")
+const cds = require('@sap/cds');
 const axios = require("axios");
-const { response } = require('express');
+
 const utils = require('./utils/utils');
 const { HANAUtils } = require('./utils/HANAUtils');
 const { SecurityUtils } = require('./utils/SecurityUtils');
+const { FDMUtils } = require('./utils/FDMUtils');
 
 class PayrollService extends cds.ApplicationService {
     async init() {
@@ -15,7 +15,6 @@ class PayrollService extends cds.ApplicationService {
         const { PayrollHeader, PayrollDetails, PostingBatch } = db.entities('payroll');
         const { UploadHeader, UploadItems } = db.entities('staging');
         const { LegalEntityGrouping, PaycodeGLMapping } = db.entities('mapping');
-        const { FMNO_MASTER_PAS } = fdm.entities;
 
         this.on("PUT", "PayrollUploadFile", async (req) => {
             if (req.data.content) {
@@ -25,68 +24,55 @@ class PayrollService extends cds.ApplicationService {
                 }));
                 const batchID = contentPropertyMap.get("batchID");
                 const fileName = contentPropertyMap.get("filename");
-                let content = '';
-                const stream = new PassThrough();
-                req.data.content.pipe(stream, { end: false });
 
                 console.log(`DEBUG: Upload started for batch ${batchID}.`);
-                await new Promise((resolve, reject) => {
-                    try {
-                        // Read stream
-                        req.data.content.on("data", dataChunk => {
-                            content += dataChunk;
-                            stream.resume();
-                        });
+                let content = await utils.readUploadStream(req.data.content);
+                console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
 
-                        // Output stream
-                        req.data.content.on("end", async () => {
-                            console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
-                            const fileRows = content.split("\r\n").filter((row) => row != '');
-                            let lineNum = 0;
+                const dataToImport = utils.parseCDUpload(content, batchID);
+                const result = await HANAUtils.callStoredProc(
+                    db.options.credentials,
+                    db.options.credentials.schema,
+                    "SP_UPLOADINSERT",
+                    dataToImport
+                );
+                console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
-                            let dataToImport = fileRows.map((line) => {
-                                let arrCols = line.split('\t');
-                                return {
-                                    PARENT_ID: batchID,
-                                    ROW: lineNum += 1,
-                                    FMNO: arrCols[0],
-                                    PAYROLLCODE: arrCols[1],
-                                    PAYROLLCODESEQUENCE: arrCols[2] || null,
-                                    NAME: arrCols[3],
-                                    AMOUNT: arrCols[4],
-                                    PAYMENTNUMBER: arrCols[5] || null,
-                                    PAYMENTID: arrCols[6],
-                                    PAYMENTFORM: arrCols[7],
-                                    USERFIELD1: arrCols[8],
-                                    USERFIELD2: arrCols[9],
-                                    REMARKS: arrCols[10],
-                                    LOANADVANCEREFERENCENUMBER: arrCols[11],
-                                    PROJECTCODE: arrCols[12],
-                                    PROJECTTASK: arrCols[13]
-                                };
-                            });
+                this.emit("enrich", { batchID });
+                console.log("enrich triggered.")
 
-                            console.log(`DEBUG: File parsed for batch ${batchID}.`);
-                            const result = await HANAUtils.callStoredProc(
-                                db.options.credentials,
-                                db.options.credentials.schema,
-                                "SP_UPLOADINSERT",
-                                dataToImport
-                            );
-                            console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                // Update filename
+                return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
+            }
+        });
 
-                            this.emit("enrich", { batchID });
-                            console.log("enrich triggered. Now returning result.")
+        this.on("PUT", "MappingUploadFile", async (req) => {
+            if (req.data.content) {
+                const contentType = req._.req.headers['content-type'];
+                const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
+                    return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
+                }));
+                const mappingTable = contentPropertyMap.get("mappingTable");
+                const fileName = contentPropertyMap.get("filename");
 
-                            // Update filename
-                            const resultUpdate = await UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
+                console.log(`DEBUG: Upload started for mappingTable ${mappingTable}.`);
+                let content = await utils.readUploadStream(req.data.content);
+                console.log(`DEBUG: Upload complete for mappingTable ${mappingTable}.  Starting to parse file content.`);
 
-                            resolve(result);
-                        });
-                    } catch (ex) {
-                        reject(ex);
-                    }
-                });
+                const mappingDBTable = utils.getMappingDBTable(mappingTable);
+                if (mappingDBTable) {
+                    const dataToImport = utils.parseMappingUpload(content, mappingDBTable);
+                    const result = await HANAUtils.callStoredProc(
+                        db.options.credentials,
+                        db.options.credentials.schema,
+                        `SP_UPSERT_${mappingDBTable}`,
+                        dataToImport
+                    );
+                    console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                    return;
+                } else {
+                    req.error({ code: 400, message: `Invalid mappingTable : ${mappingTable}.` });
+                }
             }
         });
 
@@ -107,17 +93,14 @@ class PayrollService extends cds.ApplicationService {
                     "LOANADVANCEREFERENCENUMBER", "PROJECTCODE", "PROJECTTASK", "GLACCOUNT", "GLCOSTCENTER", "FCAT")
                 .where({ PARENT_ID: batchID });
 
-            let resultUsers = [];
-            try {
-                let result = await fdm.get(`/S4_FMNO_MASTER_API?$filter=client eq '200' and branchId eq '${stagingHeader.glCompanyCode}'`);
-                resultUsers.push(...result);
-                while (result.$nextLink) {
-                    result = await fdm.get(`/${result.$nextLink}`);
-                    resultUsers.push(...result);
-                }
-            } catch (ex) {
-                console.log("error retrieving data from FDM");
-            };
+
+            // Get Info from FDM
+            const fdmUtils = new FDMUtils(fdm);
+            await fdmUtils.getUserData(stagingHeader.glCompanyCode);
+            await fdmUtils.getGLAccounts();
+            await fdmUtils.getCompanyCodes();
+            await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
+            await fdmUtils.getExchangeRates();
 
             // Get Mapping Data
             const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
@@ -126,7 +109,7 @@ class PayrollService extends cds.ApplicationService {
             // Update Staging Data
             let updatedItems = stagingDataItems.map((item) => {
                 let errorsForRow = [];
-                const userObj = resultUsers.find((user) => user.fmno == item.FMNO);//.padStart(8, '0'));
+                const userObj = fdmUtils.findUserByFMNO(item.FMNO);
                 let userFCAT = "0";
 
                 // Validations
@@ -197,7 +180,7 @@ class PayrollService extends cds.ApplicationService {
                     const responseCPI = await axios.get(cpiURL);
                     console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
                 } catch (ex) {
-                    console.log("error retrieving data from FDM");
+                    console.log("error triggering CPI: " + ex.message);
                 };
             }
 
@@ -294,14 +277,6 @@ class PayrollService extends cds.ApplicationService {
                 return true;
             }
         });
-
-        // this.on("READ", "StagingUploads", async (req) =>{
-        //     //console.log(req);
-        //     const tx = db.tx(req);
-        //     const query = req.query;
-        //     //query.SELECT.count = true;
-        //     return tx.run(query);
-        // }); 
 
         this.after("READ", "StagingUploads", async (result) => {
             if (result.items) {
