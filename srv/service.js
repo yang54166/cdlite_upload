@@ -171,18 +171,21 @@ class PayrollService extends cds.ApplicationService {
             const [batchToApprove] = req.params;
             console.log(batchToApprove);
 
-            const cpiTrigger = async () => {
-                const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
-                try {
-                    axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
-                    axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
-                    const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchToApprove}`;
-                    const responseCPI = await axios.get(cpiURL);
-                    console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
-                } catch (ex) {
-                    console.log("error triggering CPI: " + ex.message);
-                };
-            }
+            const cpiTrigger = () => {
+                return new Promise(async (resolve, reject) => {
+                    const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
+                    try {
+                        axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
+                        axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
+                        const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchToApprove}`;
+                        const responseCPI = await axios.get(cpiURL);
+                        console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
+                        resolve(responseCPI);
+                    } catch (ex) {
+                        console.log("error triggering CPI: " + ex.message);
+                    };
+                })
+            };
 
             // If already approved just trigger CPI
             const currentBatchStatus = await SELECT.one.from(UploadHeader).columns("STATUS").where({ ID: batchToApprove });
@@ -273,8 +276,7 @@ class PayrollService extends cds.ApplicationService {
                 }
             } else {
                 console.log("Already approved, just triggering CPI again.");
-                cpiTrigger();
-                return true;
+                await cpiTrigger();
             }
         });
 
