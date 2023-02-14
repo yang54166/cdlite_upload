@@ -38,8 +38,8 @@ class PayrollService extends cds.ApplicationService {
                 );
                 console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
-                this.emit("enrich", { batchID });
-                console.log("enrich triggered.")
+                await this.emit("enrich", { batchID });
+                console.log("enrich completed.")
 
                 // Update filename
                 return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
@@ -97,10 +97,10 @@ class PayrollService extends cds.ApplicationService {
             // Get Info from FDM
             const fdmUtils = new FDMUtils(fdm);
             await fdmUtils.getUserData(stagingHeader.glCompanyCode);
-            await fdmUtils.getGLAccounts();
-            await fdmUtils.getCompanyCodes();
-            await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
-            await fdmUtils.getExchangeRates();
+            //await fdmUtils.getGLAccounts();
+            //await fdmUtils.getCompanyCodes();
+            //await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
+            //await fdmUtils.getExchangeRates();
 
             // Get Mapping Data
             const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
