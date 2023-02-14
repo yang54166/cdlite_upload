@@ -58,6 +58,7 @@ entity PayrollDetails: managed {
     payrollCodeSequence: Integer;
     payrollCodeClass: String(10);
     payrollCodeType: String(10);
+    pernr: String(8);
     projectCode: String(8);
     qualifiedCompensation: String(1);
     shadowProcess: String(1);

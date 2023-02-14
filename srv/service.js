@@ -97,8 +97,8 @@ class PayrollService extends cds.ApplicationService {
             // Get Info from FDM
             const fdmUtils = new FDMUtils(fdm);
             await fdmUtils.getUserData(stagingHeader.glCompanyCode);
-            //await fdmUtils.getGLAccounts();
-            //await fdmUtils.getCompanyCodes();
+            await fdmUtils.getGLAccounts();
+            await fdmUtils.getCompanyCodes();
             //await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
             //await fdmUtils.getExchangeRates();
 
@@ -146,15 +146,32 @@ class PayrollService extends cds.ApplicationService {
                 const mappedAccount = mappingData.find((mappingRow) =>
                     (mappingRow.payrollCode == item.PAYROLLCODE)
                     && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1)));
-
                 if (!mappedAccount) {
-                    errorsForRow.push(`Unable to find GL account for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
+                    errorsForRow.push(`Unable to find GL account mapping for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
+                }
+
+                const glAccountObj = fdmUtils.getGLAccount(mappedAccount.glAccount);
+                if (glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X'){
+                    errorsForRow.push(`Invalid GL account ${glAccountObj.glAccount}.`);
+                }
+
+                const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
+                if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()){
+                    errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
                 }
 
                 if (errorsForRow.length) {
                     return { ...item, STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
                 } else {
-                    return { ...item, STATUS: 'VALID', STATUSMESSAGE: '', GLCOSTCENTER: userObj.costCenter, GLACCOUNT: mappedAccount.glAccount, FCAT: userFCAT }
+                    return { ...item, STATUS: 'VALID', STATUSMESSAGE: '', 
+                        GLCOSTCENTER: userObj.costCenter, 
+                        GLACCOUNT: glAccountObj.glAccount, 
+                        GLCURRENCYCODE: companyCode.currencyCode,
+                        FCAT: userFCAT,
+                        PERNR: userObj.personidExt,
+                        LOCATIONCODE: userObj.userLocation,
+                        SKILLCODE: userObj.skillCode,
+                    }
                 }
             });
 
@@ -199,6 +216,10 @@ class PayrollService extends cds.ApplicationService {
                 const resultSkipItems = await UPDATE(UploadItems).set({ STATUS: 'SKIPPED' }).where({ PARENT_ID: batchToApprove, STATUS: 'INVALID' });
 
                 if (resultApproveHeader > 0 && resultApproveItems > 0) {
+                    // Get FDM Data
+                    const fdmUtils = new FDMUtils(fdm);
+                    await fdmUtils.getExchangeRates();
+
                     // Get Data to Copy
                     const dataHeader = await SELECT.one.from(UploadHeader).where({ ID: batchToApprove, STATUS: 'APPROVED' });
                     const dataItems = await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' });
@@ -246,6 +267,8 @@ class PayrollService extends cds.ApplicationService {
                         const payloadItems = dataItems.map((item) => {
                             const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
 
+                            const glExchangeRate = fdmUtils.getExchangeRate(currencyCode, item.glCurrencyCode);
+                            
                             return {
                                 batchID_batchID: batchToApprove,
                                 batchLineNumber: lineCounter += 1,
@@ -256,7 +279,12 @@ class PayrollService extends cds.ApplicationService {
                                 payrollCode: item.payrollCode,
                                 payrollCodeSequence: item.payrollCodeSequence,
                                 sourceAmount: item.amount,
+                                sourceCurrencyCode: currencyCode,
+                                sourceCompany: glCompanyCode,
                                 paymentID: item.paymentID,
+                                pernr: item.pernr,
+                                locationCode: item.locationCode,
+                                skillCode: item.skilCode,
                                 projectCode: item.projectCode,
                                 glAccount: item.glAccount,
                                 glPostCostCenter: item.glCostCenter,
@@ -264,6 +292,9 @@ class PayrollService extends cds.ApplicationService {
                                 postingAggregation: (mapObj.payrollCodeClass == 'ADVANCE' || mapObj.payrollCodeClass == 'LOAN') ? false : true,
                                 advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.loanAdvanceReferenceNumber : null,
                                 loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.loanAdvanceReferenceNumber : null,
+                                usdAmount: utils.convertAmountByExchangeRate(item.amount,glExchangeRate),
+                                usdConversionRate: glExchangeRate,
+                                usPsrpReportingCode: mapObj.usPsrpCategory
                             }
                         });
 
