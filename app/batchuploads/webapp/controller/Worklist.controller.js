@@ -3,9 +3,10 @@ sap.ui.define([
     "sap/ui/core/Fragment",
     "sap/ui/model/json/JSONModel",
     "../model/formatter",
+    "sap/m/MessageBox",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator"
-], function (BaseController, Fragment, JSONModel, formatter, Filter, FilterOperator) {
+], function (BaseController, Fragment, JSONModel, formatter, MessageBox, Filter, FilterOperator) {
     "use strict";
 
     return BaseController.extend("batchuploads.controller.Worklist", {
@@ -27,6 +28,9 @@ sap.ui.define([
             // keeps the search state
             this._aTableSearchState = [];
             var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
+            var companyCodeModel = this.getOwnerComponent().getModel("companyCodeData");
+            var uploadRangesModel = this.getOwnerComponent().getModel("uploadRangesData");
+           
             // Model used to manipulate control states
             oViewModel = new JSONModel({
                 worklistTableTitle: this.getResourceBundle().getText("worklistTableTitle"),
@@ -36,6 +40,8 @@ sap.ui.define([
             });
             this.setModel(oViewModel, "worklistView");
             this.setModel(transTypesModel, "transTypes");
+            this.setModel(companyCodeModel, "companyCodeList");
+            this.setModel(uploadRangesModel, "uploadRangesList");
 
         },
 
@@ -102,8 +108,7 @@ sap.ui.define([
                 var filters = [];
 
                 filters.push(new Filter("batchDescription", FilterOperator.Contains, sQuery));
-                filters.push(new Filter("companyCode", FilterOperator.Contains, sQuery));
-
+            
                 var orFilters = new Filter(filters, false);
                 if (sQuery && sQuery.length > 0) {
                     aTableSearchState = orFilters;
@@ -252,14 +257,13 @@ sap.ui.define([
 
             var oUploadDialog = this.byId("uploadDialog");
             var oFileUploader = this.byId("fileUploader");
-           
+            oUploadDialog.setBusy(true);
             var that = this;
             oContext.created().then(function () {
 
                 console.log(that._uploadFileName.name);
                 var sBatchId = oContext.getProperty("ID");
                 var sValue = 'form-data; filename="' + that._uploadFileName.name + '"; batchID=' + sBatchId;
-                oUploadDialog.setBusy(true);
                 var headPar = new sap.ui.unified.FileUploaderParameter();
                 headPar.setName('content-disposition');
                 headPar.setValue(sValue);
@@ -272,9 +276,12 @@ sap.ui.define([
                         oFileUploader.upload();
                         that.onRefresh();
                         oUploadDialog.setBusy(false);
+                        var sMsg = "BATCH " + sBatchId + " uploaded successfully!";
+                        MessageBox.success(sMsg);
+                        that.closeDialog();
                     })
                     .catch(function (error) {
-                        showError("The file cannot be read.");
+                        MessageBox.error("The file cannot be read.");
                         oUploadDialog.setBusy(false);
                     })
 

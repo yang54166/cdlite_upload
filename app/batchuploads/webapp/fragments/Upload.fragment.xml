@@ -38,8 +38,8 @@
                 <Input id="sourceOffice" /> -->
                 <Label id="currencyLbl" text="Payroll Currency" labelFor="currency" design="Bold" />
                 <Input id="currencyDlg" />
-                <Label id="payrollDatebl" text="Payroll Date (DD-MMM-YYYY)" labelFor="payrollDate" design="Bold" />
-                <Input id="payrollDateDlg" />
+                <Label id="payrollDatebl" text="Payroll Date" labelFor="payrollDate" design="Bold" />
+                <DatePicker id="payrollDateDlg" valueFormat="yyyy-MM-dd" displayFormat="yyy-MM-dd" class="sapUiSmallMarginBottom" />
                 <Label id="glPeriodLbl" text="GL Period" labelFor="glPeriod" design="Bold" />
                 <DatePicker id="glPeriodDlg" displayFormat="MM-y" change="handleChange" class="sapUiSmallMarginBottom" />
                 <Label id="effectivePeriodLbl" text="Effective Period" labelFor="effectivePeriod" design="Bold" />

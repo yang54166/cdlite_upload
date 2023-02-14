@@ -28,6 +28,18 @@
       "transTypesData": {
         "uri": "model/trans_types.json",
         "type": "JSON"
+      },
+      "summaryData": {
+        "uri": "model/summary_data.json",
+        "type": "JSON"
+      },
+      "companyCodeData": {
+        "uri": "model/company_code.json",
+        "type": "JSON"
+      },
+      "uploadRangesData": {
+        "uri": "model/upload_ranges.json",
+        "type": "JSON"
       }
     }
   },
@@ -88,6 +100,18 @@
       "transTypesData": {
         "type": "sap.ui.model.json.JSONModel",
         "dataSource": "transTypesData"
+      },
+      "summaryData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "summaryData"
+      },
+      "companyCodeData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "companyCodeData"
+      },
+      "uploadRangesData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "uploadRangesData"
       }
     },
     "resources": {

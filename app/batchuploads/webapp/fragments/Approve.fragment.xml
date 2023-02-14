@@ -27,53 +27,35 @@
                 </semantic:headerContent>
                 <semantic:content>
                     <l:VerticalLayout>
-                        <l:HorizontalLayout id="approveDtlV" class="sapUiContentPadding">
-                            <Table
-                                id="approveSummaryList"
-                                sticky="HeaderToolbar,ColumnHeaders"
-                                class="sapUiSmallMarginTop"
-                                mode="None"
-                                width="auto"
-                                items="{
-							path: 'items',
-							sorter: {
-								path: 'fmno',
-								descending: false
-							}
-						}"
-                                updateFinished=".onListUpdateFinished"
-                                noDataText="{i18n>detailLineItemTableNoDataText}"
-                                busyIndicatorDelay="{objectView>/tableBusyDelay}"
-                            >
-                                <columns>
-                                    <Column id="totalFmnoColumn">
-                                        <Text id="totalFmnoTxt" text="FMNO" />
+                        <l:HorizontalLayout id="approveDtlV">
+                            <Table id="approveSummaryList" sticky="HeaderToolbar,ColumnHeaders" class="sapUiSmallMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
+                                <!--               <columns>
+                                    <Column id="emptyHeader">
+                                        <Text id="totalFmnoTxt" text="" />
                                     </Column>
-                                    <Column id="totalLineItemColumn">
-                                        <Text id="totalLineItemTxt" text="Total Number of Line Items" />
+                                    <Column id="lineCntCol">
+                                        <Text text="Number of Lines" />
                                     </Column>
-                                    <Column id="totalValidLineColumn" demandPopin="false" minScreenWidth="Tablet">
-                                        <Text id="totalValidLIneTxt" text="Total Number of Valid Line Items" />
+                                    <Column id="fmnoCntCol" demandPopin="false" minScreenWidth="Tablet">
+                                        <Text text="Number of FMNO's" />
                                     </Column>
-                                    <Column id="totalErrorLineColumn" hAlign="End" demandPopin="true" minScreenWidth="Tablet">
-                                        <Text id="totalErrorLineTxt" text="Total Number of Error Line Items" />
-                                    </Column>
-                                    <Column id="totalAmountColumn" hAlign="End">
-                                        <Text id="totalAmountTxt" text="Total Amount" />
-                                    </Column>
+                            
                                 </columns>
                                 <items>
                                     <ColumnListItem id="colListItm">
                                         <cells>
-                                            <Text text="100910" />
-                                            <Text text="69" />
-                                            <Text text="69" />
-                                            <Text text="0" />
-                                            <Text text="0" />
+                                            <Text text="{approvalView>/fmnoCnt}" />
+                                            <Text text="{approvalView>/lineCnt}" />
+                                            <Text text="{approvalView>/validLineCnt}" />
+                                            <Text text="{approvalView>/errorLineCnt}" />
+                                            <Text text="{approvalView>/totalAmt}" />
                                         </cells>
                                     </ColumnListItem>
-                                </items>
+                                </items> -->
                             </Table>
+                        </l:HorizontalLayout>
+                        <l:HorizontalLayout class="sapUiContentPadding">
+                            <FormattedText htmlText="{totalAmt>/HTML}"></FormattedText>
                         </l:HorizontalLayout>
                         <l:HorizontalLayout class="sapUiContentPadding">
                             <Text text="Describes what happens when click approve, any errors will be skipped and will have to be manually reprocessed. Recommed download errors (link above)." />
