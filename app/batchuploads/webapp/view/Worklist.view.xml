@@ -6,22 +6,22 @@
         <semantic:headerContent>
             <l:HorizontalLayout id="horizonLayout">
                 <l:VerticalLayout id="companyCodeFilterLayout" class="sapUiMediumMarginEnd">
-                    <Label id="compCodeLabel" text="Company Code" design="Bold"/>
-                    <MultiComboBox id="companyCodeList" name="Name" selectionChange=".onSelectionChange" items="{
-												path: '',
+                    <Label id="compCodeLabel" text="Company Code" design="Bold" />
+                    <ComboBox id="companyCodeList" name="Name" selectionChange=".onSelectionChange" items="{
+												path: 'companyCodeList>/',
 												templateShareable: true
 											}">
-                        <core:Item id="companyCodeItem" key="{key}" text="{name}" />
-                    </MultiComboBox>
+                        <core:Item id="companyCodeItem" key="{companyCodeList>Code}" text="{companyCodeList>Name}" />
+                    </ComboBox>
                 </l:VerticalLayout>
                 <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">
-                    <Label id="monthYearLabel" text="Upload Month/Year" design="Bold"/>
-                    <MultiComboBox id="monthYearList" name="Category" selectionChange=".onSelectionChange" items="{
-												path: '',
+                    <Label id="monthYearLabel" text="Upload Month/Year" design="Bold" />
+                    <ComboBox id="monthYearList" name="Category" selectionChange=".onSelectionChange" items="{
+												path: 'uploadRangesList>/',
 												templateShareable: true
 											}">
-                        <core:Item id="monthYear" key="{key}" text="{name}" />
-                    </MultiComboBox>
+                        <core:Item id="monthYear" key="{uploadRangesList>dateRange}" text="{uploadRangesList>longDesc}" />
+                    </ComboBox>
                 </l:VerticalLayout>
             </l:HorizontalLayout>
         </semantic:headerContent>
@@ -59,41 +59,41 @@
                 </headerToolbar>
 
                 <columns>
-                    <Column id="batchNoColumn">
+                    <Column width="6%" id="batchNoColumn">
                         <Text id="BATCHNUMBER" text="Batch No" />
                     </Column>
-                    <Column id="batchDescColumn" demandPopin="false" minScreenWidth="Tablet">
+                    <Column width="10%" id="batchDescColumn" demandPopin="false" minScreenWidth="Tablet">
                         <Text id="BATCHDESCRIPTION" text="Batch Description" />
                     </Column>
-
-                    <Column id="statusColumn" demandPopin="true" minScreenWidth="Tablet" hAlign="End">
-                        <Text id="headerStatus" text="Status" />
+                    <Column width="8%" id="glCompanyCodedColumn" hAlign="End">
+                        <Text id="glCompanyCodeCol" text="Company Code" />
                     </Column>
-                    <Column id="payrollDateColumn" hAlign="End">
+
+                    <Column width="9%" id="payrollDateColumn" hAlign="End">
                         <Text id="payrollDateCol" text="Payroll Date" />
                     </Column>
-                    <Column id="transTypeColumn" hAlign="End">
+                    <Column width="8%" id="transTypeColumn" hAlign="End">
                         <Text id="transTypeCol" text="Transaction Type" />
                     </Column>
-                    <Column id="currencyColumn" hAlign="End">
+                    <Column width="9%" id="currencyColumn" hAlign="End">
                         <Text id="currencyCol" text="Currency" />
                     </Column>
-                    <Column id="glPeriodColumn" hAlign="End">
+                    <Column width="9%" id="glPeriodColumn" hAlign="End">
                         <Text id="glPeriod" text="GL Period" />
                     </Column>
-                    <Column id="effectivePeriodColumn" hAlign="End">
+                    <Column width="9%" id="effectivePeriodColumn" hAlign="End">
                         <Text id="effectivePeriod" text="Effective Period" />
                     </Column>
-
-                    <Column id="createdByColumn" hAlign="End">
-                        <Text id="creaatedByCol" text="created By" />
+                    <Column width="9%" id="statusColumn" demandPopin="true" minScreenWidth="Tablet" hAlign="End">
+                        <Text id="headerStatus" text="Status" />
                     </Column>
-
-                    <Column id="createdAtColumn" hAlign="End">
+                    <Column width="11%" id="createdByColumn" hAlign="End">
+                        <Text id="creaatedByCol" text="Created By" />
+                    </Column>
+                    <Column width="12%" id="createdAtColumn" hAlign="End">
                         <Text id="createdAtCol" text="Created At" />
                     </Column>
-
-                    <Column id="approveColumn" hAlign="End" />
+                    <!--<Column id="approveColumn" hAlign="End" /> -->
                 </columns>
 
                 <items>
@@ -101,16 +101,17 @@
                         <cells>
                             <Text id="txtBatchNo" text="{ID}" />
                             <Text id="txtBatchDesc" text="{batchDescription}" />
-                            <Text id="txtStatus" text="{status}" />
+                            <Text id="txtGLCompanyCode" text="{glCompanyCode}" />
                             <Text id="txtPayrollDate" text="{payrollDate}" />
                             <Text id="txtTransType" text="{transactionType}" />
                             <Text id="txtCurrencyCode" text="{currencyCode}" />
                             <Text id="txtGLPeriod" text="{glPeriod}" />
                             <Text id="txtEffectivePeriod" text="{effectivePeriod}" />
+                            <Text id="txtStatus" text="{status}" />
                             <Text id="txtCreatedBy" text="Dan Antonio" />
                             <Text id="txtCreatedAt" text="{createdAt}" />
 
-                            <Button id="approvalBtn" type="Accept" text="Approve" press="onPressApprove" ariaDescribedBy="acceptButtonDescription genericButtonDescription" />
+                            <!--<Button id="approvalBtn" type="Accept" text="Approve" press="onPressApprove" ariaDescribedBy="acceptButtonDescription genericButtonDescription" /> -->
                         </cells>
                     </ColumnListItem>
                 </items>
