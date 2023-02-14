@@ -29,7 +29,8 @@
                     <m:Label id="extendedSubtitle" text="{batchDescription}" />
                 </expandedContent>
                 <actions>
-                    <m:Button id="approveBtn" text="Approve" type="Emphasized" />
+                    <m:Button id="dtlApproveBtn" text="Approve" press="onPressApprove" type="Emphasized" />
+                    <m:Button id="dtlDeleteBtn" text="Delete" press="onPressDelete" />
                     <m:OverflowToolbarButton id="shareBtn" icon="sap-icon://action" type="Transparent" text="Share" tooltip="action" />
                 </actions>
             </ObjectPageDynamicHeaderTitle>
@@ -151,7 +152,7 @@
                                 <m:IconTabBar id="iconTabBar" select=".onQuickFilter" expandable="false">
                                     <m:items>
                                         <m:IconTabFilter id="allFilter" key="all" showAll="true" count="{objectView>/countAll}" text="All" />
-                                        <m:IconTabFilter id="allTabSeparator" />
+                                        <m:IconTabSeparator id="filterSeparator" />
                                         <m:IconTabFilter id="successFilter" key="success" icon="sap-icon://message-success" iconColor="Positive" count="{objectView>/success}" text="Success" />
                                         <m:IconTabFilter id="errorFilter" key="inError" icon="sap-icon://message-error" iconColor="Negative" count="{objectView>/inError}" text="Error" />
                                     </m:items>
@@ -160,15 +161,15 @@
                                     id="lineItemsList"
                                     sticky="HeaderToolbar,ColumnHeaders"
                                     class="sapUiSmallMarginTop"
-                                    mode="MultiSelect"
+                                    mode="None"
                                     width="auto"
                                     items="{
-							path: 'items',
-							sorter: {
-								path: 'fmno',
-								descending: false
-							}
-						}"
+                                        path: 'items',
+                                        sorter: {
+                                            path: 'fmno',
+                                            descending: false
+                                        }
+                                    }"
                                     updateFinished=".onListUpdateFinished"
                                     noDataText="{i18n>detailLineItemTableNoDataText}"
                                     busyIndicatorDelay="{objectView>/tableBusyDelay}"
@@ -179,55 +180,58 @@
                                         <m:Toolbar id="lineItemsToolbar">
                                             <m:Title id="lineItemsHeader" text="{objectView>/lineItemListTitle}" />
                                             <m:ToolbarSpacer id="toolbarspacer" />
-                                            <m:Button id="dataExportBtn" icon="sap-icon://download" press="onExport" visible="{objectView>/showExport}" />
+                                            <m:Button id="dataExportBtn" icon="sap-icon://download" press="" visible="{objectView>/showExport}" />
                                             <m:SearchField id="searchField" tooltip="{i18n>itemlistSearchTooltip}" search=".onSearch" width="auto" />
                                         </m:Toolbar>
                                     </m:headerToolbar>
                                     <m:columns>
-                                        <m:Column id="fmnoDtlColumn">
+                                        <m:Column id="fmnoDtlColumn" width="6%">
                                             <m:Text id="FMNO" text="FMNO" />
                                         </m:Column>
-                                        <m:Column id="payrollDtlCodeColumn" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Column id="payrollDtlCodeColumn" width="6%" demandPopin="false" minScreenWidth="Tablet">
                                             <m:Text id="payrollCode" text="Payroll Code" />
                                         </m:Column>
-                                        <m:Column id="payrollDtlCodeSeqColumn" hAlign="End" demandPopin="true" minScreenWidth="Tablet">
+                                        <m:Column id="payrollDtlCodeSeqColumn" width="6%" hAlign="Center" demandPopin="true" minScreenWidth="Tablet">
                                             <m:Text id="payrollCodeSeq" text="Payroll Code Sequence" />
                                         </m:Column>
-                                        <m:Column id="nameDtlColumn" hAlign="End">
-                                            <m:Text id="nameDtlCol" text="Name" />
-                                        </m:Column>
-                                        <m:Column id="amountDtlColumn" hAlign="End">
+
+                                        <m:Column id="amountDtlColumn" width="8%" hAlign="End">
                                             <m:Text id="amount" text="Amount" />
                                         </m:Column>
-                                        <m:Column id="glCostCenterColumn" hAlign="End">
+                                        <m:Column id="glCostCenterColumn" width="8%" hAlign="Center">
                                             <m:Text id="glCostCenter" text="GL Cost Center" />
                                         </m:Column>
-                                        <m:Column id="paymentNoDtlColumn" hAlign="End">
+                                        <m:Column id="paymentNoDtlColumn" width="6%" hAlign="Center">
                                             <m:Text id="paymentNoCol" text="Payment No" />
                                         </m:Column>
-                                        <m:Column id="paymentIdDtlColumn" hAlign="End">
+                                        <m:Column id="paymentIdDtlColumn" width="6%" hAlign="Center">
                                             <m:Text id="paymentIdCol" text="Payment ID" />
                                         </m:Column>
-                                        <m:Column id="paymentFormDtlColumn" hAlign="End">
+                                        <m:Column id="paymentFormDtlColumn" width="6%" hAlign="Center">
                                             <m:Text id="paymentFormCol" text="Payment Form" />
                                         </m:Column>
-                                        <m:Column id="loanAdvNoDtlColumn" hAlign="End">
+                                        <m:Column id="loanAdvNoDtlColumn" width="13%" hAlign="Center">
                                             <m:Text id="loanAdvNo" text="Loan or Advance No" />
                                         </m:Column>
-                                        <m:Column id="projCodeDtlColumn" hAlign="End">
+                                        <m:Column id="projCodeDtlColumn" width="6%" hAlign="Center">
                                             <m:Text id="projCode" text="Project Code" />
                                         </m:Column>
-                                        <m:Column id="projTaskDtlColumn" hAlign="End">
+                                        <m:Column id="projTaskDtlColumn" width="6%" hAlign="Center">
                                             <m:Text id="projTask" text="Project Task" />
+                                        </m:Column>
+                                        <m:Column id="statusColumn" width="8%" hAlign="Center">
+                                            <m:Text id="dtlStatusTxt" text="Status" />
+                                        </m:Column>
+                                        <m:Column id="statusMsgColumn" width="15%" hAlign="Center">
+                                            <m:Text id="dtlStatusMsg" text="Status Message" />
                                         </m:Column>
                                     </m:columns>
                                     <m:items>
-                                        <m:ColumnListItem id="colListItm">
+                                        <m:ColumnListItem id="colBatchItems">
                                             <m:cells>
                                                 <m:Text id="txtDtlFMNO" text="{fmno}" />
                                                 <m:Text id="txtDtlPayoffCode" text="{payrollCode}" />
                                                 <m:Text id="txtDtlPayoffCodeSq" text="{payrollCodeSequence}" />
-                                                <m:Text id="txtName" text="{name}" />
                                                 <m:Text id="txtDtlAmount" text="{amount}" />
                                                 <m:Text id="txtDtlglCostCenter" text="{glCostCenter}" />
                                                 <m:Text id="txtDtlPaymentNo" text="{paymentNumber}" />
@@ -236,6 +240,8 @@
                                                 <m:Text id="txtDtlLoanAdvNo" text="{loanAdvanceReferenceNumber}" />
                                                 <m:Text id="txtDtlProjCode" text="{projectCode}" />
                                                 <m:Text id="txtDtlProjTask" text="{projectTask}" />
+                                                <m:Text id="txtDtlStatus" text="{status}" />
+                                                <m:Text id="txtDtlStatusMsg" text="{statusMessage}" />
                                             </m:cells>
                                         </m:ColumnListItem>
                                     </m:items>
