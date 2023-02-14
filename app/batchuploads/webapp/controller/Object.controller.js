@@ -376,6 +376,7 @@ sap.ui.define([
         approveUploads: function () {
             var sPath = this.getView().getBindingContext().sPath;
             var sHeaders = {"content-type": "application/json"};
+            var that = this;
             jQuery.ajax({
                 url: "/payroll" + sPath + "/approve",
                 type: "POST",
@@ -384,7 +385,7 @@ sap.ui.define([
                 dataType: "json",
                 headers: sHeaders,
                 success: function (result) {
-                    this.closeApprovalDialog();
+                    that.closeApprovalDialog();
                     var sMsg = "BATCH " + this._ID + " approved successfully!";
                     MessageBox.success(sMsg);
                 },
