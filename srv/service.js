@@ -97,8 +97,8 @@ class PayrollService extends cds.ApplicationService {
             // Get Info from FDM
             const fdmUtils = new FDMUtils(fdm);
             await fdmUtils.getUserData(stagingHeader.glCompanyCode);
-            //await fdmUtils.getGLAccounts();
-            //await fdmUtils.getCompanyCodes();
+            await fdmUtils.getGLAccounts();
+            await fdmUtils.getCompanyCodes();
             //await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
             //await fdmUtils.getExchangeRates();
 
@@ -146,15 +146,32 @@ class PayrollService extends cds.ApplicationService {
                 const mappedAccount = mappingData.find((mappingRow) =>
                     (mappingRow.payrollCode == item.PAYROLLCODE)
                     && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1)));
-
                 if (!mappedAccount) {
-                    errorsForRow.push(`Unable to find GL account for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
+                    errorsForRow.push(`Unable to find GL account mapping for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
+                }
+
+                const glAccountObj = fdmUtils.getGLAccount(mappedAccount.glAccount);
+                if (glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X'){
+                    errorsForRow.push(`Invalid GL account ${glAccountObj.glAccount}.`);
+                }
+
+                const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
+                if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()){
+                    errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
                 }
 
                 if (errorsForRow.length) {
                     return { ...item, STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
                 } else {
-                    return { ...item, STATUS: 'VALID', STATUSMESSAGE: '', GLCOSTCENTER: userObj.costCenter, GLACCOUNT: mappedAccount.glAccount, FCAT: userFCAT }
+                    return { ...item, STATUS: 'VALID', STATUSMESSAGE: '', 
+                        GLCOSTCENTER: userObj.costCenter, 
+                        GLACCOUNT: glAccountObj.glAccount, 
+                        GLCURRENCYCODE: companyCode.currencyCode,
+                        FCAT: userFCAT,
+                        PERNR: userObj.personidExt,
+                        LOCATIONCODE: userObj.userLocation,
+                        SKILLCODE: userObj.skillCode,
+                    }
                 }
             });
 
@@ -171,24 +188,6 @@ class PayrollService extends cds.ApplicationService {
             const [batchToApprove] = req.params;
             console.log(batchToApprove);
 
-            const cpiTrigger = () => {
-                return new Promise(async (resolve, reject) => {
-                    setTimeout(async () => {
-                        const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
-                        try {
-                            axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
-                            axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
-                            const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchToApprove}`;
-                            const responseCPI = await axios.get(cpiURL);
-                            console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
-                            resolve(responseCPI);
-                        } catch (ex) {
-                            console.log("error triggering CPI: " + ex.message);
-                        };
-                    }, 3000);
-                })
-            };
-
             // If already approved just trigger CPI
             const currentBatchStatus = await SELECT.one.from(UploadHeader).columns("STATUS").where({ ID: batchToApprove });
             if (currentBatchStatus.STATUS != 'APPROVED') {
@@ -199,6 +198,10 @@ class PayrollService extends cds.ApplicationService {
                 const resultSkipItems = await UPDATE(UploadItems).set({ STATUS: 'SKIPPED' }).where({ PARENT_ID: batchToApprove, STATUS: 'INVALID' });
 
                 if (resultApproveHeader > 0 && resultApproveItems > 0) {
+                    // Get FDM Data
+                    const fdmUtils = new FDMUtils(fdm);
+                    await fdmUtils.getExchangeRates();
+
                     // Get Data to Copy
                     const dataHeader = await SELECT.one.from(UploadHeader).where({ ID: batchToApprove, STATUS: 'APPROVED' });
                     const dataItems = await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' });
@@ -246,6 +249,8 @@ class PayrollService extends cds.ApplicationService {
                         const payloadItems = dataItems.map((item) => {
                             const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
 
+                            const glExchangeRate = fdmUtils.getExchangeRate(currencyCode, item.glCurrencyCode);
+                            
                             return {
                                 batchID_batchID: batchToApprove,
                                 batchLineNumber: lineCounter += 1,
@@ -256,7 +261,12 @@ class PayrollService extends cds.ApplicationService {
                                 payrollCode: item.payrollCode,
                                 payrollCodeSequence: item.payrollCodeSequence,
                                 sourceAmount: item.amount,
+                                sourceCurrencyCode: currencyCode,
+                                sourceCompany: glCompanyCode,
                                 paymentID: item.paymentID,
+                                pernr: item.pernr,
+                                locationCode: item.locationCode,
+                                skillCode: item.skilCode,
                                 projectCode: item.projectCode,
                                 glAccount: item.glAccount,
                                 glPostCostCenter: item.glCostCenter,
@@ -264,14 +274,21 @@ class PayrollService extends cds.ApplicationService {
                                 postingAggregation: (mapObj.payrollCodeClass == 'ADVANCE' || mapObj.payrollCodeClass == 'LOAN') ? false : true,
                                 advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.loanAdvanceReferenceNumber : null,
                                 loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.loanAdvanceReferenceNumber : null,
+                                usdAmount: utils.convertAmountByExchangeRate(item.amount,glExchangeRate),
+                                usdConversionRate: glExchangeRate,
+                                usPsrpReportingCode: mapObj.usPsrpCategory
                             }
                         });
 
                         const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
                         console.log(`Details added to results table: ${resultCopyItems.results.length}`);
-                        await cpiTrigger();
 
-                        return true;
+                        // Commit before trigger
+                        const tx = cds.tx()
+                        await tx.commit();
+                        this.emit("trigger", { batchToApprove });
+
+                        return batchToApprove;
                     } else {
                         req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
                     }
@@ -280,10 +297,32 @@ class PayrollService extends cds.ApplicationService {
                 }
             } else {
                 console.log("Already approved, just triggering CPI again.");
-                await cpiTrigger();
-
-                return true;
+                this.emit("trigger", { batchToApprove });
+                return batchToApprove;
             }
+        });
+
+        this.on("trigger", async req => {
+            const batchId = req.data.batchToApprove;
+            const cpiTrigger = () => {
+                return new Promise(async (resolve, reject) => {
+                    setTimeout(async () => {
+                        console.log(`CPI Trigger - Starting for batch ${batchId}` );
+                        const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
+                        try {
+                            axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
+                            axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
+                            const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchId}`;
+                            const responseCPI = await axios.get(cpiURL);
+                            console.log(`CPI Trigger - Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
+                            resolve(responseCPI);
+                        } catch (ex) {
+                            console.log("CPI Trigger - Error:: " + ex.message);
+                        };
+                    }, 3000);
+                })
+            };
+            await cpiTrigger();
         });
 
         this.after("READ", "StagingUploads", async (result) => {

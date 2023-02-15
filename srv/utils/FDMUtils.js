@@ -40,6 +40,10 @@ class FDMUtils {
         return this.glAccounts;
     };
 
+    getGLAccount(glaccount) {
+        return this.glAccounts.find((account)=> account.glAccount == glaccount);
+    };
+
     async getCompanyCodes() {
         let result = await this.apiService.get("COMPANY_CODE_API");//.where({ mandt: this.sapClient });
         this.companyCodes.push(...result);
@@ -49,6 +53,10 @@ class FDMUtils {
         }
         console.log(`Found ${this.companyCodes.length} companyCodes.`);
         return this.companyCodes;
+    };
+
+    getCompanyCode(companycode) {
+        return this.companyCodes.find((company)=> company.companyCode == companycode);
     };
 
     async getWbsElements(companyCode) {
@@ -71,6 +79,10 @@ class FDMUtils {
         }
         console.log(`Found ${this.exchangeRates.length} exchangeRates.`);
         return this.exchangeRates;
+    };
+
+    getExchangeRate(sourceCurrency, targetCurrency){
+        const exchangeRate = this.exchangeRates.find((rate)=> ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
     };
 };
 

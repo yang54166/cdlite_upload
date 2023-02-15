@@ -12,10 +12,7 @@
     "@sap/hdbext": "^7.7.2",
     "@sap/xsenv": "^3.4.0",
     "@sap/xssec": "^3",
-    "cookie-parser": "^1.4.6",
-    "csurf": "^1.11.0",
     "express": "^4",
-    "express-fileupload": "^1.4.0",
     "hdb": "^0.19.0",
     "passport": "^0",
     "sap-hdbext-promisfied": "^2.202208.1"

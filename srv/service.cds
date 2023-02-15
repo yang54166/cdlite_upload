@@ -7,7 +7,7 @@ using {
 } from '../db/virtual';
 using {fdm_masterdata} from './external/fdm_masterdata';
 
-service PayrollService {
+service PayrollService  @(requires: 'authenticated-user') {
     // For Upload Only, not persisted to db as binary
     @cds.persistence.skip
     @odata.singleton
