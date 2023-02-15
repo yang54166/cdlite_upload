@@ -30,7 +30,7 @@ sap.ui.define([
             var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
             var companyCodeModel = this.getOwnerComponent().getModel("companyCodeData");
             var uploadRangesModel = this.getOwnerComponent().getModel("uploadRangesData");
-           
+
             // Model used to manipulate control states
             oViewModel = new JSONModel({
                 worklistTableTitle: this.getResourceBundle().getText("worklistTableTitle"),
@@ -93,6 +93,20 @@ sap.ui.define([
             history.go(-1);
         },
 
+        onCompanyCodeChange: function (oEvent) {
+
+            var oBinding = this.byId("table").getBinding("items"),
+                sValue = oEvent.getSource().getSelectedKey();
+
+            if (sValue !== '0000') {
+                var filter = new Filter('glCompanyCode', FilterOperator.EQ, sValue)
+
+                oBinding.filter(filter);
+            } else {
+                oBinding.filter();
+            }
+        },
+
 
         onSearch: function (oEvent) {
             if (oEvent.getParameters().refreshButtonPressed) {
@@ -108,7 +122,7 @@ sap.ui.define([
                 var filters = [];
 
                 filters.push(new Filter("batchDescription", FilterOperator.Contains, sQuery));
-            
+
                 var orFilters = new Filter(filters, false);
                 if (sQuery && sQuery.length > 0) {
                     aTableSearchState = orFilters;

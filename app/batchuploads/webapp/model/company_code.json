@@ -1,5 +1,9 @@
 [
     {
+        "Code": "0000",
+        "Name": "All"
+    },
+    {
         "Code": "US10",
         "Name": "US 10 Payroll"
     },

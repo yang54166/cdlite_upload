@@ -321,6 +321,8 @@ sap.ui.define([
                     oView.byId("approvePayrollDate").setText(sPayrollDate);
                     oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
                     setTimeout(function() {that.createTotalTable();}, 500);
+                    var sButton = oView.byId("approveBtn");
+                    oDialog.setInitialFocus(sButton);
          /*           oDialog.addEventDelegate({
                         onAfterRendering: function() {
                             oView.byId("approveSummaryList").removeSelections(true);
@@ -376,18 +378,22 @@ sap.ui.define([
         approveUploads: function () {
             var sPath = this.getView().getBindingContext().sPath;
             var sHeaders = {"content-type": "application/json"};
+            var oApprovalDialog = this.byId("approveDialog");
+            oApprovalDialog.setBusy(true);
             var that = this;
             jQuery.ajax({
                 url: "/payroll" + sPath + "/approve",
                 type: "POST",
-                async: false,
+                async: true,
                 data: {},
                 dataType: "json",
                 headers: sHeaders,
                 success: function (result) {
-                    that.closeApprovalDialog();
+                   
+                    oApprovalDialog.setBusy(false);
                     var sMsg = "BATCH " + this._ID + " approved successfully!";
                     MessageBox.success(sMsg);
+                    that.closeApprovalDialog();
                 },
 
                 error: function (e) {

@@ -7,7 +7,7 @@
             <l:HorizontalLayout id="horizonLayout">
                 <l:VerticalLayout id="companyCodeFilterLayout" class="sapUiMediumMarginEnd">
                     <Label id="compCodeLabel" text="Company Code" design="Bold" />
-                    <ComboBox id="companyCodeList" name="Name" selectionChange=".onSelectionChange" items="{
+                    <ComboBox id="companyCodeList" name="Name" selectionChange=".onCompanyCodeChange" selectedKey="0000" items="{
 												path: 'companyCodeList>/',
 												templateShareable: true
 											}">
@@ -16,7 +16,7 @@
                 </l:VerticalLayout>
                 <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">
                     <Label id="monthYearLabel" text="Upload Month/Year" design="Bold" />
-                    <ComboBox id="monthYearList" name="Category" selectionChange=".onSelectionChange" items="{
+                    <ComboBox id="monthYearList" name="Category" selectionChange=".onUploadRangeChange" selectedKey="99-0000" items="{
 												path: 'uploadRangesList>/',
 												templateShareable: true
 											}">
