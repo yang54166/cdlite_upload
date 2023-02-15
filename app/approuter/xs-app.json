@@ -1,13 +1,19 @@
 {
   "authenticationMethod": "route",
-  "welcomeFile":"index.html",
+  "welcomeFile": "index.html",
   "routes": [
     {
       "source": "^/payroll/(.*)$",
       "target": "/payroll/$1",
       "destination": "srv-api",
       "authenticationType": "xsuaa",
-      "csrfProtection": true
+      "csrfProtection": false,
+      "cacheControl": "no-cache, no-store, must-revalidate"
+    },
+    {
+      "source": "^/user-api(.*)",
+      "target": "$1",
+      "service": "sap-approuter-userapi"
     },
     {
       "source": "(.*)",

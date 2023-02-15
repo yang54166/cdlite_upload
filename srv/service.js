@@ -188,24 +188,6 @@ class PayrollService extends cds.ApplicationService {
             const [batchToApprove] = req.params;
             console.log(batchToApprove);
 
-            const cpiTrigger = () => {
-                return new Promise(async (resolve, reject) => {
-                    setTimeout(async () => {
-                        const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
-                        try {
-                            axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
-                            axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
-                            const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchToApprove}`;
-                            const responseCPI = await axios.get(cpiURL);
-                            console.log(`CPI Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
-                            resolve(responseCPI);
-                        } catch (ex) {
-                            console.log("error triggering CPI: " + ex.message);
-                        };
-                    }, 3000);
-                })
-            };
-
             // If already approved just trigger CPI
             const currentBatchStatus = await SELECT.one.from(UploadHeader).columns("STATUS").where({ ID: batchToApprove });
             if (currentBatchStatus.STATUS != 'APPROVED') {
@@ -300,9 +282,13 @@ class PayrollService extends cds.ApplicationService {
 
                         const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
                         console.log(`Details added to results table: ${resultCopyItems.results.length}`);
-                        await cpiTrigger();
 
-                        return true;
+                        // Commit before trigger
+                        const tx = cds.tx()
+                        await tx.commit();
+                        this.emit("trigger", { batchToApprove });
+
+                        return batchToApprove;
                     } else {
                         req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
                     }
@@ -311,10 +297,32 @@ class PayrollService extends cds.ApplicationService {
                 }
             } else {
                 console.log("Already approved, just triggering CPI again.");
-                await cpiTrigger();
-
-                return true;
+                this.emit("trigger", { batchToApprove });
+                return batchToApprove;
             }
+        });
+
+        this.on("trigger", async req => {
+            const batchId = req.data.batchToApprove;
+            const cpiTrigger = () => {
+                return new Promise(async (resolve, reject) => {
+                    setTimeout(async () => {
+                        console.log(`CPI Trigger - Starting for batch ${batchId}` );
+                        const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
+                        try {
+                            axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
+                            axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
+                            const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchId}`;
+                            const responseCPI = await axios.get(cpiURL);
+                            console.log(`CPI Trigger - Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
+                            resolve(responseCPI);
+                        } catch (ex) {
+                            console.log("CPI Trigger - Error:: " + ex.message);
+                        };
+                    }, 3000);
+                })
+            };
+            await cpiTrigger();
         });
 
         this.after("READ", "StagingUploads", async (result) => {

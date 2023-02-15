@@ -139,8 +139,8 @@
       <descriptions defaultDescription="DOCTYPE"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="DOCTYPE"/>
     </attribute>
-    <attribute id="DOCHEADERTEXT" hidden="true" order="16" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="DOCHEADERTEXT"/>
+    <attribute id="DOCHEADER" hidden="true" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DOCHEADER"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="DOCHEADERTEXT"/>
     </attribute>
     <attribute id="BATCHDESCRIPTION" hidden="true" order="17" displayAttribute="false" attributeHierarchyActive="false">
@@ -150,6 +150,13 @@
     <attribute id="PAYROLLDATE" hidden="true" order="18" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLDATE"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLDATE"/>
+    </attribute>
+  
+    <attribute id="LEDGERGROUP" order="19" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LEDGERGROUP"/>
+  
+      <keyMapping columnObjectName="Join_Mapping" columnName="LEDGERGROUP"/>
+  
     </attribute>
   </attributes>
   <calculatedAttributes>
@@ -163,14 +170,14 @@
   
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="16">
   
-        <formula>'DUMMY'</formula>
+        <formula>&quot;BATCHID&quot; || '/' || &quot;POSTINGBATCHID&quot;</formula>
   
       </keyCalculation>
   
     </calculatedAttribute>
     <calculatedAttribute id="DOCUMENTHEADERTEXT" order="8" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="25">
-        <formula>&quot;DOCHEADERTEXT&quot;</formula>
+        <formula>&quot;DOCHEADER&quot;</formula>
       </keyCalculation>
     </calculatedAttribute>
     <calculatedAttribute id="DOCUMENTDATE" hidden="false" order="11" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
