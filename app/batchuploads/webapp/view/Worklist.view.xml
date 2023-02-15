@@ -33,8 +33,8 @@
                 items="{
                     path: '/StagingUploads',
                     sorter: {
-                        path: 'ID',
-                        descending: false
+                        path: 'createdAt',
+                        descending: true
                     },
                     parameters: {
                         $count: true
@@ -108,7 +108,7 @@
                             <Text id="txtGLPeriod" text="{glPeriod}" />
                             <Text id="txtEffectivePeriod" text="{effectivePeriod}" />
                             <Text id="txtStatus" text="{status}" />
-                            <Text id="txtCreatedBy" text="Dan Antonio" />
+                            <Text id="txtCreatedBy" text="{createdBy}" />
                             <Text id="txtCreatedAt" text="{createdAt}" />
 
                             <!--<Button id="approvalBtn" type="Accept" text="Approve" press="onPressApprove" ariaDescribedBy="acceptButtonDescription genericButtonDescription" /> -->
