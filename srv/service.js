@@ -99,39 +99,51 @@ class PayrollService extends cds.ApplicationService {
             await fdmUtils.getUserData(stagingHeader.glCompanyCode);
             await fdmUtils.getGLAccounts();
             await fdmUtils.getCompanyCodes();
-            //await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
+            await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
             //await fdmUtils.getExchangeRates();
 
             // Get Mapping Data
             const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
             const mappingData = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
 
+            let fmnoErrorList = [];
             // Update Staging Data
             let updatedItems = stagingDataItems.map((item) => {
                 let errorsForRow = [];
                 const userObj = fdmUtils.findUserByFMNO(item.FMNO);
-                let userFCAT = userObj?.fcat ? 
-                    parseInt(userObj?.fcat?.split(" ")[0]).toString().padStart(3, "0") : 
+                let userFCAT = userObj?.fcat ?
+                    parseInt(userObj?.fcat?.split(" ")[0]).toString() :
                     null;
+                userFCAT = parseInt(userFCAT) == 0 ? null : userFCAT;
 
                 // Validations
                 if (!userObj) {
-                    errorsForRow.push(`User ${item.FMNO} not found or invalid.`);
+                    errorsForRow.push(`FMNO ${item.FMNO} not found or invalid.`);
                 } else {
                     if (!userObj.costCenter || userObj.costCenter == "") {
-                        errorsForRow.push(`User ${item.FMNO} does not have cost center.`);
+                        errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
                     } else if (!userFCAT || userFCAT == "") {
-                        errorsForRow.push(`User ${item.FMNO} does not have FCAT.`);
+                        errorsForRow.push(`FMNO ${item.FMNO} does not have FCAT.`);
                     } else if (new Date(userObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
-                        errorsForRow.push(`User ${item.FMNO} was not active for payroll date.`);
+                        errorsForRow.push(`FMNO ${item.FMNO} was not active for payroll date.`);
                     }
                 }
 
-                const mappedAccount = mappingData.find((mappingRow) =>
+                const mappedAccounts = mappingData.filter((mappingRow) =>
                     (mappingRow.payrollCode == item.PAYROLLCODE)
-                    && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1)));
+                    && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1))
+                    && (new Date(mappingRow.effectiveDate) < new Date()));
+                // Get newest by EffectiveDate
+                const newestEfectiveDate = new Date(Math.max(...mappedAccounts.map(a => new Date(a.effectiveDate))));
+                const mappedAccount = mappedAccounts.find(a => new Date(a.effectiveDate).valueOf() == newestEfectiveDate.valueOf());
                 if (!mappedAccount) {
                     errorsForRow.push(`Unable to find GL account mapping for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
+                } else {
+                    if (mappedAccount.payrollCodeClass == "ADVANCE" || mappedAccount.payrollCodeClass == "LOAN") {
+                        if (!item.LOANADVANCEREFERENCENUMBER) {
+                            errorsForRow.push(`PayrollCodeClass ${mappedAccount.payrollCodeClass} requires a reference number, which is not present.`);
+                        }
+                    }
                 }
 
                 const glAccountObj = fdmUtils.getGLAccount(mappedAccount.glAccount);
@@ -144,21 +156,46 @@ class PayrollService extends cds.ApplicationService {
                     errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
                 }
 
-                if (errorsForRow.length) {
-                    return { ...item, STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
-                } else {
-                    return {
-                        ...item, STATUS: 'VALID', STATUSMESSAGE: '',
-                        GLCOSTCENTER: userObj.costCenter,
-                        GLACCOUNT: glAccountObj?.glAccount | null,
-                        GLCURRENCYCODE: companyCode.currencyCode,
-                        FCAT: userFCAT,
-                        PERNR: userObj.personidExt,
-                        LOCATIONCODE: userObj.userLocation,
-                        SKILLCODE: userObj.skillCode,
+                if (item.projectCode) {
+                    const projectCode = fdmUtils.getWbsElement(item.projectCode);
+                    // TODO: More Checks for validity?
+                    if (!projectCode) {
+                        errorsForRow.push(`WBS Element (Project) ${item.projectCode} is not valid.`);
                     }
                 }
+
+                // Default to INVALID, and only mark valid if confirmed no errors.
+                let rowStatus = { STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
+                if (!errorsForRow.length) {
+                    // VALID
+                    rowStatus.STATUS = 'VALID';
+                    rowStatus.STATUSMESSAGE = ''
+                } else {
+                    // Keep list of fmnos with errors
+                    if (fmnoErrorList.indexOf(item.FMNO) < 0) {
+                        fmnoErrorList.push(item.FMNO);
+                    }
+                }
+
+                return {
+                    ...item,
+                    STATUS: rowStatus.STATUS,
+                    STATUSMESSAGE: rowStatus.STATUSMESSAGE,
+                    GLCOSTCENTER: userObj?.costCenter,
+                    GLACCOUNT: glAccountObj?.glAccount | null,
+                    GLCURRENCYCODE: companyCode?.currencyCode,
+                    FCAT: userFCAT,
+                    PERNR: userObj?.personidExt,
+                    LOCATIONCODE: userObj?.userLocation,
+                    SKILLCODE: userObj?.skillCode,
+                }
             });
+
+            // Mark rows invalid if any errors for that FMNO
+            updatedItems = updatedItems.map((item)=> ({...item, 
+                STATUS: fmnoErrorList.indexOf(item.FMNO) > -1 ? 'INVALID' : item.STATUS,
+                STATUSMESSAGE: fmnoErrorList.indexOf(item.FMNO) > -1 ? (item.STATUSMESSAGE || 'FMNO skipped due to errors in other rows.'): item.STATUSMESSAGE
+            }));
 
             // Save back to DB
             return HANAUtils.callStoredProc(
