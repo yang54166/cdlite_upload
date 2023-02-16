@@ -7,6 +7,7 @@ class FDMUtils {
     companyCodes=[];
     wbsElements=[];
     exchangeRates=[];
+    currencyCodes=[];
 
     constructor(remoteService){
         this.apiService = remoteService;
@@ -88,6 +89,17 @@ class FDMUtils {
 
     getExchangeRate(sourceCurrency, targetCurrency){
         const exchangeRate = this.exchangeRates.find((rate)=> ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
+    };
+
+    async getCurrency() {
+        let result = await this.apiService.get("CURRENCY_API");
+        this.currencyCodes.push(...result);
+        while (result.$nextLink) {
+            result = await this.apiService.get(`/${result.$nextLink}`);
+            this.currencyCodes.push(...result);
+        }
+        console.log(`Found ${this.currencyCodes.length} currencyCodes.`);
+        return this.currencyCodes;
     };
 };
 

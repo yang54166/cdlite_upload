@@ -354,6 +354,16 @@ class PayrollService extends cds.ApplicationService {
             return result;
         });
 
+        this.on("READ", "CompanyCodes", async (result)=>{
+            const fdmUtils = new FDMUtils(fdm);
+            return fdmUtils.getCompanyCodes();
+        });
+
+        this.on("READ", "Currency", async (result)=>{
+            const fdmUtils = new FDMUtils(fdm);
+            return fdmUtils.getCurrency();
+        });
+
         // required
         await super.init()
     }
