@@ -420,7 +420,8 @@ sap.ui.define([
 
         approveUploads: function () {
             var sPath = this.getView().getBindingContext().sPath;
-            var sHeaders = { "content-type": "application/json" };
+            var csrfToken = this.getView().getModel().getHttpHeaders()['X-CSRF-Token'];
+            var sHeaders = { "content-type": "application/json", "x-csrf-token": `${csrfToken}` };
             var oApprovalDialog = this.byId("approveDialog");
             oApprovalDialog.setBusy(true);
             var that = this;
