@@ -86,7 +86,7 @@
                 <m:VBox id="uploadHeaderSec4" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
                     <m:HBox id="uploadHeaderSec4V1" class="sapUiTinyMarginBottom">
                         <m:Label id="createdByLbl" text="{i18n>createdBy}" class="sapUiSmallMarginEnd" />
-                        <m:Text id="createdByTxt" text="Dan Antonio" />
+                        <m:Text id="createdByTxt" text="{createdBy}" />
                     </m:HBox>
 
                     <m:HBox id="uploadHeaderSec4V2" class="sapUiTinyMarginBottom" renderType="Bare">
@@ -97,7 +97,7 @@
                 <m:VBox id="uploadHeaderSec5" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
                     <m:HBox id="uploadHeaderSec5V1" class="sapUiTinyMarginBottom">
                         <m:Label id="modifiedByLbl" text="{i18n>modifiedBy}" class="sapUiSmallMarginEnd" />
-                        <m:Text id="modifiedByTxt" text="Dan Antonio" />
+                        <m:Text id="modifiedByTxt" text="{createdBy}" />
                     </m:HBox>
 
                     <m:HBox id="uploadHeaderSec5V2" class="sapUiTinyMarginBottom">
@@ -113,17 +113,33 @@
                 <subSections>
                     <ObjectPageSubSection id="personalSectionSS1" titleUppercase="false">
                         <blocks>
-                            <m:VBox id="postingStatusV1" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
-                                <m:HBox id="postingStatusDtl" class="sapUiTinyMarginBottom">
-                                    <m:Label id="postingStatusLbl" text="{i18n>detailStatus}" class="sapUiTinyMarginEnd" />
-                                    <m:Text id="postingStatusTxt" text="{status}" />
-                                </m:HBox>
-
-                                <m:HBox id="postingStatusV2" class="sapUiTinyMarginBottom">
-                                    <m:Label id="postingFileNameLbl" text="{i18n>fileName}" class="sapUiTinyMarginEnd" />
-                                    <m:Text id="postingFileNameTxt" text="{fileName}" />
-                                </m:HBox>
-                            </m:VBox>
+                         
+                            <m:Table id="postingSummaryList" sticky="HeaderToolbar,ColumnHeaders" items="{postingView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
+                                <m:columns>
+                                    <m:Column width="15%">
+                                        <m:Text text="Posting Batch Id" />
+                                    </m:Column>
+                                    <m:Column width="15%">
+                                        <m:Text text="Posting Status" />
+                                    </m:Column>
+                                    <m:Column width="45%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="Status Message" />
+                                    </m:Column>
+                                    <m:Column width="25%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="Posting Document" />
+                                    </m:Column>
+                                </m:columns>
+                                <m:items>
+                                    <m:ColumnListItem>
+                                        <m:cells>
+                                            <m:Text text="{postingView>postingBatchId}" />
+                                            <m:Text text="{postingView>postingStatus}" />
+                                            <m:Text text="{postingView>postingStatusMessage}" />
+                                            <m:Text text="{postingView>postingDocument}" />
+                                        </m:cells>
+                                    </m:ColumnListItem>
+                                </m:items>
+                            </m:Table>
                         </blocks>
                     </ObjectPageSubSection>
                 </subSections>

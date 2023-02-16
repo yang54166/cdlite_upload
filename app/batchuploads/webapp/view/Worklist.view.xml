@@ -7,7 +7,7 @@
             <l:HorizontalLayout id="horizonLayout">
                 <l:VerticalLayout id="companyCodeFilterLayout" class="sapUiMediumMarginEnd">
                     <Label id="compCodeLabel" text="Company Code" design="Bold" />
-                    <ComboBox id="companyCodeList" name="Name" selectionChange=".onSelectionChange" items="{
+                    <ComboBox id="companyCodeList" name="Name" selectionChange=".onCompanyCodeChange" selectedKey="0000" items="{
 												path: 'companyCodeList>/',
 												templateShareable: true
 											}">
@@ -16,7 +16,7 @@
                 </l:VerticalLayout>
                 <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">
                     <Label id="monthYearLabel" text="Upload Month/Year" design="Bold" />
-                    <ComboBox id="monthYearList" name="Category" selectionChange=".onSelectionChange" items="{
+                    <ComboBox id="monthYearList" name="Category" selectionChange=".onUploadRangeChange" selectedKey="99-0000" items="{
 												path: 'uploadRangesList>/',
 												templateShareable: true
 											}">
@@ -33,8 +33,8 @@
                 items="{
                     path: '/StagingUploads',
                     sorter: {
-                        path: 'ID',
-                        descending: false
+                        path: 'createdAt',
+                        descending: true
                     },
                     parameters: {
                         $count: true
@@ -108,7 +108,7 @@
                             <Text id="txtGLPeriod" text="{glPeriod}" />
                             <Text id="txtEffectivePeriod" text="{effectivePeriod}" />
                             <Text id="txtStatus" text="{status}" />
-                            <Text id="txtCreatedBy" text="Dan Antonio" />
+                            <Text id="txtCreatedBy" text="{createdBy}" />
                             <Text id="txtCreatedAt" text="{createdAt}" />
 
                             <!--<Button id="approvalBtn" type="Accept" text="Approve" press="onPressApprove" ariaDescribedBy="acceptButtonDescription genericButtonDescription" /> -->
