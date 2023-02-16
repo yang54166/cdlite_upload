@@ -1,25 +1,25 @@
-# Getting Started
+# Developer Setup
 
-Welcome to your new project.
-
-It contains these folders and files, following our recommended project layout:
-
-File or Folder | Purpose
----------|----------
-`app/` | content for UI frontends goes here
-`db/` | your domain models and data go here
-`srv/` | your service models and code go here
-`package.json` | project metadata and configuration
-`readme.md` | this getting started guide
-
-
-## Next Steps
-
-- Open a new terminal and run `cds watch` 
-- (in VS Code simply choose _**Terminal** > Run Task > cds watch_)
-- Start adding content, for example, a [db/schema.cds](db/schema.cds).
-
-
-## Learn More
-
-Learn more at https://cap.cloud.sap/docs/get-started/.
+To run approuter locally, you need to create /app/approuter/default-env.json
+```
+{
+  "destinations": [
+    {
+      "name": "srv-api",
+      "url": "http://localhost:4004",
+      "forwardAuthToken": true
+    }
+  ]
+}
+```
+and /app/approuter/default-services.json
+```
+{
+    "uaa": {
+        "url": "https://erpdevsd.authentication.eu10.hana.ondemand.com",
+        "clientid": "sb-cd_compensationdetails_c-ErpDevOrg-ErpDevSpcCdApp!t126539",
+        "xsappname": "cd_compensationdetails_c-ErpDevOrg-ErpDevSpcCdApp!t126539",
+        "clientsecret": "<UAA Binding Client Secret>"
+    }
+}
+```
