@@ -64,6 +64,7 @@
   "oauth2-configuration": {
     "redirect-uris": [
       "https://**-cd-compensationdetails-c.cfapps.eu10.hana.ondemand.com/login/callback",
+      "https://**-workspaces-ws-vbgwd.eu10.applicationstudio.cloud.sap/login/callback",
       "https://oauth.pstmn.io/v1/callback"
     ]
   }

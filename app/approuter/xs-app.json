@@ -7,7 +7,7 @@
       "target": "/payroll/$1",
       "destination": "srv-api",
       "authenticationType": "xsuaa",
-      "csrfProtection": false,
+      "csrfProtection": true,
       "cacheControl": "no-cache, no-store, must-revalidate"
     },
     {

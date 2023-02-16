@@ -259,8 +259,13 @@ sap.ui.define([
             var oFileUploader = this.byId("fileUploader");
             oUploadDialog.setBusy(true);
             var that = this;
-            oContext.created().then(function () {
 
+            var csrfToken = this.getView().getModel().getHttpHeaders()['X-CSRF-Token'];
+            var tokenParameter = new sap.ui.unified.FileUploaderParameter();
+            tokenParameter.setName('x-csrf-token');
+            tokenParameter.setValue(csrfToken);
+
+            oContext.created().then(function () {
                 console.log(that._uploadFileName.name);
                 var sBatchId = oContext.getProperty("ID");
                 var sValue = 'form-data; filename="' + that._uploadFileName.name + '"; batchID=' + sBatchId;
@@ -269,6 +274,7 @@ sap.ui.define([
                 headPar.setValue(sValue);
                 oFileUploader.removeHeaderParameter('content-disposition');
                 oFileUploader.addHeaderParameter(headPar);
+                oFileUploader.addHeaderParameter(tokenParameter);
                 oFileUploader.setUploadUrl("/payroll/PayrollUploadFile/content");
                 oFileUploader
                     .checkFileReadable()

@@ -10,6 +10,7 @@
     "node": "^16"
   },
   "scripts": {
-    "start": "node node_modules/@sap/approuter/approuter.js"
+    "start": "node node_modules/@sap/approuter/approuter.js",
+    "start-local": "node node_modules/@sap/html5-repo-mock/index.js"
   }
 }
