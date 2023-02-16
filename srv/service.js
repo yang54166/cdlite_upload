@@ -110,37 +110,21 @@ class PayrollService extends cds.ApplicationService {
             let updatedItems = stagingDataItems.map((item) => {
                 let errorsForRow = [];
                 const userObj = fdmUtils.findUserByFMNO(item.FMNO);
-                let userFCAT = "0";
+                let userFCAT = userObj?.fcat ? 
+                    parseInt(userObj?.fcat?.split(" ")[0]).toString().padStart(3, "0") : 
+                    null;
 
                 // Validations
                 if (!userObj) {
                     errorsForRow.push(`User ${item.FMNO} not found or invalid.`);
-                } else if (!userObj.costCenter || userObj.costCenter == "") {
-                    errorsForRow.push(`User ${item.FMNO} does not have cost center.`);
-                } else if (!userObj.groupId || userObj.groupId == "") {
-                    errorsForRow.push(`User ${item.FMNO} does not have FCAT.`);
-                }
-
-                // TODO: This is temporary logic for determing an FMNO
-                switch (userObj?.groupId) {
-                    case "F":
-                        userFCAT = "400";
-                        break;
-                    case "1":
-                    case "N":
-                    case "G":
-                    case "I":
-                        userFCAT = "300";
-                        break;
-                    case "C":
-                    case "D":
-                    case "H":
-                        userFCAT = "200";
-                    case "P":
-                        userFCAT = "100";
-                        break;
-                    default:
-                        userFCAT = "0";
+                } else {
+                    if (!userObj.costCenter || userObj.costCenter == "") {
+                        errorsForRow.push(`User ${item.FMNO} does not have cost center.`);
+                    } else if (!userFCAT || userFCAT == "") {
+                        errorsForRow.push(`User ${item.FMNO} does not have FCAT.`);
+                    } else if (new Date(userObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
+                        errorsForRow.push(`User ${item.FMNO} was not active for payroll date.`);
+                    }
                 }
 
                 const mappedAccount = mappingData.find((mappingRow) =>
@@ -151,21 +135,22 @@ class PayrollService extends cds.ApplicationService {
                 }
 
                 const glAccountObj = fdmUtils.getGLAccount(mappedAccount.glAccount);
-                if (glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X'){
+                if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
                     errorsForRow.push(`Invalid GL account ${glAccountObj.glAccount}.`);
                 }
 
                 const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
-                if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()){
+                if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()) {
                     errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
                 }
 
                 if (errorsForRow.length) {
                     return { ...item, STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
                 } else {
-                    return { ...item, STATUS: 'VALID', STATUSMESSAGE: '', 
-                        GLCOSTCENTER: userObj.costCenter, 
-                        GLACCOUNT: glAccountObj.glAccount, 
+                    return {
+                        ...item, STATUS: 'VALID', STATUSMESSAGE: '',
+                        GLCOSTCENTER: userObj.costCenter,
+                        GLACCOUNT: glAccountObj?.glAccount | null,
                         GLCURRENCYCODE: companyCode.currencyCode,
                         FCAT: userFCAT,
                         PERNR: userObj.personidExt,
@@ -250,7 +235,7 @@ class PayrollService extends cds.ApplicationService {
                             const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
 
                             const glExchangeRate = fdmUtils.getExchangeRate(currencyCode, item.glCurrencyCode);
-                            
+
                             return {
                                 batchID_batchID: batchToApprove,
                                 batchLineNumber: lineCounter += 1,
@@ -274,7 +259,7 @@ class PayrollService extends cds.ApplicationService {
                                 postingAggregation: (mapObj.payrollCodeClass == 'ADVANCE' || mapObj.payrollCodeClass == 'LOAN') ? false : true,
                                 advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.loanAdvanceReferenceNumber : null,
                                 loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.loanAdvanceReferenceNumber : null,
-                                usdAmount: utils.convertAmountByExchangeRate(item.amount,glExchangeRate),
+                                usdAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRate),
                                 usdConversionRate: glExchangeRate,
                                 usPsrpReportingCode: mapObj.usPsrpCategory
                             }
@@ -307,7 +292,7 @@ class PayrollService extends cds.ApplicationService {
             const cpiTrigger = () => {
                 return new Promise(async (resolve, reject) => {
                     setTimeout(async () => {
-                        console.log(`CPI Trigger - Starting for batch ${batchId}` );
+                        console.log(`CPI Trigger - Starting for batch ${batchId}`);
                         const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
                         try {
                             axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
