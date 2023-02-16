@@ -93,31 +93,31 @@ sap.ui.define([
             var sPostingURL = 'payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
             var oPostingData = new JSONModel();
             var that = this;
-         //   that.getPostingData(parseInt(this._ID));
+            //   that.getPostingData(parseInt(this._ID));
             var sFilter = new Filter('batchId', FilterOperator.EQ, parseInt(this._ID));
             var oList = this._oModel.bindList('/PostingBatch', undefined, undefined, sFilter, undefined);
             var oPostingData = new JSONModel();
-       
+
             oList.requestContexts().then(function (aContexts) {
-       
+
                 oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
                 that.setModel(oPostingData, "postingView");
 
             });
+
+
+            /*         $.get({
+                         url: sPostingURL,
+                         async: true,
+                         success: function (succData) {
+                             console.log(succData.value);
+                             oPostingData.setData(succData.value);
+                             that.setModel(oPostingData, "postingView");
+                         },
+                         error: function (error) {
          
-
-   /*         $.get({
-                url: sPostingURL,
-                async: true,
-                success: function (succData) {
-                    console.log(succData.value);
-                    oPostingData.setData(succData.value);
-                    that.setModel(oPostingData, "postingView");
-                },
-                error: function (error) {
-
-                }
-            }); */
+                         }
+                     }); */
 
         },
 
@@ -127,8 +127,8 @@ sap.ui.define([
             var oPostingData = new JSONModel();
             var arr = [];
             oList.requestContexts().then(function (aContexts) {
-       
-               
+
+
                 oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
                 that.getView().setModel(oPostingData, "postingView");
 
@@ -239,7 +239,7 @@ sap.ui.define([
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
                 oViewModel.setProperty("/countAll", iTotalItems);
                 var succCnt = 0, errorCnt = 0;
-               
+
                 if (this._sHeaderStatus.toUpperCase() === 'APPROVED') {
                     var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "APPROVED");
                     var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "SKIPPED");
@@ -442,9 +442,23 @@ sap.ui.define([
                 dataType: "json",
                 headers: sHeaders,
                 success: function (result) {
+                    /*    var sFilter = new Filter('batchId', FilterOperator.EQ, parseInt(that._ID));
+                        var oList = that._oModel.bindList('/PostingBatch', undefined, undefined, sFilter, undefined);
+                        var oPostingData = new JSONModel();
+                   
+                        oList.requestContexts().then(function (aContexts) {
+                   
+                            oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
+                            that.setModel(oPostingData, "postingView");
+                            oApprovalDialog.setBusy(false);
+                            var sMsg = "BATCH " + that._ID + " approved successfully!";
+                            MessageBox.success(sMsg);
+                            that.closeApprovalDialog();
+            
+                        }); */
 
                     oApprovalDialog.setBusy(false);
-                    var sMsg = "BATCH " + this._ID + " approved successfully!";
+                    var sMsg = "BATCH " + that._ID + " approved successfully!";
                     MessageBox.success(sMsg);
                     that.closeApprovalDialog();
                 },
