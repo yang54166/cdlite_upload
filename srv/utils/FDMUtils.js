@@ -45,7 +45,7 @@ class FDMUtils {
     };
 
     async getCompanyCodes() {
-        let result = await this.apiService.get("COMPANY_CODE_API");//.where({ mandt: this.sapClient });
+        let result = await this.apiService.get("COMPANY_CODE_API").where({ mandt: this.sapClient });
         this.companyCodes.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);

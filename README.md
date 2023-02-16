@@ -19,6 +19,10 @@ To run approuter locally, you need to create /app/approuter/default-env.json
       "name": "srv-api",
       "url": "http://localhost:4004",
       "forwardAuthToken": true
+    },
+    {
+      "name": "ui5",
+      "url": "https://ui5.sap.com"
     }
   ]
 }

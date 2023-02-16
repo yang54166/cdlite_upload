@@ -4,7 +4,7 @@ namespace staging;
 
 entity UploadHeader: managed {
     key ID: Integer;
-    status: String;
+    status: String default 'STAGED';
     statusMessage: String;
     deleted: Boolean;
     glCompanyCode: String(4);
@@ -13,7 +13,6 @@ entity UploadHeader: managed {
     payrollDate: Date;
     glPeriod: String(6);  //YYYYMM
     effectivePeriod: String(6); //YYYYMM
-    batchNumber: Integer;
     batchDescription: String;
     fileName: String;
     remarks: String;
