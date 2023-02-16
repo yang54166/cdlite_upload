@@ -93,9 +93,20 @@ sap.ui.define([
             var sPostingURL = 'payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
             var oPostingData = new JSONModel();
             var that = this;
-            //          that.getPostingData("/PostingBatch", parseInt(this._ID));
+         //   that.getPostingData(parseInt(this._ID));
+            var sFilter = new Filter('batchId', FilterOperator.EQ, parseInt(this._ID));
+            var oList = this._oModel.bindList('/PostingBatch', undefined, undefined, sFilter, undefined);
+            var oPostingData = new JSONModel();
+       
+            oList.requestContexts().then(function (aContexts) {
+       
+                oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
+                that.setModel(oPostingData, "postingView");
 
-            $.get({
+            });
+         
+
+   /*         $.get({
                 url: sPostingURL,
                 async: true,
                 success: function (succData) {
@@ -106,21 +117,21 @@ sap.ui.define([
                 error: function (error) {
 
                 }
-            });
+            }); */
 
         },
 
-        getPostingData: function (sPath, batchId) {
+        getPostingData: function (batchId) {
             var sFilter = new Filter('batchId', FilterOperator.EQ, batchId);
-            var oList = this._oModel.bindList(sPath, undefined, undefined, sFilter, undefined);
+            var oList = this._oModel.bindList('/PostingBatch', undefined, undefined, sFilter, undefined);
             var oPostingData = new JSONModel();
             var arr = [];
             oList.requestContexts().then(function (aContexts) {
-                for (var i = 0; i < aContexts.length; i++) {
-                    arr.push(aContexts[i].getObject());
-                }
-                oPostingData.setData(arr);
-                this.setModel(oPostingData, "postingView");
+       
+               
+                oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
+                that.getView().setModel(oPostingData, "postingView");
+
             });
         },
 
