@@ -46,5 +46,6 @@ service PayrollService  @(requires: 'authenticated-user') {
     @readonly
     entity JournalEntryItem    as projection on CV_JOURNALENTRY_ITEM;
 
-
+    @readonly entity CompanyCodes as projection on fdm_masterdata.COMPANY_CODE_API;
+    @readonly entity Currency as projection on fdm_masterdata.CURRENCY_API;
 }
