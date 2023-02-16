@@ -170,6 +170,8 @@ sap.ui.define([
         onQuickFilter: function (oEvent) {
 
             var oViewModel = this.getModel("objectView");
+            var nErrorCnt = oViewModel.getProperty("/inError");
+
             var oBinding = this._oTable.getBinding("items"),
                 sKey = oEvent.getParameter("selectedKey");
             var sHeaderStatus = this._sHeaderStatus;
@@ -187,10 +189,12 @@ sap.ui.define([
                     "all": []
                 };
 
-            if (sKey === "inError") {
+            if (sKey === "inError" && parseInt(nErrorCnt) > 0) {
                 oViewModel.setProperty("/showExport", true);
+
             } else {
                 oViewModel.setProperty("/showExport", false);
+
             }
             oBinding.filter(this._mFilters[sKey]);
         },
@@ -210,25 +214,26 @@ sap.ui.define([
             var sTitle,
                 iTotalItems = oEvent.getParameter("total"),
                 oViewModel = this.getModel("objectView"),
-                oItemsBinding = oEvent.getSource().getBinding("items");
-         
+                oItemsBinding = oEvent.getSource().getBinding("items"),
+                oIconFilter = this.byId("iconTabBar");
+
             this._sHeaderStatus = this.byId("detailStatusTxt").getText();
-         
+            var sKey = oIconFilter.getSelectedKey();
             var oAllCurrentContexts = oItemsBinding.getAllCurrentContexts();
             this._oAllCurrentObjs = oAllCurrentContexts.map(oContext => oContext.getObject());
-        
-            console.log("test");
+
             // only update the counter if the length is final
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
 
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
                 oViewModel.setProperty("/countAll", iTotalItems);
                 var succCnt = 0, errorCnt = 0;
+               
                 if (this._sHeaderStatus.toUpperCase() === 'APPROVED') {
                     var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "APPROVED");
                     var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "SKIPPED");
-                    
-                }else {
+
+                } else {
                     var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "VALID");
                     var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "INVALID");
                 }
@@ -239,7 +244,12 @@ sap.ui.define([
 
             } else {
                 //Display 'Line Items' instead of 'Line items (0)'
-                sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
+                if (sKey === 'success')
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/success")]);
+                else if (sKey === 'inError')
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/inError")]);
+                else
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
             }
             oViewModel.setProperty("/lineItemListTitle", sTitle);
         },
