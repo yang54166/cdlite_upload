@@ -200,54 +200,42 @@ sap.ui.define([
             oTable.removeSelections(true);
         },
 
+        getFilteredCnt: function (oCurrntObjs, status) {
+            var filteredData = oCurrntObjs.filter(data => (data.status === status));
+            return filteredData.length;
+        },
+
         onListUpdateFinished: function (oEvent) {
 
             var sTitle,
                 iTotalItems = oEvent.getParameter("total"),
                 oViewModel = this.getModel("objectView"),
                 oItemsBinding = oEvent.getSource().getBinding("items");
-            //   var existingFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
-            //     var successFilter = new Filter('status', FilterOperator.EQ, 'APPROVED');
-            //     var errorFilter = new Filter('status', FilterOperator.EQ, 'INVALID');
+         
             this._sHeaderStatus = this.byId("detailStatusTxt").getText();
-
+         
+            var oAllCurrentContexts = oItemsBinding.getAllCurrentContexts();
+            this._oAllCurrentObjs = oAllCurrentContexts.map(oContext => oContext.getObject());
+        
+            console.log("test");
             // only update the counter if the length is final
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
 
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
                 oViewModel.setProperty("/countAll", iTotalItems);
-
-                this._sURL = oItemsBinding.sReducedPath;
-                //         this._postURL = oItemsBinding.oContext.sPath;
+                var succCnt = 0, errorCnt = 0;
                 if (this._sHeaderStatus.toUpperCase() === 'APPROVED') {
-                    var sApprovedURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'APPROVED' + "'";
-                    var sErrorURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'SKIPPED' + "'";
-                } else {
-                    var sApprovedURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'VALID' + "'";
-                    var sErrorURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'INVALID' + "'";
+                    var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "APPROVED");
+                    var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "SKIPPED");
+                    
+                }else {
+                    var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "VALID");
+                    var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "INVALID");
                 }
 
-                $.get({
-                    url: sApprovedURL,
-                    success: function (succData) {
-                        oViewModel.setProperty("/success", succData.value.length);
-                    },
-                    error: function (error) {
+                oViewModel.setProperty("/success", succCnt);
+                oViewModel.setProperty("/inError", errorCnt);
 
-                    }
-                });
-
-                $.get({
-                    url: sErrorURL,
-                    success: function (errorData) {
-                        oViewModel.setProperty("/inError", errorData.value.length);
-                        //      this._errorData = errorData.value;
-
-                    },
-                    error: function (error) {
-
-                    }
-                });
 
             } else {
                 //Display 'Line Items' instead of 'Line items (0)'
