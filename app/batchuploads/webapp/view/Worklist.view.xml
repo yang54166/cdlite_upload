@@ -118,6 +118,9 @@
             </Table>
         </semantic:content>
 
+        <semantic:titleCustomIconActions>
+            <OverflowToolbarButton id="settings" tooltip="Settings" text="Settings" press="handleSettingsPress" icon="sap-icon://action-settings"/>
+        </semantic:titleCustomIconActions>
         <semantic:titleMainAction>
             <semantic:TitleMainAction id="uploadAction" text="Upload" press="onUpload" />
         </semantic:titleMainAction>

@@ -11,6 +11,7 @@
   },
   "scripts": {
     "start": "node node_modules/@sap/approuter/approuter.js",
+    "prestart-local": "npm i",
     "start-local": "node node_modules/@sap/html5-repo-mock/index.js"
   }
 }
