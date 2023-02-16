@@ -1,5 +1,9 @@
 [
     {
+        "dateRange": "99-0000",
+        "longDesc": "All"
+    },
+    {
         "dateRange": "01-2023",
         "longDesc": "Jan 2023"
     },

@@ -6,12 +6,13 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/m/MessageBox",
+    "sap/ui/model/odata/v4/ODataModel",
     "sap/ui/core/Fragment",
     "sap/ui/export/library",
     "sap/ui/export/Spreadsheet",
     "sap/ui/core/util/Export",
     "sap/ui/core/util/ExportTypeCSV"
-], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV) {
+], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV) {
     "use strict";
 
     var EdmType = exportLibrary.EdmType;
@@ -43,6 +44,7 @@ sap.ui.define([
                 success: 0,
                 countAll: 0
             });
+            this._oModel = this.getOwnerComponent().getModel();
             var summaryDataModel = this.getOwnerComponent().getModel("summaryData");
             this.setModel(summaryDataModel, "summaryView");
             var oTable = this.getView().byId("lineItemsList");
@@ -88,6 +90,38 @@ sap.ui.define([
             var sObjectId = oEvent.getParameter("arguments").objectId;
             this._ID = sObjectId.replace(/[{()}]/g, '');
             this._bindView("/StagingUploads" + sObjectId);
+            var sPostingURL = '/payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
+            var oPostingData = new JSONModel();
+            var that = this;
+            //          that.getPostingData("/PostingBatch", parseInt(this._ID));
+
+            $.get({
+                url: sPostingURL,
+                async: true,
+                success: function (succData) {
+                    console.log(succData.value);
+                    oPostingData.setData(succData.value);
+                    that.setModel(oPostingData, "postingView");
+                },
+                error: function (error) {
+
+                }
+            });
+
+        },
+
+        getPostingData: function (sPath, batchId) {
+            var sFilter = new Filter('batchId', FilterOperator.EQ, batchId);
+            var oList = this._oModel.bindList(sPath, undefined, undefined, sFilter, undefined);
+            var oPostingData = new JSONModel();
+            var arr = [];
+            oList.requestContexts().then(function (aContexts) {
+                for (var i = 0; i < aContexts.length; i++) {
+                    arr.push(aContexts[i].getObject());
+                }
+                oPostingData.setData(arr);
+                this.setModel(oPostingData, "postingView");
+            });
         },
 
         /**
@@ -134,16 +168,25 @@ sap.ui.define([
 
 
         onQuickFilter: function (oEvent) {
-            console.log(this._errorData);
+
             var oViewModel = this.getModel("objectView");
             var oBinding = this._oTable.getBinding("items"),
                 sKey = oEvent.getParameter("selectedKey");
+            var sHeaderStatus = this._sHeaderStatus;
+            //  console.log(sHeaderStatus);
+            if (sHeaderStatus.toUpperCase() === 'APPROVED')
+                this._mFilters = {
+                    "success": [new Filter('status', FilterOperator.EQ, 'APPROVED')],
+                    "inError": [new Filter('status', FilterOperator.EQ, 'SKIPPED')],
+                    "all": []
+                };
+            else
+                this._mFilters = {
+                    "success": [new Filter('status', FilterOperator.EQ, 'VALID')],
+                    "inError": [new Filter('status', FilterOperator.EQ, 'INVALID')],
+                    "all": []
+                };
 
-            this._mFilters = {
-                "success": [new Filter('status', FilterOperator.EQ, 'VALID')],
-                "inError": [new Filter('status', FilterOperator.EQ, 'INVALID')],
-                "all": []
-            };
             if (sKey === "inError") {
                 oViewModel.setProperty("/showExport", true);
             } else {
@@ -166,6 +209,7 @@ sap.ui.define([
             //   var existingFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
             //     var successFilter = new Filter('status', FilterOperator.EQ, 'APPROVED');
             //     var errorFilter = new Filter('status', FilterOperator.EQ, 'INVALID');
+            this._sHeaderStatus = this.byId("detailStatusTxt").getText();
 
             // only update the counter if the length is final
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
@@ -173,17 +217,16 @@ sap.ui.define([
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
                 oViewModel.setProperty("/countAll", iTotalItems);
 
-                //            var nSuccess = oItemsBinding.filter(successFilter).getLength();
-                //            console.log(nSuccess);
-
                 this._sURL = oItemsBinding.sReducedPath;
-       //         this._postURL = oItemsBinding.oContext.sPath;
-                var sApprovedURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'VALID' + "'";
-                var sErrorURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'INVALID' + "'";
-                /*       if (existingFilter || existingFilter !== undefined) {
-                           sApprovalURL = sApprovedURL + ' and ' + existingFilter;
-                           sErrorURL = sErrorURL + ' and ' + existingFilter;
-                       } */
+                //         this._postURL = oItemsBinding.oContext.sPath;
+                if (this._sHeaderStatus.toUpperCase() === 'APPROVED') {
+                    var sApprovedURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'APPROVED' + "'";
+                    var sErrorURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'SKIPPED' + "'";
+                } else {
+                    var sApprovedURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'VALID' + "'";
+                    var sErrorURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'INVALID' + "'";
+                }
+
                 $.get({
                     url: sApprovedURL,
                     success: function (succData) {
@@ -291,7 +334,7 @@ sap.ui.define([
         onPressApprove: function (oEvent) {
 
             var oViewModel = new JSONModel({
-               HTML: "<h3>Total Amount: 0</h3>"
+                HTML: "<h3>Total Amount: 0</h3>"
             });
 
             this.setModel(oViewModel, "totalAmt");
@@ -320,12 +363,14 @@ sap.ui.define([
                     oView.byId("approveCompanyCode").setText(sGLCompanyCode);
                     oView.byId("approvePayrollDate").setText(sPayrollDate);
                     oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
-                    setTimeout(function() {that.createTotalTable();}, 500);
-         /*           oDialog.addEventDelegate({
-                        onAfterRendering: function() {
-                            oView.byId("approveSummaryList").removeSelections(true);
-                        }.bind(that)
-                    }) */
+                    setTimeout(function () { that.createTotalTable(); }, 500);
+                    var sButton = oView.byId("approveBtn");
+                    oDialog.setInitialFocus(sButton);
+                    /*           oDialog.addEventDelegate({
+                                   onAfterRendering: function() {
+                                       oView.byId("approveSummaryList").removeSelections(true);
+                                   }.bind(that)
+                               }) */
                     oDialog.open();
                 });
             } else {
@@ -336,11 +381,11 @@ sap.ui.define([
         createTotalTable: function () {
             var oTable = this.byId("approveSummaryList");
             var col1 = new sap.m.Column("col1", {
-                    width: "4rem",
-                    header: new sap.m.Label({
-                        text: ""
-                    })
-                });
+                width: "4rem",
+                header: new sap.m.Label({
+                    text: ""
+                })
+            });
             var col2 = new sap.m.Column("col2", {
                 width: "4rem",
                 header: new sap.m.Label({
@@ -369,25 +414,29 @@ sap.ui.define([
                     })
                 ]
             }))
-         //   oTable.removeSelections(true);
+            //   oTable.removeSelections(true);
 
         },
 
         approveUploads: function () {
             var sPath = this.getView().getBindingContext().sPath;
-            var sHeaders = {"content-type": "application/json"};
+            var sHeaders = { "content-type": "application/json" };
+            var oApprovalDialog = this.byId("approveDialog");
+            oApprovalDialog.setBusy(true);
             var that = this;
             jQuery.ajax({
                 url: "/payroll" + sPath + "/approve",
                 type: "POST",
-                async: false,
+                async: true,
                 data: {},
                 dataType: "json",
                 headers: sHeaders,
                 success: function (result) {
-                    that.closeApprovalDialog();
+
+                    oApprovalDialog.setBusy(false);
                     var sMsg = "BATCH " + this._ID + " approved successfully!";
                     MessageBox.success(sMsg);
+                    that.closeApprovalDialog();
                 },
 
                 error: function (e) {

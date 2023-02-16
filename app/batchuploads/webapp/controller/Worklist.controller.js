@@ -30,7 +30,7 @@ sap.ui.define([
             var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
             var companyCodeModel = this.getOwnerComponent().getModel("companyCodeData");
             var uploadRangesModel = this.getOwnerComponent().getModel("uploadRangesData");
-           
+
             // Model used to manipulate control states
             oViewModel = new JSONModel({
                 worklistTableTitle: this.getResourceBundle().getText("worklistTableTitle"),
@@ -44,6 +44,7 @@ sap.ui.define([
             this.setModel(uploadRangesModel, "uploadRangesList");
 
         },
+
 
         /* =========================================================== */
         /* event handlers                                              */
@@ -60,6 +61,9 @@ sap.ui.define([
          */
         onUpdateFinished: function (oEvent) {
             // update the worklist's object counter after the table update
+            // fetch token
+            // this._csrfToken = this.getOwnerComponent().getModel().getSecurityToken();
+            this._csrfToken = document.cookie.slice(6);
             var sTitle,
                 oTable = oEvent.getSource(),
                 iTotalItems = oEvent.getParameter("total");
@@ -93,6 +97,20 @@ sap.ui.define([
             history.go(-1);
         },
 
+        onCompanyCodeChange: function (oEvent) {
+
+            var oBinding = this.byId("table").getBinding("items"),
+                sValue = oEvent.getSource().getSelectedKey();
+
+            if (sValue !== '0000') {
+                var filter = new Filter('glCompanyCode', FilterOperator.EQ, sValue)
+
+                oBinding.filter(filter);
+            } else {
+                oBinding.filter();
+            }
+        },
+
 
         onSearch: function (oEvent) {
             if (oEvent.getParameters().refreshButtonPressed) {
@@ -108,7 +126,7 @@ sap.ui.define([
                 var filters = [];
 
                 filters.push(new Filter("batchDescription", FilterOperator.Contains, sQuery));
-            
+
                 var orFilters = new Filter(filters, false);
                 if (sQuery && sQuery.length > 0) {
                     aTableSearchState = orFilters;
@@ -243,7 +261,7 @@ sap.ui.define([
             var sEffectivePeriod = this.formatDateString(this.getView().byId("effectivePeriodDlg").getValue());
             var sBatchDesc = this.getView().byId("batchDescDlg").getValue();
             var sRemarks = "";
-
+            console.log(this._csrfToken);
             var oContext = this.byId("table").getBinding("items").create({
                 glCompanyCode: sCompanyCode,
                 transactionType: sTransType,
@@ -267,7 +285,10 @@ sap.ui.define([
                 var headPar = new sap.ui.unified.FileUploaderParameter();
                 headPar.setName('content-disposition');
                 headPar.setValue(sValue);
+                headPar.setName('x-csrf-token');
+                headPar.setValue(that._csrfToken);
                 oFileUploader.removeHeaderParameter('content-disposition');
+                oFileUploader.removeHeaderParameter('x-csrf-token');
                 oFileUploader.addHeaderParameter(headPar);
                 oFileUploader.setUploadUrl("/payroll/PayrollUploadFile/content");
                 oFileUploader
