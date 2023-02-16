@@ -1,5 +1,17 @@
 # Developer Setup
 
+## CAP
+To run can service locally, need to run 
+```
+npm i
+npm run login (to connect to cf)
+npm run bind
+npm run start-local
+```
+
+
+
+## APPROUTER
 To run approuter locally, you need to create /app/approuter/default-env.json
 ```
 {
@@ -22,4 +34,11 @@ and /app/approuter/default-services.json
         "clientsecret": "<UAA Binding Client Secret>"
     }
 }
+```
+
+Then you can start approuter (hybrid mode, uses local destination from default-env and UAA from cloud foundry).
+In the /app/approuter folder
+```
+npm i
+npm run start-local
 ```
