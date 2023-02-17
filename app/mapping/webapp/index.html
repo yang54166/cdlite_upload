@@ -1,21 +1,35 @@
+<!DOCTYPE html>
 <html>
-<header>
-  <title>Mapping Placeholder</title>
-  <meta charset="UTF-8">
-</header>
-
-<script>
-  setTimeout(() => {
-    fetch("/user-api/currentUser").then((res) => {
-      return res.json();
-    }).then((user) => {
-      document.getElementsByTagName("body")[0].innerText = `Hi ${user.firstname} 👋`
-    });
-  }, 1000);
-</script>
-
-<body>
-  Hi there 👋
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Mapping app</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id="sap-ui-bootstrap"
+        src="https://sapui5.hana.ondemand.com/1.110.1/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resourceroots='{
+            "com.mk.ui.mapping": "./"
+        }'
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true"
+        data-sap-ui-frameOptions="trusted"
+    ></script>
+</head>
+<body class="sapUiBody sapUiSizeCompact" id="content">
+    <div
+        data-sap-ui-component
+        data-name="com.mk.ui.mapping"
+        data-id="container"
+        data-settings='{"id" : "com.mk.ui.mapping"}'
+        data-handle-validation="true"
+    ></div>
 </body>
-
 </html>

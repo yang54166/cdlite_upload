@@ -447,7 +447,7 @@ sap.ui.define([
 		},
 
         onPressMapping: function (oEvent) {
-            window.location = "../mapping"
+            window.location = "../mapping/index.html"
         }
 
     });

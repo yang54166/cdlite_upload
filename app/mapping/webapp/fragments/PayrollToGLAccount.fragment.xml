@@ -1,0 +1,85 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Table
+        id="tblPCGAData"
+        width="auto"
+        mode="MultiSelect"
+        selectionChange=".onSelectionChange"
+        items="{path: '/PaycodeGLMapping' }"
+        noDataText="{worklistView>/tableNoDataText}"
+        busyIndicatorDelay="{worklistView>/tableBusyDelay}"
+        growing="true"
+        growingScrollToLoad="true"
+        >
+        <headerToolbar>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button text="Add" icon="sap-icon://add" press="onAddPayrollGLEntry" />
+                <Button text="Edit" icon="sap-icon://edit" press="onEditPayrollGLEntry" />
+                <Button text="Delete" icon="sap-icon://delete" press="onDeletePayrollGLEntry" />
+            </OverflowToolbar>
+        </headerToolbar>
+
+        <columns>
+            <Column >
+                <Text text="Legal Entity Group Code" />
+            </Column>
+            <Column >
+                <Text text="Payroll Code" />
+            </Column>
+            <Column>
+                <Text text="Payroll Code Sequence" />
+            </Column>
+            <Column>
+                <Text text="Effective Date" />
+            </Column>
+            <Column>
+                <Text text="End Date" />
+            </Column>
+            <Column>
+                <Text text="Description" />
+            </Column>
+            <Column>
+                <Text text="Transaction Description" />
+            </Column>
+            <Column>
+                <Text text="Payroll Code Type" />
+            </Column>
+            <Column>
+                <Text text="Payroll Code Class" />
+            </Column>
+            <Column>
+                <Text text="GL Account" />
+            </Column>
+            <Column>
+                <Text text="Qualified Comp Indicator" />
+            </Column>
+            <Column>
+                <Text text="US PSRP Reporting Code" />
+            </Column>
+            <Column>
+                <Text text="Default Department" />
+            </Column>
+        </columns>
+
+        <items>
+            <ColumnListItem type="Navigation" press=".onPress">
+                <cells>
+                    <ObjectIdentifier title="{legalEntityGroupCode}" />
+                    <ObjectIdentifier title="{payrollCode}" />
+                    <ObjectIdentifier title="{payrollCodeSequence}" />
+                    <ObjectIdentifier title="{effectiveDate}" />
+                    <ObjectIdentifier title="{endDate}" />
+                    <ObjectIdentifier title="{description}" />
+                    <ObjectIdentifier title="{transactionDescription}" />
+                    <ObjectIdentifier title="{payrollCodeType}" />
+                    <ObjectIdentifier title="{payrollCodeClass}" />
+                    <ObjectIdentifier title="{glAccount}" />
+                    <ObjectIdentifier title="{qualifiedCompensation}" />
+                    <ObjectIdentifier title="{usPsrpCategory}" />
+                    <ObjectIdentifier title="{defaultDepartment}" />
+
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</core:FragmentDefinition>

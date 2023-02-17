@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+        <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="PayrollService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <Singleton Name="PayrollUploadFile" Type="PayrollService.PayrollUploadFile"/>
+                <EntitySet Name="StagingUploads" EntityType="PayrollService.StagingUploads">
+                    <NavigationPropertyBinding Path="items" Target="StagingUploadItems"/>
+                </EntitySet>
+                <EntitySet Name="StagingUploadItems" EntityType="PayrollService.StagingUploadItems">
+                    <NavigationPropertyBinding Path="parent" Target="StagingUploads"/>
+                </EntitySet>
+                <EntitySet Name="PayrollHeader" EntityType="PayrollService.PayrollHeader">
+                    <NavigationPropertyBinding Path="details" Target="PayrollDetails"/>
+                </EntitySet>
+                <EntitySet Name="PayrollDetails" EntityType="PayrollService.PayrollDetails">
+                    <NavigationPropertyBinding Path="batchId" Target="PayrollHeader"/>
+                </EntitySet>
+                <EntitySet Name="PostingBatch" EntityType="PayrollService.PostingBatch"/>
+                <EntitySet Name="LegalEntityGrouping" EntityType="PayrollService.LegalEntityGrouping"/>
+                <EntitySet Name="PaycodeGLMapping" EntityType="PayrollService.PaycodeGLMapping"/>
+                <EntitySet Name="JournalEntry" EntityType="PayrollService.JournalEntry">
+                    <NavigationPropertyBinding Path="items" Target="JournalEntryItem"/>
+                </EntitySet>
+                <EntitySet Name="JournalEntryItem" EntityType="PayrollService.JournalEntryItem"/>
+            </EntityContainer>
+            <EntityType Name="PayrollUploadFile">
+                <Property Name="content" Type="Edm.Stream"/>
+                <Property Name="mediaType" Type="Edm.String"/>
+            </EntityType>
+            <EntityType Name="StagingUploads">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="status" Type="Edm.String"/>
+                <Property Name="statusMessage" Type="Edm.String"/>
+                <Property Name="deleted" Type="Edm.Boolean"/>
+                <Property Name="glCompanyCode" Type="Edm.String" MaxLength="4"/>
+                <Property Name="transactionType" Type="Edm.String" MaxLength="2"/>
+                <Property Name="currencyCode" Type="Edm.String" MaxLength="3"/>
+                <Property Name="payrollDate" Type="Edm.Date"/>
+                <Property Name="glPeriod" Type="Edm.String" MaxLength="6"/>
+                <Property Name="effectivePeriod" Type="Edm.String" MaxLength="6"/>
+                <Property Name="batchNumber" Type="Edm.Int32"/>
+                <Property Name="batchDescription" Type="Edm.String"/>
+                <Property Name="fileName" Type="Edm.String"/>
+                <Property Name="remarks" Type="Edm.String"/>
+                <NavigationProperty Name="items" Type="Collection(PayrollService.StagingUploadItems)" Partner="parent">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="StagingUploadItems">
+                <Key>
+                    <PropertyRef Name="parent_ID"/>
+                    <PropertyRef Name="row"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <NavigationProperty Name="parent" Type="PayrollService.StagingUploads" Partner="items">
+                    <ReferentialConstraint Property="parent_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="parent_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="row" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="status" Type="Edm.String"/>
+                <Property Name="statusMessage" Type="Edm.String"/>
+                <Property Name="deleted" Type="Edm.Boolean"/>
+                <Property Name="fmno" Type="Edm.String" MaxLength="6"/>
+                <Property Name="payrollCode" Type="Edm.String" MaxLength="6"/>
+                <Property Name="payrollCodeSequence" Type="Edm.Int32"/>
+                <Property Name="name" Type="Edm.String"/>
+                <Property Name="amount" Type="Edm.Decimal" Scale="2" Precision="15"/>
+                <Property Name="paymentNumber" Type="Edm.Int32"/>
+                <Property Name="paymentId" Type="Edm.String" MaxLength="10"/>
+                <Property Name="paymentForm" Type="Edm.String" MaxLength="10"/>
+                <Property Name="userField1" Type="Edm.String" MaxLength="15"/>
+                <Property Name="userField2" Type="Edm.String" MaxLength="15"/>
+                <Property Name="remarks" Type="Edm.String" MaxLength="30"/>
+                <Property Name="loanAdvanceReferenceNumber" Type="Edm.String" MaxLength="20"/>
+                <Property Name="projectCode" Type="Edm.String" MaxLength="8"/>
+                <Property Name="projectTask" Type="Edm.String" MaxLength="2"/>
+                <Property Name="glAccount" Type="Edm.Int32"/>
+                <Property Name="glCostCenter" Type="Edm.String" MaxLength="8"/>
+            </EntityType>
+            <EntityType Name="PayrollHeader">
+                <Key>
+                    <PropertyRef Name="batchId"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="batchId" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="batchDescription" Type="Edm.String"/>
+                <Property Name="batchStatus" Type="Edm.String"/>
+                <Property Name="approvedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="approvedBy" Type="Edm.String"/>
+                <Property Name="cdTransactionType" Type="Edm.String" MaxLength="2"/>
+                <Property Name="controlAmount" Type="Edm.Int32"/>
+                <Property Name="controlCount" Type="Edm.Int32"/>
+                <Property Name="effectiveDate" Type="Edm.Date"/>
+                <Property Name="glDate" Type="Edm.Date"/>
+                <Property Name="payrollDate" Type="Edm.Date"/>
+                <Property Name="payrollPeriod" Type="Edm.String"/>
+                <Property Name="sourceSystem" Type="Edm.String" MaxLength="10"/>
+                <Property Name="companyCode" Type="Edm.String" MaxLength="4"/>
+                <NavigationProperty Name="details" Type="Collection(PayrollService.PayrollDetails)" Partner="batchId">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="PayrollDetails">
+                <Key>
+                    <PropertyRef Name="batchId_batchId"/>
+                    <PropertyRef Name="batchLineNumber"/>
+                </Key>
+                <NavigationProperty Name="batchId" Type="PayrollService.PayrollHeader" Partner="details">
+                    <ReferentialConstraint Property="batchId_batchId" ReferencedProperty="batchId"/>
+                </NavigationProperty>
+                <Property Name="batchId_batchId" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="batchLineNumber" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="postingAggregation" Type="Edm.Boolean"/>
+                <Property Name="postingBatchId" Type="Edm.Int32"/>
+                <Property Name="postingBatchLineNumber" Type="Edm.Int32"/>
+                <Property Name="postingDocument" Type="Edm.String"/>
+                <Property Name="advanceNumber" Type="Edm.String" MaxLength="20"/>
+                <Property Name="apArId" Type="Edm.String" MaxLength="20"/>
+                <Property Name="cashAmount" Type="Edm.Decimal" Scale="2" Precision="15"/>
+                <Property Name="chargeAmount" Type="Edm.Decimal" Scale="2" Precision="15"/>
+                <Property Name="chargeCompany" Type="Edm.String"/>
+                <Property Name="chargeConversionDate" Type="Edm.Date"/>
+                <Property Name="chargeConversionRate" Type="Edm.Int32"/>
+                <Property Name="chargeConversionType" Type="Edm.String" MaxLength="20"/>
+                <Property Name="chargeCostCenter" Type="Edm.String" MaxLength="8"/>
+                <Property Name="chargeCurrencyCode" Type="Edm.String" MaxLength="3"/>
+                <Property Name="chargeDepartment" Type="Edm.String" MaxLength="5"/>
+                <Property Name="chargeGOC" Type="Edm.String" MaxLength="3"/>
+                <Property Name="department" Type="Edm.String" MaxLength="5"/>
+                <Property Name="fcat" Type="Edm.String" MaxLength="3"/>
+                <Property Name="fmno" Type="Edm.String" MaxLength="9"/>
+                <Property Name="glAccount" Type="Edm.Int32"/>
+                <Property Name="glCurrencyCode" Type="Edm.String" MaxLength="4"/>
+                <Property Name="glPostAmount" Type="Edm.Decimal" Scale="2" Precision="15"/>
+                <Property Name="glPostCompany" Type="Edm.String" MaxLength="4"/>
+                <Property Name="glPostCostCenter" Type="Edm.String" MaxLength="8"/>
+                <Property Name="glPostDeparment" Type="Edm.String" MaxLength="5"/>
+                <Property Name="glPostGOC" Type="Edm.String" MaxLength="3"/>
+                <Property Name="legalEntityGroupCode" Type="Edm.String" MaxLength="4"/>
+                <Property Name="loanNumber" Type="Edm.String" MaxLength="20"/>
+                <Property Name="locationCode" Type="Edm.String" MaxLength="4"/>
+                <Property Name="paymentId" Type="Edm.String" MaxLength="10"/>
+                <Property Name="payrollCode" Type="Edm.String" MaxLength="10"/>
+                <Property Name="payrollCodeSequence" Type="Edm.Int32"/>
+                <Property Name="payrollCodeClass" Type="Edm.String" MaxLength="10"/>
+                <Property Name="payrollCodeType" Type="Edm.String" MaxLength="10"/>
+                <Property Name="projectCode" Type="Edm.String" MaxLength="8"/>
+                <Property Name="qualifiedCompensation" Type="Edm.String" MaxLength="1"/>
+                <Property Name="shadowProcess" Type="Edm.String" MaxLength="1"/>
+                <Property Name="skillCode" Type="Edm.String" MaxLength="4"/>
+                <Property Name="sourceAmount" Type="Edm.Decimal" Scale="2" Precision="15"/>
+                <Property Name="sourceCompany" Type="Edm.String" MaxLength="4"/>
+                <Property Name="usdAmount" Type="Edm.Decimal" Scale="2" Precision="15"/>
+                <Property Name="usdConversionRate" Type="Edm.Int32"/>
+                <Property Name="usdConversionType" Type="Edm.String" MaxLength="20"/>
+            </EntityType>
+            <EntityType Name="PostingBatch">
+                <Key>
+                    <PropertyRef Name="batchId"/>
+                    <PropertyRef Name="postingBatchId"/>
+                </Key>
+                <Property Name="batchId" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="postingBatchId" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="postingStatus" Type="Edm.String"/>
+                <Property Name="postingStatusMessage" Type="Edm.String"/>
+                <Property Name="postingDocument" Type="Edm.String"/>
+            </EntityType>
+            <EntityType Name="LegalEntityGrouping">
+                <Key>
+                    <PropertyRef Name="legalEntityGroupCode"/>
+                    <PropertyRef Name="companyCode"/>
+                </Key>
+                <Property Name="legalEntityGroupCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+                <Property Name="companyCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="PaycodeGLMapping">
+                <Key>
+                    <PropertyRef Name="legalEntityGroupCode"/>
+                    <PropertyRef Name="payrollCode"/>
+                    <PropertyRef Name="payrollCodeSequence"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="legalEntityGroupCode" Type="Edm.String" MaxLength="4" Nullable="false"/>
+                <Property Name="payrollCode" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="payrollCodeSequence" Type="Edm.Int32" Nullable="false" DefaultValue="1"/>
+                <Property Name="defaultDepartment" Type="Edm.String" MaxLength="5"/>
+                <Property Name="description" Type="Edm.String"/>
+                <Property Name="effectiveDate" Type="Edm.Date"/>
+                <Property Name="endDate" Type="Edm.Date"/>
+                <Property Name="glAccount" Type="Edm.Int32"/>
+                <Property Name="payrollCodeClass" Type="Edm.String" MaxLength="10"/>
+                <Property Name="payrollCodeType" Type="Edm.String" MaxLength="10"/>
+                <Property Name="qualifiedCompensation" Type="Edm.String" MaxLength="1"/>
+                <Property Name="transactionDescription" Type="Edm.String" MaxLength="240"/>
+                <Property Name="usPsrpCategory" Type="Edm.String" MaxLength="10"/>
+            </EntityType>
+            <EntityType Name="JournalEntry">
+                <Key>
+                    <PropertyRef Name="BATCHID"/>
+                    <PropertyRef Name="POSTINGBATCHID"/>
+                </Key>
+                <Property Name="BATCHID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="POSTINGBATCHID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="POSTINGSTATUS" Type="Edm.String" MaxLength="5000"/>
+                <Property Name="POSTINGSTATUSMESSAGE" Type="Edm.String" MaxLength="5000"/>
+                <Property Name="POSTINGDOCUMENT" Type="Edm.String" MaxLength="5000"/>
+                <Property Name="COMPANYCODE" Type="Edm.String" MaxLength="4"/>
+                <Property Name="PAYROLLDATE" Type="Edm.Date"/>
+                <Property Name="ACCOUNTINGDOCUMENTTYPE" Type="Edm.String" MaxLength="5"/>
+                <Property Name="DOCUMENTREFERENCEID" Type="Edm.String" MaxLength="16"/>
+                <Property Name="DOCUMENTHEADERTEXT" Type="Edm.String" MaxLength="25"/>
+                <Property Name="POSTINGDATE" Type="Edm.Date"/>
+                <Property Name="DOCUMENTDATE" Type="Edm.Date"/>
+                <Property Name="REFERENCE1INDOCUMENTHEADER" Type="Edm.String" MaxLength="20"/>
+                <Property Name="REFERENCE2INDOCUMENTHEADER" Type="Edm.String" MaxLength="20"/>
+                <NavigationProperty Name="items" Type="Collection(PayrollService.JournalEntryItem)"/>
+            </EntityType>
+            <EntityType Name="JournalEntryItem">
+                <Key>
+                    <PropertyRef Name="BATCHID"/>
+                    <PropertyRef Name="POSTINGBATCHID"/>
+                    <PropertyRef Name="REFERENCEDOCUMENTITEM"/>
+                </Key>
+                <Property Name="BATCHID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="POSTINGBATCHID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="REFERENCEDOCUMENTITEM" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="GLACCOUNT" Type="Edm.Int32"/>
+                <Property Name="AMOUNTINTRANSACTIONCURRENCY" Type="Edm.Decimal" Precision="15"/>
+                <Property Name="GLPOSTCOSTCENTER" Type="Edm.String" MaxLength="8"/>
+                <Property Name="AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE" Type="Edm.String" MaxLength="4"/>
+                <Property Name="WBSELEMENT" Type="Edm.String" MaxLength="8"/>
+                <Property Name="DEBITCREDITCODE" Type="Edm.String" MaxLength="1"/>
+                <Property Name="DOCUMENTITEMTEXT" Type="Edm.String" MaxLength="50"/>
+                <Property Name="ASSIGNMENTREFERENCE" Type="Edm.String" MaxLength="18"/>
+                <Property Name="ADDITIONALATTRIBUTES_PERSONNELNUMBER" Type="Edm.String" MaxLength="8"/>
+                <Property Name="FUNCTIONALAREA" Type="Edm.String" MaxLength="16"/>
+            </EntityType>
+            <Action Name="approve" IsBound="true">
+                <Parameter Name="in" Type="PayrollService.StagingUploads"/>
+            </Action>
+            <Action Name="enrich" IsBound="true">
+                <Parameter Name="in" Type="PayrollService.StagingUploads"/>
+            </Action>
+            <Annotations Target="PayrollService.PayrollUploadFile/content">
+                <Annotation Term="Core.MediaType" Path="mediaType"/>
+            </Annotations>
+            <Annotations Target="PayrollService.PayrollUploadFile/mediaType">
+                <Annotation Term="Core.IsMediaType" Bool="true"/>
+            </Annotations>
+            <Annotations Target="PayrollService.StagingUploads/createdAt">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Core.Immutable" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                </Annotations>
+                <Annotations Target="PayrollService.StagingUploads/createdBy">
+                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                    <Annotation Term="Core.Immutable" Bool="true"/>
+                    <Annotation Term="Core.Computed" Bool="true"/>
+                    <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                        </Annotations>
+                        <Annotations Target="PayrollService.StagingUploads/modifiedAt">
+                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                            <Annotation Term="Core.Computed" Bool="true"/>
+                            <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                            </Annotations>
+                            <Annotations Target="PayrollService.StagingUploads/modifiedBy">
+                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                <Annotation Term="Core.Computed" Bool="true"/>
+                                <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                    <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                    </Annotations>
+                                    <Annotations Target="PayrollService.StagingUploadItems/createdAt">
+                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                        <Annotation Term="Core.Immutable" Bool="true"/>
+                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                        </Annotations>
+                                        <Annotations Target="PayrollService.StagingUploadItems/createdBy">
+                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                            <Annotation Term="Core.Immutable" Bool="true"/>
+                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                            <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                </Annotations>
+                                                <Annotations Target="PayrollService.StagingUploadItems/modifiedAt">
+                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                    <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                    </Annotations>
+                                                    <Annotations Target="PayrollService.StagingUploadItems/modifiedBy">
+                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                            <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                            </Annotations>
+                                                            <Annotations Target="PayrollService.PayrollHeader/createdAt">
+                                                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                <Annotation Term="Core.Computed" Bool="true"/>
+                                                                <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                                                </Annotations>
+                                                                <Annotations Target="PayrollService.PayrollHeader/createdBy">
+                                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                    <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                                    <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                                        </Annotations>
+                                                                        <Annotations Target="PayrollService.PayrollHeader/modifiedAt">
+                                                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                                                            <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                                            </Annotations>
+                                                                            <Annotations Target="PayrollService.PayrollHeader/modifiedBy">
+                                                                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                    <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="PayrollService.PaycodeGLMapping/createdAt">
+                                                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                        <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                                                                        </Annotations>
+                                                                                        <Annotations Target="PayrollService.PaycodeGLMapping/createdBy">
+                                                                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                            <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                            <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                                <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                                                                </Annotations>
+                                                                                                <Annotations Target="PayrollService.PaycodeGLMapping/modifiedAt">
+                                                                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                    <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                                                                    </Annotations>
+                                                                                                    <Annotations Target="PayrollService.PaycodeGLMapping/modifiedBy">
+                                                                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                                            <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.EntityContainer/JournalEntry">
+                                                                                                                <Annotation Term="Capabilities.DeleteRestrictions">
+                                                                                                                    <Record Type="Capabilities.DeleteRestrictionsType">
+                                                                                                                        <PropertyValue Property="Deletable" Bool="false"/>
+                                                                                                                    </Record>
+                                                                                                                </Annotation>
+                                                                                                                <Annotation Term="Capabilities.InsertRestrictions">
+                                                                                                                    <Record Type="Capabilities.InsertRestrictionsType">
+                                                                                                                        <PropertyValue Property="Insertable" Bool="false"/>
+                                                                                                                    </Record>
+                                                                                                                </Annotation>
+                                                                                                                <Annotation Term="Capabilities.UpdateRestrictions">
+                                                                                                                    <Record Type="Capabilities.UpdateRestrictionsType">
+                                                                                                                        <PropertyValue Property="Updatable" Bool="false"/>
+                                                                                                                    </Record>
+                                                                                                                </Annotation>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/BATCHID">
+                                                                                                                <Annotation Term="Common.Label" String="BATCHID: BATCHID"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/POSTINGBATCHID">
+                                                                                                                <Annotation Term="Common.Label" String="POSTINGBATCHID: POSTINGBATCHID"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/POSTINGSTATUS">
+                                                                                                                <Annotation Term="Common.Label" String="POSTINGSTATUS: POSTINGSTATUS"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/POSTINGSTATUSMESSAGE">
+                                                                                                                <Annotation Term="Common.Label" String="POSTINGSTATUSMESSAGE: POSTINGSTATUSMESSAGE"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/POSTINGDOCUMENT">
+                                                                                                                <Annotation Term="Common.Label" String="POSTINGDOCUMENT: POSTINGDOCUMENT"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/COMPANYCODE">
+                                                                                                                <Annotation Term="Common.Label" String="COMPANYCODE: COMPANYCODE"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/PAYROLLDATE">
+                                                                                                                <Annotation Term="Common.Label" String="PAYROLLDATE: PAYROLLDATE"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/ACCOUNTINGDOCUMENTTYPE">
+                                                                                                                <Annotation Term="Common.Label" String="AccountingDocumentType: AccountingDocumentType"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/DOCUMENTREFERENCEID">
+                                                                                                                <Annotation Term="Common.Label" String="DocumentReferenceID: DocumentReferenceID"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/DOCUMENTHEADERTEXT">
+                                                                                                                <Annotation Term="Common.Label" String="DocumentHeaderText: DocumentHeaderText"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/POSTINGDATE">
+                                                                                                                <Annotation Term="Common.Label" String="PostingDate: PostingDate"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/DOCUMENTDATE">
+                                                                                                                <Annotation Term="Common.Label" String="DocumentDate: DocumentDate"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/REFERENCE1INDOCUMENTHEADER">
+                                                                                                                <Annotation Term="Common.Label" String="Reference1InDocumentHeader: Reference1InDocumentHeader"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntry/REFERENCE2INDOCUMENTHEADER">
+                                                                                                                <Annotation Term="Common.Label" String="Reference2InDocumentHeader: Reference2InDocumentHeader"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.EntityContainer/JournalEntryItem">
+                                                                                                                <Annotation Term="Capabilities.DeleteRestrictions">
+                                                                                                                    <Record Type="Capabilities.DeleteRestrictionsType">
+                                                                                                                        <PropertyValue Property="Deletable" Bool="false"/>
+                                                                                                                    </Record>
+                                                                                                                </Annotation>
+                                                                                                                <Annotation Term="Capabilities.InsertRestrictions">
+                                                                                                                    <Record Type="Capabilities.InsertRestrictionsType">
+                                                                                                                        <PropertyValue Property="Insertable" Bool="false"/>
+                                                                                                                    </Record>
+                                                                                                                </Annotation>
+                                                                                                                <Annotation Term="Capabilities.UpdateRestrictions">
+                                                                                                                    <Record Type="Capabilities.UpdateRestrictionsType">
+                                                                                                                        <PropertyValue Property="Updatable" Bool="false"/>
+                                                                                                                    </Record>
+                                                                                                                </Annotation>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/BATCHID">
+                                                                                                                <Annotation Term="Common.Label" String="BATCHID: BATCHID"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/POSTINGBATCHID">
+                                                                                                                <Annotation Term="Common.Label" String="POSTINGBATCHID: POSTINGBATCHID"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/REFERENCEDOCUMENTITEM">
+                                                                                                                <Annotation Term="Common.Label" String="REFERENCEDOCUMENTITEM: REFERENCEDOCUMENTITEM"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/GLACCOUNT">
+                                                                                                                <Annotation Term="Common.Label" String="GLACCOUNT: GLACCOUNT"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/AMOUNTINTRANSACTIONCURRENCY">
+                                                                                                                <Annotation Term="Common.Label" String="AMOUNTINTRANSACTIONCURRENCY: AMOUNTINTRANSACTIONCURRENCY"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/GLPOSTCOSTCENTER">
+                                                                                                                <Annotation Term="Common.Label" String="GLPOSTCOSTCENTER: GLPOSTCOSTCENTER"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE">
+                                                                                                                <Annotation Term="Common.Label" String="AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE: AMOUNTINTRANSACTIONCURRENCYCURRENCYCODE"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/WBSELEMENT">
+                                                                                                                <Annotation Term="Common.Label" String="WBSELEMENT: WBSELEMENT"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/DEBITCREDITCODE">
+                                                                                                                <Annotation Term="Common.Label" String="DEBITCREDITCODE: DEBITCREDITCODE"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/DOCUMENTITEMTEXT">
+                                                                                                                <Annotation Term="Common.Label" String="DOCUMENTITEMTEXT: DOCUMENTITEMTEXT"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/ASSIGNMENTREFERENCE">
+                                                                                                                <Annotation Term="Common.Label" String="ASSIGNMENTREFERENCE: ASSIGNMENTREFERENCE"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/ADDITIONALATTRIBUTES_PERSONNELNUMBER">
+                                                                                                                <Annotation Term="Common.Label" String="ADDITIONALATTRIBUTES_PERSONNELNUMBER: ADDITIONALATTRIBUTES_PERSONNELNUMBER"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="PayrollService.JournalEntryItem/FUNCTIONALAREA">
+                                                                                                                <Annotation Term="Common.Label" String="FUNCTIONALAREA: FUNCTIONALAREA"/>
+                                                                                                            </Annotations>
+                                                                                                        </Schema>
+                                                                                                    </edmx:DataServices>
+                                                                                                </edmx:Edmx>

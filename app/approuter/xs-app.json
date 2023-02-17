@@ -3,6 +3,14 @@
   "welcomeFile": "cdlite/index.html",
   "routes": [
     {
+      "source": "^/payroll/(.*)$",
+      "target": "/payroll/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true,
+      "cacheControl": "no-cache, no-store, must-revalidate"
+    },
+    {
       "source": "^/cdlite/payroll/(.*)$",
       "target": "/payroll/$1",
       "destination": "srv-api",
@@ -38,7 +46,7 @@
     },
     {
       "source": "^/mapping/(.*)",
-      "target": "/mapping/$1",
+      "target": "/commkuimapping/$1",
       "service": "html5-apps-repo-rt",
       "authenticationType": "xsuaa"
     },
