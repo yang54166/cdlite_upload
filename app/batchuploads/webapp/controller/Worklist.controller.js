@@ -24,12 +24,15 @@ sap.ui.define([
          */
         onInit: function () {
             var oViewModel;
-
+            this._oModel = this.getOwnerComponent().getModel();
             // keeps the search state
             this._aTableSearchState = [];
             var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
             var companyCodeModel = this.getOwnerComponent().getModel("companyCodeData");
+            var currencyModel = this.getOwnerComponent().getModel("currencyData");
             var uploadRangesModel = this.getOwnerComponent().getModel("uploadRangesData");
+            //      var companyCodeData = this.getOwnerComponent().getModel("companyCodeModel");
+            //      var currencyCodeData = this.getOwnerComponent().getModel("currencyCodeModel");
 
             // Model used to manipulate control states
             oViewModel = new JSONModel({
@@ -42,6 +45,11 @@ sap.ui.define([
             this.setModel(transTypesModel, "transTypes");
             this.setModel(companyCodeModel, "companyCodeList");
             this.setModel(uploadRangesModel, "uploadRangesList");
+            this.setModel(currencyModel, "currencyList");
+
+            this.getView().byId("companyCodeList").setFilterFunction(function (sTerm, oItem) {
+                return oItem.getText().match(new RegExp(sTerm, "i")) || oItem.getKey().match(new RegExp(sTerm, "i"))
+            })
 
         },
 
@@ -108,7 +116,6 @@ sap.ui.define([
             }
         },
 
-
         onSearch: function (oEvent) {
             if (oEvent.getParameters().refreshButtonPressed) {
                 // Search field's 'refresh' button has been pressed.
@@ -122,8 +129,16 @@ sap.ui.define([
 
                 var filters = [];
 
-                filters.push(new Filter("batchDescription", FilterOperator.Contains, sQuery));
+                var oFilter = new Filter({
+                    path: 'batchDescription',
+                    operator: FilterOperator.Contains,
+                    value1: sQuery,
+                    caseSensitive: false
+                });
+                //filters.push(new Filter("batchDescription", FilterOperator.Contains, sQuery.toLowerCase()));
+                //   filters.push(new Filter("ID", FilterOperator.EQ, sQuery));
 
+                filters.push(oFilter);
                 var orFilters = new Filter(filters, false);
                 if (sQuery && sQuery.length > 0) {
                     aTableSearchState = orFilters;
@@ -242,6 +257,12 @@ sap.ui.define([
                     // connect dialog to the root view 
                     //of this component (models, lifecycle)
                     oView.addDependent(oDialog);
+                    oView.byId("uploadCompanyCode").setFilterFunction(function (sTerm, oItem) {
+                        return oItem.getText().match(new RegExp(sTerm, "i")) || oItem.getKey().match(new RegExp(sTerm, "i"))
+                    })
+                    oView.byId("uploadCurrency").setFilterFunction(function (sTerm, oItem) {
+                        return oItem.getText().match(new RegExp(sTerm, "i")) || oItem.getKey().match(new RegExp(sTerm, "i"))
+                    })
                     oDialog.open();
                 });
             } else {
@@ -250,9 +271,11 @@ sap.ui.define([
         },
 
         submitUploads: function () {
-            var sCompanyCode = this.getView().byId("companyCodeDlg").getValue();
+            // var sCompanyCode = this.getView().byId("companyCodeDlg").getValue();
+            var sCompanyCode = this.getView().byId("uploadCompanyCode").getSelectedKey();
             var sTransType = this.getView().byId("transTypeDlg").getSelectedItem().getKey();
-            var sCurrency = this.getView().byId("currencyDlg").getValue();
+            //   var sCurrency = this.getView().byId("currencyDlg").getValue();
+            var sCurrency = this.getView().byId("uploadCurrency").getSelectedKey();
             var sPayrollDate = this.getView().byId("payrollDateDlg").getValue();
             var sGLPeriod = this.formatDateString(this.getView().byId("glPeriodDlg").getValue());
             var sEffectivePeriod = this.formatDateString(this.getView().byId("effectivePeriodDlg").getValue());
@@ -447,8 +470,7 @@ sap.ui.define([
 		},
 
         onPressMapping: function (oEvent) {
-            window.location = "../mapping"
+            window.location = "../mapping/index.html"
         }
-
     });
 });

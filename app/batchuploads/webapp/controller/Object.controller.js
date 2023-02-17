@@ -183,7 +183,8 @@ sap.ui.define([
             var oViewModel = this.getModel("objectView");
             var nErrorCnt = oViewModel.getProperty("/inError");
 
-            var oBinding = this._oTable.getBinding("items"),
+            var oBinding = this.getView().byId("lineItemsList").getBinding("items"),
+        //    var oBinding = this._oTable.getBinding("items"),
                 sKey = oEvent.getParameter("selectedKey");
             var sHeaderStatus = this._sHeaderStatus;
             //  console.log(sHeaderStatus);

@@ -7,11 +7,20 @@
             <l:HorizontalLayout id="horizonLayout">
                 <l:VerticalLayout id="companyCodeFilterLayout" class="sapUiMediumMarginEnd">
                     <Label id="compCodeLabel" text="Company Code" design="Bold" />
-                    <ComboBox id="companyCodeList" name="Name" selectionChange=".onCompanyCodeChange" selectedKey="0000" items="{
-												path: 'companyCodeList>/',
-												templateShareable: true
-											}">
-                        <core:Item id="companyCodeItem" key="{companyCodeList>Code}" text="{companyCodeList>Name}" />
+                    <ComboBox
+                        id="companyCodeList"
+                        name="Name"
+                        change=".onCompanyCodeChange"
+                      
+                        items="{
+                                path: 'companyCodeList>/value',
+                                sorter: {
+                                    path: 'companyCodeList>companyCodeName',
+                                    descending: false
+                                }
+                        }"
+                    >
+                        <core:ListItem id="companyCodeItem" key="{companyCodeList>companyCode}" text="{companyCodeList>companyCodeName}" />
                     </ComboBox>
                 </l:VerticalLayout>
                 <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">
@@ -119,7 +128,7 @@
         </semantic:content>
 
         <semantic:titleCustomIconActions>
-            <OverflowToolbarButton id="settings" tooltip="Settings" text="Settings" press="handleSettingsPress" icon="sap-icon://action-settings"/>
+            <OverflowToolbarButton id="settings" tooltip="Settings" text="Settings" press="handleSettingsPress" icon="sap-icon://action-settings" />
         </semantic:titleCustomIconActions>
         <semantic:titleMainAction>
             <semantic:TitleMainAction id="uploadAction" text="Upload" press="onUpload" />

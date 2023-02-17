@@ -34,7 +34,11 @@
         "type": "JSON"
       },
       "companyCodeData": {
-        "uri": "model/company_code.json",
+        "uri": "model/companycode.json",
+        "type": "JSON"
+      },
+      "currencyData": {
+        "uri": "model/currency.json",
         "type": "JSON"
       },
       "uploadRangesData": {
@@ -108,6 +112,10 @@
       "companyCodeData": {
         "type": "sap.ui.model.json.JSONModel",
         "dataSource": "companyCodeData"
+      },
+      "currencyData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "currencyData"
       },
       "uploadRangesData": {
         "type": "sap.ui.model.json.JSONModel",
