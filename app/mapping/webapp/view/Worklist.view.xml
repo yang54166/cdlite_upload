@@ -82,26 +82,15 @@
     </semantic:SemanticPage> -->
 
     <semantic:SemanticPage id="page" headerPinnable="false" toggleHeaderOnTitleClick="false">
+        <!-- <semantic:titleBreadcrumbs>
+            <Breadcrumbs separatorStyle="GreaterThan">
+				<Link press="onNavBack" text="Return to App"/>
+            </Breadcrumbs>
+        </semantic:titleBreadcrumbs> -->
         <semantic:titleHeading>
             <Title text="Mapping" level="H2" />
         </semantic:titleHeading>
 
-        <!-- <semantic:headerContent>
-            <layout:HorizontalLayout allowWrapping="true">
-                <layout:VerticalLayout class="sapUiMediumMarginEnd">
-                    <Select width="300px" items="{worklistView>/MappingTypes}" 	change=".onChangeMapType">
-                        <items>
-                            <core:Item key="{worklistView>Key}" text="{worklistView>Name}" />
-                        </items>
-                    </Select>
-                </layout:VerticalLayout>
-
-                <layout:VerticalLayout>
-                    <u:FileUploader width="300px" id="fileUploader" name="myFileUpload" uploadUrl="upload/" tooltip="Upload your file" uploadComplete="handleUploadComplete" />
-                    <Button text="Upload File" press="handleUploadPress" />
-                </layout:VerticalLayout>
-            </layout:HorizontalLayout>
-        </semantic:headerContent> -->
         <!-- <Page id="page" title="{i18n>title}"> -->
         <semantic:content>
             <IconTabBar id="idIconTabBarMulti" expanded="{device>/isNoPhone}">
@@ -124,6 +113,9 @@
         <!-- <semantic:sendEmailAction>
             <semantic:SendEmailAction id="shareEmail" press=".onShareEmailPress"/>
         </semantic:sendEmailAction> -->
+        <semantic:closeAction>
+			<semantic:CloseAction press="onNavBack"/>
+		</semantic:closeAction>
     </semantic:SemanticPage>
     <!-- </Page> -->
 </mvc:View>
