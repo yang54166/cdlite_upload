@@ -1,0 +1,40 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+    <Table id="tblLCData"   mode="MultiSelect"  growing="true"
+        growingScrollToLoad="true" items="{path: '/TransactionTypes'}">
+        <headerToolbar>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button text="Add" icon="sap-icon://add" press="onAddLedgeControl" />
+                <Button text="Edit" icon="sap-icon://edit" press="onEditLedgeControl" />
+                <Button text="Delete" icon="sap-icon://delete" press="onDeleteLedgeControl" />
+            </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+            <Column>
+                <Text text="Transaction Type" />
+            </Column>
+            <Column>
+                <Text text="Doc Type" />
+            </Column>
+            <Column>
+                <Text text="Ledger Group" />
+            </Column>
+            <Column>
+                <Text text="Doc Header Text" />
+            </Column>
+        </columns>
+
+        <items>
+            <ColumnListItem >
+                <cells>
+                    <ObjectIdentifier title="{transactionType}" />
+                    <ObjectIdentifier title="{docType}" />
+                    <ObjectIdentifier title="{ledgerGroup}" />
+                    <ObjectIdentifier title="{docHeaderText}" />
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</core:FragmentDefinition>

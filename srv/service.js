@@ -122,8 +122,8 @@ class PayrollService extends cds.ApplicationService {
                 } else {
                     if (!userObj.costCenter || userObj.costCenter == "") {
                         errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
-                    } else if (!userFCAT || userFCAT == "") {
-                        errorsForRow.push(`FMNO ${item.FMNO} does not have FCAT.`);
+                    //} else if (!userFCAT || userFCAT == "") {
+                     //   errorsForRow.push(`FMNO ${item.FMNO} does not have FCAT.`);
                     } else if (new Date(userObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
                         errorsForRow.push(`FMNO ${item.FMNO} was not active for payroll date.`);
                     }

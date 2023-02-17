@@ -1,0 +1,42 @@
+<mvc:View xmlns:core="sap.ui.core" controllerName="com.mk.ui.mapping.controller.PayrollGLMapping" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.f.semantic" xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form">
+    <Page title="Payroll to GL Mapping " class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer">
+        <f:SimpleForm editable="true" BackgroundDesign="Solid" layout="ResponsiveGridLayout" labelSpanL="2" labelSpanM="2" emptySpanL="5" emptySpanM="5">
+            <f:content>
+                <Label text="Legal Entity Group Code" required="true" />
+                <Input value="{legalEntityGroupCode}" />
+                <Label text="Payroll Code" required="true" />
+                <Input value="{payrollCode}" />
+                <Label text="Payroll Code Sequence" required="true" />
+                <Input value="{payrollCodeSequence}" />
+                <Label text="Effective Date"  />
+                <Input value="{effectiveDate}" />
+
+                <Label text="End Date"  />
+                <Input value="{endDate}" />
+                <Label text="Description" />
+                <Input value="{description}" />
+                <Label text="Transaction Description"  />
+                <Input value="{transactionDescription}" />
+                <Label text="Payroll Code Type"  />
+                <Input value="{payrollCodeType}" />
+                <Label text="Payroll Code Class" />
+                <Input value="{payrollCodeClass}" />
+                <Label text="GL Account"  />
+                <Input value="{glAccount}" />
+                <Label text="Qualified Comp Indicator"  />
+                <Input value="{qualifiedCompensation}" />
+                <Label text="US PSRP Reporting Code"  />
+                <Input value="{usPsrpCategory}" />
+                <Label text="Default Department"  />
+                <Input value="{defaultDepartment}" />
+            </f:content>
+        </f:SimpleForm>
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button text="Save" type="Accept"  press="onSavePayrollGLMapData"/>
+                <Button text="Cancel" type="Reject" press="onNavBack" />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>
