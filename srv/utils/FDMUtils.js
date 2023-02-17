@@ -7,6 +7,7 @@ class FDMUtils {
     companyCodes=[];
     wbsElements=[];
     exchangeRates=[];
+    currencyCodes=[];
 
     constructor(remoteService){
         this.apiService = remoteService;
@@ -45,7 +46,7 @@ class FDMUtils {
     };
 
     async getCompanyCodes() {
-        let result = await this.apiService.get("COMPANY_CODE_API");//.where({ mandt: this.sapClient });
+        let result = await this.apiService.get("COMPANY_CODE_API").where({ mandt: this.sapClient });
         this.companyCodes.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);
@@ -60,7 +61,7 @@ class FDMUtils {
     };
 
     async getWbsElements(companyCode) {
-        let result = await this.apiService.get("PROJECT_API").where({ companyCode: companyCode });
+        let result = await this.apiService.get("PROJECT_API").where({ companyCode: companyCode, client: this.sapClient });
         this.wbsElements.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);
@@ -69,6 +70,11 @@ class FDMUtils {
         console.log(`Found ${this.wbsElements.length} wbsElements for companyCode ${companyCode}.`);
         return this.wbsElements;
     };
+
+    getWbsElement(wbsElementCode) {
+        return this.wbsElements.find((proj)=> proj.wbsCode == wbsElementCode);
+    };
+
 
     async getExchangeRates() {
         let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API");//.where({ mandt: this.sapClient });
@@ -83,6 +89,17 @@ class FDMUtils {
 
     getExchangeRate(sourceCurrency, targetCurrency){
         const exchangeRate = this.exchangeRates.find((rate)=> ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
+    };
+
+    async getCurrency() {
+        let result = await this.apiService.get("CURRENCY_API");
+        this.currencyCodes.push(...result);
+        while (result.$nextLink) {
+            result = await this.apiService.get(`/${result.$nextLink}`);
+            this.currencyCodes.push(...result);
+        }
+        console.log(`Found ${this.currencyCodes.length} currencyCodes.`);
+        return this.currencyCodes;
     };
 };
 

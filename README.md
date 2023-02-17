@@ -1,14 +1,13 @@
 # Developer Setup
 
 ## CAP
-To run can service locally, need to run 
+To run can service locally (hybrid mode - uses CF HANA DB and UAA, but local CAP), need to run 
 ```
 npm i
 npm run login (to connect to cf)
 npm run bind
 npm run start-local
 ```
-
 
 
 ## APPROUTER
@@ -20,6 +19,10 @@ To run approuter locally, you need to create /app/approuter/default-env.json
       "name": "srv-api",
       "url": "http://localhost:4004",
       "forwardAuthToken": true
+    },
+    {
+      "name": "ui5",
+      "url": "https://ui5.sap.com"
     }
   ]
 }

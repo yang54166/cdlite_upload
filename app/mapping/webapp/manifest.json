@@ -162,5 +162,9 @@
       "async": true,
       "id": "app"
     }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "cloud.service"
   }
 }

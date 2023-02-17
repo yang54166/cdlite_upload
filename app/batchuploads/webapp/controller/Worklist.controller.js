@@ -290,7 +290,8 @@ sap.ui.define([
                 oFileUploader.removeHeaderParameter('x-csrf-token');
                 oFileUploader.addHeaderParameter(headPar);
                 oFileUploader.addHeaderParameter(tokenParameter);
-                oFileUploader.setUploadUrl("/payroll/PayrollUploadFile/content");
+                const currentPath = location.href.substring(0, location.href.lastIndexOf('/'));
+                oFileUploader.setUploadUrl(`${currentPath}/payroll/PayrollUploadFile/content`);
                 oFileUploader
                     .checkFileReadable()
                     .then(function () {
@@ -423,6 +424,30 @@ sap.ui.define([
                 this.byId("uploadDialog").close();
                 this.byId("uploadDialog").destroy();
             }
+        },
+
+        handleSettingsPress: function (oEvent) {
+			var oButton = oEvent.getSource(),
+				oView = this.getView();
+
+			// create popover
+			if (!this._pPopover) {
+				this._pPopover = Fragment.load({
+					id: oView.getId(),
+					name:  "batchuploads.fragments.Settings",
+					controller: this
+				}).then(function(oPopover) {
+					oView.addDependent(oPopover);
+					return oPopover;
+				});
+			}
+			this._pPopover.then(function(oPopover) {
+				oPopover.openBy(oButton);
+			});
+		},
+
+        onPressMapping: function (oEvent) {
+            window.location = "../mapping"
         }
 
     });

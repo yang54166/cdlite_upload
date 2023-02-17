@@ -90,7 +90,7 @@ sap.ui.define([
             var sObjectId = oEvent.getParameter("arguments").objectId;
             this._ID = sObjectId.replace(/[{()}]/g, '');
             this._bindView("/StagingUploads" + sObjectId);
-            var sPostingURL = '/payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
+            var sPostingURL = 'payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
             var oPostingData = new JSONModel();
             var that = this;
             //          that.getPostingData("/PostingBatch", parseInt(this._ID));
@@ -220,11 +220,11 @@ sap.ui.define([
                 this._sURL = oItemsBinding.sReducedPath;
                 //         this._postURL = oItemsBinding.oContext.sPath;
                 if (this._sHeaderStatus.toUpperCase() === 'APPROVED') {
-                    var sApprovedURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'APPROVED' + "'";
-                    var sErrorURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'SKIPPED' + "'";
+                    var sApprovedURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'APPROVED' + "'";
+                    var sErrorURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'SKIPPED' + "'";
                 } else {
-                    var sApprovedURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'VALID' + "'";
-                    var sErrorURL = '/payroll' + this._sURL + "?$filter=status eq '" + 'INVALID' + "'";
+                    var sApprovedURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'VALID' + "'";
+                    var sErrorURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'INVALID' + "'";
                 }
 
                 $.get({
@@ -426,7 +426,7 @@ sap.ui.define([
             oApprovalDialog.setBusy(true);
             var that = this;
             jQuery.ajax({
-                url: "/payroll" + sPath + "/approve",
+                url: "payroll" + sPath + "/approve",
                 type: "POST",
                 async: true,
                 data: {},

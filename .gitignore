@@ -35,3 +35,4 @@ mta_archives/
 db/.env
 app/batchuploads/dist/
 resources/
+app/mapping/dist/

@@ -1,4 +1,0 @@
-POST http://localhost:4004/payroll/StagingUploads(38)/enrich
-Content-Type: application/json
-
-{}

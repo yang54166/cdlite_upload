@@ -1,5 +1,0 @@
-GET http://localhost:4004/payroll/JournalEntry?$filter=BATCHID eq 59&$expand=items
-Content-Type: application/json
-
-{}
-
