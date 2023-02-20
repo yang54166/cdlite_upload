@@ -13,14 +13,14 @@
                         change=".onCompanyCodeChange"
                       
                         items="{
-                                path: 'companyCodeList>/value',
+                                path: '/CompanyCodes',
                                 sorter: {
                                     path: 'companyCodeName',
                                     descending: false
                                 }
                         }"
                     >
-                        <core:ListItem id="companyCodeItem" key="{companyCodeList>companyCode}" text="{companyCodeList>companyCodeName}" />
+                        <core:ListItem id="companyCodeItem" key="{companyCode}" text="{companyCodeName}" />
                     </ComboBox>
                 </l:VerticalLayout>
                 <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">

@@ -184,7 +184,7 @@ sap.ui.define([
             var nErrorCnt = oViewModel.getProperty("/inError");
 
             var oBinding = this.getView().byId("lineItemsList").getBinding("items"),
-        //    var oBinding = this._oTable.getBinding("items"),
+                //    var oBinding = this._oTable.getBinding("items"),
                 sKey = oEvent.getParameter("selectedKey");
             var sHeaderStatus = this._sHeaderStatus;
             //  console.log(sHeaderStatus);
@@ -269,10 +269,27 @@ sap.ui.define([
         onDownload: function () {
             var oBinding = this.byId("lineItemsList").getBinding("items");
             var that = this;
-            oBinding.requestContexts().then(function (aContexts) {
+            oBinding.requestContexts(0,Infinity).then(function (aContexts) {
                 var arr = [];
                 for (var i = 0; i < aContexts.length; i++) {
-                    arr.push(aContexts[i].getObject());
+                    var obj = {
+                        "FMNO": aContexts[i].getObject().fmno,
+                        "PAYROLLCODE": aContexts[i].getObject().payrollCode,
+                        "PAYROLLCODESEQUENCE": aContexts[i].getObject().payrollCodeSequence,
+                        "NAME": "",
+                        "AMOUNT": parseFloat(aContexts[i].getObject().amount).toFixed(2),
+                        "PAYMENTNUMBER": aContexts[i].getObject().paymentNumber,
+                        "PAYMENTID": aContexts[i].getObject().pyamentId,
+                        "PAYMENTFORM": aContexts[i].getObject().paymentForm,
+                        "USERFIELD1": "",
+                        "USERFIELD2": "",
+                        "REMARKS": "",
+                        "LOANADVANCEREFERENCENUMBER": aContexts[i].getObject().loadAdvanceReferenceNumber,
+                        "PROJECTCODE": aContexts[i].getObject().projectCode,
+                        "PROJECTTASK": aContexts[i].getObject().projectTask,
+                        "STATUSMESSAGE": aContexts[i].getObject().statusMessage
+                    };
+                    arr.push(obj);
                 }
                 var sCSV = that.convertToCSV(arr);
                 that.writeToCSV(sCSV);
@@ -302,7 +319,7 @@ sap.ui.define([
             const array = [Object.keys(arr[0])].concat(arr)
 
             return array.map(it => {
-                return Object.values(it).toString()
+                return Object.values(it).join('\t').toString()
             }).join('\n')
         },
 

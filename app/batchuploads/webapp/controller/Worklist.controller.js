@@ -28,11 +28,9 @@ sap.ui.define([
             // keeps the search state
             this._aTableSearchState = [];
             var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
-            var companyCodeModel = this.getOwnerComponent().getModel("companyCodeData");
-            var currencyModel = this.getOwnerComponent().getModel("currencyData");
+
             var uploadRangesModel = this.getOwnerComponent().getModel("uploadRangesData");
-            //      var companyCodeData = this.getOwnerComponent().getModel("companyCodeModel");
-            //      var currencyCodeData = this.getOwnerComponent().getModel("currencyCodeModel");
+          
 
             // Model used to manipulate control states
             oViewModel = new JSONModel({
@@ -43,9 +41,9 @@ sap.ui.define([
             });
             this.setModel(oViewModel, "worklistView");
             this.setModel(transTypesModel, "transTypes");
-            this.setModel(companyCodeModel, "companyCodeList");
+ 
             this.setModel(uploadRangesModel, "uploadRangesList");
-            this.setModel(currencyModel, "currencyList");
+   
 
             this.getView().byId("companyCodeList").setFilterFunction(function (sTerm, oItem) {
                 return oItem.getText().match(new RegExp(sTerm, "i")) || oItem.getKey().match(new RegExp(sTerm, "i"))

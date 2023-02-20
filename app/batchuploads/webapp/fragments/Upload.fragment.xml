@@ -32,14 +32,14 @@
                     id="uploadCompanyCode"
                     name="Name"
                     items="{
-                                path: 'companyCodeList>/value',
+                                path: '/CompanyCodes',
                                 sorter: {
-                                    path: 'companyCodeList>companyCodeName',
+                                    path: 'companyCodeName',
                                     descending: false
                                 }
                         }"
                 >
-                    <core:ListItem id="uploadCompanyCodeItem" key="{companyCodeList>companyCode}" text="{companyCodeList>companyCodeName}" />
+                    <core:ListItem id="uploadCompanyCodeItem" key="{companyCode}" text="{companyCodeName}" />
                 </ComboBox>
                 <Label id="transTypeLbl" text="Posting file type" labelFor="transType" design="Bold" />
                 <Select id="transTypeDlg" forceSelection="false" selectedKey="{transTypes>/0/Type}" items="{transTypes>/}" change="onTransTypeChange">
@@ -53,14 +53,14 @@
                     id="uploadCurrency"
                     name="Name"
                     items="{
-                                path: 'currencyList>/value',
+                                path: '/Currency',
                                 sorter: {
-                                    path: 'currencyList>currencyShortDescription',
+                                    path: 'currencyShortDescription',
                                     descending: false
                                 }
                         }"
                 >
-                    <core:ListItem id="currencyItem" key="{currencyList>currencyCode}" text="{currencyList>currencyShortDescription}" />
+                    <core:ListItem id="currencyItem" key="{currencyCode}" text="{currencyShortDescription}" />
                 </ComboBox>
                 <Label id="payrollDatebl" text="Payroll Date" labelFor="payrollDate" design="Bold" />
                 <DatePicker id="payrollDateDlg" valueFormat="yyyy-MM-dd" displayFormat="yyy-MM-dd" class="sapUiSmallMarginBottom" />
