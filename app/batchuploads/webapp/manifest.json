@@ -33,14 +33,6 @@
         "uri": "model/summary_data.json",
         "type": "JSON"
       },
-      "companyCodeData": {
-        "uri": "model/companycode.json",
-        "type": "JSON"
-      },
-      "currencyData": {
-        "uri": "model/currency.json",
-        "type": "JSON"
-      },
       "uploadRangesData": {
         "uri": "model/upload_ranges.json",
         "type": "JSON"
