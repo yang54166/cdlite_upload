@@ -15,7 +15,7 @@
                         items="{
                                 path: 'companyCodeList>/value',
                                 sorter: {
-                                    path: 'companyCodeList>companyCodeName',
+                                    path: 'companyCodeName',
                                     descending: false
                                 }
                         }"
