@@ -28,7 +28,19 @@
         >
             <f:content>
                 <Label id="companyCodeLbl" text="Company Code" labelFor="companyCode" design="Bold" />
-                <Input id="companyCodeDlg" />
+                <ComboBox
+                    id="uploadCompanyCode"
+                    name="Name"
+                    items="{
+                                path: '/CompanyCodes',
+                                sorter: {
+                                    path: 'companyCodeName',
+                                    descending: false
+                                }
+                        }"
+                >
+                    <core:ListItem id="uploadCompanyCodeItem" key="{companyCode}" text="{companyCodeName}" />
+                </ComboBox>
                 <Label id="transTypeLbl" text="Posting file type" labelFor="transType" design="Bold" />
                 <Select id="transTypeDlg" forceSelection="false" selectedKey="{transTypes>/0/Type}" items="{transTypes>/}" change="onTransTypeChange">
                     <core:Item id="transItems" key="{transTypes>Type}" text="{transTypes>Name}" />
@@ -37,7 +49,19 @@
                 <!--      <Label id="sourceOfficeLbl" text="Source Office" labelFor="sourceOffice" design="Bold" />
                 <Input id="sourceOffice" /> -->
                 <Label id="currencyLbl" text="Payroll Currency" labelFor="currency" design="Bold" />
-                <Input id="currencyDlg" />
+                <ComboBox
+                    id="uploadCurrency"
+                    name="Name"
+                    items="{
+                                path: '/Currency',
+                                sorter: {
+                                    path: 'currencyShortDescription',
+                                    descending: false
+                                }
+                        }"
+                >
+                    <core:ListItem id="currencyItem" key="{currencyCode}" text="{currencyShortDescription}" />
+                </ComboBox>
                 <Label id="payrollDatebl" text="Payroll Date" labelFor="payrollDate" design="Bold" />
                 <DatePicker id="payrollDateDlg" valueFormat="yyyy-MM-dd" displayFormat="yyy-MM-dd" class="sapUiSmallMarginBottom" />
                 <Label id="glPeriodLbl" text="GL Period" labelFor="glPeriod" design="Bold" />

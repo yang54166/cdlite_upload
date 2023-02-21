@@ -93,34 +93,45 @@ sap.ui.define([
             var sPostingURL = 'payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
             var oPostingData = new JSONModel();
             var that = this;
-            //          that.getPostingData("/PostingBatch", parseInt(this._ID));
+            //   that.getPostingData(parseInt(this._ID));
+            var sFilter = new Filter('batchId', FilterOperator.EQ, parseInt(this._ID));
+            var oList = this._oModel.bindList('/PostingBatch', undefined, undefined, sFilter, undefined);
+            var oPostingData = new JSONModel();
 
-            $.get({
-                url: sPostingURL,
-                async: true,
-                success: function (succData) {
-                    console.log(succData.value);
-                    oPostingData.setData(succData.value);
-                    that.setModel(oPostingData, "postingView");
-                },
-                error: function (error) {
+            oList.requestContexts().then(function (aContexts) {
 
-                }
+                oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
+                that.setModel(oPostingData, "postingView");
+
             });
+
+
+            /*         $.get({
+                         url: sPostingURL,
+                         async: true,
+                         success: function (succData) {
+                             console.log(succData.value);
+                             oPostingData.setData(succData.value);
+                             that.setModel(oPostingData, "postingView");
+                         },
+                         error: function (error) {
+         
+                         }
+                     }); */
 
         },
 
-        getPostingData: function (sPath, batchId) {
+        getPostingData: function (batchId) {
             var sFilter = new Filter('batchId', FilterOperator.EQ, batchId);
-            var oList = this._oModel.bindList(sPath, undefined, undefined, sFilter, undefined);
+            var oList = this._oModel.bindList('/PostingBatch', undefined, undefined, sFilter, undefined);
             var oPostingData = new JSONModel();
             var arr = [];
             oList.requestContexts().then(function (aContexts) {
-                for (var i = 0; i < aContexts.length; i++) {
-                    arr.push(aContexts[i].getObject());
-                }
-                oPostingData.setData(arr);
-                this.setModel(oPostingData, "postingView");
+
+
+                oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
+                that.getView().setModel(oPostingData, "postingView");
+
             });
         },
 
@@ -170,7 +181,10 @@ sap.ui.define([
         onQuickFilter: function (oEvent) {
 
             var oViewModel = this.getModel("objectView");
-            var oBinding = this._oTable.getBinding("items"),
+            var nErrorCnt = oViewModel.getProperty("/inError");
+
+            var oBinding = this.getView().byId("lineItemsList").getBinding("items"),
+                //    var oBinding = this._oTable.getBinding("items"),
                 sKey = oEvent.getParameter("selectedKey");
             var sHeaderStatus = this._sHeaderStatus;
             //  console.log(sHeaderStatus);
@@ -187,10 +201,12 @@ sap.ui.define([
                     "all": []
                 };
 
-            if (sKey === "inError") {
+            if (sKey === "inError" && parseInt(nErrorCnt) > 0) {
                 oViewModel.setProperty("/showExport", true);
+
             } else {
                 oViewModel.setProperty("/showExport", false);
+
             }
             oBinding.filter(this._mFilters[sKey]);
         },
@@ -200,58 +216,52 @@ sap.ui.define([
             oTable.removeSelections(true);
         },
 
+        getFilteredCnt: function (oCurrntObjs, status) {
+            var filteredData = oCurrntObjs.filter(data => (data.status === status));
+            return filteredData.length;
+        },
+
         onListUpdateFinished: function (oEvent) {
 
             var sTitle,
                 iTotalItems = oEvent.getParameter("total"),
                 oViewModel = this.getModel("objectView"),
-                oItemsBinding = oEvent.getSource().getBinding("items");
-            //   var existingFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
-            //     var successFilter = new Filter('status', FilterOperator.EQ, 'APPROVED');
-            //     var errorFilter = new Filter('status', FilterOperator.EQ, 'INVALID');
+                oItemsBinding = oEvent.getSource().getBinding("items"),
+                oIconFilter = this.byId("iconTabBar");
+
             this._sHeaderStatus = this.byId("detailStatusTxt").getText();
+            var sKey = oIconFilter.getSelectedKey();
+            var oAllCurrentContexts = oItemsBinding.getAllCurrentContexts();
+            this._oAllCurrentObjs = oAllCurrentContexts.map(oContext => oContext.getObject());
 
             // only update the counter if the length is final
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
 
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
                 oViewModel.setProperty("/countAll", iTotalItems);
+                var succCnt = 0, errorCnt = 0;
 
-                this._sURL = oItemsBinding.sReducedPath;
-                //         this._postURL = oItemsBinding.oContext.sPath;
                 if (this._sHeaderStatus.toUpperCase() === 'APPROVED') {
-                    var sApprovedURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'APPROVED' + "'";
-                    var sErrorURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'SKIPPED' + "'";
+                    var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "APPROVED");
+                    var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "SKIPPED");
+
                 } else {
-                    var sApprovedURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'VALID' + "'";
-                    var sErrorURL = 'payroll' + this._sURL + "?$filter=status eq '" + 'INVALID' + "'";
+                    var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "VALID");
+                    var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "INVALID");
                 }
 
-                $.get({
-                    url: sApprovedURL,
-                    success: function (succData) {
-                        oViewModel.setProperty("/success", succData.value.length);
-                    },
-                    error: function (error) {
+                oViewModel.setProperty("/success", succCnt);
+                oViewModel.setProperty("/inError", errorCnt);
 
-                    }
-                });
-
-                $.get({
-                    url: sErrorURL,
-                    success: function (errorData) {
-                        oViewModel.setProperty("/inError", errorData.value.length);
-                        //      this._errorData = errorData.value;
-
-                    },
-                    error: function (error) {
-
-                    }
-                });
 
             } else {
                 //Display 'Line Items' instead of 'Line items (0)'
-                sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
+                if (sKey === 'success')
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/success")]);
+                else if (sKey === 'inError')
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/inError")]);
+                else
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
             }
             oViewModel.setProperty("/lineItemListTitle", sTitle);
         },
@@ -259,10 +269,27 @@ sap.ui.define([
         onDownload: function () {
             var oBinding = this.byId("lineItemsList").getBinding("items");
             var that = this;
-            oBinding.requestContexts().then(function (aContexts) {
+            oBinding.requestContexts(0,Infinity).then(function (aContexts) {
                 var arr = [];
                 for (var i = 0; i < aContexts.length; i++) {
-                    arr.push(aContexts[i].getObject());
+                    var obj = {
+                        "FMNO": aContexts[i].getObject().fmno,
+                        "PAYROLLCODE": aContexts[i].getObject().payrollCode,
+                        "PAYROLLCODESEQUENCE": aContexts[i].getObject().payrollCodeSequence,
+                        "NAME": "",
+                        "AMOUNT": parseFloat(aContexts[i].getObject().amount).toFixed(2),
+                        "PAYMENTNUMBER": aContexts[i].getObject().paymentNumber,
+                        "PAYMENTID": aContexts[i].getObject().pyamentId,
+                        "PAYMENTFORM": aContexts[i].getObject().paymentForm,
+                        "USERFIELD1": "",
+                        "USERFIELD2": "",
+                        "REMARKS": "",
+                        "LOANADVANCEREFERENCENUMBER": aContexts[i].getObject().loadAdvanceReferenceNumber,
+                        "PROJECTCODE": aContexts[i].getObject().projectCode,
+                        "PROJECTTASK": aContexts[i].getObject().projectTask,
+                        "STATUSMESSAGE": aContexts[i].getObject().statusMessage
+                    };
+                    arr.push(obj);
                 }
                 var sCSV = that.convertToCSV(arr);
                 that.writeToCSV(sCSV);
@@ -292,7 +319,7 @@ sap.ui.define([
             const array = [Object.keys(arr[0])].concat(arr)
 
             return array.map(it => {
-                return Object.values(it).toString()
+                return Object.values(it).join('\t').toString()
             }).join('\n')
         },
 
@@ -433,9 +460,23 @@ sap.ui.define([
                 dataType: "json",
                 headers: sHeaders,
                 success: function (result) {
+                    /*    var sFilter = new Filter('batchId', FilterOperator.EQ, parseInt(that._ID));
+                        var oList = that._oModel.bindList('/PostingBatch', undefined, undefined, sFilter, undefined);
+                        var oPostingData = new JSONModel();
+                   
+                        oList.requestContexts().then(function (aContexts) {
+                   
+                            oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
+                            that.setModel(oPostingData, "postingView");
+                            oApprovalDialog.setBusy(false);
+                            var sMsg = "BATCH " + that._ID + " approved successfully!";
+                            MessageBox.success(sMsg);
+                            that.closeApprovalDialog();
+            
+                        }); */
 
                     oApprovalDialog.setBusy(false);
-                    var sMsg = "BATCH " + this._ID + " approved successfully!";
+                    var sMsg = "BATCH " + that._ID + " approved successfully!";
                     MessageBox.success(sMsg);
                     that.closeApprovalDialog();
                 },
