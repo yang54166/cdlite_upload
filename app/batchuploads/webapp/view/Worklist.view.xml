@@ -11,16 +11,18 @@
                         id="companyCodeList"
                         name="Name"
                         change=".onCompanyCodeChange"
-                      
+                        showSecondaryValues="true"
+                        filterSecondaryValues="true"
                         items="{
                                 path: '/CompanyCodes',
                                 sorter: {
                                     path: 'companyCodeName',
                                     descending: false
-                                }
+                                },
+                                length: 1000
                         }"
                     >
-                        <core:ListItem id="companyCodeItem" key="{companyCode}" text="{companyCodeName}" />
+                        <core:ListItem id="companyCodeItem" key="{companyCode}" text="{companyCodeName}" additionalText="{companyCode}"/>
                     </ComboBox>
                 </l:VerticalLayout>
                 <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">
