@@ -74,7 +74,7 @@
                 <m:VBox id="uploadHeaderSec3" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
                     <m:HBox id="uploadHeaderSec3V1" class="sapUiTinyMarginBottom">
                         <m:Label id="detailStatusLbl" text="{i18n>detailStatus}" class="sapUiTinyMarginEnd" />
-                        <m:Text id="detailStatusTxt" text="{status}" />
+                        <m:ObjectStatus id="detailStatusTxt" text="{status}" state="{path: 'status', formatter: '.formatter.getStateForStatus'}"/>
                     </m:HBox>
 
                     <m:HBox id="uploadHeaderSec3V2" class="sapUiTinyMarginBottom">
@@ -134,7 +134,7 @@
                                         <m:cells>
                                             <m:Text text="{postingView>postingBatchId}" />
                                             <m:Text text="{postingView>postingStatus}" />
-                                            <m:Text text="{postingView>postingStatusMessage}" />
+                                            <m:ExpandableText text="{postingView>postingStatusMessage}" overflowMode="InPlace"/>
                                             <m:Text text="{postingView>postingDocument}" />
                                         </m:cells>
                                     </m:ColumnListItem>

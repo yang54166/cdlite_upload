@@ -31,15 +31,18 @@
                 <ComboBox
                     id="uploadCompanyCode"
                     name="Name"
+                    showSecondaryValues="true"
+                    filterSecondaryValues="true"
                     items="{
                                 path: '/CompanyCodes',
                                 sorter: {
                                     path: 'companyCodeName',
                                     descending: false
-                                }
+                                },
+                                length: 1000
                         }"
                 >
-                    <core:ListItem id="uploadCompanyCodeItem" key="{companyCode}" text="{companyCodeName}" />
+                    <core:ListItem id="uploadCompanyCodeItem" key="{companyCode}" text="{companyCodeName}" additionalText="{companyCode}"/>
                 </ComboBox>
                 <Label id="transTypeLbl" text="Posting file type" labelFor="transType" design="Bold" />
                 <Select id="transTypeDlg" forceSelection="false" selectedKey="{transTypes>/0/Type}" items="{transTypes>/}" change="onTransTypeChange">
@@ -52,15 +55,18 @@
                 <ComboBox
                     id="uploadCurrency"
                     name="Name"
+                               showSecondaryValues="true"
+                        filterSecondaryValues="true"
                     items="{
                                 path: '/Currency',
                                 sorter: {
                                     path: 'currencyShortDescription',
                                     descending: false
-                                }
+                                },
+                                 length: 1000
                         }"
                 >
-                    <core:ListItem id="currencyItem" key="{currencyCode}" text="{currencyShortDescription}" />
+                    <core:ListItem id="currencyItem" key="{currencyCode}" text="{currencyShortDescription}" additionalText="{currencyCode}"/>
                 </ComboBox>
                 <Label id="payrollDatebl" text="Payroll Date" labelFor="payrollDate" design="Bold" />
                 <DatePicker id="payrollDateDlg" valueFormat="yyyy-MM-dd" displayFormat="yyy-MM-dd" class="sapUiSmallMarginBottom" />

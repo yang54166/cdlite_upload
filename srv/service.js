@@ -112,9 +112,8 @@ class PayrollService extends cds.ApplicationService {
                 let errorsForRow = [];
                 const userObj = fdmUtils.findUserByFMNO(item.FMNO);
                 let userFCAT = userObj?.fcat ?
-                    parseInt(userObj?.fcat?.split(" ")[0]).toString() :
+                    parseInt(userObj?.fcat?.split(" ")[0]).toString().substring(0,2) :
                     null;
-                userFCAT = parseInt(userFCAT) == 0 ? null : userFCAT;
 
                 // Validations
                 if (!userObj) {
@@ -122,8 +121,8 @@ class PayrollService extends cds.ApplicationService {
                 } else {
                     if (!userObj.costCenter || userObj.costCenter == "") {
                         errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
-                    //} else if (!userFCAT || userFCAT == "") {
-                     //   errorsForRow.push(`FMNO ${item.FMNO} does not have FCAT.`);
+                    } else if (!userFCAT || userFCAT == "" || userFCAT == "000") {
+                       errorsForRow.push(`FMNO ${item.FMNO} does not have a valid FCAT (${userFCAT})`);
                     } else if (new Date(userObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
                         errorsForRow.push(`FMNO ${item.FMNO} was not active for payroll date.`);
                     }
