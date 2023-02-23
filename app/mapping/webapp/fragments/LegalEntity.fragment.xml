@@ -19,7 +19,7 @@
             <OverflowToolbar>
                 <ToolbarSpacer />
                 <Button text="Add" icon="sap-icon://add" press="onAddLegalEntry" />
-                <Button text="Edit" icon="sap-icon://edit" press="onEditLegalEntry" />
+                <!-- <Button text="Edit" icon="sap-icon://edit" press="onEditLegalEntry" /> -->
                 <Button text="Delete" icon="sap-icon://delete" press="onDeleteLegalEntry" />
             </OverflowToolbar>
         </headerToolbar>

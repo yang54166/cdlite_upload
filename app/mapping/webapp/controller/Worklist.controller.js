@@ -4,8 +4,9 @@ sap.ui.define([
     "../model/formatter",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
-    "sap/m/MessageToast"
-], function (BaseController, JSONModel, formatter, Filter, FilterOperator,MessageToast) {
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], function (BaseController, JSONModel, formatter, Filter, FilterOperator,MessageToast,MessageBox) {
     "use strict";
 
     return BaseController.extend("com.mk.ui.mapping.controller.Worklist", {
@@ -150,8 +151,8 @@ sap.ui.define([
         /// Event handlers for table actions 
 
         onAddLegalEntry: function (oEvent) {
-            // open a dialoag to add an entry
-            if (!this.oLEDialog) {
+               // open a dialoag to add an entry
+               if (!this.oLEDialog) {
                 this.oLEDialog = this.loadFragment({
                     name: "com.mk.ui.mapping.fragments.AddnEditLE"
                 });
@@ -183,11 +184,12 @@ sap.ui.define([
         },
 
         onDeleteLegalEntry: function () {
+            var that = this ;
             var aSelectedItmes = this.byId("tblLEData").getSelectedItems();
             MessageBox.warning("Are you sure you want deleted selected mappings ? ", {
                 actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                 onClose: function (sAction) {
-                    MessageToast.show("Action selected: " + sAction);
+                    that._deleteContextEntries(aSelectedItems);
                 }
             });
 
@@ -214,17 +216,17 @@ sap.ui.define([
                         legalEntityGroupCode: data.legalEntityGroupCode,
                         companyCode: data.companyCode
                     });
-                    oContext.created().then(() => {
+                    oContext.created().then(function()  {
                         MessageToast.show("Succesfully Created !!");
+                        oContext
                     });
                 }else{
-                    this.byId("tblLEData").getSelectedItems()[0].getBindingContext().setProperty("/legalEntityGroupCode",data.legalEntityGroupCode);
-                    this.byId("tblLEData").getSelectedItems()[0].getBindingContext().setProperty("/companyCode",data.companyCode);
+                    var vContextPath =  this.byId("tblLCData").getSelectedItems()[0].getBindingContext().getPath();
 
+                    this.byId("tblLEData").getSelectedItems()[0].getBindingContext().setProperty(vContextPath+"/legalEntityGroupCode",data.legalEntityGroupCode);
+                    this.byId("tblLEData").getSelectedItems()[0].getBindingContext().setProperty(vContextPath+"/companyCode",data.companyCode);
                     this.getModel().submitBatch("ServiceGroupId").then(fnSuccess, fnError);
                 }
-
-
                 oDialog.close();
 
             }.bind(this));
@@ -237,7 +239,7 @@ sap.ui.define([
                 });
             }
             this.oLCDialog.then(function (oDialog) {
-                oDialog.setModel(new JSONModel({}), "fragmentModel");
+                oDialog.setModel(new JSONModel({ "isAdd": true }), "fragmentModel");
                 oDialog.open();
                 this.getView().addDependent(oDialog);
             }.bind(this));
@@ -260,12 +262,29 @@ sap.ui.define([
 
             }
         },
+        _deleteContextEntries:function(aSelectedItems){
+            var fnError = function () {
+                MessageToast.show("Error Occured  !!");
+            }.bind(this);
+            var fnSuccess = function () {
+                MessageToast.show("Succesfully Updated !!");
+            //this.onNavBack();
+            }.bind(this);
+            aSelectedItems.forEach(function(oItem){
+               var oContext = oItem.getBindingContext();
+                oContext.delete().then(fnSuccess,fnError);
+            })
+            this.getModel().submitBatch("ServiceGroupId");
+
+        },
         onDeleteLedgeControl: function () {
-            var aSelectedItmes = this.byId("tblLEData").getSelectedItems();
-            MessageBox.warning("Are you sure you want deleted selected mappings ? ", {
+            var that = this ;
+            var aSelectedItems = this.byId("tblLCData").getSelectedItems();
+            sap.m.MessageBox.warning("Are you sure you want deleted selected mappings ? ", {
                 actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                 onClose: function (sAction) {
-                    sap.m.MessageToast.show("Action selected: " + sAction);
+                   that._deleteContextEntries(aSelectedItems);
+                    //sap.m.MessageToast.show("Action selected: " + sAction);
                 }
             });
         },
@@ -276,12 +295,41 @@ sap.ui.define([
             });
         },
         onAddnEditLC: function () {
+            var that = this;
+            var fnSuccess = function () {
+                // MessageToast.show("Batch call finished sucessfully !!");
+                console.log("Batch call finished successfully for ledger control !!")
+            }.bind(this);
+            var fnError = function () {
+                MessageToast.show("Error Occured  !!");
+            }.bind(this);
             this.oLCDialog.then(function (oDialog) {
                 // Make service call here 
                 var data = oDialog.getModel("fragmentModel").getData();
+                if (data.isAdd) {
+                    var oContext = this.byId("tblLCData").getBinding("items").create({
+                        transactionType: data.transactionType,
+                        docType: data.docType,
+                        ledgerGroup:data.ledgerGroup,
+                        docHeaderText:data.docHeaderText
+                    });
+                    oContext.created().then(function() {
+                        MessageToast.show("Succesfully Created Entity !!");
+                    });
+                    that.getModel().submitBatch("ServiceGroupId").then(fnSuccess,fnError);
+
+                }else{
+                    var vContextPath =  this.byId("tblLCData").getSelectedItems()[0].getBindingContext().getPath();
+
+                    this.byId("tblLCData").getSelectedItems()[0].getBindingContext().setProperty(vContextPath+"/docType",data.docType);
+                    this.byId("tblLCData").getSelectedItems()[0].getBindingContext().setProperty(vContextPath+"/ledgerGroup",data.ledgerGroup);
+                    this.byId("tblLCData").getSelectedItems()[0].getBindingContext().setProperty(vContextPath+"/docHeaderText",data.docHeaderText);
+
+                    this.getModel().submitBatch("ServiceGroupId").then(fnSuccess, fnError);
+                }
                 oDialog.close();
 
-            });
+            }.bind(this));
         },
 
         // Payroll to GL mapping 
@@ -297,7 +345,14 @@ sap.ui.define([
             });
         },
         onDeletePayrollGLEntry: function () {
-
+            var that = this ;
+            var aSelectedItems = this.byId("tblPCGAData").getSelectedItems();
+            sap.m.MessageBox.warning("Are you sure you want deleted selected mappings ? ", {
+                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                onClose: function (sAction) {
+                   that._deleteContextEntries(aSelectedItems);
+                }
+            });
         }
 
 

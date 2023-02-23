@@ -4,12 +4,16 @@
         width="auto"
         mode="MultiSelect"
         selectionChange=".onSelectionChange"
-        items="{path: '/PaycodeGLMapping' }"
+        items="{path: '/PaycodeGLMapping',
+                            parameters : {
+                            $$updateGroupId : 'ServiceGroupId'
+                    }
+                    }"
         noDataText="{worklistView>/tableNoDataText}"
         busyIndicatorDelay="{worklistView>/tableBusyDelay}"
         growing="true"
         growingScrollToLoad="true"
-        >
+    >
         <headerToolbar>
             <OverflowToolbar>
                 <ToolbarSpacer />
