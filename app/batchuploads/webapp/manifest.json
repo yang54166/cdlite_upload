@@ -1,11 +1,11 @@
 {
   "_version": "1.49.0",
   "sap.app": {
-    "id": "batchuploads",
+    "id": "cd_cdlitepayrollupload_fs",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
-      "version": "0.0.1"
+      "version": "1.0.0"
     },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
@@ -17,7 +17,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "payroll/",
+        "uri": "/payroll/",
         "type": "OData",
         "settings": {
           "annotations": [],
@@ -36,6 +36,18 @@
       "uploadRangesData": {
         "uri": "model/upload_ranges.json",
         "type": "JSON"
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "intent1": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "PayrollUpload",
+          "action": "manage"
+        }
       }
     }
   },
@@ -129,22 +141,19 @@
             "notFound"
           ]
         },
-        "async": true
+        "async": true,
+        "path": "batchuploads.view"
       },
       "routes": [
         {
           "pattern": "",
           "name": "worklist",
-          "target": [
-            "worklist"
-          ]
+          "target": "worklist"
         },
         {
           "pattern": "StagingUploads/{objectId}",
           "name": "object",
-          "target": [
-            "object"
-          ]
+          "target": "object"
         }
       ],
       "targets": {
@@ -175,6 +184,14 @@
       "type": "XML",
       "async": true,
       "id": "app"
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {}
+      }
     }
+  },
+  "sap.cloud": {
+    "service": "cd_cdlitepayrollupload_fs"
   }
 }

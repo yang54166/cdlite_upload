@@ -1,15 +1,29 @@
 {
-    "welcomeFile": "/index.html",
-    "authenticationMethod": "route",
-    "logout": {
-      "logoutEndpoint": "/do/logout"
+  "welcomeFile": "cd_cdlitepayrollmapping_f-1.0.0/index.html",
+  "authenticationMethod": "route",
+  "logout": {
+    "logoutEndpoint": "/do/logout"
+  },
+  "routes": [
+    {
+      "source": "^/payroll/(.*)$",
+      "target": "/payroll/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true,
+      "cacheControl": "no-cache, no-store, must-revalidate"
     },
-    "routes": [
-      {
-        "source": "^(.*)$",
-        "target": "$1",
-        "service": "html5-apps-repo-rt",
-        "authenticationType": "xsuaa"
-      }   
-    ]
-  }
+    {
+      "source": "^/user-api(.*)",
+      "target": "$1",
+      "authenticationType": "xsuaa",
+      "service": "sap-approuter-userapi"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}

@@ -1,11 +1,11 @@
 {
   "_version": "1.49.0",
   "sap.app": {
-    "id": "com.mk.ui.mapping",
+    "id": "cd_cdlitepayrollmapping_f",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
-      "version": "0.0.1"
+      "version": "1.0.0"
     },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
@@ -17,7 +17,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/payroll/",
+        "uri": "payroll/",
         "type": "OData",
         "settings": {
           "annotations": [],
@@ -165,6 +165,6 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "cloud.service"
+    "service": "cd_cdlitepayrollmapping_f"
   }
 }
