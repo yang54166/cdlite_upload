@@ -39,6 +39,7 @@ modules:
         - "src/.DS_Store"
     requires:
       - name: cd_compensationdetails_c-db
+      - name: cd_compensationdetails_c-logs
 
   - name: cd_compensationdetails_c
     type: approuter.nodejs
