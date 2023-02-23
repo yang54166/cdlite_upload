@@ -17,20 +17,25 @@ const utils = {
         return `${mmm}-${yy}-${cc}`;
     },
 
-    convertAmountByExchangeRate: (amount, exchangeRate)=>{
+    convertAmountByExchangeRate: (amount, exchangeRate) => {
 
     },
 
-    CSVtoArray: (text) =>{
+    isDecimal: (value, precision, scale)=>{
+        const regexDecimal= new RegExp(`^[+-]?[0-9]{1,${precision}}(?:\.[0-9]{1,${scale}})?$`);
+        return regexDecimal.test(value);
+    },
+
+    CSVtoArray: (text) => {
         var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
         var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
         // Return NULL if input string is not well formed CSV string.
         if (!re_valid.test(text)) return null;
         var a = [];                     // Initialize array to receive values.
         text.replace(re_value, // "Walk" the string using replace with callback.
-            function(m0, m1, m2, m3) {
+            function (m0, m1, m2, m3) {
                 // Remove backslash from \' in single quoted values.
-                if      (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
+                if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
                 // Remove backslash from \" in double quoted values.
                 else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
                 else if (m3 !== undefined) a.push(m3);
@@ -88,6 +93,42 @@ const utils = {
                 PROJECTTASK: arrCols[13]
             };
         });
+    },
+
+    validateEntities: (entityList, entityType) => {
+        let result = { isValid: true, errorMessage: "" };
+        let errorList = [];
+        let rowNumber = 0;
+        entityList.forEach((row) => {
+            rowNumber += 1;
+            for (const [key, value] of Object.entries(row)) {
+                if (value) {
+                    const elemType = entityType.elements[Object.keys(entityType.elements).find((el) => el.toLowerCase() == key.toLowerCase())];
+                    switch (elemType.type) {
+                        case "cds.String":
+                            if (value.length > elemType.length) {
+                                errorList.push(`Row ${rowNumber}: Error on ${elemType.name}, value (${value}) longer than ${elemType.length}.`);
+                            }
+                            break;
+                        case "cds.Integer":
+                            if (!Number.isInteger(parseInt(value))) {
+                                errorList.push(`Row ${rowNumber}: Error on ${elemType.name}, value (${value}) not an valid integer.`);
+                            }
+                            break;
+                        case "cds.Decimal":
+                            if (!utils.isDecimal(value, elemType.precision, elemType.scale)) {
+                                errorList.push(`Row ${rowNumber}: Error on ${elemType.name}, value (${value}) not a valid decimal.`);
+                            }
+                            break;
+                    }
+                }
+            }
+        });
+
+        if (errorList.length > 0) {
+            result = { isValid: false, errorMessage: JSON.stringify(errorList) }
+        }
+        return result;
     },
 
     getMappingDBTable: (mappingTable) => {

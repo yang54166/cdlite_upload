@@ -14,6 +14,18 @@ sap.ui.define([], function () {
                 return "";
             }
             return parseFloat(sValue).toFixed(2);
+        },
+        
+
+        getStateForStatus: function (sValue){
+            switch (sValue){
+                case "ERROR":
+                    return "Error";
+                case "APPROVED":
+                    return "Success";
+                default:
+                    return "None";
+            }
         }
 
     };

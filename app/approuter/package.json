@@ -1,7 +1,7 @@
 {
   "name": "approuter",
   "dependencies": {
-    "@sap/approuter": "^12.0.0"
+    "@sap/approuter": "^14.0.0"
   },
   "devDependencies": {
     "@sap/html5-repo-mock": "^2.1.1"
@@ -11,6 +11,7 @@
   },
   "scripts": {
     "start": "node node_modules/@sap/approuter/approuter.js",
+    "cleanup": "rm -rf ../batchuploads/dist/ && rm -rf ../mapping/dist/",
     "prestart-local": "npm i",
     "start-local": "node node_modules/@sap/html5-repo-mock/index.js"
   }

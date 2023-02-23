@@ -30,6 +30,8 @@ class PayrollService extends cds.ApplicationService {
                 console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
 
                 const dataToImport = utils.parseCDUpload(content, batchID);
+                const validationResult = utils.validateEntities(dataToImport, UploadItems);
+                if (validationResult.isValid){ 
                 const result = await HANAUtils.callStoredProc(
                     db.options.credentials,
                     db.options.credentials.schema,
@@ -43,6 +45,9 @@ class PayrollService extends cds.ApplicationService {
 
                 // Update filename
                 return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
+                } else {
+                    return req.error({code: 1, status: 400, message: validationResult.errorMessage, target: 'PayrollUploadFile'});
+                }
             }
         });
 
@@ -112,9 +117,8 @@ class PayrollService extends cds.ApplicationService {
                 let errorsForRow = [];
                 const userObj = fdmUtils.findUserByFMNO(item.FMNO);
                 let userFCAT = userObj?.fcat ?
-                    parseInt(userObj?.fcat?.split(" ")[0]).toString() :
+                    userObj?.fcat?.split(" ")[0].toString().substring(0,3) :
                     null;
-                userFCAT = parseInt(userFCAT) == 0 ? null : userFCAT;
 
                 // Validations
                 if (!userObj) {
@@ -122,8 +126,8 @@ class PayrollService extends cds.ApplicationService {
                 } else {
                     if (!userObj.costCenter || userObj.costCenter == "") {
                         errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
-                    //} else if (!userFCAT || userFCAT == "") {
-                     //   errorsForRow.push(`FMNO ${item.FMNO} does not have FCAT.`);
+                    } else if (!userFCAT || userFCAT == "" || userFCAT == "000") {
+                       errorsForRow.push(`FMNO ${item.FMNO} does not have a valid FCAT (${userFCAT})`);
                     } else if (new Date(userObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
                         errorsForRow.push(`FMNO ${item.FMNO} was not active for payroll date.`);
                     }
