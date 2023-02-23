@@ -46,7 +46,7 @@ class PayrollService extends cds.ApplicationService {
                 // Update filename
                 return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
                 } else {
-                    return req.error({status: 400, message: validationResult.errorMessage});
+                    return req.error({code: 1, status: 400, message: validationResult.errorMessage, target: 'PayrollUploadFile'});
                 }
             }
         });
