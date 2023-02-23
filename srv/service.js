@@ -30,6 +30,8 @@ class PayrollService extends cds.ApplicationService {
                 console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
 
                 const dataToImport = utils.parseCDUpload(content, batchID);
+                const validationResult = utils.validateEntities(dataToImport, UploadItems);
+                if (validationResult.isValid){ 
                 const result = await HANAUtils.callStoredProc(
                     db.options.credentials,
                     db.options.credentials.schema,
@@ -43,6 +45,9 @@ class PayrollService extends cds.ApplicationService {
 
                 // Update filename
                 return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
+                } else {
+                    return req.error({status: 400, message: validationResult.errorMessage});
+                }
             }
         });
 
@@ -112,7 +117,7 @@ class PayrollService extends cds.ApplicationService {
                 let errorsForRow = [];
                 const userObj = fdmUtils.findUserByFMNO(item.FMNO);
                 let userFCAT = userObj?.fcat ?
-                    parseInt(userObj?.fcat?.split(" ")[0]).toString().substring(0,2) :
+                    userObj?.fcat?.split(" ")[0].toString().substring(0,3) :
                     null;
 
                 // Validations
