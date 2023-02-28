@@ -1,4 +1,4 @@
-# Developer Setup Check
+# Developer Setup
 
 ## CAP
 To run can service locally (hybrid mode - uses CF HANA DB and UAA, but local CAP), need to run 
