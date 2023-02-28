@@ -47,6 +47,8 @@
       <viewAttribute id="LOANNUMBER"/>
       <viewAttribute id="ADVANCENUMBER"/>
       <viewAttribute id="PROJECTCODE"/>
+    
+      <viewAttribute id="PERNR"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Projection_NonAggregated$$$$PAYROLL_PAYROLLDETAILS$$"/>
@@ -66,6 +68,8 @@
       <viewAttribute id="LOANNUMBER"/>
       <viewAttribute id="ADVANCENUMBER"/>
       <viewAttribute id="PROJECTCODE"/>
+    
+      <viewAttribute id="PERNR"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Aggregation_Amounts" emptyUnionBehavior="NO_ROW">
@@ -81,6 +85,8 @@
       <mapping xsi:type="Calculation:ConstantAttributeMapping" target="LOANNUMBER" null="true" value=""/>
       <mapping xsi:type="Calculation:ConstantAttributeMapping" target="ADVANCENUMBER" null="true" value=""/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
+    
+      <mapping xsi:type="Calculation:ConstantAttributeMapping" target="PERNR" null="true" value=""/>
     </input>
   
     <input node="Projection_NonAggregated" emptyUnionBehavior="NO_ROW">
@@ -95,6 +101,10 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
+    
+  
+      <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+  
     </input>
   </calculationView>
   <calculationView xsi:type="Calculation:WindowFunctionView" id="ROWNUMBERS">
@@ -110,6 +120,8 @@
       <viewAttribute id="LOANNUMBER"/>
       <viewAttribute id="ADVANCENUMBER"/>
       <viewAttribute id="PROJECTCODE"/>
+    
+      <viewAttribute id="PERNR"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Union_1">
@@ -124,6 +136,8 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
     </input>
     <function name="ROW_NUMBER"/>
     <windowFunctionResultColumn>REFERENCEDOCUMENTITEM</windowFunctionResultColumn>
@@ -186,6 +200,11 @@
       <descriptions defaultDescription="PROJECTCODE"/>
       <keyMapping columnObjectName="ROWNUMBERS" columnName="PROJECTCODE"/>
     </attribute>
+  
+    <attribute id="PERNR" hidden="true" order="18" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PERNR"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="PERNR"/>
+    </attribute>
   </attributes>
   <calculatedAttributes>
     <calculatedAttribute id="DEBITCREDITCODE" order="5" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
@@ -213,7 +232,7 @@ END</formula>
       </calculatedAttribute>
     <calculatedAttribute id="ADDITIONALATTRIBUTES_PERSONNELNUMBER" order="16" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
       <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="8">
-        <formula>&quot;FMNO&quot;</formula>
+        <formula>&quot;PERNR&quot;</formula>
       </keyCalculation>
       </calculatedAttribute>
     <calculatedAttribute id="WBSELEMENT" order="17" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">

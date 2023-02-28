@@ -41,7 +41,6 @@ class PayrollService extends cds.ApplicationService {
                 console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
                 await this.emit("enrich", { batchID });
-                console.log("enrich completed.")
 
                 // Update filename
                 return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
@@ -101,7 +100,7 @@ class PayrollService extends cds.ApplicationService {
 
             // Get Info from FDM
             const fdmUtils = new FDMUtils(fdm);
-            await fdmUtils.getUserData(stagingHeader.glCompanyCode);
+            await fdmUtils.getEmployeeData(stagingHeader.glCompanyCode);
             await fdmUtils.getGLAccounts();
             await fdmUtils.getCompanyCodes();
             await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
@@ -115,20 +114,20 @@ class PayrollService extends cds.ApplicationService {
             // Update Staging Data
             let updatedItems = stagingDataItems.map((item) => {
                 let errorsForRow = [];
-                const userObj = fdmUtils.findUserByFMNO(item.FMNO);
-                let userFCAT = userObj?.fcat ?
-                    userObj?.fcat?.split(" ")[0].toString().substring(0,3) :
+                const employeeObj = fdmUtils.findEmployeeByFMNO(item.FMNO, stagingHeader.payrollDate);
+                let userFCAT = employeeObj?.fcat ?
+                employeeObj?.fcat?.split(" ")[0].toString().substring(0,3) :
                     null;
 
                 // Validations
-                if (!userObj) {
+                if (!employeeObj) {
                     errorsForRow.push(`FMNO ${item.FMNO} not found or invalid.`);
                 } else {
-                    if (!userObj.costCenter || userObj.costCenter == "") {
+                    if (!employeeObj.costCenter || employeeObj.costCenter == "") {
                         errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
                     } else if (!userFCAT || userFCAT == "" || userFCAT == "000") {
                        errorsForRow.push(`FMNO ${item.FMNO} does not have a valid FCAT (${userFCAT})`);
-                    } else if (new Date(userObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
+                    } else if (new Date(employeeObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
                         errorsForRow.push(`FMNO ${item.FMNO} was not active for payroll date.`);
                     }
                 }
@@ -185,13 +184,13 @@ class PayrollService extends cds.ApplicationService {
                     ...item,
                     STATUS: rowStatus.STATUS,
                     STATUSMESSAGE: rowStatus.STATUSMESSAGE,
-                    GLCOSTCENTER: userObj?.costCenter,
+                    GLCOSTCENTER: employeeObj?.costCenter,
                     GLACCOUNT: glAccountObj?.glAccount | null,
                     GLCURRENCYCODE: companyCode?.currencyCode,
                     FCAT: userFCAT,
-                    PERNR: userObj?.personidExt,
-                    LOCATIONCODE: userObj?.userLocation,
-                    SKILLCODE: userObj?.skillCode,
+                    PERNR: employeeObj?.personidExt,
+                    LOCATIONCODE: employeeObj?.userLocation,
+                    SKILLCODE: employeeObj?.skillCode,
                 }
             });
 
@@ -202,12 +201,14 @@ class PayrollService extends cds.ApplicationService {
             }));
 
             // Save back to DB
-            return HANAUtils.callStoredProc(
+            const resultSave = await HANAUtils.callStoredProc(
                 db.options.credentials,
                 db.options.credentials.schema,
                 "SP_UPLOADINSERT",
                 updatedItems
             );
+            console.log("DEBUG: enrichment completed.");
+            return resultSave;
         });
 
         this.on('approve', async req => {
