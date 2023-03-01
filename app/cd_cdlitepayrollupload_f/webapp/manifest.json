@@ -1,0 +1,190 @@
+{
+  "_version": "1.49.0",
+  "sap.app": {
+    "id": "cd_cdlitepayrollupload_f",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:worklist",
+      "version": "1.8.5",
+      "toolsId": "67a97678-51c0-4b99-b7b5-392bf9c2a512"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/payroll/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      },
+      "transTypesData": {
+        "uri": "model/trans_types.json",
+        "type": "JSON"
+      },
+      "summaryData": {
+        "uri": "model/summary_data.json",
+        "type": "JSON"
+      },
+      "uploadRangesData": {
+        "uri": "model/upload_ranges.json",
+        "type": "JSON"
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "intent1": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "PayrollUpload",
+          "action": "manage"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    },
+    "fullWidth": true
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.109.3",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.suite.ui.generic.template": {},
+        "sap.ui.comp": {},
+        "sap.ui.generic.app": {},
+        "sap.ui.table": {},
+        "sap.ushell": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "batchuploads.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true,
+          "groupId": "$auto"
+        }
+      },
+      "transTypesData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "transTypesData"
+      },
+      "summaryData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "summaryData"
+      },
+      "uploadRangesData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "uploadRangesData"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "batchuploads.view",
+        "controlId": "app",
+        "controlAggregation": "pages",
+        "bypassed": {
+          "target": [
+            "notFound"
+          ]
+        },
+        "async": true,
+        "path": "batchuploads.view"
+      },
+      "routes": [
+        {
+          "pattern": "",
+          "name": "worklist",
+          "target": "worklist"
+        },
+        {
+          "pattern": "StagingUploads/{objectId}",
+          "name": "object",
+          "target": "object"
+        }
+      ],
+      "targets": {
+        "worklist": {
+          "viewName": "Worklist",
+          "viewId": "worklist",
+          "viewLevel": 1,
+          "title": "{i18n>worklistViewTitle}"
+        },
+        "object": {
+          "viewName": "Object",
+          "viewId": "object",
+          "viewLevel": 2,
+          "title": "{i18n>objectViewTitle}"
+        },
+        "objectNotFound": {
+          "viewName": "ObjectNotFound",
+          "viewId": "objectNotFound"
+        },
+        "notFound": {
+          "viewName": "NotFound",
+          "viewId": "notFound"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "batchuploads.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "app"
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {}
+      }
+    }
+  },
+  "sap.cloud": {
+    "service": "cd_cdlitepayrollupload_f",
+    "public": true
+  }
+}

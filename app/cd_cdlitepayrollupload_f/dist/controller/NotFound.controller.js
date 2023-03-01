@@ -1,0 +1,1 @@
+sap.ui.define(["./BaseController"],function(t){"use strict";return t.extend("batchuploads.controller.NotFound",{onLinkPressed:function(){this.getRouter().navTo("worklist")}})});

@@ -1,0 +1,469 @@
+{
+  "@odata.context": "$metadata#Currency",
+  "value": [
+    {
+      "currencyCode": "CAD",
+      "currencyLongDescription": "Canadian Dollar",
+      "currencyShortDescription": "Canadian Dollar",
+      "isoCode": "CAD",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CDF",
+      "currencyLongDescription": "Congolese Franc",
+      "currencyShortDescription": "Congolese Franc",
+      "isoCode": "CDF",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CFP",
+      "currencyLongDescription": "French Franc (Pacific Islands)",
+      "currencyShortDescription": "Fr. Franc (Pac)",
+      "isoCode": "XPF",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CHF",
+      "currencyLongDescription": "Swiss Franc",
+      "currencyShortDescription": "Swiss Franc",
+      "isoCode": "CHF",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CLF",
+      "currencyLongDescription": "Chile Unidad de Fomento",
+      "currencyShortDescription": "Unidad Fomento",
+      "isoCode": "CLF",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CLP",
+      "currencyLongDescription": "Chilean Peso",
+      "currencyShortDescription": "Chilean Peso",
+      "isoCode": "CLP",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CLP4",
+      "currencyLongDescription": null,
+      "currencyShortDescription": null,
+      "isoCode": "CLP",
+      "validTo": null,
+      "updateDate": null
+    },
+    {
+      "currencyCode": "CNY",
+      "currencyLongDescription": "Chinese Yuan Renminbi",
+      "currencyShortDescription": "Chinese Yuan",
+      "isoCode": "CNY",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "COP",
+      "currencyLongDescription": "Colombian Peso",
+      "currencyShortDescription": "Colombian Peso",
+      "isoCode": "COP",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CRC",
+      "currencyLongDescription": "Costa Rica Colon",
+      "currencyShortDescription": "Cost.Rica Colon",
+      "isoCode": "CRC",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CSD",
+      "currencyLongDescription": "Serbian Dinar (Old)",
+      "currencyShortDescription": "Serbian Dinar",
+      "isoCode": "CSD",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CUC",
+      "currencyLongDescription": "Peso Convertible",
+      "currencyShortDescription": "Peso Convertib.",
+      "isoCode": "CUC",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CUP",
+      "currencyLongDescription": "Cuban Peso",
+      "currencyShortDescription": "Cuban Peso",
+      "isoCode": "CUP",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CVE",
+      "currencyLongDescription": "Cape Verde Escudo",
+      "currencyShortDescription": "Cape V. Escudo",
+      "isoCode": "CVE",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CYP",
+      "currencyLongDescription": "Cyprus Pound  (Old --> EUR)",
+      "currencyShortDescription": "Cyprus Pound",
+      "isoCode": "CYP",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "CZK",
+      "currencyLongDescription": "Czech Krona",
+      "currencyShortDescription": "Czech Krona",
+      "isoCode": "CZK",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "DEM",
+      "currencyLongDescription": "German Mark    (Old --> EUR)",
+      "currencyShortDescription": "German Mark",
+      "isoCode": "DEM",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "DEM3",
+      "currencyLongDescription": "(Internal) German Mark (3 dec.places)",
+      "currencyShortDescription": "(Int.) DEM 3 DP",
+      "isoCode": "DEM",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "DJF",
+      "currencyLongDescription": "Djibouti Franc",
+      "currencyShortDescription": "Djibouti Franc",
+      "isoCode": "DJF",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "DKK",
+      "currencyLongDescription": "Danish Krone",
+      "currencyShortDescription": "Danish Krone",
+      "isoCode": "DKK",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "DOP",
+      "currencyLongDescription": "Dominican Peso",
+      "currencyShortDescription": "Dominican Peso",
+      "isoCode": "DOP",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "DZD",
+      "currencyLongDescription": "Algerian Dinar",
+      "currencyShortDescription": "Algerian Dinar",
+      "isoCode": "DZD",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ECS",
+      "currencyLongDescription": "Ecuadorian Sucre (Old --> USD)",
+      "currencyShortDescription": "Sucre",
+      "isoCode": "ECS",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "EEK",
+      "currencyLongDescription": "Estonian Krone (Old --> EUR)",
+      "currencyShortDescription": "Krona",
+      "isoCode": "EEK",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "EGP",
+      "currencyLongDescription": "Egyptian Pound",
+      "currencyShortDescription": "Egyptian Pound",
+      "isoCode": "EGP",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ERN",
+      "currencyLongDescription": "Eritrean Nafka",
+      "currencyShortDescription": "Eritrean Nafka",
+      "isoCode": "ERN",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ESP",
+      "currencyLongDescription": "Spanish Peseta (Old --> EUR)",
+      "currencyShortDescription": "Peseta",
+      "isoCode": "ESP",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ETB",
+      "currencyLongDescription": "Ethiopian Birr",
+      "currencyShortDescription": "Ethiopian Birr",
+      "isoCode": "ETB",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "EUR",
+      "currencyLongDescription": "European Euro",
+      "currencyShortDescription": "Euro",
+      "isoCode": "EUR",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "USD",
+      "currencyLongDescription": "United States Dollar",
+      "currencyShortDescription": "US Dollar",
+      "isoCode": "USD",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "UTM",
+      "currencyLongDescription": null,
+      "currencyShortDescription": null,
+      "isoCode": "CLP",
+      "validTo": null,
+      "updateDate": null
+    },
+    {
+      "currencyCode": "UYI",
+      "currencyLongDescription": null,
+      "currencyShortDescription": null,
+      "isoCode": "UYI",
+      "validTo": null,
+      "updateDate": null
+    },
+    {
+      "currencyCode": "UYU",
+      "currencyLongDescription": "Uruguayan Peso",
+      "currencyShortDescription": "Uruguayan Peso",
+      "isoCode": "UYU",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "UZS",
+      "currencyLongDescription": "Uzbekistan Som",
+      "currencyShortDescription": "Uzbekistan Som",
+      "isoCode": "UZS",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "VEB",
+      "currencyLongDescription": "Venezuelan Bolivar (Old)",
+      "currencyShortDescription": "Bolivar (Old)",
+      "isoCode": "VEB",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "VEF",
+      "currencyLongDescription": "Venezuelan Bolivar",
+      "currencyShortDescription": "Venez. Bolivar",
+      "isoCode": "VEF",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "VES",
+      "currencyLongDescription": "Bolivar Soberano",
+      "currencyShortDescription": "Bolivar Sober.",
+      "isoCode": "VES",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "VND",
+      "currencyLongDescription": "Vietnamese Dong",
+      "currencyShortDescription": "Vietnamese Dong",
+      "isoCode": "VND",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "VUV",
+      "currencyLongDescription": "Vanuatu Vatu",
+      "currencyShortDescription": "Vanuatu Vatu",
+      "isoCode": "VUV",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "WST",
+      "currencyLongDescription": "Samoan Tala",
+      "currencyShortDescription": "Samoan Tala",
+      "isoCode": "WST",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "XAF",
+      "currencyLongDescription": "Gabon CFA Franc BEAC",
+      "currencyShortDescription": "CFA Franc BEAC",
+      "isoCode": "XAF",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "XCD",
+      "currencyLongDescription": "East Carribean Dollar",
+      "currencyShortDescription": "E. Carrib. Doll",
+      "isoCode": "XCD",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "XEU",
+      "currencyLongDescription": "European Currency Unit (E.C.U.)",
+      "currencyShortDescription": "E.C.U.",
+      "isoCode": "XEU",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "XOF",
+      "currencyLongDescription": "Benin CFA Franc BCEAO",
+      "currencyShortDescription": "CFA Franc BCEAO",
+      "isoCode": "XOF",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "XPF",
+      "currencyLongDescription": "CFP Franc",
+      "currencyShortDescription": "CFP Franc",
+      "isoCode": "XPF",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "YER",
+      "currencyLongDescription": "Yemeni Ryal",
+      "currencyShortDescription": "Yemeni Ryal",
+      "isoCode": "YER",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "YUM",
+      "currencyLongDescription": "New Yugoslavian Dinar (Old)",
+      "currencyShortDescription": "New Dinar",
+      "isoCode": "YUM",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZAR",
+      "currencyLongDescription": "South African Rand",
+      "currencyShortDescription": "S. Africa Rand",
+      "isoCode": "ZAR",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZMK",
+      "currencyLongDescription": "Zambian Kwacha (Old)",
+      "currencyShortDescription": "Kwacha",
+      "isoCode": "ZMK",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZMW",
+      "currencyLongDescription": "Zambian Kwacha",
+      "currencyShortDescription": "Zambian Kwacha",
+      "isoCode": "ZMW",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZRM",
+      "currencyLongDescription": null,
+      "currencyShortDescription": null,
+      "isoCode": "ZRM",
+      "validTo": null,
+      "updateDate": null
+    },
+    {
+      "currencyCode": "ZRN",
+      "currencyLongDescription": "Zaire (Old)",
+      "currencyShortDescription": "Zaire",
+      "isoCode": "ZRN",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZRO",
+      "currencyLongDescription": "Zaire (Old)",
+      "currencyShortDescription": "",
+      "isoCode": "ZRN",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZWD",
+      "currencyLongDescription": "Zimbabwean Dollar (Old)",
+      "currencyShortDescription": "Zimbabwe Dollar",
+      "isoCode": "ZWD",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZWL",
+      "currencyLongDescription": "Zimbabwean Dollar",
+      "currencyShortDescription": "Zimbabwe Dollar",
+      "isoCode": "ZWL",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZWN",
+      "currencyLongDescription": "Zimbabwean Dollar (Old)",
+      "currencyShortDescription": "Zimbabwe Dollar",
+      "isoCode": "ZWN",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZWR",
+      "currencyLongDescription": "Zimbabwean Dollar (Old)",
+      "currencyShortDescription": "Zimbabwe Dollar",
+      "isoCode": "ZWR",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    },
+    {
+      "currencyCode": "ZWS",
+      "currencyLongDescription": "Zimbabwean Dollar (Old)",
+      "currencyShortDescription": "",
+      "isoCode": "ZWR",
+      "validTo": null,
+      "updateDate": "2022-09-26T08:17:30.000Z"
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+<mvc:View controllerName="batchuploads.controller.Worklist" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.f.semantic" xmlns:fb="sap.ui.comp.filterbar" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
+    <semantic:SemanticPage id="page" headerPinnable="false" toggleHeaderOnTitleClick="false">
+        <semantic:titleHeading>
+            <Title id="pageTitle" text="{i18n>worklistTitle}" level="H2" />
+        </semantic:titleHeading>
+        <semantic:headerContent>
+            <l:HorizontalLayout id="horizonLayout">
+                <l:VerticalLayout id="companyCodeFilterLayout" class="sapUiMediumMarginEnd">
+                    <Label id="compCodeLabel" text="Company Code" design="Bold" />
+                    <ComboBox
+                        id="companyCodeList"
+                        name="Name"
+                        change=".onCompanyCodeChange"
+                        showSecondaryValues="true"
+                        filterSecondaryValues="true"
+                        items="{
+                                path: '/CompanyCodes',
+                                sorter: {
+                                    path: 'companyCodeName',
+                                    descending: false
+                                },
+                                length: 1000
+                        }"
+                    >
+                        <core:ListItem id="companyCodeItem" key="{companyCode}" text="{companyCodeName}" additionalText="{companyCode}"/>
+                    </ComboBox>
+                </l:VerticalLayout>
+                <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">
+                    <Label id="monthYearLabel" text="Upload Month/Year" design="Bold" />
+                    <ComboBox id="monthYearList" name="Category" selectionChange=".onUploadRangeChange" selectedKey="99-0000" items="{
+												path: 'uploadRangesList>/',
+												templateShareable: true
+											}">
+                        <core:Item id="monthYear" key="{uploadRangesList>dateRange}" text="{uploadRangesList>longDesc}" />
+                    </ComboBox>
+                </l:VerticalLayout>
+            </l:HorizontalLayout>
+        </semantic:headerContent>
+        <semantic:content>
+            <Table
+                id="table"
+                sticky="HeaderToolbar,InfoToolbar,ColumnHeaders"
+                width="auto"
+                items="{
+                    path: '/StagingUploads',
+                    sorter: {
+                        path: 'createdAt',
+                        descending: true
+                    },
+                    parameters: {
+                        $count: true
+                    }
+                }"
+                noDataText="{worklistView>/tableNoDataText}"
+                busyIndicatorDelay="{worklistView>/tableBusyDelay}"
+                growing="true"
+                growingScrollToLoad="true"
+                updateFinished=".onUpdateFinished"
+            >
+                <headerToolbar>
+                    <OverflowToolbar id="overflowToolbar">
+                        <Title id="tableHeader" text="{worklistView>/worklistTableTitle}" level="H3" />
+                        <ToolbarSpacer id="toolbarspacer" />
+                        <SearchField id="searchField" tooltip="{i18n>worklistSearchTooltip}" showRefreshButton="true" search=".onSearch">
+                            <layoutData>
+                                <OverflowToolbarLayoutData id="overflowToolbarLayout" maxWidth="300px" priority="NeverOverflow" />
+                            </layoutData>
+                        </SearchField>
+                    </OverflowToolbar>
+                </headerToolbar>
+
+                <columns>
+                    <Column width="6%" id="batchNoColumn">
+                        <Text id="BATCHNUMBER" text="Batch No" />
+                    </Column>
+                    <Column width="10%" id="batchDescColumn" demandPopin="false" minScreenWidth="Tablet">
+                        <Text id="BATCHDESCRIPTION" text="Batch Description" />
+                    </Column>
+                    <Column width="8%" id="glCompanyCodedColumn" hAlign="End">
+                        <Text id="glCompanyCodeCol" text="Company Code" />
+                    </Column>
+
+                    <Column width="9%" id="payrollDateColumn" hAlign="End">
+                        <Text id="payrollDateCol" text="Payroll Date" />
+                    </Column>
+                    <Column width="8%" id="transTypeColumn" hAlign="End">
+                        <Text id="transTypeCol" text="Transaction Type" />
+                    </Column>
+                    <Column width="9%" id="currencyColumn" hAlign="End">
+                        <Text id="currencyCol" text="Currency" />
+                    </Column>
+                    <Column width="9%" id="glPeriodColumn" hAlign="End">
+                        <Text id="glPeriod" text="GL Period" />
+                    </Column>
+                    <Column width="9%" id="effectivePeriodColumn" hAlign="End">
+                        <Text id="effectivePeriod" text="Effective Period" />
+                    </Column>
+                    <Column width="9%" id="statusColumn" demandPopin="true" minScreenWidth="Tablet" hAlign="End">
+                        <Text id="headerStatus" text="Status" />
+                    </Column>
+                    <Column width="11%" id="createdByColumn" hAlign="End">
+                        <Text id="creaatedByCol" text="Created By" />
+                    </Column>
+                    <Column width="12%" id="createdAtColumn" hAlign="End">
+                        <Text id="createdAtCol" text="Created At" />
+                    </Column>
+                    <!--<Column id="approveColumn" hAlign="End" /> -->
+                </columns>
+
+                <items>
+                    <ColumnListItem id="colListItem" type="Navigation" press=".onPress">
+                        <cells>
+                            <Text id="txtBatchNo" text="{ID}" />
+                            <Text id="txtBatchDesc" text="{batchDescription}" />
+                            <Text id="txtGLCompanyCode" text="{glCompanyCode}" />
+                            <Text id="txtPayrollDate" text="{payrollDate}" />
+                            <Text id="txtTransType" text="{transactionType}" />
+                            <Text id="txtCurrencyCode" text="{currencyCode}" />
+                            <Text id="txtGLPeriod" text="{glPeriod}" />
+                            <Text id="txtEffectivePeriod" text="{effectivePeriod}" />
+                            <Text id="txtStatus" text="{status}" />
+                            <Text id="txtCreatedBy" text="{createdBy}" />
+                            <Text id="txtCreatedAt" text="{createdAt}" />
+
+                            <!--<Button id="approvalBtn" type="Accept" text="Approve" press="onPressApprove" ariaDescribedBy="acceptButtonDescription genericButtonDescription" /> -->
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </semantic:content>
+
+        <semantic:titleCustomIconActions>
+            <OverflowToolbarButton id="settings" tooltip="Settings" text="Settings" press="handleSettingsPress" icon="sap-icon://action-settings" />
+        </semantic:titleCustomIconActions>
+        <semantic:titleMainAction>
+            <semantic:TitleMainAction id="uploadAction" text="Upload" press="onUpload" />
+        </semantic:titleMainAction>
+    </semantic:SemanticPage>
+</mvc:View>

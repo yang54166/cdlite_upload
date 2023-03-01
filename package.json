@@ -1,8 +1,8 @@
 {
-  "name": "cd_compensationdetails_c",
+  "name": "cd_cdlitepayrollupload_fs",
   "version": "1.0.0",
-  "description": "A simple CAP project.",
-  "repository": "<Add your repository here>",
+  "description": "CDLite Payroll Upload application.",
+  "repository": "https://github.com/McK-Internal/SAP_ERP_FINANCE-cd_cdlitepayrollupload_fs",
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
@@ -24,12 +24,12 @@
     "deploy": "cf deploy mta_archives/$npm_package_name-$npm_package_version.mtar",
     "deploy-local": "cds deploy --profile hybrid",
     "start-local": "cds watch --profile hybrid",
-    "start-local-ui": "npm run start-local --prefix app/approuter",
-    "undeploy": "cf undeploy cd_compensationdetails_c --delete-services --delete-service-keys",
+    "start-local-ui": "npm run start-local --prefix app/cd_cdlitepayrollupload_f",
+    "undeploy": "cf undeploy cd_cdlitepayrollupload_fs --delete-services --delete-service-keys",
     "bind": "run-s bind-db bind-uaa bind-dest",
-    "bind-db": "cds bind --to cd_compensationdetails_c-db",
-    "bind-uaa": "cds bind uaa --to cd_compensationdetails_c-auth",
-    "bind-dest": "cds bind --to cd_compensationdetails_c-dest"
+    "bind-db": "cds bind --to cd_cdlitepayrollupload_fs-db",
+    "bind-uaa": "cds bind uaa --to cd_cdlitepayrollupload_fs-auth",
+    "bind-dest": "cds bind --to cd_cdlitepayrollupload_fs-dest"
   },
   "engines": {
     "node": "^16.15"
@@ -106,7 +106,7 @@
     }
   },
   "sapux": [
-    "app/batchuploads"
+    "app/cd_cdlitepayrollupload_f"
   ],
   "devDependencies": {
     "@sap/ux-specification": "^1.102.15",

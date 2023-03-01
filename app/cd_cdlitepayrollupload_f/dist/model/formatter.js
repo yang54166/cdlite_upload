@@ -1,0 +1,1 @@
+sap.ui.define([],function(){"use strict";return{numberUnit:function(t){if(!t){return""}return parseFloat(t).toFixed(2)},getStateForStatus:function(t){switch(t){case"ERROR":return"Error";case"APPROVED":return"Success";default:return"None"}}}});
