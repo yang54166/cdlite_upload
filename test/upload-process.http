@@ -4,8 +4,8 @@ POST https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token HTTP/1.1
 Content-type: application/x-www-form-urlencoded
 
 grant_type=client_credentials
-&client_id=sb-cd_compensationdetails_c-ErpDevOrg-ErpDevSpcCdApp!t126539
-&client_secret=BCcmNDIYftUPALBCTsW6j8DeEv0%3D
+&client_id=sb-cd_cdlitepayrollupload_fs-ErpDevOrg-ErpDevSpcCdApp!t126539
+&client_secret=PeK8fptaCVkDFYEgQOlb/eChcZQ%3D
 
 
 ### Create Upload
@@ -36,14 +36,14 @@ Content-Disposition: form-data; filename="Test-Payroll-File- U2-TranType01-Proje
 
 ### Approve
 POST http://localhost:4004/payroll/StagingUploads({{batchResponse.response.body.ID}})/approve
-Authorization: Bearer  {{auth.response.body.access_token}}
+Authorization: Bearer {{auth.response.body.access_token}}
 Content-Type: application/json
 
 {}
 
 ### Enrich
 POST http://localhost:4004/payroll/StagingUploads({{batchResponse.response.body.ID}})/enrich
-Authorization: Bearer  {{auth.response.body.access_token}}
+Authorization: Bearer {{auth.response.body.access_token}}
 Content-Type: application/json
 
 {}
