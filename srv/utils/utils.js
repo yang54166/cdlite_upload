@@ -1,4 +1,5 @@
 const { PassThrough } = require('node:stream');
+const monthNames = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 
 const utils = {
     convertPeriodToDate: (period) => {
@@ -9,12 +10,12 @@ const utils = {
 
     convertDateToPayPeriod: (payrollDate) => {
         const yy = payrollDate.getUTCFullYear().toString().slice(-2);
-        const mmm = ('00' + (payrollDate.getUTCMonth() + 1)).slice(-3);
+        const monthName = monthNames[payrollDate.getUTCMonth()];
         const currentDayOfMonth = payrollDate.getUTCDate();
         const lastDayOfMonth = new Date(payrollDate.getUTCFullYear(), payrollDate.getUTCMonth() + 1, 0).getUTCDate();
         const cycleThisMonth = lastDayOfMonth / currentDayOfMonth <= 2 ? 2 : 1;
         const cc = ('0' + ((payrollDate.getUTCMonth() * 2) + cycleThisMonth)).slice(-2);
-        return `${mmm}-${yy}-${cc}`;
+        return `${monthName}-${yy}-${cc}`;
     },
 
     convertAmountByExchangeRate: (amount, exchangeRate) => {
