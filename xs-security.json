@@ -39,6 +39,50 @@
       ]
     },
     {
+      "name": "Accounting_US",
+      "scope-references": [
+        "$XSAPPNAME.upload",
+        "$XSAPPNAME.delete"
+      ],
+      "description": "US accounting user role",
+      "attribute-references": [
+        { "name": "companycode", "default-values": ["US10"]}
+      ]
+    },
+    {
+      "name": "Accounting_CA",
+      "scope-references": [
+        "$XSAPPNAME.upload",
+        "$XSAPPNAME.delete"
+      ],
+      "description": "CA accounting user role",
+      "attribute-references": [
+        { "name": "companycode", "default-values": ["CA10"]}
+      ]
+    },
+    {
+      "name": "Accounting_DE",
+      "scope-references": [
+        "$XSAPPNAME.upload",
+        "$XSAPPNAME.delete"
+      ],
+      "description": "DE accounting user role",
+      "attribute-references": [
+        { "name": "companycode", "default-values": ["DE10"]}
+      ]
+    },
+    {
+      "name": "Accounting_GB",
+      "scope-references": [
+        "$XSAPPNAME.upload",
+        "$XSAPPNAME.delete"
+      ],
+      "description": "GB accounting user role",
+      "attribute-references": [
+        { "name": "companycode", "default-values": ["GB10"]}
+      ]
+    },
+    {
       "name": "Approver",
       "scope-references": [
         "$XSAPPNAME.admin",
@@ -52,6 +96,32 @@
       ]
     },
     {
+      "name": "Approver_NA",
+      "scope-references": [
+        "$XSAPPNAME.admin",
+        "$XSAPPNAME.approve",
+        "$XSAPPNAME.upload",
+        "$XSAPPNAME.delete"
+      ],
+      "description": "NA approver role",
+      "attribute-references": [
+        { "name": "companycode", "default-values": ["US10","CA10"]}
+      ]
+    },
+    {
+      "name": "Approver_EU",
+      "scope-references": [
+        "$XSAPPNAME.admin",
+        "$XSAPPNAME.approve",
+        "$XSAPPNAME.upload",
+        "$XSAPPNAME.delete"
+      ],
+      "description": "EU approver role",
+      "attribute-references": [
+        { "name": "companycode", "default-values": ["GB10","DE10"]}
+      ]
+    },
+    {
       "name": "Admin",
       "scope-references": [
         "$XSAPPNAME.admin",
@@ -59,6 +129,43 @@
         "$XSAPPNAME.delete"
       ],
       "description": "admin role"
+    }
+  ],
+  "role-collections":[
+    {
+      "name": "YBUC_PAB:UPLD_US",
+      "description":"US accounting user role",
+      "role-template-references": ["$XSAPPNAME.Accounting_US"]
+    },
+    {
+      "name": "YBUC_PAB:UPLD_CA",
+      "description":"CA accounting user role",
+      "role-template-references": ["$XSAPPNAME.Accounting_CA"]
+    },
+    {
+      "name": "YBUC_PAB:UPLD_DE",
+      "description":"DE accounting user role",
+      "role-template-references": ["$XSAPPNAME.Accounting_DE"]
+    },
+    {
+      "name": "YBUC_PAB:UPLD_GB",
+      "description":"GB accounting user role",
+      "role-template-references": ["$XSAPPNAME.Accounting_GB"]
+    },
+    {
+      "name": "YBUC_PAB:APR_NA",
+      "description":"NA accounting user role",
+      "role-template-references": ["$XSAPPNAME.Approver_NA"]
+    },
+    {
+      "name": "YBUC_PAB:APR_EU",
+      "description":"EU accounting user role",
+      "role-template-references": ["$XSAPPNAME.Approver_EU"]
+    },
+    {
+      "name": "YBUC_PAB:ADM",
+      "description":"admin role",
+      "role-template-references": ["$XSAPPNAME.Admin"]
     }
   ],
   "oauth2-configuration": {

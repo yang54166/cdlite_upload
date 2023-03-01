@@ -102,7 +102,7 @@
           "operationMode": "Server",
           "autoExpandSelect": true,
           "earlyRequests": true,
-          "groupId": "$direct"
+          "groupId": "$auto"
         }
       },
       "transTypesData": {
@@ -112,14 +112,6 @@
       "summaryData": {
         "type": "sap.ui.model.json.JSONModel",
         "dataSource": "summaryData"
-      },
-      "companyCodeData": {
-        "type": "sap.ui.model.json.JSONModel",
-        "dataSource": "companyCodeData"
-      },
-      "currencyData": {
-        "type": "sap.ui.model.json.JSONModel",
-        "dataSource": "currencyData"
       },
       "uploadRangesData": {
         "type": "sap.ui.model.json.JSONModel",

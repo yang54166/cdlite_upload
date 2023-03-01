@@ -1,8 +1,9 @@
-<core:FragmentDefinition
-	xmlns="sap.m"
-	xmlns:core="sap.ui.core">
-    <Table id="tblLCData"   mode="MultiSelect"  growing="true"
-        growingScrollToLoad="true" items="{path: '/TransactionTypes'}">
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Table id="tblLCData" mode="MultiSelect" growing="true" growingScrollToLoad="true" items="{path: '/TransactionTypes',
+            parameters : {
+                            $$updateGroupId : 'ServiceGroupId'
+                    }
+        }">
         <headerToolbar>
             <OverflowToolbar>
                 <ToolbarSpacer />
@@ -27,7 +28,7 @@
         </columns>
 
         <items>
-            <ColumnListItem >
+            <ColumnListItem>
                 <cells>
                     <ObjectIdentifier title="{transactionType}" />
                     <ObjectIdentifier title="{docType}" />

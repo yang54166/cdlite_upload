@@ -1,33 +1,48 @@
 
 class FDMUtils {
     apiService;
-    sapClient='100';
-    userData=[];
-    glAccounts=[];
-    companyCodes=[];
-    wbsElements=[];
-    exchangeRates=[];
-    currencyCodes=[];
+    sapClient = '100';
+    employeeData = [];
+    glAccounts = [];
+    companyCodes = [];
+    wbsElements = [];
+    exchangeRates = [];
+    currencyCodes = [];
 
-    constructor(remoteService){
+    constructor(remoteService) {
         this.apiService = remoteService;
         this.sapClient = remoteService.options.credentials.queries["sap-client"];
     };
 
-    async getUserData(companyCode) {
-        let result = await this.apiService.get("S4_FMNO_MASTER_API").where({ client: this.sapClient, branchId: companyCode});
-        this.userData.push(...result);
+    async getEmployeeData(companyCode) {
+        let result = await this.apiService.get("S4_FMNO_MASTER_API").where({ client: this.sapClient, branchId: companyCode });
+        this.employeeData.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);
-            this.userData.push(...result);
+            this.employeeData.push(...result);
         }
-        console.log(`Found ${this.userData.length} FMNOs for companyCode ${companyCode} and client ${this.sapClient}`);
-        return this.userData;
+        console.log(`Found ${this.employeeData.length} FMNOs for companyCode ${companyCode} and client ${this.sapClient}`);
+        return this.employeeData;
     };
 
-    findUserByFMNO(fmno) {
-        const matchingUser = this.userData.find((user) => user.fmno === fmno);
-        return matchingUser;
+    findEmployeeByFMNO(fmno, payrollDate) {
+        const matchingEmployees = this.employeeData
+            .filter((employee) => employee.fmno === fmno);
+        if (matchingEmployees.length > 1) {
+            return matchingEmployees.reduce((final, current) => {
+                const currentStartDate = new Date(current.effectiveStartDate.substring(0, 4) + "-" + current.effectiveStartDate.substring(4, 6) + "-" + current.effectiveStartDate.substring(6, 8));
+                const finalStartDate = final ? new Date(final.effectiveStartDate.substring(0, 4) + "-" + final.effectiveStartDate.substring(4, 6) + "-" + final.effectiveStartDate.substring(6, 8)) : null;
+                if (currentStartDate < new Date(payrollDate)) {
+                    if (!final || (currentStartDate > finalStartDate)) {
+                        return current;
+                    } else {
+                        return final
+                    }
+                }
+            }, null);
+        } else {
+            return matchingEmployees[0];
+        }
     };
 
     async getGLAccounts() {
@@ -42,7 +57,7 @@ class FDMUtils {
     };
 
     getGLAccount(glaccount) {
-        return this.glAccounts.find((account)=> account.glAccount == glaccount);
+        return this.glAccounts.find((account) => account.glAccount == glaccount);
     };
 
     async getCompanyCodes() {
@@ -57,7 +72,7 @@ class FDMUtils {
     };
 
     getCompanyCode(companycode) {
-        return this.companyCodes.find((company)=> company.companyCode == companycode);
+        return this.companyCodes.find((company) => company.companyCode == companycode);
     };
 
     async getWbsElements(companyCode) {
@@ -72,7 +87,7 @@ class FDMUtils {
     };
 
     getWbsElement(wbsElementCode) {
-        return this.wbsElements.find((proj)=> proj.wbsCode == wbsElementCode);
+        return this.wbsElements.find((proj) => proj.wbsCode == wbsElementCode);
     };
 
 
@@ -87,8 +102,8 @@ class FDMUtils {
         return this.exchangeRates;
     };
 
-    getExchangeRate(sourceCurrency, targetCurrency){
-        const exchangeRate = this.exchangeRates.find((rate)=> ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
+    getExchangeRate(sourceCurrency, targetCurrency) {
+        const exchangeRate = this.exchangeRates.find((rate) => ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
     };
 
     async getCurrency() {

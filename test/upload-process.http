@@ -29,9 +29,9 @@ Content-Type: application/json
 PUT http://localhost:4004/payroll/PayrollUploadFile/content HTTP/1.1
 Authorization: Bearer {{auth.response.body.access_token}}
 Content-Type: plain/text
-Content-Disposition: form-data; filename="Sprint 2 Demo V1 US10 Payroll v4.txt"; batchID="{{batchResponse.response.body.ID}}"
+Content-Disposition: form-data; filename="Test-Payroll-File- U2-TranType01-Project.txt"; batchID="{{batchResponse.response.body.ID}}"
 
-< ./Sprint 2 Demo V1 US10 Payroll v4.txt
+< ./testUploads/Test-Payroll-File- U2-TranType01-Project.txt
 
 
 ### Approve

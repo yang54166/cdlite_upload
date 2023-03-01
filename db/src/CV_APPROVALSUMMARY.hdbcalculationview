@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_APPROVALSUMMARY" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<descriptions defaultDescription="CV_APPROVALSUMMARY"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="STAGING_UPLOADITEMS">
+    <resourceUri>STAGING_UPLOADITEMS</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:AggregationView" id="ItemSummary" filterExpressionLanguage="SQL">
+    <viewAttributes>
+      <viewAttribute id="BATCH_ID"/>
+      <viewAttribute id="STATUS"/>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="ROW"/>
+      <viewAttribute id="AMOUNT" aggregationType="sum"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="STAGING_UPLOADITEMS">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCH_ID" source="PARENT_ID"/>
+    </input>
+  </calculationView>
+</calculationViews>
+
+<logicalModel id="ItemSummary">
+  <attributes>
+    <attribute id="BATCH_ID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCH_ID"/>
+      <keyMapping columnObjectName="ItemSummary" columnName="BATCH_ID"/>
+    </attribute>
+    <attribute id="STATUS" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="STATUS"/>
+      <keyMapping columnObjectName="ItemSummary" columnName="STATUS"/>
+    </attribute>
+    <attribute id="FMNO" hidden="true" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FMNO"/>
+      <keyMapping columnObjectName="ItemSummary" columnName="FMNO"/>
+    </attribute>
+    <attribute id="ROW" hidden="true" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ROW"/>
+      <keyMapping columnObjectName="ItemSummary" columnName="ROW"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="AMOUNT" order="7" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="AMOUNT"/>
+      <measureMapping columnObjectName="ItemSummary" columnName="AMOUNT"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures>
+    <measure id="COUNT_FMNO" order="4" aggregationType="sum" measureType="simple" calculatedMeasureType="counter" datatype="BIGINT" length="" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="COUNT_FMNO"/>
+      <exceptionAggregation>
+        <attribute attributeName="FMNO"/>
+      </exceptionAggregation>
+      <formula>1</formula>
+      </measure>
+    <measure id="COUNT_ROWS" order="5" aggregationType="sum" measureType="simple" calculatedMeasureType="counter" datatype="BIGINT" length="" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="COUNT_ROWS"/>
+      <exceptionAggregation>
+        <attribute attributeName="ROW"/>
+      </exceptionAggregation>
+      <formula>1</formula>
+      </measure>
+  </calculatedMeasures>
+  <restrictedMeasures/>
+
+  <sortAttributes>
+
+    <sortAttribute id="BATCH_ID" direction="ASC"/>
+
+  </sortAttributes>
+  <localDimensions/>
+  <sharedDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+    
+  
+    <shape expanded="true" modelObjectName="ItemSummary" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="100" y="227"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="ItemSummary" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="148.01171875"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

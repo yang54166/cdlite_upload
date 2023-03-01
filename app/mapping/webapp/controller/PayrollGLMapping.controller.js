@@ -2,8 +2,9 @@ sap.ui.define([
     "./BaseController",
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/routing/History",
-    "../model/formatter"
-], function (BaseController, JSONModel, History, formatter) {
+    "../model/formatter",
+    "sap/m/MessageToast"
+], function (BaseController, JSONModel, History, formatter,MessageToast) {
     "use strict";
 
     return BaseController.extend("com.mk.ui.mapping.controller.PayrollGLMapping", {
@@ -63,17 +64,21 @@ sap.ui.define([
             if (sObjectId) {
                 this._bindView("/PaycodeGLMapping" + sObjectId);
             }else{
+                this.getView().unbindElement();
                 var oListBinding = this.getModel().bindList("/PaycodeGLMapping");
                 var oContext = oListBinding.create({
                     "legalEntityGroupCode":"",
                     "payrollCode" :"",
-                    "payrollCodeSequence":""
+                    "payrollCodeSequence":0
                 });
                 oContext.created()
                 .then(() => {
                     //Once the creation is done
-                    this.getView().bindObject(oContext.getPath());
+                    console.log("Context created succefully!!!!!!")
+                }).catch((error) => {
+                    console.log("Context Error is"+ error);
                 });
+                this.getView().setBindingContext(oContext);
             }
         },
         /**
@@ -116,16 +121,16 @@ sap.ui.define([
          */
         onSavePayrollGLMapData: function () {
             var fnSuccess = function () {
-                sap.m.MessageToast("Succesfully Updated !!");
+                MessageToast.show("Succesfully Updated !!");
                 this.onNavBack();
             }.bind(this);
             var fnError = function () {
-                sap.m.MessageToast("Error Occured  !!");
+                MessageToast.show("Error Occured  !!");
             }.bind(this);
             var oView = this.getView();
             var oObject = oView.getBindingContext().getObject();
-            if (oView.getElementBinding().hasPendingChanges()) {
-                oView.getModel().submitBatch("Payroll").then(fnSuccess, fnError);
+            if (this.getModel().hasPendingChanges("ServiceGroupId")) {
+                this.getModel().submitBatch("ServiceGroupId").then(fnSuccess, fnError)
             }
         }
 

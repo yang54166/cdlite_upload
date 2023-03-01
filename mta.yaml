@@ -27,6 +27,7 @@ modules:
       - name: cd_compensationdetails_c-db
       - name: cd_compensationdetails_c-dest
       - name: cd_compensationdetails_c-auth
+      - name: cd_compensationdetails_c-logs
 
   - name: cd_compensationdetails_c-db-deployer
     type: hdb
@@ -38,6 +39,7 @@ modules:
         - "src/.DS_Store"
     requires:
       - name: cd_compensationdetails_c-db
+      - name: cd_compensationdetails_c-logs
 
   - name: cd_compensationdetails_c
     type: approuter.nodejs
@@ -133,6 +135,12 @@ resources:
     parameters:
       service: html5-apps-repo
       service-plan: app-runtime
+
+  - name: cd_compensationdetails_c-logs
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: application-logs
+      service-plan: lite
 
   - name: cd_compensationdetails_c-dest
     type: org.cloudfoundry.managed-service
