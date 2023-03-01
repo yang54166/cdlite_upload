@@ -30,7 +30,7 @@ sap.ui.define([
             var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
 
             var uploadRangesModel = this.getOwnerComponent().getModel("uploadRangesData");
-          
+
 
             // Model used to manipulate control states
             oViewModel = new JSONModel({
@@ -41,9 +41,16 @@ sap.ui.define([
             });
             this.setModel(oViewModel, "worklistView");
             this.setModel(transTypesModel, "transTypes");
- 
+
             this.setModel(uploadRangesModel, "uploadRangesList");
-   
+
+            var that = this;
+            this.getView().addEventDelegate({
+                onAfterShow: function (oEvent) {
+                    var oTable = that.byId("table");
+                    oTable.getBinding("items").refresh();
+                }
+            });
 
             this.getView().byId("companyCodeList").setFilterFunction(function (sTerm, oItem) {
                 return oItem.getText().match(new RegExp(sTerm, "i")) || oItem.getKey().match(new RegExp(sTerm, "i"))
@@ -100,18 +107,21 @@ sap.ui.define([
             history.go(-1);
         },
 
+        handleLoadItems: function (oControlEvent) {
+            oControlEvent.getSource().getBinding("items").resume();
+        },
+
         onCompanyCodeChange: function (oEvent) {
 
             var oBinding = this.byId("table").getBinding("items"),
-                sValue = oEvent.getSource().getSelectedKey();
+                sSelectedKey = oEvent.getSource().getSelectedKey();
 
-            if (sValue !== '0000') {
-                var filter = new Filter('glCompanyCode', FilterOperator.EQ, sValue)
+            var filters = [];
+            if (sSelectedKey.length > 0)
+                filters.push(new Filter('glCompanyCode', FilterOperator.EQ, sSelectedKey));
 
-                oBinding.filter(filter);
-            } else {
-                oBinding.filter();
-            }
+            oBinding.filter(filters);
+
         },
 
         onSearch: function (oEvent) {
@@ -170,6 +180,7 @@ sap.ui.define([
             this.getRouter().navTo("object", {
                 objectId: oItem.getBindingContext().getPath().substring("/StagingUploads".length)
             });
+            sap.ui.core.BusyIndicator.show();
         },
 
         /**
@@ -268,13 +279,43 @@ sap.ui.define([
             }
         },
 
+        handleUploadComplete: function (oEvent) {
+            var oUploadDialog = this.byId("uploadDialog");
+            var status = oEvent.getParameter("status");
+            var errorMsg = JSON.parse(oEvent.getParameter("responseRaw")).error.message;
+            //   var iHttpStatusCode = parse.Int(oEvent.getParameter("status"));
+            var sMessage,
+                oContext = this.byId("table").getBinding("items").aContexts[0];
+
+            var that = this;
+            if (status === 200) {
+                this.onRefresh();
+                sMessage = "BATCH " + that._newBatchId + " uploaded successfully!";
+                MessageBox.success(sMessage);
+
+            } else {
+                oContext.delete().then(function () {
+                    if (status === 400)
+                        errorMsg = JSON.parse(errorMsg).join('\n');
+                     MessageBox.error(errorMsg);
+                }, function (oError) {
+                    console.log(oError.message);
+                })
+            }
+
+            oUploadDialog.setBusy(false);
+            this.closeDialog();
+
+        },
+
         submitUploads: function () {
-            // var sCompanyCode = this.getView().byId("companyCodeDlg").getValue();
+            var oUploadDialog = this.byId("uploadDialog");
+            oUploadDialog.setBusy(true);
             var sCompanyCode = this.getView().byId("uploadCompanyCode").getSelectedKey();
             var sTransType = this.getView().byId("transTypeDlg").getSelectedItem().getKey();
             //   var sCurrency = this.getView().byId("currencyDlg").getValue();
             var sCurrency = this.getView().byId("uploadCurrency").getSelectedKey();
-            var sPayrollDate = this.getView().byId("payrollDateDlg").getValue();
+            var sPayrollDate = this.formatPayrollDate(this.getView().byId("payrollDateDlg").getValue());
             var sGLPeriod = this.formatDateString(this.getView().byId("glPeriodDlg").getValue());
             var sEffectivePeriod = this.formatDateString(this.getView().byId("effectivePeriodDlg").getValue());
             var sBatchDesc = this.getView().byId("batchDescDlg").getValue();
@@ -290,9 +331,8 @@ sap.ui.define([
                 remarks: sRemarks
             });
 
-            var oUploadDialog = this.byId("uploadDialog");
             var oFileUploader = this.byId("fileUploader");
-            oUploadDialog.setBusy(true);
+
             var that = this;
 
             var csrfToken = this.getView().getModel().getHttpHeaders()['X-CSRF-Token'];
@@ -302,8 +342,8 @@ sap.ui.define([
 
             oContext.created().then(function () {
                 console.log(that._uploadFileName.name);
-                var sBatchId = oContext.getProperty("ID");
-                var sValue = 'form-data; filename="' + that._uploadFileName.name + '"; batchID=' + sBatchId;
+                that._newBatchId = oContext.getProperty("ID");
+                var sValue = 'form-data; filename="' + that._uploadFileName.name + '"; batchID=' + that._newBatchId;
                 var headPar = new sap.ui.unified.FileUploaderParameter();
                 headPar.setName('content-disposition');
                 headPar.setValue(sValue);
@@ -317,11 +357,11 @@ sap.ui.define([
                     .checkFileReadable()
                     .then(function () {
                         oFileUploader.upload();
-                        that.onRefresh();
-                        oUploadDialog.setBusy(false);
-                        var sMsg = "BATCH " + sBatchId + " uploaded successfully!";
-                        MessageBox.success(sMsg);
-                        that.closeDialog();
+                        /*              that.onRefresh();
+                                      var sMsg = "BATCH " + sBatchId + " uploaded successfully!";
+                                      MessageBox.success(sMsg);
+                                      oUploadDialog.setBusy(false);
+                                      that.closeDialog(); */
                     })
                     .catch(function (error) {
                         MessageBox.error("The file cannot be read.");
@@ -329,10 +369,26 @@ sap.ui.define([
                     })
 
             }, function (oError) {
-                console.log("error");
-                // var sMsg = "BATCH " + oEvent.getSource().getBindingContext().getProperty("BATCHNUMBER") + " got approved successfully!";
-                // MessageBox.success(sMsg);
+                MessageBox.error("The file cannot be uploaded.");
+                oFileUploader.clear();
+
             })
+        },
+
+        convertPayrollDate: function (oEvent) {
+            var sDate = oEvent.getParameter("value");
+            var date = new Date(sDate);
+            var formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+            this.byId("payrollDateDlg").setValue(formattedDate);
+        },
+
+        formatPayrollDate: function (sLocalDate) {
+            var sArr = sLocalDate.split('-');
+
+            var sMonth = new Date(Date.parse(sArr[1] + " 1, 2012")).getMonth() + 1;
+
+            return sMonth.toString().length === 2 ? sArr[2] + '-' + sMonth + '-' + sArr[0] : sArr[2] + '-' + '0' + sMonth + '-' + sArr[0];
+
         },
 
         formatDateString: function (sDate) {
@@ -448,24 +504,24 @@ sap.ui.define([
         },
 
         handleSettingsPress: function (oEvent) {
-			var oButton = oEvent.getSource(),
-				oView = this.getView();
+            var oButton = oEvent.getSource(),
+                oView = this.getView();
 
-			// create popover
-			if (!this._pPopover) {
-				this._pPopover = Fragment.load({
-					id: oView.getId(),
-					name:  "batchuploads.fragments.Settings",
-					controller: this
-				}).then(function(oPopover) {
-					oView.addDependent(oPopover);
-					return oPopover;
-				});
-			}
-			this._pPopover.then(function(oPopover) {
-				oPopover.openBy(oButton);
-			});
-		},
+            // create popover
+            if (!this._pPopover) {
+                this._pPopover = Fragment.load({
+                    id: oView.getId(),
+                    name: "batchuploads.fragments.Settings",
+                    controller: this
+                }).then(function (oPopover) {
+                    oView.addDependent(oPopover);
+                    return oPopover;
+                });
+            }
+            this._pPopover.then(function (oPopover) {
+                oPopover.openBy(oButton);
+            });
+        },
 
         onPressMapping: function (oEvent) {
             window.location = "../mapping/index.html"

@@ -31,7 +31,7 @@
                 <actions>
                     <m:Button id="dtlApproveBtn" text="Approve" press="onPressApprove" type="Emphasized" />
                     <m:Button id="dtlDeleteBtn" text="Delete" press="onPressDelete" />
-                    <m:OverflowToolbarButton id="shareBtn" icon="sap-icon://action" type="Transparent" text="Share" tooltip="action" />
+                    <m:Button id="dtlRefreshBtn" icon="sap-icon://refresh" press="onPressRefresh" />
                 </actions>
             </ObjectPageDynamicHeaderTitle>
         </headerTitle>
@@ -74,7 +74,7 @@
                 <m:VBox id="uploadHeaderSec3" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
                     <m:HBox id="uploadHeaderSec3V1" class="sapUiTinyMarginBottom">
                         <m:Label id="detailStatusLbl" text="{i18n>detailStatus}" class="sapUiTinyMarginEnd" />
-                        <m:ObjectStatus id="detailStatusTxt" text="{status}" state="{path: 'status', formatter: '.formatter.getStateForStatus'}"/>
+                        <m:ObjectStatus id="detailStatusTxt" text="{status}" state="{path: 'status', formatter: '.formatter.getStateForStatus'}" />
                     </m:HBox>
 
                     <m:HBox id="uploadHeaderSec3V2" class="sapUiTinyMarginBottom">
@@ -113,7 +113,6 @@
                 <subSections>
                     <ObjectPageSubSection id="personalSectionSS1" titleUppercase="false">
                         <blocks>
-                         
                             <m:Table id="postingSummaryList" sticky="HeaderToolbar,ColumnHeaders" items="{postingView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
                                 <m:columns>
                                     <m:Column width="15%">
@@ -134,7 +133,7 @@
                                         <m:cells>
                                             <m:Text text="{postingView>postingBatchId}" />
                                             <m:Text text="{postingView>postingStatus}" />
-                                            <m:ExpandableText text="{postingView>postingStatusMessage}" overflowMode="InPlace"/>
+                                            <m:ExpandableText text="{postingView>postingStatusMessage}" overflowMode="InPlace" />
                                             <m:Text text="{postingView>postingDocument}" />
                                         </m:cells>
                                     </m:ColumnListItem>
@@ -189,8 +188,6 @@
                                     updateFinished=".onListUpdateFinished"
                                     noDataText="{i18n>detailLineItemTableNoDataText}"
                                     busyIndicatorDelay="{objectView>/tableBusyDelay}"
-                                    growing="true"
-                                    growingScrollToLoad="true"
                                 >
                                     <m:headerToolbar>
                                         <m:Toolbar id="lineItemsToolbar">
