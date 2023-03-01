@@ -1,0 +1,26 @@
+{
+  "welcomeFile": "index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/payroll/(.*)$",
+      "target": "/payroll/$1",
+      "destination": "cd_cdlitepayrollupload_f-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true,
+      "cacheControl": "no-cache, no-store, must-revalidate"
+    },
+    {
+      "source": "^/user-api(.*)",
+      "target": "$1",
+      "authenticationType": "xsuaa",
+      "service": "sap-approuter-userapi"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
