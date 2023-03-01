@@ -295,8 +295,9 @@ sap.ui.define([
 
             } else {
                 oContext.delete().then(function () {
-                    sMessage = JSON.parse(errorMsg).join('\n');
-                    MessageBox.error(sMessage);
+                    if (status === 400)
+                        errorMsg = JSON.parse(errorMsg).join('\n');
+                     MessageBox.error(errorMsg);
                 }, function (oError) {
                     console.log(oError.message);
                 })
@@ -377,17 +378,17 @@ sap.ui.define([
         convertPayrollDate: function (oEvent) {
             var sDate = oEvent.getParameter("value");
             var date = new Date(sDate);
-            var formattedDate = date.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'}).replace(/ /g, '-');
+            var formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
             this.byId("payrollDateDlg").setValue(formattedDate);
         },
 
         formatPayrollDate: function (sLocalDate) {
             var sArr = sLocalDate.split('-');
-        
-            var sMonth = new Date(Date.parse(sArr[1] +" 1, 2012")).getMonth() + 1;
-            
+
+            var sMonth = new Date(Date.parse(sArr[1] + " 1, 2012")).getMonth() + 1;
+
             return sMonth.toString().length === 2 ? sArr[2] + '-' + sMonth + '-' + sArr[0] : sArr[2] + '-' + '0' + sMonth + '-' + sArr[0];
-            
+
         },
 
         formatDateString: function (sDate) {
