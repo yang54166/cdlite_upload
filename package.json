@@ -61,7 +61,7 @@
         "credentials": {
           "destination": "FDM_BTP",
           "path": "/masterdata",
-          "queries":{
+          "queries": {
             "sap-client": "200"
           }
         }

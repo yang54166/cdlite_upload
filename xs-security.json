@@ -1,5 +1,5 @@
 {
-  "xsappname": "cd_compensationdetails_c",
+  "xsappname": "cd_cdlitepayrollupload_fs",
   "tenant-mode": "dedicated",
   "scopes": [
     {
@@ -46,7 +46,12 @@
       ],
       "description": "US accounting user role",
       "attribute-references": [
-        { "name": "companycode", "default-values": ["US10"]}
+        {
+          "name": "companycode",
+          "default-values": [
+            "US10"
+          ]
+        }
       ]
     },
     {
@@ -57,7 +62,12 @@
       ],
       "description": "CA accounting user role",
       "attribute-references": [
-        { "name": "companycode", "default-values": ["CA10"]}
+        {
+          "name": "companycode",
+          "default-values": [
+            "CA10"
+          ]
+        }
       ]
     },
     {
@@ -68,7 +78,12 @@
       ],
       "description": "DE accounting user role",
       "attribute-references": [
-        { "name": "companycode", "default-values": ["DE10"]}
+        {
+          "name": "companycode",
+          "default-values": [
+            "DE10"
+          ]
+        }
       ]
     },
     {
@@ -79,7 +94,12 @@
       ],
       "description": "GB accounting user role",
       "attribute-references": [
-        { "name": "companycode", "default-values": ["GB10"]}
+        {
+          "name": "companycode",
+          "default-values": [
+            "GB10"
+          ]
+        }
       ]
     },
     {
@@ -105,7 +125,13 @@
       ],
       "description": "NA approver role",
       "attribute-references": [
-        { "name": "companycode", "default-values": ["US10","CA10"]}
+        {
+          "name": "companycode",
+          "default-values": [
+            "US10",
+            "CA10"
+          ]
+        }
       ]
     },
     {
@@ -118,7 +144,13 @@
       ],
       "description": "EU approver role",
       "attribute-references": [
-        { "name": "companycode", "default-values": ["GB10","DE10"]}
+        {
+          "name": "companycode",
+          "default-values": [
+            "GB10",
+            "DE10"
+          ]
+        }
       ]
     },
     {
@@ -131,46 +163,60 @@
       "description": "admin role"
     }
   ],
-  "role-collections":[
+  "role-collections": [
     {
       "name": "YBUC_PAB:UPLD_US",
-      "description":"US accounting user role",
-      "role-template-references": ["$XSAPPNAME.Accounting_US"]
+      "description": "US accounting user role",
+      "role-template-references": [
+        "$XSAPPNAME.Accounting_US"
+      ]
     },
     {
       "name": "YBUC_PAB:UPLD_CA",
-      "description":"CA accounting user role",
-      "role-template-references": ["$XSAPPNAME.Accounting_CA"]
+      "description": "CA accounting user role",
+      "role-template-references": [
+        "$XSAPPNAME.Accounting_CA"
+      ]
     },
     {
       "name": "YBUC_PAB:UPLD_DE",
-      "description":"DE accounting user role",
-      "role-template-references": ["$XSAPPNAME.Accounting_DE"]
+      "description": "DE accounting user role",
+      "role-template-references": [
+        "$XSAPPNAME.Accounting_DE"
+      ]
     },
     {
       "name": "YBUC_PAB:UPLD_GB",
-      "description":"GB accounting user role",
-      "role-template-references": ["$XSAPPNAME.Accounting_GB"]
+      "description": "GB accounting user role",
+      "role-template-references": [
+        "$XSAPPNAME.Accounting_GB"
+      ]
     },
     {
       "name": "YBUC_PAB:APR_NA",
-      "description":"NA accounting user role",
-      "role-template-references": ["$XSAPPNAME.Approver_NA"]
+      "description": "NA accounting user role",
+      "role-template-references": [
+        "$XSAPPNAME.Approver_NA"
+      ]
     },
     {
       "name": "YBUC_PAB:APR_EU",
-      "description":"EU accounting user role",
-      "role-template-references": ["$XSAPPNAME.Approver_EU"]
+      "description": "EU accounting user role",
+      "role-template-references": [
+        "$XSAPPNAME.Approver_EU"
+      ]
     },
     {
       "name": "YBUC_PAB:ADM",
-      "description":"admin role",
-      "role-template-references": ["$XSAPPNAME.Admin"]
+      "description": "admin role",
+      "role-template-references": [
+        "$XSAPPNAME.Admin"
+      ]
     }
   ],
   "oauth2-configuration": {
     "redirect-uris": [
-      "https://**-cd-compensationdetails-c.cfapps.eu10.hana.ondemand.com/login/callback",
+      "https://**.cfapps.eu10.hana.ondemand.com/login/callback",
       "https://**.eu10.applicationstudio.cloud.sap/login/callback",
       "https://oauth.pstmn.io/v1/callback"
     ]

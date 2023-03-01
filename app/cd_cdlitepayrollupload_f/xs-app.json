@@ -1,11 +1,11 @@
 {
-  "welcomeFile": "cd_cdlitepayrollupload_f-1.0.0/index.html",
+  "welcomeFile": "index.html",
   "authenticationMethod": "route",
   "routes": [
     {
       "source": "^/payroll/(.*)$",
       "target": "/payroll/$1",
-      "destination": "srv-api",
+      "destination": "cd_cdlitepayrollupload_f-api",
       "authenticationType": "xsuaa",
       "csrfProtection": true,
       "cacheControl": "no-cache, no-store, must-revalidate"

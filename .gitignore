@@ -36,3 +36,4 @@ db/.env
 app/batchuploads/dist/
 resources/
 app/mapping/dist/
+app/cd_cdlitepayrollupload_f/dist/cd_cdlitepayrollupload_f.zip
