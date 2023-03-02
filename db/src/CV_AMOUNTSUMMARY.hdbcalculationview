@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_AMOUNTSUMMARY" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<descriptions defaultDescription="CV_AMOUNTSUMMARY"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="STAGING_UPLOADHEADER">
+    <resourceUri>STAGING_UPLOADHEADER</resourceUri>
+  </DataSource>
+  <DataSource id="MAPPING_LEGALENTITYGROUPING">
+    <resourceUri>MAPPING_LEGALENTITYGROUPING</resourceUri>
+  </DataSource>
+  <DataSource id="STAGING_UPLOADITEMS">
+    <resourceUri>STAGING_UPLOADITEMS</resourceUri>
+  </DataSource>
+  <DataSource id="MAPPING_PAYCODEGLMAPPING">
+    <resourceUri>MAPPING_PAYCODEGLMAPPING</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_StagingData_1" cardinality="CN_N" joinType="inner" multiJoinNode="Join_StagingData" multiJoinCentralTable="STAGING_UPLOADITEMS" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="ID" aggregationType="sum"/>
+      <viewAttribute id="GLCOMPANYCODE"/>
+      <viewAttribute id="CURRENCYCODE"/>
+      <viewAttribute id="TRANSACTIONTYPE"/>
+      <viewAttribute id="GLPERIOD"/>
+      <viewAttribute id="EFFECTIVEPERIOD"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="LEGALENTITYGROUPCODE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="STAGING_UPLOADHEADER">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ID" source="ID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCOMPANYCODE" source="GLCOMPANYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCYCODE" source="CURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TRANSACTIONTYPE" source="TRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPERIOD" source="GLPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEPERIOD" source="EFFECTIVEPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+    </input>
+    <input node="MAPPING_LEGALENTITYGROUPING">
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCOMPANYCODE" source="COMPANYCODE"/>
+    </input>
+    <joinAttribute name="GLCOMPANYCODE"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_StagingData_2" cardinality="CN_N" joinType="inner" multiJoinNode="Join_StagingData" multiJoinCentralTable="STAGING_UPLOADITEMS" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="ID" aggregationType="sum"/>
+      <viewAttribute id="GLCOMPANYCODE"/>
+      <viewAttribute id="CURRENCYCODE"/>
+      <viewAttribute id="TRANSACTIONTYPE"/>
+      <viewAttribute id="GLPERIOD"/>
+      <viewAttribute id="EFFECTIVEPERIOD"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE" aggregationType="sum"/>
+      <viewAttribute id="GLCOSTCENTER"/>
+      <viewAttribute id="AMOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
+      <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute hidden="true" id="JOIN$PARENT_ID$ID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="STAGING_UPLOADITEMS">
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODESEQUENCE" source="PAYROLLCODESEQUENCE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCOSTCENTER" source="GLCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$PARENT_ID$ID" source="PARENT_ID"/>
+    </input>
+    <input node="Join_StagingData_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ID" source="ID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCOMPANYCODE" source="GLCOMPANYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCYCODE" source="CURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TRANSACTIONTYPE" source="TRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPERIOD" source="GLPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEPERIOD" source="EFFECTIVEPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$PARENT_ID$ID" source="ID"/>
+    </input>
+    <joinAttribute name="JOIN$PARENT_ID$ID"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_Mapping" cardinality="CN_N" joinType="inner">
+    <viewAttributes>
+      <viewAttribute id="ID" aggregationType="sum"/>
+      <viewAttribute id="GLCOMPANYCODE"/>
+      <viewAttribute id="CURRENCYCODE"/>
+      <viewAttribute id="TRANSACTIONTYPE"/>
+      <viewAttribute id="GLPERIOD"/>
+      <viewAttribute id="EFFECTIVEPERIOD"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE" aggregationType="sum"/>
+      <viewAttribute id="GLCOSTCENTER"/>
+      <viewAttribute id="AMOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
+      <viewAttribute id="PAYROLLCODETYPE"/>
+      <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute id="DESCRIPTION"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Join_StagingData_2">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ID" source="ID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCOMPANYCODE" source="GLCOMPANYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCYCODE" source="CURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TRANSACTIONTYPE" source="TRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPERIOD" source="GLPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEPERIOD" source="EFFECTIVEPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODESEQUENCE" source="PAYROLLCODESEQUENCE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCOSTCENTER" source="GLCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+    </input>
+    <input node="MAPPING_PAYCODEGLMAPPING">
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODETYPE" source="PAYROLLCODETYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODESEQUENCE" source="PAYROLLCODESEQUENCE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+    </input>
+    <joinAttribute name="LEGALENTITYGROUPCODE"/>
+    <joinAttribute name="PAYROLLCODE"/>
+    <joinAttribute name="PAYROLLCODESEQUENCE"/>
+    <joinAttribute name="GLACCOUNT"/>
+  </calculationView>
+</calculationViews>
+
+<logicalModel id="Join_Mapping">
+  <attributes>
+    <attribute id="BATCH_ID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCH_ID"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="ID"/>
+    </attribute>
+    <attribute id="GLCOMPANYCODE" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLCOMPANYCODE"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="GLCOMPANYCODE"/>
+    </attribute>
+    <attribute id="CURRENCYCODE" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CURRENCYCODE"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="CURRENCYCODE"/>
+    </attribute>
+    <attribute id="TRANSACTIONTYPE" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TRANSACTIONTYPE"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="TRANSACTIONTYPE"/>
+    </attribute>
+    <attribute id="GLPERIOD" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPERIOD"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="GLPERIOD"/>
+    </attribute>
+    <attribute id="EFFECTIVEPERIOD" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="EFFECTIVEPERIOD"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="EFFECTIVEPERIOD"/>
+    </attribute>
+    <attribute id="PAYROLLDATE" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLDATE"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLCODE" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODE"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLCODE"/>
+    </attribute>
+    <attribute id="PAYROLLCODESEQUENCE" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODESEQUENCE"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLCODESEQUENCE"/>
+    </attribute>
+    <attribute id="PAYROLLCODE_DESCRIPTION" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODE_DESCRIPTION"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="DESCRIPTION"/>
+    </attribute>
+    <attribute id="GLCOSTCENTER" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLCOSTCENTER"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="GLCOSTCENTER"/>
+    </attribute>
+    <attribute id="GLACCOUNT" order="12" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLACCOUNT"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="GLACCOUNT"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="AMOUNT" order="13" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="AMOUNT"/>
+      <measureMapping columnObjectName="Join_Mapping" columnName="AMOUNT"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+
+  <sortAttributes>
+
+    <sortAttribute id="GLCOSTCENTER" direction="ASC"/>
+
+    <sortAttribute id="GLACCOUNT" direction="ASC"/>
+
+  </sortAttributes>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="92" y="112"/>
+    
+      <rectangleSize width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_Mapping" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="57" y="204"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="Join_StagingData_2" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="250"/>
+    </shape><shape><upperLeftCorner/><rectangleSize/></shape>
+  
+    <shape modelObjectName="MAPPING_PAYCODEGLMAPPING" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="343" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+  
+    
+  
+    <shape expanded="true" modelObjectName="Join_StagingData" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="314"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="STAGING_UPLOADITEMS" modelObjectNameSpace="Join_StagingData" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_StagingData">
+      <upperLeftCorner x="882" y="86"/>
+      <rectangleSize width="283"/>
+    </shape>
+    <shape modelObjectName="STAGING_UPLOADHEADER" modelObjectNameSpace="Join_StagingData" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_StagingData">
+      <upperLeftCorner x="96" y="69"/>
+      <rectangleSize width="225"/>
+    </shape>
+    <shape modelObjectName="MAPPING_LEGALENTITYGROUPING" modelObjectNameSpace="Join_StagingData" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_StagingData">
+      <upperLeftCorner x="612" y="33"/>
+      <rectangleSize width="275"/>
+    </shape></shapes>
+</layout>
+</Calculation:scenario>

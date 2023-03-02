@@ -37,3 +37,30 @@ key     REFERENCEDOCUMENTITEM: Integer  @title: 'REFERENCEDOCUMENTITEM: REFERENC
         ADDITIONALATTRIBUTES_PERSONNELNUMBER: String(8) @title: 'ADDITIONALATTRIBUTES_PERSONNELNUMBER: ADDITIONALATTRIBUTES_PERSONNELNUMBER' ; 
         FUNCTIONALAREA: String(16)  @title: 'FUNCTIONALAREA: FUNCTIONALAREA' ; 
 }
+
+@cds.persistence.exists 
+@cds.persistence.calcview 
+Entity CV_AMOUNTSUMMARY {
+key     BATCH_ID: Integer  @title: 'BATCH_ID: BATCH_ID' ; 
+key     GLCOMPANYCODE: String(4)  @title: 'GLCOMPANYCODE: GLCOMPANYCODE' ; 
+key     CURRENCYCODE: String(3)  @title: 'CURRENCYCODE: CURRENCYCODE' ; 
+key     TRANSACTIONTYPE: String(2)  @title: 'TRANSACTIONTYPE: TRANSACTIONTYPE' ; 
+key     GLPERIOD: String(6)  @title: 'GLPERIOD: GLPERIOD' ; 
+key     EFFECTIVEPERIOD: String(6)  @title: 'EFFECTIVEPERIOD: EFFECTIVEPERIOD' ; 
+key     PAYROLLDATE: Date  @title: 'PAYROLLDATE: PAYROLLDATE' ; 
+key     PAYROLLCODE: String(6)  @title: 'PAYROLLCODE: PAYROLLCODE' ; 
+key     PAYROLLCODESEQUENCE: Integer  @title: 'PAYROLLCODESEQUENCE: PAYROLLCODESEQUENCE' ; 
+key     PAYROLLCODE_DESCRIPTION: String(5000)  @title: 'PAYROLLCODE_DESCRIPTION: PAYROLLCODE_DESCRIPTION' ; 
+key     GLCOSTCENTER: String(8)  @title: 'GLCOSTCENTER: GLCOSTCENTER' ; 
+key     GLACCOUNT: Integer  @title: 'GLACCOUNT: GLACCOUNT' ; 
+        AMOUNT: Decimal(15)  @title: 'AMOUNT: AMOUNT' ; 
+}
+
+@cds.persistence.exists 
+@cds.persistence.calcview 
+Entity CV_APPROVALSUMMARY {
+key     BATCH_ID: Integer  @title: 'BATCH_ID: PARENT_ID' ; 
+        STATUS: String(5000)  @title: 'STATUS: STATUS' ; 
+        LINES_COUNT: Integer64  @title: 'LINES_COUNT: LINES_COUNT' ; 
+        FMNO_COUNT: Integer64  @title: 'FMNO_COUNT: FMNO_COUNT' ; 
+}

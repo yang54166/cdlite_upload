@@ -3,7 +3,9 @@ using {payroll} from '../db/payroll';
 using {mapping} from '../db/mapping';
 using {
     CV_JOURNALENTRY,
-    CV_JOURNALENTRY_ITEM
+    CV_JOURNALENTRY_ITEM,
+    CV_AMOUNTSUMMARY,
+    CV_APPROVALSUMMARY
 } from '../db/virtual';
 using {fdm_masterdata} from './external/fdm_masterdata';
 
@@ -41,11 +43,12 @@ service PayrollService  @(requires: 'authenticated-user') {
     entity TransactionTypes as projection on mapping.PayrollLedgerControl;
 
     // JournalEntries for Posting
-    @readonly
-    entity JournalEntry        as projection on CV_JOURNALENTRY;
-    @readonly
-    entity JournalEntryItem    as projection on CV_JOURNALENTRY_ITEM;
+    @readonly entity JournalEntry        as projection on CV_JOURNALENTRY;
+    @readonly entity JournalEntryItem    as projection on CV_JOURNALENTRY_ITEM;
+    @readonly entity ApprovalSummary as projection on CV_APPROVALSUMMARY;
+    @readonly entity AmountSummary as projection on CV_AMOUNTSUMMARY;
 
+    // Masterdata from FDM
     @readonly entity CompanyCodes as projection on fdm_masterdata.COMPANY_CODE_API;
     @readonly entity Currency as projection on fdm_masterdata.CURRENCY_API;
 }
