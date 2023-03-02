@@ -63,4 +63,5 @@ key     BATCH_ID: Integer  @title: 'BATCH_ID: PARENT_ID' ;
         STATUS: String(5000)  @title: 'STATUS: STATUS' ; 
         LINES_COUNT: Integer64  @title: 'LINES_COUNT: LINES_COUNT' ; 
         FMNO_COUNT: Integer64  @title: 'FMNO_COUNT: FMNO_COUNT' ; 
+        TOTAL_AMOUNT: Decimal(15,2) @title: 'TOTAL_AMOUNT: TOTAL_AMOUNT';
 }
