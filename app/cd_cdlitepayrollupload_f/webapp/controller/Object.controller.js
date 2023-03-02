@@ -42,7 +42,8 @@ sap.ui.define([
                 tableBusyDelay: 0,
                 inError: 0,
                 success: 0,
-                countAll: 0
+                countAll: 0,
+                enableButton: true
             });
             this._oModel = this.getOwnerComponent().getModel();
             var summaryDataModel = this.getOwnerComponent().getModel("summaryData");
@@ -57,6 +58,7 @@ sap.ui.define([
         },
 
         onBeforeRendering: function () {
+
 
         },
         /* =========================================================== */
@@ -186,12 +188,13 @@ sap.ui.define([
 
             var oViewModel = this.getModel("objectView");
             var nErrorCnt = oViewModel.getProperty("/inError");
+            var nSuccessCnt = oViewModel.getProperty("/success");
 
             var oBinding = this.getView().byId("lineItemsList").getBinding("items"),
-                //    var oBinding = this._oTable.getBinding("items"),
+                sTitle,
                 sKey = oEvent.getParameter("selectedKey");
             var sHeaderStatus = this._sHeaderStatus;
-            //  console.log(sHeaderStatus);
+
             if (sHeaderStatus.toUpperCase() === 'APPROVED')
                 this._mFilters = {
                     "success": [new Filter('status', FilterOperator.EQ, 'APPROVED')],
@@ -207,16 +210,19 @@ sap.ui.define([
 
             if (sKey === "inError" && parseInt(nErrorCnt) > 0) {
                 oViewModel.setProperty("/showExport", true);
-
             } else {
                 oViewModel.setProperty("/showExport", false);
 
             }
             oBinding.filter(this._mFilters[sKey]);
-            this.onListUpdateFinished();
+            if (sKey === 'success')
+                sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [nSuccessCnt]);
+            else if (sKey === 'inError')
+                sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [nErrorCnt]);
+            else
+                sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
 
-            //  var oList = this._oModel.bindList(sPath + '/$count', undefined, undefined, this._mFilters[sKey], undefined);
-            //  console.log(oList.length);
+            oViewModel.setProperty("/lineItemListTitle", sTitle);
 
 
         },
@@ -228,6 +234,8 @@ sap.ui.define([
 
         getFilteredCnt: function (oCurrntObjs, status) {
             var filteredData = oCurrntObjs.filter(data => (data.status === status));
+            if (status === 'SKIPPED' || status === 'INVALID')
+                this._allErrorObjs = filteredData;
             return filteredData.length;
         },
 
@@ -254,10 +262,12 @@ sap.ui.define([
                 if (this._sHeaderStatus.toUpperCase() === 'APPROVED') {
                     var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "APPROVED");
                     var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "SKIPPED");
+                    oViewModel.setProperty("/enableButton", false);
 
                 } else {
                     var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "VALID");
                     var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "INVALID");
+                    oViewModel.setProperty("/enableButton", true);
                 }
 
                 oViewModel.setProperty("/success", succCnt);
@@ -274,37 +284,39 @@ sap.ui.define([
                     sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
             }
             oViewModel.setProperty("/lineItemListTitle", sTitle);
+
             sap.ui.core.BusyIndicator.hide();
         },
 
         onDownload: function () {
-            var oBinding = this.byId("lineItemsList").getBinding("items");
-            var that = this;
-            oBinding.requestContexts(0, Infinity).then(function (aContexts) {
-                var arr = [];
-                for (var i = 0; i < aContexts.length; i++) {
-                    var obj = {
-                        "FMNO": aContexts[i].getObject().fmno,
-                        "PAYROLLCODE": aContexts[i].getObject().payrollCode,
-                        "PAYROLLCODESEQUENCE": aContexts[i].getObject().payrollCodeSequence,
-                        "NAME": "",
-                        "AMOUNT": parseFloat(aContexts[i].getObject().amount).toFixed(2),
-                        "PAYMENTNUMBER": aContexts[i].getObject().paymentNumber,
-                        "PAYMENTID": aContexts[i].getObject().pyamentId,
-                        "PAYMENTFORM": aContexts[i].getObject().paymentForm,
-                        "USERFIELD1": "",
-                        "USERFIELD2": "",
-                        "REMARKS": "",
-                        "LOANADVANCEREFERENCENUMBER": aContexts[i].getObject().loadAdvanceReferenceNumber,
-                        "PROJECTCODE": aContexts[i].getObject().projectCode,
-                        "PROJECTTASK": aContexts[i].getObject().projectTask,
-                        "STATUSMESSAGE": aContexts[i].getObject().statusMessage
-                    };
-                    arr.push(obj);
-                }
-                var sCSV = that.convertToCSV(arr);
-                that.writeToCSV(sCSV);
-            });
+            // var oBinding = this.byId("lineItemsList").getBinding("items");
+            // var that = this;
+            //  console.log(this._allErrorObjs);
+            //  oBinding.requestContexts(0, Infinity).then(function (aContexts) {
+            var arr = [];
+            for (var i = 0; i < this._allErrorObjs.length; i++) {
+                var obj = {
+                    "FMNO": this._allErrorObjs[i].fmno,
+                    "PAYROLLCODE": this._allErrorObjs[i].payrollCode,
+                    "PAYROLLCODESEQUENCE": this._allErrorObjs[i].payrollCodeSequence,
+                    "NAME": "",
+                    "AMOUNT": parseFloat(this._allErrorObjs[i].amount),
+                    "PAYMENTNUMBER": this._allErrorObjs[i].paymentNumber,
+                    "PAYMENTID": this._allErrorObjs[i].pyamentId,
+                    "PAYMENTFORM": this._allErrorObjs[i].paymentForm,
+                    "USERFIELD1": "",
+                    "USERFIELD2": "",
+                    "REMARKS": "",
+                    "LOANADVANCEREFERENCENUMBER": this._allErrorObjs[i].loadAdvanceReferenceNumber,
+                    "PROJECTCODE": this._allErrorObjs[i].projectCode,
+                    "PROJECTTASK": this._allErrorObjs[i].projectTask,
+                    "STATUSMESSAGE": this._allErrorObjs[i].statusMessage
+                };
+                arr.push(obj);
+            }
+            var sCSV = this.convertToCSV(arr);
+            this.writeToCSV(sCSV);
+            //   });
         },
 
         writeToCSV: function (sCSV) {
@@ -371,54 +383,50 @@ sap.ui.define([
 
         onPressApprove: function (oEvent) {
 
-            if (this.byId("detailStatusTxt").getText() === 'APPROVED') {
-                var sMsg = "BATCH " + this._ID + " has been approved already";
-                MessageBox.warning(sMsg);
-            } else {
-                var oViewModel = new JSONModel({
-                    HTML: "<h3>Total Amount: 0</h3>"
+            var oViewModel = new JSONModel({
+                HTML: "<h3>Total Amount: 0</h3>"
+            });
+
+            this.setModel(oViewModel, "totalAmt");
+            var oView = this.getView();
+            var that = this;
+            var sID = that._ID;
+            var sBatchDesc = oView.byId("snappedHeadingSubTitle").getText();
+            var sGLCompanyCode = oView.byId("companyCodeTxt").getText();
+            var sCurrencyCode = oView.byId("currencyCodeTxt").getText();
+            var sPayrollDate = oView.byId("payrollDateTxt").getText();
+            var sEffectivePeriod = oView.byId("effectivePeriodTxt").getText();
+
+
+            // create dialog lazily
+            if (!that.byId("approveDialog")) {
+                // load asynchronous XML fragment
+                Fragment.load({
+                    id: oView.getId(),
+                    name: "batchuploads.fragments.Approve",
+                    controller: that
+                }).then(function (oDialog) {
+                    oView.addDependent(oDialog);
+                    oView.byId("approvePageTitle").setText("Upload Batch " + sID + " Summary");
+                    oView.byId("approveDesc").setText(sBatchDesc);
+                    oView.byId("aprroveCurrency").setText(sCurrencyCode);
+                    oView.byId("approveCompanyCode").setText(sGLCompanyCode);
+                    oView.byId("approvePayrollDate").setText(sPayrollDate);
+                    oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
+                    setTimeout(function () { that.createTotalTable(); }, 500);
+                    var sButton = oView.byId("approveBtn");
+                    oDialog.setInitialFocus(sButton);
+                    /*           oDialog.addEventDelegate({
+                                   onAfterRendering: function() {
+                                       oView.byId("approveSummaryList").removeSelections(true);
+                                   }.bind(that)
+                               }) */
+                    oDialog.open();
                 });
-
-                this.setModel(oViewModel, "totalAmt");
-                var oView = this.getView();
-                var that = this;
-                var sID = that._ID;
-                var sBatchDesc = oView.byId("snappedHeadingSubTitle").getText();
-                var sGLCompanyCode = oView.byId("companyCodeTxt").getText();
-                var sCurrencyCode = oView.byId("currencyCodeTxt").getText();
-                var sPayrollDate = oView.byId("payrollDateTxt").getText();
-                var sEffectivePeriod = oView.byId("effectivePeriodTxt").getText();
-
-
-                // create dialog lazily
-                if (!that.byId("approveDialog")) {
-                    // load asynchronous XML fragment
-                    Fragment.load({
-                        id: oView.getId(),
-                        name: "batchuploads.fragments.Approve",
-                        controller: that
-                    }).then(function (oDialog) {
-                        oView.addDependent(oDialog);
-                        oView.byId("approvePageTitle").setText("Upload Batch " + sID + " Summary");
-                        oView.byId("approveDesc").setText(sBatchDesc);
-                        oView.byId("aprroveCurrency").setText(sCurrencyCode);
-                        oView.byId("approveCompanyCode").setText(sGLCompanyCode);
-                        oView.byId("approvePayrollDate").setText(sPayrollDate);
-                        oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
-                        setTimeout(function () { that.createTotalTable(); }, 500);
-                        var sButton = oView.byId("approveBtn");
-                        oDialog.setInitialFocus(sButton);
-                        /*           oDialog.addEventDelegate({
-                                       onAfterRendering: function() {
-                                           oView.byId("approveSummaryList").removeSelections(true);
-                                       }.bind(that)
-                                   }) */
-                        oDialog.open();
-                    });
-                } else {
-                    that.byId("approveDialog").open();
-                }
+            } else {
+                that.byId("approveDialog").open();
             }
+
         },
 
         createTotalTable: function () {
@@ -686,6 +694,56 @@ sap.ui.define([
                 aTemplate.push(oColumn);
             }
             return aTemplate;
+        },
+
+        handlePopoverPress: function (oEvent) {
+            var oCtx = oEvent.getSource().getBindingContext(),
+                oControl = oEvent.getSource(),
+                oView = this.getView();
+
+            // create popover
+            if (!this._pPopover) {
+                this._pPopover = Fragment.load({
+                    id: oView.getId(),
+                    name: "batchuploads.fragments.Popover",
+                    controller: this
+                }).then(function (oPopover) {
+                    oView.addDependent(oPopover);
+                    oView.byId("popGLAct").setValue(oCtx.getProperty("glAccount"));
+                    oView.byId("popCurrencyCode").setValue(oCtx.getProperty("glCurrencyCode"));
+                    oView.byId("popFCAT").setValue(oCtx.getProperty("fcat"));
+                    oView.byId("popGLCostCenter").setValue(oCtx.getProperty("glCostCenter"));
+                    oView.byId("popLocCode").setValue(oCtx.getProperty("locationCode"));
+                    oView.byId("popPernr").setValue(oCtx.getProperty("pernr"));
+                    oView.byId("popSkillCode").setValue(oCtx.getProperty("skillCode"));
+                    oPopover.attachAfterOpen(function () {
+                        this.disablePointerEvents();
+                    }, this);
+                    oPopover.attachAfterClose(function () {
+                        this.enablePointerEvents();
+                    }, this);
+                    return oPopover;
+                }.bind(this));
+            }
+            this._pPopover.then(function (oPopover) {
+                oPopover.bindElement(oCtx.getPath());
+                oPopover.openBy(oControl);
+            });
+        },
+
+        disablePointerEvents: function () {
+            this.byId("lineItemsList").getDomRef().style["pointer-events"] = "none";
+        },
+
+        enablePointerEvents: function () {
+            this.byId("lineItemsList").getDomRef().style["pointer-events"] = "auto";
+        },
+
+        handleActionPress: function () {
+            // note: We don't need to chain to the _pPopover promise, since this event-handler
+            // is only called from within the loaded dialog itself.
+            this.byId("myPopover").close();
+
         },
 
         onDataExport: function (oEvent) {

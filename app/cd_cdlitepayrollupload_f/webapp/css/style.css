@@ -1,0 +1,13 @@
+.sapMITBFilter .sapMITBCount {
+    color: #1d2d3e;
+    text-shadow: none;
+    max-width: 6rem;
+    overflow: hidden;
+    position: absolute;
+    text-overflow: ellipsis;
+}
+
+.sapMITBFilter {
+    padding-left: 0.75rem;
+    cursor: pointer;
+}
