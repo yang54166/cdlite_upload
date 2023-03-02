@@ -16,8 +16,8 @@ To run approuter locally, you need to create /app/approuter/default-env.json
 {
   "destinations": [
     {
-      "name": "srv-api",
-      "url": "http://localhost:4004",
+      "name": "cd_cdlitepayrollupload_f-api",
+      "url": "https://erpdevorg-erpdevspccdapp-cd-cdlitepayrollupload-fs-srv.cfapps.eu10.hana.ondemand.com",
       "forwardAuthToken": true
     },
     {
@@ -32,9 +32,9 @@ and /app/approuter/default-services.json
 {
     "uaa": {
         "url": "https://erpdevsd.authentication.eu10.hana.ondemand.com",
-        "clientid": "sb-cd_compensationdetails_c-ErpDevOrg-ErpDevSpcCdApp!t126539",
-        "xsappname": "cd_compensationdetails_c-ErpDevOrg-ErpDevSpcCdApp!t126539",
-        "clientsecret": "<UAA Binding Client Secret>"
+        "clientid": "<clientid>",
+        "xsappname": "<xsappname>",
+        "clientsecret": "<clientsecret>"
     }
 }
 ```

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_FMNOSUMMARY" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<descriptions defaultDescription="CV_FMNOSUMMARY"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="STAGING_UPLOADITEMS">
+    <resourceUri>STAGING_UPLOADITEMS</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews/>
+
+<logicalModel id="STAGING_UPLOADITEMS">
+  <attributes>
+    <attribute id="PARENT_ID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PARENT_ID"/>
+      <keyMapping columnObjectName="STAGING_UPLOADITEMS" columnName="PARENT_ID"/>
+    </attribute>
+    <attribute id="FMNO" hidden="true" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FMNO"/>
+      <keyMapping columnObjectName="STAGING_UPLOADITEMS" columnName="FMNO"/>
+    </attribute>
+    <attribute id="STATUS" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="STATUS"/>
+      <keyMapping columnObjectName="STAGING_UPLOADITEMS" columnName="STATUS"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures/>
+  <calculatedMeasures>
+    <measure id="STATUS_COUNT" order="4" aggregationType="sum" measureType="simple" calculatedMeasureType="counter" datatype="BIGINT" length="" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="STATUS_COUNT"/>
+      <exceptionAggregation>
+        <attribute attributeName="FMNO"/>
+        <attribute attributeName="STATUS"/>
+      </exceptionAggregation>
+      <formula>1</formula>
+      
+      </measure>
+  </calculatedMeasures>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+    
+  </shapes>
+</layout>
+</Calculation:scenario>
