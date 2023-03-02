@@ -282,22 +282,23 @@ sap.ui.define([
         handleUploadComplete: function (oEvent) {
             var oUploadDialog = this.byId("uploadDialog");
             var status = oEvent.getParameter("status");
-            var errorMsg = JSON.parse(oEvent.getParameter("responseRaw")).error.message;
+
             //   var iHttpStatusCode = parse.Int(oEvent.getParameter("status"));
             var sMessage,
                 oContext = this.byId("table").getBinding("items").aContexts[0];
 
             var that = this;
-            if (status === 200) {
+            if (status === 204) {
                 this.onRefresh();
                 sMessage = "BATCH " + that._newBatchId + " uploaded successfully!";
                 MessageBox.success(sMessage);
 
             } else {
+                var errorMsg = JSON.parse(oEvent.getParameter("responseRaw"))?.error?.message;
                 oContext.delete().then(function () {
                     if (status === 400)
                         errorMsg = JSON.parse(errorMsg).join('\n');
-                     MessageBox.error(errorMsg);
+                     MessageBox.error(`Unable to upload file: \n${errorMsg}`);
                 }, function (oError) {
                     console.log(oError.message);
                 })
