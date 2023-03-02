@@ -1,0 +1,23 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
+    <Popover id="myPopover" title="More Information" class="sapUiContentPadding" placement="Left" initialFocus="action">
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Button id="action" text="Close" press="handleActionPress" />
+            </Toolbar>
+        </footer>
+        <l:VerticalLayout class="sapUiContentPadding" width="100%">
+            <l:content>
+                <List id="popoverLst">
+                    <DisplayListItem id="popGLAct" label="GL Account" value="" />
+                    <DisplayListItem id="popGLCostCenter" label="GL Cost Center" value="" />
+                    <DisplayListItem id="popCurrencyCode" label="GL Currrency Code" value="" />
+                    <DisplayListItem id="popFCAT" label="FCAT" />
+                    <DisplayListItem id="popLocCode" label="Location Code" value="" />
+                    <DisplayListItem id="popPernr" label="Personal No." />
+                    <DisplayListItem id="popSkillCode" label="Skill Code" />
+                </List>
+            </l:content>
+        </l:VerticalLayout>
+    </Popover>
+</core:FragmentDefinition>

@@ -29,8 +29,9 @@
                     <m:Label id="extendedSubtitle" text="{batchDescription}" />
                 </expandedContent>
                 <actions>
-                    <m:Button id="dtlApproveBtn" text="Approve" press="onPressApprove" type="Emphasized" />
-                    <m:Button id="dtlDeleteBtn" text="Delete" press="onPressDelete" />
+                    <m:Button id="dtlApproveBtn" text="Approve" press="onPressApprove" type="Emphasized" enabled="{objectView>/enableButton}" />
+                    <m:Button id="dtlDeleteBtn" text="Delete" press="onPressDelete" enabled="{objectView>/enableButton}" />
+                    <m:Button id="dtlRevalideBtn" text="Revalidation" press="onRevalidatation" enabled="{objectView>/enableButton}" />
                     <m:Button id="dtlRefreshBtn" icon="sap-icon://refresh" press="onPressRefresh" />
                 </actions>
             </ObjectPageDynamicHeaderTitle>
@@ -211,9 +212,7 @@
                                         <m:Column id="amountDtlColumn" width="8%" hAlign="End">
                                             <m:Text id="amount" text="Amount" />
                                         </m:Column>
-                                        <m:Column id="glCostCenterColumn" width="8%" hAlign="Center">
-                                            <m:Text id="glCostCenter" text="GL Cost Center" />
-                                        </m:Column>
+
                                         <m:Column id="paymentNoDtlColumn" width="6%" hAlign="Center">
                                             <m:Text id="paymentNoCol" text="Payment No" />
                                         </m:Column>
@@ -238,6 +237,30 @@
                                         <m:Column id="statusMsgColumn" width="15%" hAlign="Center">
                                             <m:Text id="dtlStatusMsg" text="Status Message" />
                                         </m:Column>
+                                        <m:Column id="glInfoColumn" width="8%" hAlign="Center">
+                                            <m:Text id="dtlGLInfo" text="More Info" />
+                                        </m:Column>
+                                        <m:Column id="glAcctColumn" visible="false">
+                                            <m:Text id="dtlGlAcct" text="" />
+                                        </m:Column>
+                                        <m:Column id="glCurrencyColumn" visible="false">
+                                            <m:Text id="dtlglCurrency" text="" />
+                                        </m:Column>
+                                        <m:Column id="fcatColumn" visible="false">
+                                            <m:Text id="dtlFCAT" text="" />
+                                        </m:Column>
+                                        <m:Column id="glCostCenterColumn" visible="false">
+                                            <m:Text id="dtlglCostCenter" text="" />
+                                        </m:Column>
+                                        <m:Column id="pernrColumn" visible="false">
+                                            <m:Text id="dtlPernr" text="" />
+                                        </m:Column>
+                                        <m:Column id="locCodeColumn" visible="false">
+                                            <m:Text id="dtlLocCode" text="" />
+                                        </m:Column>
+                                        <m:Column id="skillCodeColumn" visible="false">
+                                            <m:Text id="dtlSkillCode" text="" />
+                                        </m:Column>
                                     </m:columns>
                                     <m:items>
                                         <m:ColumnListItem id="colBatchItems">
@@ -246,7 +269,6 @@
                                                 <m:Text id="txtDtlPayoffCode" text="{payrollCode}" />
                                                 <m:Text id="txtDtlPayoffCodeSq" text="{payrollCodeSequence}" />
                                                 <m:Text id="txtDtlAmount" text="{amount}" />
-                                                <m:Text id="txtDtlglCostCenter" text="{glCostCenter}" />
                                                 <m:Text id="txtDtlPaymentNo" text="{paymentNumber}" />
                                                 <m:Text id="txtDtlPaymentId" text="{paymentId}" />
                                                 <m:Text id="txtDtlPaymentForm" text="{paymentForm}" />
@@ -255,6 +277,14 @@
                                                 <m:Text id="txtDtlProjTask" text="{projectTask}" />
                                                 <m:Text id="txtDtlStatus" text="{status}" />
                                                 <m:Text id="txtDtlStatusMsg" text="{statusMessage}" />
+                                                <m:Link text="More" press="handlePopoverPress" ariaHasPopup="Dialog" />
+                                                <m:Text id="txtDtlGLAct" text="{glAccount}" visible="false" />
+                                                <m:Text id="txtDtlGLCurrencyCode" text="{glCurrencyCode}" visible="false" />
+                                                <m:Text id="txtDtlFCAT" text="{fcat}" visible="false" />
+                                                <m:Text id="txtDtlglCostCenter" text="{glCostCenter}" visible="false" />
+                                                <m:Text id="txtDtlPernr" text="{pernr}" visible="false" />
+                                                <m:Text id="txtDtlLocCode" text="{locationCode}" visible="false" />
+                                                <m:Text id="txtDtlSkillCode" text="{skillCode}" visible="false" />
                                             </m:cells>
                                         </m:ColumnListItem>
                                     </m:items>
