@@ -66,6 +66,13 @@
           }
         }
       },
+      "cpi":{
+        "kind": "rest",
+        "credentials":{
+          "destination":"cpi",
+          "path": "/http"
+        }
+      },
       "messaging": {
         "kind": "local-messaging"
       },

@@ -38,9 +38,10 @@ service PayrollService  @(requires: 'authenticated-user') {
     entity PostingBatch        as projection on payroll.PostingBatch;
 
     // Mapping
-    entity LegalEntityGrouping as projection on mapping.LegalEntityGrouping;
+    entity LegalEntityGrouping as projection on mapping.LegalEntityGrouping ;
     entity PaycodeGLMapping    as projection on mapping.PaycodeGLMapping;
     entity TransactionTypes as projection on mapping.PayrollLedgerControl;
+    action deleteAllMapping(mappingTable: String);
 
     // JournalEntries for Posting
     @readonly entity JournalEntry        as projection on CV_JOURNALENTRY;

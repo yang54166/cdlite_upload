@@ -11,6 +11,7 @@ class PayrollService extends cds.ApplicationService {
     async init() {
         const db = await cds.connect.to('db')
         const fdm = await cds.connect.to('fdm_masterdata');
+        const cpi = await cds.connect.to('cpi');
 
         const { PayrollHeader, PayrollDetails, PostingBatch } = db.entities('payroll');
         const { UploadHeader, UploadItems } = db.entities('staging');
@@ -331,25 +332,28 @@ class PayrollService extends cds.ApplicationService {
 
         this.on("trigger", async req => {
             const batchId = req.data.batchToApprove;
-            const cpiTrigger = () => {
-                return new Promise(async (resolve, reject) => {
-                    setTimeout(async () => {
-                        console.log(`CPI Trigger - Starting for batch ${batchId}`);
-                        const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
-                        try {
-                            axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
-                            axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
-                            const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchId}`;
-                            const responseCPI = await axios.get(cpiURL);
-                            console.log(`CPI Trigger - Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
-                            resolve(responseCPI);
-                        } catch (ex) {
-                            console.log("CPI Trigger - Error:: " + ex.message);
-                        };
-                    }, 3000);
-                })
-            };
-            await cpiTrigger();
+            console.log(`CPI Trigger - Starting for batch ${batchId}`);
+            const responseCPI = cpi.send({path: `cd_lass_payroll_trigger?BatchID=${batchId}`});
+            console.log(`CPI Trigger - Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
+            // const cpiTrigger = () => {
+            //     return new Promise(async (resolve, reject) => {
+            //         setTimeout(async () => {
+            //             console.log(`CPI Trigger - Starting for batch ${batchId}`);
+            //             const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
+            //             try {
+            //                 axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
+            //                 axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
+            //                 const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchId}`;
+            //                 const responseCPI = await axios.get(cpiURL);
+            //                 console.log(`CPI Trigger - Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
+            //                 resolve(responseCPI);
+            //             } catch (ex) {
+            //                 console.log("CPI Trigger - Error:: " + ex.message);
+            //             };
+            //         }, 3000);
+            //     })
+            // };
+            // await cpiTrigger();
         });
 
         this.after("READ", "StagingUploads", async (result) => {
@@ -367,6 +371,29 @@ class PayrollService extends cds.ApplicationService {
         this.on("READ", "Currency", async (result)=>{
             const fdmUtils = new FDMUtils(fdm);
             return fdmUtils.getCurrency();
+        });
+
+        this.on('deleteAllMapping', async req => {
+            const mappingTableToDelete = req.data.mappingTable;
+            console.log(`deleteAllMapping for ${JSON.stringify(req.data)}`);
+            let realTable = "";
+            switch (mappingTableToDelete) {
+                case "LegalEntityGrouping":
+                    realTable = "MAPPING_LEGALENTITYGROUPING";
+                    break;
+                case "PaycodeGLMapping":
+                    realTable = "MAPPING_PAYCODEGLMAPPING";
+                    break;
+                case "TransactionTypes":
+                    realTable = "MAPPING_PAYROLLLEDGERCONTROL";
+                    break;
+                default:
+                    return req.error({code: 1, status: 400, message: `Invalid mappingTable specified: ${mappingTableToDelete}`, target: 'deleteAllMapping'});
+            }
+
+            //Start Deleting
+            const deleteResult = await HANAUtils.execQuery( db.options.credentials, `DELETE FROM "${realTable}"` );
+            return true;
         });
 
         // required
