@@ -334,7 +334,7 @@ class PayrollService extends cds.ApplicationService {
             const batchId = req.data.batchToApprove;
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
             const responseCPI = cpi.send({path: `cd_lass_payroll_trigger?BatchID=${batchId}`});
-            console.log(`CPI Trigger - Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
+            console.log(`CPI Trigger - Result: ${responseCPI.status}:${responseCPI.statusText}`);
             // const cpiTrigger = () => {
             //     return new Promise(async (resolve, reject) => {
             //         setTimeout(async () => {

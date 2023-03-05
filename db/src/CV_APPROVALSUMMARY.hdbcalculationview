@@ -149,9 +149,9 @@
       <viewAttribute id="BATCH_ID"/>
       <viewAttribute id="STATUS"/>
       <viewAttribute id="LINES_COUNT"/>
-      <viewAttribute id="FMNO_COUNT"/>
       <viewAttribute id="TOTAL_AMOUNT"/>
-      <viewAttribute hidden="true" id="JOIN$LINES_STATUS$STATUS"/>
+      <viewAttribute id="LINES_STATUS"/>
+      <viewAttribute id="FMNO_COUNT"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Join_1_1">
@@ -159,15 +159,15 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="LINES_COUNT" source="LINES_COUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="TOTAL_AMOUNT" source="TOTAL_AMOUNT"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$LINES_STATUS$STATUS" source="LINES_STATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LINES_STATUS" source="LINES_STATUS"/>
     </input>
     <input node="Fmno">
       <mapping xsi:type="Calculation:AttributeMapping" target="FMNO_COUNT" source="FMNO_COUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="BATCH_ID" source="BATCH_ID"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$LINES_STATUS$STATUS" source="STATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LINES_STATUS" source="STATUS"/>
     </input>
     <joinAttribute name="BATCH_ID"/>
-    <joinAttribute name="JOIN$LINES_STATUS$STATUS"/>
+    <joinAttribute name="LINES_STATUS"/>
   </calculationView>
 </calculationViews>
 
@@ -192,7 +192,9 @@
   
     <attribute id="TOTAL_AMOUNT" order="5" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="AMOUNT"/>
+  
       <keyMapping columnObjectName="Join_1_2" columnName="TOTAL_AMOUNT"/>
+  
     </attribute>
   </attributes>
   <calculatedAttributes/>
@@ -224,6 +226,11 @@
       <upperLeftCorner x="303" y="516"/>
       <rectangleSize width="160"/>
     </shape>
+    <shape expanded="true" modelObjectName="Total_Amount" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-47" y="371"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+  
   
   
     <shape expanded="true" modelObjectName="Lines" modelObjectNameSpace="CalculationView">
@@ -239,22 +246,17 @@
       <upperLeftCorner x="501" y="217"/>
       <rectangleSize height="30" width="160"/>
     </shape>
-    <shape modelObjectName="Lines" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
-      <upperLeftCorner x="626" y="30"/>
-      <rectangleSize width="250"/>
-    </shape>
     <shape modelObjectName="Fmno" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
       <upperLeftCorner x="926" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape modelObjectName="Lines" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="626" y="30"/>
       <rectangleSize width="250"/>
     </shape>
     <shape modelObjectName="Total_Amount" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
       <upperLeftCorner x="1226" y="30"/>
       <rectangleSize width="250"/>
-    </shape>
-    <shape expanded="true" modelObjectName="Total_Amount" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="-47" y="371"/>
-      <rectangleSize height="30" width="160"/>
-    </shape>
-  </shapes>
+    </shape></shapes>
 </layout>
 </Calculation:scenario>
