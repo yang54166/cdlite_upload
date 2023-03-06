@@ -1,5 +1,8 @@
 using { cuid, managed } from '@sap/cds/common';
-
+using {
+    CV_JOURNALENTRY,
+    CV_JOURNALENTRY_ITEM
+} from '../db/virtual';
 namespace payroll;
 
 entity PayrollHeader: managed {
@@ -23,9 +26,10 @@ entity PayrollHeader: managed {
 entity PayrollDetails: managed {
     key batchId: Association to PayrollHeader;
     key batchLineNumber: Integer;
-    postingAggregation: Boolean;
-    postingBatchId: Integer;
+    postingAggregation: String;
+    postingBatchId: String;
     postingBatchLineNumber: Integer;
+    postingBatchIdCBLedger: String;
     postingDocument: String;
     advanceNumber: String(20);
     apArId: String(20);      //future?
@@ -43,6 +47,7 @@ entity PayrollDetails: managed {
     fcat: String(3);
     fmno: String(9);
     glAccount: Integer;
+    glAccountCBLedger: Integer;
     glCurrencyCode: String(4);
     glConversionRate: Decimal(9,5);
     glPostAmount: Decimal(15,2);
@@ -74,8 +79,9 @@ entity PayrollDetails: managed {
 
 entity PostingBatch {
     key batchId: Integer;
-    key postingBatchId: Integer;
+    key postingBatchId: String;
         postingStatus: String;
         postingStatusMessage: String;
         postingDocument: String;
+        postingType: String;
 };

@@ -31,7 +31,7 @@
     <calculatedViewAttributes/>
     <restrictedViewAttributes/>
     <input node="PAYROLL_PAYROLLDETAILS"/>
-    <filter>&quot;POSTINGAGGREGATION&quot;=true</filter>
+    <filter>&quot;POSTINGAGGREGATION&quot;='BUSINESSAREA'</filter>
   </calculationView>
   <calculationView xsi:type="Calculation:ProjectionView" id="Projection_NonAggregated" filterExpressionLanguage="SQL">
     <viewAttributes>
@@ -52,7 +52,7 @@
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Projection_NonAggregated$$$$PAYROLL_PAYROLLDETAILS$$"/>
-    <filter>&quot;POSTINGAGGREGATION&quot;=false</filter>
+    <filter>&quot;POSTINGAGGREGATION&quot;='NONE'</filter>
   </calculationView>
   <calculationView xsi:type="Calculation:UnionView" id="Union_1">
     <viewAttributes>
@@ -70,6 +70,8 @@
       <viewAttribute id="PROJECTCODE"/>
     
       <viewAttribute id="PERNR"/>
+    
+      <viewAttribute id="POSTINGAGGREGATION"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Aggregation_Amounts" emptyUnionBehavior="NO_ROW">
@@ -87,6 +89,8 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
     
       <mapping xsi:type="Calculation:ConstantAttributeMapping" target="PERNR" null="true" value=""/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
     </input>
   
     <input node="Projection_NonAggregated" emptyUnionBehavior="NO_ROW">
@@ -105,6 +109,10 @@
   
       <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
   
+    
+  
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
+  
     </input>
   </calculationView>
   <calculationView xsi:type="Calculation:WindowFunctionView" id="ROWNUMBERS">
@@ -122,6 +130,8 @@
       <viewAttribute id="PROJECTCODE"/>
     
       <viewAttribute id="PERNR"/>
+    
+      <viewAttribute id="POSTINGAGGREGATION"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Union_1">
@@ -138,6 +148,8 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
     
       <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
     </input>
     <function name="ROW_NUMBER"/>
     <windowFunctionResultColumn>REFERENCEDOCUMENTITEM</windowFunctionResultColumn>
@@ -203,7 +215,14 @@
   
     <attribute id="PERNR" hidden="true" order="18" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PERNR"/>
+  
       <keyMapping columnObjectName="ROWNUMBERS" columnName="PERNR"/>
+  
+    </attribute>
+  
+    <attribute id="POSTINGAGGREGATION" order="19" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGAGGREGATION"/>
+      <keyMapping columnObjectName="ROWNUMBERS" columnName="POSTINGAGGREGATION"/>
     </attribute>
   </attributes>
   <calculatedAttributes>

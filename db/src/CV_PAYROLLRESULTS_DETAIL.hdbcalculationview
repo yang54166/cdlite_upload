@@ -329,7 +329,9 @@
   
     <attribute id="GLCONVERSIONRATE" order="48" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLCONVERSIONRATE"/>
+  
       <keyMapping columnObjectName="Join_1" columnName="GLCONVERSIONRATE"/>
+  
     </attribute>
     <attribute id="SOURCECURRENCYCODE" order="49" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="SOURCECURRENCYCODE"/>
