@@ -124,6 +124,38 @@ sap.ui.define([
 
         },
 
+        onCompanyCodeValidate: function (oEvent) {
+
+            var oInput = oEvent.getSource();
+            var bValid = !oInput.getSelectedKey();
+            var oButton = this.getView().byId("submitBtn");
+            if (bValid) {
+                oInput.setValueState("Error");
+                oButton.setEnabled(false);
+            } else {
+                oInput.setValueState("None");
+                oButton.setEnabled(true);
+            }
+            // oInput.setValueState(bValid ? "Error" : "None");
+
+        },
+
+        onCurrencyValidate: function (oEvent) {
+
+            var oInput = oEvent.getSource();
+            var bValid = !oInput.getSelectedKey();
+            var oButton = this.getView().byId("submitBtn");
+            if (bValid) {
+                oInput.setValueState("Error");
+                oButton.setEnabled(false);
+            } else {
+                oInput.setValueState("None");
+                oButton.setEnabled(true);
+            }
+
+
+        },
+
         onSearch: function (oEvent) {
             if (oEvent.getParameters().refreshButtonPressed) {
                 // Search field's 'refresh' button has been pressed.
@@ -298,7 +330,7 @@ sap.ui.define([
                 oContext.delete().then(function () {
                     if (status === 400)
                         errorMsg = JSON.parse(errorMsg).join('\n');
-                     MessageBox.error(`Unable to upload file: \n${errorMsg}`);
+                    MessageBox.error(`Unable to upload file: \n${errorMsg}`);
                 }, function (oError) {
                     console.log(oError.message);
                 })

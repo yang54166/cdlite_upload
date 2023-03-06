@@ -1,7 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:semantic="sap.f.semantic" xmlns:f="sap.ui.layout.form" xmlns:u="sap.ui.unified">
     <Dialog id="approveDialog" resizable="true" draggable="true" showHeader="false" afterClose="onAfterClose" contentWidth="780px" contentHeight="500px">
         <beginButton>
-            <Button id="approveBtn" text="Approve" press="approveUploads" />
+            <Button id="approveBtn" text="Approve" enabled="{totalAmt>/approvalDisabled}" press="approveUploads" />
         </beginButton>
         <endButton>
             <Button id="cancelBtn" text="Cancel" press="closeApprovalDialog" />
@@ -28,10 +28,10 @@
                 <semantic:content>
                     <l:VerticalLayout>
                         <l:HorizontalLayout id="approveDtlV">
-                            <Table id="approveSummaryList" sticky="HeaderToolbar,ColumnHeaders" class="sapUiSmallMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
-                                <!--               <columns>
-                                    <Column id="emptyHeader">
-                                        <Text id="totalFmnoTxt" text="" />
+                            <Table id="approveSummaryList" sticky="HeaderToolbar,ColumnHeaders" items="{approvalView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
+                                <columns>
+                                    <Column id="statusHeader">
+                                        <Text id="totalFmnoTxt" text="Status" />
                                     </Column>
                                     <Column id="lineCntCol">
                                         <Text text="Number of Lines" />
@@ -39,23 +39,24 @@
                                     <Column id="fmnoCntCol" demandPopin="false" minScreenWidth="Tablet">
                                         <Text text="Number of FMNO's" />
                                     </Column>
-                            
+                                    <Column id="totalAmtCol" demandPopin="false" minScreenWidth="Tablet">
+                                        <Text text="Total Amount" />
+                                    </Column>
                                 </columns>
                                 <items>
                                     <ColumnListItem id="colListItm">
                                         <cells>
-                                            <Text text="{approvalView>/fmnoCnt}" />
-                                            <Text text="{approvalView>/lineCnt}" />
-                                            <Text text="{approvalView>/validLineCnt}" />
-                                            <Text text="{approvalView>/errorLineCnt}" />
-                                            <Text text="{approvalView>/totalAmt}" />
+                                            <Text text="{approvalView>STATUS}" />
+                                            <Text text="{approvalView>LINES_COUNT}" />
+                                            <Text text="{approvalView>FMNO_COUNT}" />
+                                            <Text text="{approvalView>TOTAL_AMOUNT}" />
                                         </cells>
                                     </ColumnListItem>
-                                </items> -->
+                                </items>
                             </Table>
                         </l:HorizontalLayout>
                         <l:HorizontalLayout class="sapUiContentPadding">
-                            <FormattedText htmlText="{totalAmt>/HTML}"></FormattedText>
+                            <FormattedText htmlText="{totalAmt>/HTML}" />
                         </l:HorizontalLayout>
                         <l:HorizontalLayout class="sapUiContentPadding">
                             <Text text="Describes what happens when click approve, any errors will be skipped and will have to be manually reprocessed. Recommed download errors (link above)." />

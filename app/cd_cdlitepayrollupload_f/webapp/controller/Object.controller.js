@@ -100,30 +100,27 @@ sap.ui.define([
             var oPostingData = new JSONModel();
             var that = this;
             //   that.getPostingData(parseInt(this._ID));
-            var sFilter = new Filter('batchId', FilterOperator.EQ, parseInt(this._ID));
-            var oList = this._oModel.bindList('/PostingBatch', undefined, undefined, sFilter, undefined);
+            var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(this._ID));
+            var sCostCenterFilter = new Filter('BATCH_ID', FilterOperator.EQ, parseInt(this._ID));
+            var oPostingList = this._oModel.bindList('/PostingBatch', undefined, undefined, sPostingFilter, undefined);
+            var oCostCenterList = this._oModel.bindList('/AmountSummary', undefined, undefined, sCostCenterFilter, undefined);
             var oPostingData = new JSONModel();
+            var oSummaryData = new JSONModel();
 
-            oList.requestContexts().then(function (aContexts) {
+            oCostCenterList.requestContexts().then(function (aContexts) {
+
+                oSummaryData.setData(aContexts.map(oContext => oContext.getObject()));
+                that.setModel(oSummaryData, "costCenterView");
+
+            });
+
+            oPostingList.requestContexts().then(function (aContexts) {
 
                 oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
                 that.setModel(oPostingData, "postingView");
 
             });
 
-
-            /*         $.get({
-                         url: sPostingURL,
-                         async: true,
-                         success: function (succData) {
-                             console.log(succData.value);
-                             oPostingData.setData(succData.value);
-                             that.setModel(oPostingData, "postingView");
-                         },
-                         error: function (error) {
-         
-                         }
-                     }); */
 
         },
 
@@ -259,15 +256,19 @@ sap.ui.define([
                 oViewModel.setProperty("/countAll", iTotalItems);
                 var succCnt = 0, errorCnt = 0;
 
+                if (this._sHeaderStatus.toUpperCase() === 'VALIDATED')
+                    oViewModel.setProperty("/enableButton", true);
+                else oViewModel.setProperty("/enableButton", false);
+
                 if (this._sHeaderStatus.toUpperCase() === 'APPROVED') {
                     var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "APPROVED");
                     var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "SKIPPED");
-                    oViewModel.setProperty("/enableButton", false);
+
 
                 } else {
                     var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "VALID");
                     var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "INVALID");
-                    oViewModel.setProperty("/enableButton", true);
+
                 }
 
                 oViewModel.setProperty("/success", succCnt);
@@ -381,22 +382,45 @@ sap.ui.define([
             oTable.getBinding("items").refresh();
         },
 
-        onPressApprove: function (oEvent) {
+        getValidTotalAmt: function (arr) {
+            var validLst = arr.filter(x => x.STATUS === 'VALID');
+            var invalidLst = arr.filter(x => x.STATUS === 'INVALID');
+            var validTotalAmt = 0;
+            this._enableApprove = true;
+            if (validLst.length > 0) {
+                for (var i = 0; i < validLst.length; i++) {
+                    validTotalAmt += parseFloat(validLst[i].AMOUNT);
+                }
+            } else {
+                this._enableApprove = false;
+            }
 
-            var oViewModel = new JSONModel({
-                HTML: "<h3>Total Amount: 0</h3>"
-            });
+            return validTotalAmt;
+        },
 
-            this.setModel(oViewModel, "totalAmt");
+        _onPressApprove: function (oEvent) {
+
             var oView = this.getView();
+
+            var oTemplate = new sap.m.ColumnListItem({
+                cells: [
+                    new sap.m.Text({ text: "{STATUS}" }),
+                    new sap.m.Text({ text: "{LINES_COUNT}" }),
+                    new sap.m.Text({ text: "{FMNO_COUNT}" }),
+                    new sap.m.Text({ text: "{TOTAL_AMOUNT}" })
+                ]
+            });
             var that = this;
             var sID = that._ID;
+
+            var sApproveFilter = new Filter('BATCH_ID', FilterOperator.EQ, parseInt(sID));
+
+
             var sBatchDesc = oView.byId("snappedHeadingSubTitle").getText();
             var sGLCompanyCode = oView.byId("companyCodeTxt").getText();
             var sCurrencyCode = oView.byId("currencyCodeTxt").getText();
             var sPayrollDate = oView.byId("payrollDateTxt").getText();
             var sEffectivePeriod = oView.byId("effectivePeriodTxt").getText();
-
 
             // create dialog lazily
             if (!that.byId("approveDialog")) {
@@ -413,21 +437,147 @@ sap.ui.define([
                     oView.byId("approveCompanyCode").setText(sGLCompanyCode);
                     oView.byId("approvePayrollDate").setText(sPayrollDate);
                     oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
-                    setTimeout(function () { that.createTotalTable(); }, 500);
+                    var oTable = oView.byId("approveSummaryList");
+                    oTable.bindItems({ path: '/ApprovalSummary', template: oTemplate, filters: sApproveFilter });
                     var sButton = oView.byId("approveBtn");
+                    /*                    var validLst = objArr.filter(x => x.STATUS === 'VALID');
+                                        if (validLst.length === 0) {
+                                            sButton.setEnabled(false);
+                                            var sHTML = "<h4>No Valid Line Items</h4>";
+                                        } else {
+                                            for (var i = 0; i < validLst.length; i++) {
+                                                if (validLst[i].AMOUNT !== '0') {
+                                                    var sHTML = "<h4>Total Valid Amount is not 0</h4>";
+                                                    sButton.setEnabled(false);
+                                                    break;
+                                                }
+                                            }
+                    
+                                        }
+                    
+                                        var oViewModel = new JSONModel({
+                                            HTML: sHTML
+                                        });
+                    
+                                        that.setModel(oViewModel, "totalAmt"); */
                     oDialog.setInitialFocus(sButton);
-                    /*           oDialog.addEventDelegate({
-                                   onAfterRendering: function() {
-                                       oView.byId("approveSummaryList").removeSelections(true);
-                                   }.bind(that)
-                               }) */
+
                     oDialog.open();
                 });
             } else {
                 that.byId("approveDialog").open();
             }
 
+
         },
+
+        approveViewModel: function (objArr) {
+            var validLst = objArr.filter(x => x.STATUS === 'VALID');
+            var totalLst = objArr.filter(x => x.STATUS === 'TOTAL');
+            var disableFlag = true;
+            if (validLst.length > 0) {
+                if (totalLst.length > 0) {
+                    if (parseFloat(totalLst[0].TOTAL_AMOUNT) !== 0) {
+                        var sHTML = "<h4>Total Valid Amount is not 0</h4>";
+                        disableFlag = false;
+                    }
+                }
+            }
+            else {
+                disableFlag = false;
+                var sHTML = "<h4>No Valid Line Items</h4>";
+            }
+
+            var oViewModel = new JSONModel({
+                HTML: sHTML,
+                approvalDisabled: disableFlag
+            });
+
+            return oViewModel;
+        },
+
+        onPressApprove: function (oEvent) {
+
+            var oView = this.getView();
+            var oModel = this.getOwnerComponent().getModel();
+
+            var that = this;
+            var sID = that._ID;
+
+            var oApprovalData = new JSONModel();
+            oApprovalData.setData(that.testSummaryAmout());
+            that.setModel(oApprovalData, "approvalView");
+            var sApproveFilter = new Filter('BATCH_ID', FilterOperator.EQ, parseInt(sID));
+            var oApprovalList = oModel.bindList('/ApprovalSummary', undefined, undefined, sApproveFilter, undefined);
+            var oApprovalData = new JSONModel();
+            //   setTimeout(function () { arr = that.testSummaryAmout(); }, 500); 
+            oApprovalList.requestContexts().then(function (aContexts) {
+                var objArr = aContexts.map(oContext => oContext.getObject());
+                oApprovalData.setData(objArr);
+                that.setModel(oApprovalData, "approvalView");
+
+                that.setModel(that.approveViewModel(objArr), "totalAmt");
+                var sBatchDesc = oView.byId("snappedHeadingSubTitle").getText();
+                var sGLCompanyCode = oView.byId("companyCodeTxt").getText();
+                var sCurrencyCode = oView.byId("currencyCodeTxt").getText();
+                var sPayrollDate = oView.byId("payrollDateTxt").getText();
+                var sEffectivePeriod = oView.byId("effectivePeriodTxt").getText();
+
+                // create dialog lazily
+                if (!that.byId("approveDialog")) {
+                    // load asynchronous XML fragment
+                    Fragment.load({
+                        id: oView.getId(),
+                        name: "batchuploads.fragments.Approve",
+                        controller: that
+                    }).then(function (oDialog) {
+                        oView.addDependent(oDialog);
+                        oView.byId("approvePageTitle").setText("Upload Batch " + sID + " Summary");
+                        oView.byId("approveDesc").setText(sBatchDesc);
+                        oView.byId("aprroveCurrency").setText(sCurrencyCode);
+                        oView.byId("approveCompanyCode").setText(sGLCompanyCode);
+                        oView.byId("approvePayrollDate").setText(sPayrollDate);
+                        oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
+
+                        var sButton = oView.byId("approveBtn");
+
+                        /*         var validLst = objArr.filter(x => x.STATUS === 'VALID');
+                                 var totalLst = objArr.filter(x => x.STATUS === 'TOTAL');
+                                 if (validLst.length > 0) {
+                                     if (totalLst.length > 0) {
+                                         if (parseFloat(totalLst[0].TOTAL_AMOUNT) !== 0) {
+                                             var sHTML = "<h4>Total Valid Amount is not 0</h4>";
+                                             sButton.setEnabled(false);
+                                         }
+                                     }
+                                 }
+                                 else {
+                                     sButton.setEnabled(false);
+                                     var sHTML = "<h4>No Valid Line Items</h4>";
+                                 }
+         
+                                 var oViewModel = new JSONModel({
+                                     HTML: sHTML
+                                 });
+         
+                                 that.setModel(oViewModel, "totalAmt"); */
+                        oDialog.setInitialFocus(sButton);
+                        oDialog.addEventDelegate({
+                            onBeforeRendering: function () {
+                                //oView.byId("approveSummaryList").removeSelections(true);
+                                console.log("test");
+                            }.bind(that)
+                        })
+                        oDialog.open();
+                    });
+                } else {
+                    that.byId("approveDialog").open();
+                }
+
+            });
+
+        },
+
 
         createTotalTable: function () {
             var oTable = this.byId("approveSummaryList");
@@ -485,6 +635,87 @@ sap.ui.define([
                     }
                 }.bind(that)
             });
+
+        },
+
+        testAmt: function () {
+
+        },
+
+        testSummaryAmout: function () {
+            var sURL = 'payroll/ApprovalSummary' + "?$filter=BATCH_ID eq " + parseInt(this._ID);
+            var oView = this.getView();
+            var sBatchDesc = oView.byId("snappedHeadingSubTitle").getText();
+            var sGLCompanyCode = oView.byId("companyCodeTxt").getText();
+            var sCurrencyCode = oView.byId("currencyCodeTxt").getText();
+            var sPayrollDate = oView.byId("payrollDateTxt").getText();
+            var sEffectivePeriod = oView.byId("effectivePeriodTxt").getText();
+
+            var oApprovalData = new JSONModel();
+            var that = this;
+            jQuery.ajax({
+                url: sURL,
+                type: "GET",
+                async: true,
+                dataType: "json",
+                success: function (result) {
+                    var objArr = JSON.stringify(result.value);
+                    //       var validLst = objArr.filter(x => x.STATUS === 'VALID');
+                    oApprovalData.setData(objArr);
+                    oView.setModel(oApprovalData, "approvalView");
+                    // create dialog lazily
+                    if (!that.byId("approveDialog")) {
+                        // load asynchronous XML fragment
+                        Fragment.load({
+                            id: oView.getId(),
+                            name: "batchuploads.fragments.Approve",
+                            controller: that
+                        }).then(function (oDialog) {
+                            oView.addDependent(oDialog);
+                            oView.byId("approvePageTitle").setText("Upload Batch " + that._ID + " Summary");
+                            oView.byId("approveDesc").setText(sBatchDesc);
+                            oView.byId("aprroveCurrency").setText(sCurrencyCode);
+                            oView.byId("approveCompanyCode").setText(sGLCompanyCode);
+                            oView.byId("approvePayrollDate").setText(sPayrollDate);
+                            oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
+
+                            var sButton = oView.byId("approveBtn");
+
+                            /*                if (validLst.length === 0) {
+                                                sButton.setEnabled(false);
+                                                var sHTML = "<h4>No Valid Line Items</h4>";
+                                            } else {
+                                                for (var i = 0; i < validLst.length; i++) {
+                                                    if (validLst[i].AMOUNT !== '0') {
+                                                        var sHTML = "<h4>Total Valid Amount is not 0</h4>";
+                                                        sButton.setEnabled(false);
+                                                        break;
+                                                    }
+                                                }
+                
+                                            } 
+                
+                                            var oViewModel = new JSONModel({
+                                                HTML: sHTML
+                                            });
+                
+                                            that.setModel(oViewModel, "totalAmt"); */
+                            oDialog.setInitialFocus(sButton);
+
+                            oDialog.open();
+                        });
+                    } else {
+                        that.byId("approveDialog").open();
+                    }
+
+
+                },
+
+                error: function (e) {
+                    console.log(e.message);
+                }
+            })
+            console.log("test");
 
         },
 
