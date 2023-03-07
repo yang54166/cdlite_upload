@@ -103,3 +103,30 @@ key        STATUS: String(5000)  @title: 'STATUS: STATUS' ;
         FMNO_COUNT: Integer64  @title: 'FMNO_COUNT: FMNO_COUNT' ; 
         TOTAL_AMOUNT: Decimal(15,2) @title: 'TOTAL_AMOUNT: TOTAL_AMOUNT';
 }
+
+@cds.persistence.exists 
+@cds.persistence.calcview 
+Entity CV_PARTNER_COMP_DATA (IP_PERIOD : String(13)){
+key     BATCHID: Integer  @title: 'BATCHID: BATCHID' ; 
+        CDTRANSACTIONTYPE: String(2)  @title: 'CDTRANSACTIONTYPE: CDTRANSACTIONTYPE' ; 
+        GLDATE: Date  @title: 'GLDATE: GLDATE' ; 
+        PAYROLLPERIOD: String(5000)  @title: 'PAYROLLPERIOD: PAYROLLPERIOD' ; 
+        SOURCESYSTEM: String(10)  @title: 'SOURCESYSTEM: SOURCESYSTEM' ; 
+        BATCHSTATUS: String(5000)  @title: 'BATCHSTATUS: BATCHSTATUS' ; 
+        BATCHLINENUMBER: Integer  @title: 'BATCHLINENUMBER: BATCHLINENUMBER' ; 
+        CHARGEAMOUNT: Decimal(15)  @title: 'CHARGEAMOUNT: CHARGEAMOUNT' ; 
+        CHARGECOSTCENTER: String(8)  @title: 'CHARGECOSTCENTER: CHARGECOSTCENTER' ; 
+        CHARGECURRENCYCODE: String(3)  @title: 'CHARGECURRENCYCODE: CHARGECURRENCYCODE' ; 
+        FCAT: String(3)  @title: 'FCAT: FCAT' ; 
+        FMNO: String(9)  @title: 'FMNO: FMNO' ; 
+        GLACCOUNT: Integer  @title: 'GLACCOUNT: GLACCOUNT' ; 
+        GLCURRENCYCODE: String(4)  @title: 'GLCURRENCYCODE: GLCURRENCYCODE' ; 
+        GLPOSTCOSTCENTER: String(8)  @title: 'GLPOSTCOSTCENTER: GLPOSTCOSTCENTER' ; 
+        GLPOSTDEPARTMENT: String(5)  @title: 'GLPOSTDEPARTMENT: GLPOSTDEPARTMENT' ; 
+        PAYROLLCODE: String(10)  @title: 'PAYROLLCODE: PAYROLLCODE' ; 
+        SKILLCODE: String(4)  @title: 'SKILLCODE: SKILLCODE' ; 
+        SOURCEAMOUNT: Decimal(15)  @title: 'SOURCEAMOUNT: SOURCEAMOUNT' ; 
+        GLPOSTCOMPANY: String(4)  @title: 'GLPOSTCOMPANY: GLPOSTCOMPANY' ; 
+        USDAMOUNT: Decimal(15)  @title: 'USDAMOUNT: USDAMOUNT' ; 
+        DESCRIPTION: String(5000)  @title: 'DESCRIPTION: DESCRIPTION' ; 
+}
