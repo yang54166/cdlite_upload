@@ -9,7 +9,7 @@ sap.ui.define([
 ], function (BaseController, Fragment, JSONModel, formatter, MessageBox, Filter, FilterOperator) {
     "use strict";
 
-    return BaseController.extend("batchuploads.controller.Worklist", {
+    return BaseController.extend("mck.cdlite.payrollupload.controller.Worklist", {
 
         formatter: formatter,
         _oDialog: null,
@@ -251,7 +251,7 @@ sap.ui.define([
                 // load asynchronous XML fragment
                 Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Approve",
+                    name: "mck.cdlite.payrollupload.fragments.Approve",
                     controller: that
                 }).then(function (oDialog) {
                     that._oDialog = oDialog;
@@ -293,7 +293,7 @@ sap.ui.define([
                 // load asynchronous XML fragment
                 Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Upload",
+                    name: "mck.cdlite.payrollupload.fragments.Upload",
                     controller: this
                 }).then(function (oDialog) {
                     // connect dialog to the root view 
@@ -545,7 +545,7 @@ sap.ui.define([
             if (!this._pPopover) {
                 this._pPopover = Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Settings",
+                    name: "mck.cdlite.payrollupload.fragments.Settings",
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);

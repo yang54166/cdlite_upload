@@ -9,13 +9,13 @@
         <l:VerticalLayout class="sapUiContentPadding" width="100%">
             <l:content>
                 <List id="popoverLst">
-                    <DisplayListItem id="popGLAct" label="GL Account" value="" />
-                    <DisplayListItem id="popGLCostCenter" label="GL Cost Center" value="" />
-                    <DisplayListItem id="popCurrencyCode" label="GL Currrency Code" value="" />
-                    <DisplayListItem id="popFCAT" label="FCAT" />
-                    <DisplayListItem id="popLocCode" label="Location Code" value="" />
-                    <DisplayListItem id="popPernr" label="Personal No." />
-                    <DisplayListItem id="popSkillCode" label="Skill Code" />
+                    <DisplayListItem id="popGLAct" label="{i18n>colGlAccount}" value="" />
+                    <DisplayListItem id="popGLCostCenter" label="{i18n>colGlCostCenter}" value="" />
+                    <DisplayListItem id="popCurrencyCode" label="{i18n>colCurrency}" value="" />
+                    <DisplayListItem id="popFCAT" label="{i18n>colFCAT}" />
+                    <DisplayListItem id="popLocCode" label="{i18n>colLocation}" value="" />
+                    <DisplayListItem id="popPernr" label="{i18n>colPernr}" />
+                    <DisplayListItem id="popSkillCode" label="{i18n>colSkillCode}" />
                 </List>
             </l:content>
         </l:VerticalLayout>

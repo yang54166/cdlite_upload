@@ -22,7 +22,7 @@ sap.ui.define([
 
     var EdmType = exportLibrary.EdmType;
 
-    return BaseController.extend("batchuploads.controller.Object", {
+    return BaseController.extend("mck.cdlite.payrollupload.controller.Object", {
 
         formatter: formatter,
 
@@ -508,7 +508,7 @@ sap.ui.define([
                 // load asynchronous XML fragment
                 Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Approve",
+                    name: "mck.cdlite.payrollupload.fragments.Approve",
                     controller: that
                 }).then(function (oDialog) {
                     oView.addDependent(oDialog);
@@ -616,7 +616,7 @@ sap.ui.define([
                     // load asynchronous XML fragment
                     Fragment.load({
                         id: oView.getId(),
-                        name: "batchuploads.fragments.Approve",
+                        name: "mck.cdlite.payrollupload.fragments.Approve",
                         controller: that
                     }).then(function (oDialog) {
                         oView.addDependent(oDialog);
@@ -731,7 +731,7 @@ sap.ui.define([
                         // load asynchronous XML fragment
                         Fragment.load({
                             id: oView.getId(),
-                            name: "batchuploads.fragments.Approve",
+                            name: "mck.cdlite.payrollupload.fragments.Approve",
                             controller: that
                         }).then(function (oDialog) {
                             oView.addDependent(oDialog);
@@ -999,7 +999,7 @@ sap.ui.define([
             if (!this._pPopover) {
                 this._pPopover = Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Popover",
+                    name: "mck.cdlite.payrollupload.fragments.Popover",
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);

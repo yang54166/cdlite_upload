@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="batchuploads.controller.NotFound"
+    controllerName="mck.cdlite.payrollupload.controller.NotFound"
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc">
 

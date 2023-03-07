@@ -1,4 +1,4 @@
-<mvc:View controllerName="batchuploads.controller.Worklist" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.f.semantic" xmlns:fb="sap.ui.comp.filterbar" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
+<mvc:View controllerName="mck.cdlite.payrollupload.controller.Worklist" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.f.semantic" xmlns:fb="sap.ui.comp.filterbar" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
     <semantic:SemanticPage id="page" headerPinnable="false" toggleHeaderOnTitleClick="false">
         <semantic:titleHeading>
             <Title id="pageTitle" text="{i18n>worklistTitle}" level="H2" />
