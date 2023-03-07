@@ -10,7 +10,7 @@
                     <ComboBox
                         id="companyCodeList"
                         name="Name"
-                        change=".onCompanyCodeChange"
+                        change=".onFiltersChange"
                         showSecondaryValues="true"
                         filterSecondaryValues="true"
                         items="{
@@ -26,8 +26,8 @@
                     </ComboBox>
                 </l:VerticalLayout>
                 <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">
-                    <Label id="monthYearLabel" text="{i18n>UploadMonth}" design="Bold" />
-                    <ComboBox id="monthYearList" name="Category" selectionChange=".onUploadRangeChange" selectedKey="99-0000" items="{
+                    <Label id="monthYearLabel" text="{i18n>lblUploadMonth}" design="Bold" />
+                    <ComboBox id="monthYearList" name="Category" selectionChange=".onFiltersChange" selectedKey="00" items="{
 												path: 'uploadRangesList>/',
 												templateShareable: true
 											}">

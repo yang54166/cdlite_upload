@@ -111,15 +111,23 @@ sap.ui.define([
             oControlEvent.getSource().getBinding("items").resume();
         },
 
-        onCompanyCodeChange: function (oEvent) {
+        onFiltersChange: function (oEvent) {
 
             var oBinding = this.byId("table").getBinding("items"),
                 sSelectedKey = oEvent.getSource().getSelectedKey();
 
-            var filters = [];
-            if (sSelectedKey.length > 0)
-                filters.push(new Filter('glCompanyCode', FilterOperator.EQ, sSelectedKey));
+            var oCompanyCodeList = this.byId("companyCodeList");
+            var oMonthYearList = this.byId("monthYearList");
 
+            var filters = [];
+            if (oCompanyCodeList.getSelectedKey().length > 0) {
+                filters.push(new Filter('glCompanyCode', FilterOperator.EQ, oCompanyCodeList.getSelectedKey()));
+            }
+            if (oMonthYearList.getSelectedKey() !== "00"){
+                const OldestDate = new Date();
+                OldestDate.setDate(OldestDate.getDate() - parseInt(oMonthYearList.getSelectedKey()));
+                filters.push(new Filter('createdAt', FilterOperator.GT, OldestDate.toISOString()));
+            } 
             oBinding.filter(filters);
 
         },

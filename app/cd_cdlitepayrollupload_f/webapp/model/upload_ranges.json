@@ -1,22 +1,22 @@
 [
     {
-        "dateRange": "99-0000",
+        "dateRange": "00",
         "longDesc": "All"
     },
     {
-        "dateRange": "01-2023",
-        "longDesc": "Jan 2023"
+        "dateRange": "07",
+        "longDesc": "Last 7 days"
     },
     {
-        "dateRange": "02-2023",
-        "longDesc": "Feb 2023"
+        "dateRange": "30",
+        "longDesc": "Last 30 Days"
     },
     {
-        "dateRange": "03-2023",
-        "longDesc": "March 2023"
+        "dateRange": "60",
+        "longDesc": "Last 60 Days"
     },
     {
-        "dateRange": "04-2023",
-        "longDesc": "April 2023"
+        "dateRange": "90",
+        "longDesc": "Last 90 Days"
     }
 ]
