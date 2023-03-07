@@ -28,11 +28,6 @@ service PayrollService  @(requires: 'authenticated-user') {
         @Core.IsMediaType: true mediaType: String;
     };
 
-    entity PostingView as SELECT from PostingBatch as pb LEFT JOIN CV_JOURNALENTRY as je on pb.batchId = je.BATCHID {
-        pb.postingDocument,pb.postingStatus, pb.postingStatusMessage, pb.postingType, 
-        je.BATCHID, je.POSTINGBATCHID,je.items: redirected to JournalEntryItem on BATCHID=BATCHID and POSTINGBATCHID=POSTINGBATCHID
-    };
-
     // Staging
     entity StagingUploads      as projection on staging.UploadHeader actions {
         action approve();
@@ -44,7 +39,8 @@ service PayrollService  @(requires: 'authenticated-user') {
     // Payroll (Persistent)
     entity PayrollHeader       as projection on payroll.PayrollHeader;
     entity PayrollDetails      as projection on payroll.PayrollDetails;
-    entity PostingBatch        as projection on payroll.PostingBatch;
+    entity PostingBatch        as projection on payroll.PostingBatch
+        excluding {postingType};
 
     // Mapping
     entity LegalEntityGrouping as projection on mapping.LegalEntityGrouping ;
