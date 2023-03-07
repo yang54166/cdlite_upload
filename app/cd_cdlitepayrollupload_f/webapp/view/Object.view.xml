@@ -29,9 +29,9 @@
                     <m:Label id="extendedSubtitle" text="{batchDescription}" />
                 </expandedContent>
                 <actions>
-                    <m:Button id="dtlApproveBtn" text="Approve" press="onPressApprove" type="Emphasized" enabled="{objectView>/enableButton}" />
-                    <m:Button id="dtlDeleteBtn" text="Delete" press="onPressDelete" enabled="{objectView>/enableButton}" />
-                    <m:Button id="dtlRevalideBtn" text="Revalidation" press="onRevalidatation" enabled="{objectView>/enableButton}" />
+                    <m:Button id="dtlApproveBtn" text="Approve" press="onPressApprove" type="Emphasized" enabled="{objectView>/enableApproveButton}" />
+                    <m:Button id="dtlDeleteBtn" text="Delete" press="onPressDelete" enabled="{objectView>/enableDeleteButton}" />
+                    <m:Button id="dtlRevalideBtn" text="Revalidation" press="onRevalidatation" enabled="{objectView>/enableRevalButton}" />
                     <m:Button id="dtlRefreshBtn" icon="sap-icon://refresh" press="onPressRefresh" />
                     
                 </actions>
@@ -99,12 +99,23 @@
                 <m:VBox id="uploadHeaderSec5" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
                     <m:HBox id="uploadHeaderSec5V1" class="sapUiTinyMarginBottom">
                         <m:Label id="modifiedByLbl" text="{i18n>modifiedBy}" class="sapUiSmallMarginEnd" />
-                        <m:Text id="modifiedByTxt" text="{createdBy}" />
+                        <m:Text id="modifiedByTxt" text="{modifiedBy}" />
                     </m:HBox>
 
                     <m:HBox id="uploadHeaderSec5V2" class="sapUiTinyMarginBottom">
                         <m:Label id="modifiedAtLbl" text="{i18n>modifiedAt}" class="sapUiSmallMarginEnd" />
                         <m:Text id="modifiedAtTxt" text=" {modifiedAt}" />
+                    </m:HBox>
+                </m:VBox>
+                 <m:VBox id="uploadHeaderSec6" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                    <m:HBox id="uploadHeaderSec6V1" class="sapUiTinyMarginBottom">
+                        <m:Label id="approvedByLbl" text="{i18n>approvedBy}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="approvedByTxt" text="" />
+                    </m:HBox>
+
+                    <m:HBox id="uploadHeaderSec6V2" class="sapUiTinyMarginBottom">
+                        <m:Label id="approvedAtLbl" text="{i18n>approvedAt}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="approvedAtTxt" text="" />
                     </m:HBox>
                 </m:VBox>
             </m:HeaderContainer>

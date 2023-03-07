@@ -43,13 +43,17 @@ sap.ui.define([
                 inError: 0,
                 success: 0,
                 countAll: 0,
-                enableButton: true
+                enableApproveButton: false,
+                enableDeleteButton: false,
+                enableReValButton: false
             });
             this._oModel = this.getOwnerComponent().getModel();
             var summaryDataModel = this.getOwnerComponent().getModel("summaryData");
             this.setModel(summaryDataModel, "summaryView");
             var oTable = this.getView().byId("lineItemsList");
-
+            this._succCnt = 0;
+            this._allCnt = 0;
+            this._errorCnt = 0;
             this._oTable = oTable;
 
             this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
@@ -79,7 +83,9 @@ sap.ui.define([
                 history.go(-1);
             } else {
                 this.getRouter().navTo("worklist", {}, true);
+
             }
+
         },
 
         /* =========================================================== */
@@ -93,13 +99,20 @@ sap.ui.define([
          * @private
          */
         _onObjectMatched: function (oEvent) {
+
             var sObjectId = oEvent.getParameter("arguments").objectId;
             this._ID = sObjectId.replace(/[{()}]/g, '');
             this._bindView("/StagingUploads" + sObjectId);
-            var sPostingURL = 'payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
+            /*    var allContexts = this._oModel.bindList("/StagingUploads" + sObjectId, undefined, undefined, undefined, undefined);
+                allContexts.requestContexts().then(function (aContexts) {
+                    this._allObjects = aContexts.map(oContext => oContext.getObject());
+    
+                }); */
+            //   var sPostingURL = 'payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
             var oPostingData = new JSONModel();
             var that = this;
             //   that.getPostingData(parseInt(this._ID));
+
             var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(this._ID));
             var sCostCenterFilter = new Filter('BATCH_ID', FilterOperator.EQ, parseInt(this._ID));
             var oPostingList = this._oModel.bindList('/PostingBatch', undefined, undefined, sPostingFilter, undefined);
@@ -166,6 +179,7 @@ sap.ui.define([
                 oViewModel = this.getModel("objectView"),
                 oElementBinding = oView.getElementBinding();
 
+
             // No data for the binding
             if (!oElementBinding.getBoundContext()) {
                 this.getRouter().getTargets().display("objectNotFound");
@@ -229,6 +243,18 @@ sap.ui.define([
             oTable.removeSelections(true);
         },
 
+        getSuccCnt: function (oCurrntObjs) {
+            var filteredData = oCurrntObjs.filter(data => (data.status === 'APPROVED' || data.status === 'VALID'));
+            this._succCnt = filteredData.length;
+
+        },
+
+        getErrorCnt: function (oCurrntObjs) {
+            var filteredData = oCurrntObjs.filter(data => (data.status === 'SKIPPED' || data.status === 'INVALID'));
+            this._errorCnt = filteredData.length;
+
+        },
+
         getFilteredCnt: function (oCurrntObjs, status) {
             var filteredData = oCurrntObjs.filter(data => (data.status === status));
             if (status === 'SKIPPED' || status === 'INVALID')
@@ -246,43 +272,72 @@ sap.ui.define([
 
             this._sHeaderStatus = this.byId("detailStatusTxt").getText();
             var sKey = oIconFilter.getSelectedKey();
+            var sFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
             var oAllCurrentContexts = oItemsBinding.getAllCurrentContexts();
             this._oAllCurrentObjs = oAllCurrentContexts.map(oContext => oContext.getObject());
+            var that = this;
+            if (that._sHeaderStatus.toUpperCase() === 'APPROVED') {
+                var oApproveList = that._oModel.bindContext("/PayrollHeader(" + that._ID + ")");
+                oApproveList.requestObject().then(function (sObject) {
+                    console.log(sObject);
+                    that.getView().byId("approvedByTxt").setText(sObject.approvedBy);
+                    that.getView().byId("approvedAtTxt").setText(sObject.approvedAt);
+                });
+            } else {
+                that.getView().byId("approvedByTxt").setText("");
+                that.getView().byId("approvedAtTxt").setText("");
+            }
 
             // only update the counter if the length is final
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
 
-                sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
-                oViewModel.setProperty("/countAll", iTotalItems);
-                var succCnt = 0, errorCnt = 0;
+                sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
 
-                if (this._sHeaderStatus.toUpperCase() === 'VALIDATED')
-                    oViewModel.setProperty("/enableButton", true);
-                else oViewModel.setProperty("/enableButton", false);
-
-                if (this._sHeaderStatus.toUpperCase() === 'APPROVED') {
-                    var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "APPROVED");
-                    var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "SKIPPED");
-
-
-                } else {
-                    var succCnt = this.getFilteredCnt(this._oAllCurrentObjs, "VALID");
-                    var errorCnt = this.getFilteredCnt(this._oAllCurrentObjs, "INVALID");
-
+                if (that._sHeaderStatus.toUpperCase() === 'VALIDATED') {
+                    oViewModel.setProperty("/enableDeleteButton", true);
+                    oViewModel.setProperty("/enableRevalButton", true);
+                    oViewModel.setProperty("/enableApproveButton", true);
+                }
+                if (that._sHeaderStatus.toUpperCase() === 'STAGED') {
+                    oViewModel.setProperty("/enableDeleteButton", true);
+                    oViewModel.setProperty("/enableRevalButton", true);
+                    oViewModel.setProperty("/enableApproveButton", false);
+                }
+                if (that._sHeaderStatus.toUpperCase() === 'APPROVED') {
+                    oViewModel.setProperty("/enableDeleteButton", false);
+                    oViewModel.setProperty("/enableRevalButton", false);
+                    oViewModel.setProperty("/enableApproveButton", false);
                 }
 
-                oViewModel.setProperty("/success", succCnt);
-                oViewModel.setProperty("/inError", errorCnt);
+                if (sFilter === undefined) {
+                    oViewModel.setProperty("/countAll", iTotalItems);
+                    var succCnt = 0, errorCnt = 0;
+
+                    if (that._sHeaderStatus.toUpperCase() === 'APPROVED') {
+                        var succCnt = that.getFilteredCnt(that._oAllCurrentObjs, "APPROVED");
+                        var errorCnt = that.getFilteredCnt(that._oAllCurrentObjs, "SKIPPED");
+
+
+                    } else {
+                        var succCnt = that.getFilteredCnt(that._oAllCurrentObjs, "VALID");
+                        var errorCnt = that.getFilteredCnt(that._oAllCurrentObjs, "INVALID");
+
+                    }
+
+
+                    oViewModel.setProperty("/success", succCnt);
+                    oViewModel.setProperty("/inError", errorCnt);
+                }
 
 
             } else {
                 //Display 'Line Items' instead of 'Line items (0)'
                 if (sKey === 'success')
-                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/success")]);
+                    sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/success")]);
                 else if (sKey === 'inError')
-                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/inError")]);
+                    sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/inError")]);
                 else
-                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
+                    sTitle = that.getResourceBundle().getText("detailLineItemTableHeading");
             }
             oViewModel.setProperty("/lineItemListTitle", sTitle);
 
@@ -471,21 +526,27 @@ sap.ui.define([
 
         },
 
-        approveViewModel: function (objArr) {
+        approveViewModel: function (objArr, sTransType) {
             var validLst = objArr.filter(x => x.STATUS === 'VALID');
             var totalLst = objArr.filter(x => x.STATUS === 'TOTAL');
             var disableFlag = true;
-            if (validLst.length > 0) {
-                if (totalLst.length > 0) {
-                    if (parseFloat(totalLst[0].TOTAL_AMOUNT) !== 0) {
-                        var sHTML = "<h4>Total Valid Amount is not 0</h4>";
-                        disableFlag = false;
+            var sHTML = "";
+            if (sTransType === '02') {
+                sHTML = "Transaction Type is Taxes";
+                disableFlag = false;
+            } else {
+                if (validLst.length > 0) {
+                    if (totalLst.length > 0) {
+                        if (parseFloat(totalLst[0].TOTAL_AMOUNT) !== 0) {
+                            sHTML = "<h4>Total Valid Amount is not 0</h4>";
+                            disableFlag = false;
+                        }
                     }
                 }
-            }
-            else {
-                disableFlag = false;
-                var sHTML = "<h4>No Valid Line Items</h4>";
+                else {
+                    disableFlag = false;
+                    sHTML = "<h4>No Valid Line Items</h4>";
+                }
             }
 
             var oViewModel = new JSONModel({
@@ -512,11 +573,12 @@ sap.ui.define([
             var oApprovalData = new JSONModel();
             //   setTimeout(function () { arr = that.testSummaryAmout(); }, 500); 
             oApprovalList.requestContexts().then(function (aContexts) {
+                var sTransType = oView.byId("detailTransTypeTxt").getText();
                 var objArr = aContexts.map(oContext => oContext.getObject());
                 oApprovalData.setData(objArr);
                 that.setModel(oApprovalData, "approvalView");
 
-                that.setModel(that.approveViewModel(objArr), "totalAmt");
+                that.setModel(that.approveViewModel(objArr, sTransType), "totalAmt");
                 var sBatchDesc = oView.byId("snappedHeadingSubTitle").getText();
                 var sGLCompanyCode = oView.byId("companyCodeTxt").getText();
                 var sCurrencyCode = oView.byId("currencyCodeTxt").getText();
@@ -539,35 +601,9 @@ sap.ui.define([
                         oView.byId("approvePayrollDate").setText(sPayrollDate);
                         oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
 
-                        var sButton = oView.byId("approveBtn");
+                        //     var sButton = oView.byId("approveBtn");
+                        //     oDialog.setInitialFocus(sButton);
 
-                        /*         var validLst = objArr.filter(x => x.STATUS === 'VALID');
-                                 var totalLst = objArr.filter(x => x.STATUS === 'TOTAL');
-                                 if (validLst.length > 0) {
-                                     if (totalLst.length > 0) {
-                                         if (parseFloat(totalLst[0].TOTAL_AMOUNT) !== 0) {
-                                             var sHTML = "<h4>Total Valid Amount is not 0</h4>";
-                                             sButton.setEnabled(false);
-                                         }
-                                     }
-                                 }
-                                 else {
-                                     sButton.setEnabled(false);
-                                     var sHTML = "<h4>No Valid Line Items</h4>";
-                                 }
-         
-                                 var oViewModel = new JSONModel({
-                                     HTML: sHTML
-                                 });
-         
-                                 that.setModel(oViewModel, "totalAmt"); */
-                        oDialog.setInitialFocus(sButton);
-                        oDialog.addEventDelegate({
-                            onBeforeRendering: function () {
-                                //oView.byId("approveSummaryList").removeSelections(true);
-                                console.log("test");
-                            }.bind(that)
-                        })
                         oDialog.open();
                     });
                 } else {
@@ -631,6 +667,7 @@ sap.ui.define([
                         oContext.delete().then(function () {
                             //that.onNavBack();
                             that.getRouter().navTo("worklist");
+
                         })
                     }
                 }.bind(that)

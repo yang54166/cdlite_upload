@@ -212,6 +212,7 @@ sap.ui.define([
             this.getRouter().navTo("object", {
                 objectId: oItem.getBindingContext().getPath().substring("/StagingUploads".length)
             });
+           
             sap.ui.core.BusyIndicator.show();
         },
 

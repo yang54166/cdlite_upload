@@ -1,10 +1,10 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:semantic="sap.f.semantic" xmlns:f="sap.ui.layout.form" xmlns:u="sap.ui.unified">
-    <Dialog id="approveDialog" resizable="true" draggable="true" showHeader="false" afterClose="onAfterClose" contentWidth="780px" contentHeight="500px">
+    <Dialog id="approveDialog" resizable="true" draggable="true" showHeader="false" afterClose="onAfterClose" contentWidth="780px" contentHeight="450px">
         <beginButton>
-            <Button id="approveBtn" text="Approve" enabled="{totalAmt>/approvalDisabled}" press="approveUploads" />
+            <Button text="Approve" enabled="{totalAmt>/approvalDisabled}" press="approveUploads" />
         </beginButton>
         <endButton>
-            <Button id="cancelBtn" text="Cancel" press="closeApprovalDialog" />
+            <Button text="Cancel" press="closeApprovalDialog" />
         </endButton>
         <content>
             <semantic:SemanticPage id="approvePage" headerPinnable="false" toggleHeaderOnTitleClick="false" busy="{objectView>/busy}" busyIndicatorDelay="{objectView>/delay}">
