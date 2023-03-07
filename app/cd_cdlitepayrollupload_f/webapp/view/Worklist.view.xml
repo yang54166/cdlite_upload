@@ -6,7 +6,7 @@
         <semantic:headerContent>
             <l:HorizontalLayout id="horizonLayout">
                 <l:VerticalLayout id="companyCodeFilterLayout" class="sapUiMediumMarginEnd">
-                    <Label id="compCodeLabel" text="Company Code" design="Bold" />
+                    <Label id="compCodeLabel" text="{i18n>lblCompanyCode}" design="Bold" />
                     <ComboBox
                         id="companyCodeList"
                         name="Name"
@@ -26,7 +26,7 @@
                     </ComboBox>
                 </l:VerticalLayout>
                 <l:VerticalLayout id="dateFilterLayout" class="sapUiMediumMarginEnd">
-                    <Label id="monthYearLabel" text="Upload Month/Year" design="Bold" />
+                    <Label id="monthYearLabel" text="{i18n>UploadMonth}" design="Bold" />
                     <ComboBox id="monthYearList" name="Category" selectionChange=".onUploadRangeChange" selectedKey="99-0000" items="{
 												path: 'uploadRangesList>/',
 												templateShareable: true
@@ -71,38 +71,38 @@
 
                 <columns>
                     <Column width="6%" id="batchNoColumn">
-                        <Text id="BATCHNUMBER" text="Batch No" />
+                        <Text id="BATCHNUMBER" text="{i18n>colBatchID}" />
                     </Column>
                     <Column width="10%" id="batchDescColumn" demandPopin="false" minScreenWidth="Tablet">
-                        <Text id="BATCHDESCRIPTION" text="Batch Description" />
+                        <Text id="BATCHDESCRIPTION" text="{i18n>colBatchDescription}" />
                     </Column>
                     <Column width="8%" id="glCompanyCodedColumn" hAlign="End">
-                        <Text id="glCompanyCodeCol" text="Company Code" />
+                        <Text id="glCompanyCodeCol" text="{i18n>colGlCompanyCode}" />
                     </Column>
 
                     <Column width="9%" id="payrollDateColumn" hAlign="End">
-                        <Text id="payrollDateCol" text="Payroll Date" />
+                        <Text id="payrollDateCol" text="{i18n>colPayrollDate}" />
                     </Column>
                     <Column width="8%" id="transTypeColumn" hAlign="End">
-                        <Text id="transTypeCol" text="Transaction Type" />
+                        <Text id="transTypeCol" text="{i18n>colTransactionType}" />
                     </Column>
                     <Column width="9%" id="currencyColumn" hAlign="End">
-                        <Text id="currencyCol" text="Currency" />
+                        <Text id="currencyCol" text="{i18n>colCurrency}" />
                     </Column>
                     <Column width="9%" id="glPeriodColumn" hAlign="End">
-                        <Text id="glPeriod" text="GL Period" />
+                        <Text id="glPeriod" text="{i18n>colGlPeriod}" />
                     </Column>
                     <Column width="9%" id="effectivePeriodColumn" hAlign="End">
-                        <Text id="effectivePeriod" text="Effective Period" />
+                        <Text id="effectivePeriod" text="{i18n>colEffectivePeriod}" />
                     </Column>
                     <Column width="9%" id="statusColumn" demandPopin="true" minScreenWidth="Tablet" hAlign="End">
-                        <Text id="headerStatus" text="Status" />
+                        <Text id="headerStatus" text="{i18n>colStatus}" />
                     </Column>
                     <Column width="11%" id="createdByColumn" hAlign="End">
-                        <Text id="creaatedByCol" text="Created By" />
+                        <Text id="creaatedByCol" text="{i18n>colCreatedBy}" />
                     </Column>
                     <Column width="12%" id="createdAtColumn" hAlign="End">
-                        <Text id="createdAtCol" text="Created At" />
+                        <Text id="createdAtCol" text="{i18n>colCreatedAt}" />
                     </Column>
                     <!--<Column id="approveColumn" hAlign="End" /> -->
                 </columns>
@@ -128,12 +128,8 @@
                 </items>
             </Table>
         </semantic:content>
-
-        <semantic:titleCustomIconActions>
-            <OverflowToolbarButton id="settings" tooltip="Settings" text="Settings" press="handleSettingsPress" icon="sap-icon://action-settings" />
-        </semantic:titleCustomIconActions>
         <semantic:titleMainAction>
-            <semantic:TitleMainAction id="uploadAction" text="Upload" press="onUpload" />
+            <semantic:TitleMainAction id="uploadAction" text="{i18n>btnUpload}" press="onUpload" />
         </semantic:titleMainAction>
     </semantic:SemanticPage>
 </mvc:View>

@@ -434,7 +434,28 @@ sap.ui.define([
         },
         onRefresh: function () {
             var oTable = this.byId("lineItemsList");
-            oTable.getBinding("items").refresh();
+            oTable.getBinding("items").refresh(true);
+
+        },
+
+        onPressRefresh: function () {
+            var oView = this.getView();
+            var listPostingSummary = this.getView().byId("postingSummaryList");
+            listPostingSummary.setBusy(true);
+
+            window.setTimeout(()=>{
+                var batchId = this.getView().getBindingContext().getObject().ID
+                var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(batchId));
+                var oPostingList = this._oModel.bindList('/PostingBatch', undefined, undefined, sPostingFilter, undefined);
+                var oPostingData = new JSONModel();
+                oPostingList.requestContexts().then(function (aContexts) {
+                    oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
+                    oView.setModel(oPostingData, "postingView");
+    
+                    listPostingSummary.setBusy(false);
+                });
+            }, 1000);
+           
         },
 
         getValidTotalAmt: function (arr) {
