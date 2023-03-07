@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (BaseController) {
     "use strict";
 
-    return BaseController.extend("batchuploads.controller.NotFound", {
+    return BaseController.extend("mck.cdlite.payrollupload.controller.NotFound", {
 
         /**
          * Navigates to the worklist when the link is pressed

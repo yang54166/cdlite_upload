@@ -9,7 +9,7 @@ sap.ui.define([
 ], function (BaseController, Fragment, JSONModel, formatter, MessageBox, Filter, FilterOperator) {
     "use strict";
 
-    return BaseController.extend("batchuploads.controller.Worklist", {
+    return BaseController.extend("mck.cdlite.payrollupload.controller.Worklist", {
 
         formatter: formatter,
         _oDialog: null,
@@ -111,16 +111,56 @@ sap.ui.define([
             oControlEvent.getSource().getBinding("items").resume();
         },
 
-        onCompanyCodeChange: function (oEvent) {
+        onFiltersChange: function (oEvent) {
 
             var oBinding = this.byId("table").getBinding("items"),
                 sSelectedKey = oEvent.getSource().getSelectedKey();
 
-            var filters = [];
-            if (sSelectedKey.length > 0)
-                filters.push(new Filter('glCompanyCode', FilterOperator.EQ, sSelectedKey));
+            var oCompanyCodeList = this.byId("companyCodeList");
+            var oMonthYearList = this.byId("monthYearList");
 
+            var filters = [];
+            if (oCompanyCodeList.getSelectedKey().length > 0) {
+                filters.push(new Filter('glCompanyCode', FilterOperator.EQ, oCompanyCodeList.getSelectedKey()));
+            }
+            if (oMonthYearList.getSelectedKey() !== "00"){
+                const OldestDate = new Date();
+                OldestDate.setDate(OldestDate.getDate() - parseInt(oMonthYearList.getSelectedKey()));
+                filters.push(new Filter('createdAt', FilterOperator.GT, OldestDate.toISOString()));
+            } 
             oBinding.filter(filters);
+
+        },
+
+        onCompanyCodeValidate: function (oEvent) {
+
+            var oInput = oEvent.getSource();
+            var bValid = !oInput.getSelectedKey();
+            var oButton = this.getView().byId("submitBtn");
+            if (bValid) {
+                oInput.setValueState("Error");
+                oButton.setEnabled(false);
+            } else {
+                oInput.setValueState("None");
+                oButton.setEnabled(true);
+            }
+            // oInput.setValueState(bValid ? "Error" : "None");
+
+        },
+
+        onCurrencyValidate: function (oEvent) {
+
+            var oInput = oEvent.getSource();
+            var bValid = !oInput.getSelectedKey();
+            var oButton = this.getView().byId("submitBtn");
+            if (bValid) {
+                oInput.setValueState("Error");
+                oButton.setEnabled(false);
+            } else {
+                oInput.setValueState("None");
+                oButton.setEnabled(true);
+            }
+
 
         },
 
@@ -180,6 +220,7 @@ sap.ui.define([
             this.getRouter().navTo("object", {
                 objectId: oItem.getBindingContext().getPath().substring("/StagingUploads".length)
             });
+           
             sap.ui.core.BusyIndicator.show();
         },
 
@@ -218,7 +259,7 @@ sap.ui.define([
                 // load asynchronous XML fragment
                 Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Approve",
+                    name: "mck.cdlite.payrollupload.fragments.Approve",
                     controller: that
                 }).then(function (oDialog) {
                     that._oDialog = oDialog;
@@ -260,7 +301,7 @@ sap.ui.define([
                 // load asynchronous XML fragment
                 Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Upload",
+                    name: "mck.cdlite.payrollupload.fragments.Upload",
                     controller: this
                 }).then(function (oDialog) {
                     // connect dialog to the root view 
@@ -298,7 +339,7 @@ sap.ui.define([
                 oContext.delete().then(function () {
                     if (status === 400)
                         errorMsg = JSON.parse(errorMsg).join('\n');
-                     MessageBox.error(`Unable to upload file: \n${errorMsg}`);
+                    MessageBox.error(`Unable to upload file: \n${errorMsg}`);
                 }, function (oError) {
                     console.log(oError.message);
                 })
@@ -512,7 +553,7 @@ sap.ui.define([
             if (!this._pPopover) {
                 this._pPopover = Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Settings",
+                    name: "mck.cdlite.payrollupload.fragments.Settings",
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);

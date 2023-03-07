@@ -1,4 +1,4 @@
-<mvc:View controllerName="batchuploads.controller.Object" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns="sap.uxap" xmlns:m="sap.m" xmlns:core="sap.ui.core" height="100%">
+<mvc:View controllerName="mck.cdlite.payrollupload.controller.Object" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns="sap.uxap" xmlns:m="sap.m" xmlns:core="sap.ui.core" height="100%">
     <ObjectPageLayout id="ObjectPageLayout" showTitleInHeaderContent="true" upperCaseAnchorBar="false">
         <headerTitle>
             <ObjectPageDynamicHeaderTitle id="objPageHeaderTitle">
@@ -29,10 +29,9 @@
                     <m:Label id="extendedSubtitle" text="{batchDescription}" />
                 </expandedContent>
                 <actions>
-                    <m:Button id="dtlApproveBtn" text="Approve" press="onPressApprove" type="Emphasized" enabled="{objectView>/enableButton}" />
-                    <m:Button id="dtlDeleteBtn" text="Delete" press="onPressDelete" enabled="{objectView>/enableButton}" />
-                    <m:Button id="dtlRevalideBtn" text="Revalidation" press="onRevalidatation" enabled="{objectView>/enableButton}" />
-                    <m:Button id="dtlRefreshBtn" icon="sap-icon://refresh" press="onPressRefresh" />
+                    <m:Button id="dtlApproveBtn" text="{i18n>btnApprove}" press="onPressApprove" type="Emphasized" enabled="{objectView>/enableApproveButton}" />
+                    <m:Button id="dtlDeleteBtn" text="{i18n>btnDelete}" press="onPressDelete" enabled="{objectView>/enableDeleteButton}" />
+                    <m:Button id="dtlRevalideBtn" text="{i18n>btnRevalidate}" press="onRevalidatation" enabled="{objectView>/enableRevalButton}" />
                 </actions>
             </ObjectPageDynamicHeaderTitle>
         </headerTitle>
@@ -98,12 +97,23 @@
                 <m:VBox id="uploadHeaderSec5" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
                     <m:HBox id="uploadHeaderSec5V1" class="sapUiTinyMarginBottom">
                         <m:Label id="modifiedByLbl" text="{i18n>modifiedBy}" class="sapUiSmallMarginEnd" />
-                        <m:Text id="modifiedByTxt" text="{createdBy}" />
+                        <m:Text id="modifiedByTxt" text="{modifiedBy}" />
                     </m:HBox>
 
                     <m:HBox id="uploadHeaderSec5V2" class="sapUiTinyMarginBottom">
                         <m:Label id="modifiedAtLbl" text="{i18n>modifiedAt}" class="sapUiSmallMarginEnd" />
                         <m:Text id="modifiedAtTxt" text=" {modifiedAt}" />
+                    </m:HBox>
+                </m:VBox>
+                <m:VBox id="uploadHeaderSec6" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
+                    <m:HBox id="uploadHeaderSec6V1" class="sapUiTinyMarginBottom">
+                        <m:Label id="approvedByLbl" text="{i18n>approvedBy}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="approvedByTxt" text="" />
+                    </m:HBox>
+
+                    <m:HBox id="uploadHeaderSec6V2" class="sapUiTinyMarginBottom">
+                        <m:Label id="approvedAtLbl" text="{i18n>approvedAt}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="approvedAtTxt" text="" />
                     </m:HBox>
                 </m:VBox>
             </m:HeaderContainer>
@@ -114,19 +124,25 @@
                 <subSections>
                     <ObjectPageSubSection id="personalSectionSS1" titleUppercase="false">
                         <blocks>
-                            <m:Table id="postingSummaryList" sticky="HeaderToolbar,ColumnHeaders" items="{postingView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
+                            <m:Table id="postingSummaryList" sticky="HeaderToolbar,ColumnHeaders" items="{postingView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" updateFinished="">
+                                <m:headerToolbar>
+                                    <m:Toolbar>
+                                        <m:ToolbarSpacer />
+                                        <m:Button id="dtlRefreshBtn" icon="sap-icon://refresh" press="onPressRefresh" />
+                                    </m:Toolbar>
+                                </m:headerToolbar>
                                 <m:columns>
                                     <m:Column width="15%">
-                                        <m:Text text="Posting Batch Id" />
+                                        <m:Text text="{i18n>colPostingBatchId}" />
                                     </m:Column>
                                     <m:Column width="15%">
-                                        <m:Text text="Posting Status" />
+                                        <m:Text text="{i18n>colPostingStatus}" />
                                     </m:Column>
                                     <m:Column width="45%" demandPopin="false" minScreenWidth="Tablet">
-                                        <m:Text text="Status Message" />
+                                        <m:Text text="{i18n>colPostingMessage}" />
                                     </m:Column>
                                     <m:Column width="25%" demandPopin="false" minScreenWidth="Tablet">
-                                        <m:Text text="Posting Document" />
+                                        <m:Text text="{i18n>colPostingDocument}" />
                                     </m:Column>
                                 </m:columns>
                                 <m:items>
@@ -149,12 +165,60 @@
                 <subSections>
                     <ObjectPageSubSection id="summaryByCostCenterSS1" titleUppercase="false">
                         <blocks>
-                            <m:VBox id="summaryByCostCenterV1" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
-                                <m:HBox id="summaryByCostCenterDtl" class="sapUiTinyMarginBottom">
-                                    <m:Label id="summaryByCostCenterCompanyCodeLbl" text="{i18n>detailCompanyCode}" class="sapUiTinyMarginEnd" />
-                                    <m:Text id="summaryByCostCenterCompanyCodeTxt" text="{glCompanyCode}" />
-                                </m:HBox>
-                            </m:VBox>
+                            <m:Table id="costCenterSummary" sticky="HeaderToolbar,ColumnHeaders" items="{costCenterView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" growing="true" growingScrollToLoad="true" updateFinished="">
+                                <m:columns>
+                                    <m:Column width="10%">
+                                        <m:Text text="{i18n>colGlCostCenter}" />
+                                    </m:Column>
+                                    <m:Column width="8%">
+                                        <m:Text text="{i18n>colGlCompanyCode}" />
+                                    </m:Column>
+                                    <m:Column width="12%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="{i18n>colGlAccount}" />
+                                    </m:Column>
+                                    <m:Column width="8%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="{i18n>colEffectivePeriod}" />
+                                    </m:Column>
+                                    <m:Column width="8%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="{i18n>colGlPeriod}" />
+                                    </m:Column>
+                                    <m:Column width="8%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="{i18n>colPayrollCode}" />
+                                    </m:Column>
+                                    <m:Column width="8%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="{i18n>colPayrollCodeSequence}" />
+                                    </m:Column>
+                                    <m:Column width="12%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="{i18n>colPayrollCodeDesc}" />
+                                    </m:Column>
+                                    <m:Column width="8%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="{i18n>colPayrollDate}" />
+                                    </m:Column>
+                                    <m:Column width="8%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="{i18n>colTransactionType}" />
+                                    </m:Column>
+                                    <m:Column width="10%" demandPopin="false" minScreenWidth="Tablet">
+                                        <m:Text text="{i18n>colAmount}" />
+                                    </m:Column>
+                                </m:columns>
+                                <m:items>
+                                    <m:ColumnListItem>
+                                        <m:cells>
+                                            <m:Text text="{costCenterView>GLCOSTCENTER}" />
+                                            <m:Text text="{costCenterView>GLCOMPANYCODE}" />
+                                            <m:Text text="{costCenterView>GLACCOUNT}" />
+                                            <m:Text text="{costCenterView>EFFECTIVEPERIOD}" />
+                                            <m:Text text="{costCenterView>GLPERIOD}" />
+                                            <m:Text text="{costCenterView>PAYROLLCODE}" />
+                                            <m:Text text="{costCenterView>PAYROLLCODESEQUENCE}" />
+                                            <m:Text text="{costCenterView>PAYROLLCODE_DESCRIPTION}" />
+                                            <m:Text text="{costCenterView>PAYROLLDATE}" />
+                                            <m:Text text="{costCenterView>TRANSACTIONTYPE}" />
+                                            <m:Text text="{costCenterView>AMOUNT}" />
+                                        </m:cells>
+                                    </m:ColumnListItem>
+                                </m:items>
+                            </m:Table>
                         </blocks>
                     </ObjectPageSubSection>
                 </subSections>
@@ -167,10 +231,10 @@
                             <l:VerticalLayout id="verticalTabLayout">
                                 <m:IconTabBar id="iconTabBar" select=".onQuickFilter" expandable="false">
                                     <m:items>
-                                        <m:IconTabFilter id="allFilter" key="all" showAll="true" count="{objectView>/countAll}" text="All" />
+                                        <m:IconTabFilter id="allFilter" key="all" showAll="true" count="{objectView>/countAll}" text="{i18n>tabAll}" />
                                         <m:IconTabSeparator id="filterSeparator" />
-                                        <m:IconTabFilter id="successFilter" key="success" icon="sap-icon://message-success" iconColor="Positive" count="{objectView>/success}" text="Success" />
-                                        <m:IconTabFilter id="errorFilter" key="inError" icon="sap-icon://message-error" iconColor="Negative" count="{objectView>/inError}" text="Error" />
+                                        <m:IconTabFilter id="successFilter" key="success" icon="sap-icon://message-success" iconColor="Positive" count="{objectView>/success}" text="{i18n>tabSuccess}" />
+                                        <m:IconTabFilter id="errorFilter" key="inError" icon="sap-icon://message-error" iconColor="Negative" count="{objectView>/inError}" text="{i18n>tabError}" />
                                     </m:items>
                                 </m:IconTabBar>
                                 <m:Table
@@ -200,45 +264,44 @@
                                     </m:headerToolbar>
                                     <m:columns>
                                         <m:Column id="fmnoDtlColumn" width="6%">
-                                            <m:Text id="FMNO" text="FMNO" />
+                                            <m:Text id="FMNO" text="{i18n>colFMNO}" />
                                         </m:Column>
                                         <m:Column id="payrollDtlCodeColumn" width="6%" demandPopin="false" minScreenWidth="Tablet">
-                                            <m:Text id="payrollCode" text="Payroll Code" />
+                                            <m:Text id="payrollCode" text="{i18n>colPayrollCode}" />
                                         </m:Column>
                                         <m:Column id="payrollDtlCodeSeqColumn" width="6%" hAlign="Center" demandPopin="true" minScreenWidth="Tablet">
-                                            <m:Text id="payrollCodeSeq" text="Payroll Code Sequence" />
+                                            <m:Text id="payrollCodeSeq" text="{i18n>colPayrollCodeSequence}" />
                                         </m:Column>
-
                                         <m:Column id="amountDtlColumn" width="8%" hAlign="End">
-                                            <m:Text id="amount" text="Amount" />
+                                            <m:Text id="amount" text="{i18n>colAmount}" />
                                         </m:Column>
 
                                         <m:Column id="paymentNoDtlColumn" width="6%" hAlign="Center">
-                                            <m:Text id="paymentNoCol" text="Payment No" />
+                                            <m:Text id="paymentNoCol" text="{i18n>colPaymentNo}" />
                                         </m:Column>
                                         <m:Column id="paymentIdDtlColumn" width="6%" hAlign="Center">
-                                            <m:Text id="paymentIdCol" text="Payment ID" />
+                                            <m:Text id="paymentIdCol" text="{i18n>colPaymentID}" />
                                         </m:Column>
                                         <m:Column id="paymentFormDtlColumn" width="6%" hAlign="Center">
-                                            <m:Text id="paymentFormCol" text="Payment Form" />
+                                            <m:Text id="paymentFormCol" text="{i18n>colPaymentForm}" />
                                         </m:Column>
                                         <m:Column id="loanAdvNoDtlColumn" width="13%" hAlign="Center">
-                                            <m:Text id="loanAdvNo" text="Loan or Advance No" />
+                                            <m:Text id="loanAdvNo" text="{i18n>colLoanAdvanceRef}" />
                                         </m:Column>
                                         <m:Column id="projCodeDtlColumn" width="6%" hAlign="Center">
-                                            <m:Text id="projCode" text="Project Code" />
+                                            <m:Text id="projCode" text="{i18n>colProjectCode}" />
                                         </m:Column>
                                         <m:Column id="projTaskDtlColumn" width="6%" hAlign="Center">
-                                            <m:Text id="projTask" text="Project Task" />
+                                            <m:Text id="projTask" text="{i18n>colProjectTask}" />
                                         </m:Column>
                                         <m:Column id="statusColumn" width="8%" hAlign="Center">
-                                            <m:Text id="dtlStatusTxt" text="Status" />
+                                            <m:Text id="dtlStatusTxt" text="{i18n>colStatus}" />
                                         </m:Column>
                                         <m:Column id="statusMsgColumn" width="15%" hAlign="Center">
-                                            <m:Text id="dtlStatusMsg" text="Status Message" />
+                                            <m:Text id="dtlStatusMsg" text="{i18n>colStatusMessage}" />
                                         </m:Column>
                                         <m:Column id="glInfoColumn" width="8%" hAlign="Center">
-                                            <m:Text id="dtlGLInfo" text="More Info" />
+                                            <m:Text id="dtlGLInfo" text="{i18n>colMoreInfo}" />
                                         </m:Column>
                                         <m:Column id="glAcctColumn" visible="false">
                                             <m:Text id="dtlGlAcct" text="" />
