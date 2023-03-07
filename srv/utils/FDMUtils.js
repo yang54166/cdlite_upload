@@ -14,14 +14,14 @@ class FDMUtils {
         this.sapClient = remoteService.options.credentials.queries["sap-client"];
     };
 
-    async getEmployeeData(companyCode) {
-        let result = await this.apiService.get("S4_FMNO_MASTER_API").where({ client: this.sapClient, branchId: companyCode });
+    async getEmployeeData() {
+        let result = await this.apiService.get("S4_FMNO_MASTER_API").where({ client: this.sapClient });
         this.employeeData.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);
             this.employeeData.push(...result);
         }
-        console.log(`Found ${this.employeeData.length} FMNOs for companyCode ${companyCode} and client ${this.sapClient}`);
+        console.log(`Found ${this.employeeData.length} FMNOs for client ${this.sapClient}`);
         return this.employeeData;
     };
 
@@ -103,7 +103,7 @@ class FDMUtils {
     };
 
     getExchangeRate(sourceCurrency, targetCurrency) {
-        const exchangeRate = this.exchangeRates.find((rate) => ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
+        return this.exchangeRates.find((rate) => ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
     };
 
     async getCurrency() {

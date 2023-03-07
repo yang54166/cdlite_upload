@@ -19,7 +19,7 @@ const utils = {
     },
 
     convertAmountByExchangeRate: (amount, exchangeRate) => {
-
+        return (amount * exchangeRate).toFixed(2);
     },
 
     isDecimal: (value, precision, scale)=>{
@@ -172,11 +172,12 @@ const utils = {
                         EFFECTIVEDATE: arrCols[5],
                         ENDDATE: arrCols[6],
                         GLACCOUNT: arrCols[7],
-                        PAYROLLCODECLASS: arrCols[8],
-                        PAYROLLCODETYPE: arrCols[9],
-                        QUALIFIEDCOMPENSATION: arrCols[10],
-                        TRANSACTIONDESCRIPTION: arrCols[11],
-                        USPSRPCATEGORY: arrCols[12]
+                        GLACCOUNTCB: arrCols[8],
+                        PAYROLLCODECLASS: arrCols[9],
+                        PAYROLLCODETYPE: arrCols[10],
+                        QUALIFIEDCOMPENSATION: arrCols[11],
+                        TRANSACTIONDESCRIPTION: arrCols[12],
+                        USPSRPCATEGORY: arrCols[13]
                     };
                 });
             case "MAPPING_PAYROLLLEDGERCONTROL":
@@ -186,7 +187,8 @@ const utils = {
                         TRANSACTIONTYPE: arrCols[0],
                         DOCTYPE: arrCols[1],
                         LEDGERGROUP: arrCols[2],
-                        DOCHEADERTEXT: arrCols[3]
+                        LEDGERGROUPCB: arrCols[3],
+                        DOCHEADERTEXT: arrCols[4]
                     };
                 });
         }

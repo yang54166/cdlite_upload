@@ -41,10 +41,11 @@ entity UploadItems: managed {
     projectTask: String(2);
     glAccount: Integer;     // 8
     glAccountType: String(60);
-    glCurrencyCode: String(3);
+    glCurrencyCode: String(3); // Actually Charge CC
     glCostCenter: String(8);
     fcat: String(3);
     pernr: String(8);
     locationCode: String(4);
     skillCode: String(4);
+    chargeCompany: String(4);
 };

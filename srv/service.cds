@@ -4,6 +4,8 @@ using {mapping} from '../db/mapping';
 using {
     CV_JOURNALENTRY,
     CV_JOURNALENTRY_ITEM,
+    CV_JOURNALENTRY_CB,
+    CV_JOURNALENTRY_ITEM_CB,
     CV_AMOUNTSUMMARY,
     CV_APPROVALSUMMARY
 } from '../db/virtual';
@@ -25,10 +27,16 @@ service PayrollService  @(requires: 'authenticated-user') {
         @Core.IsMediaType: true mediaType: String;
     };
 
+    entity PostingView as SELECT from PostingBatch as pb LEFT JOIN CV_JOURNALENTRY as je on pb.batchId = je.BATCHID {
+        pb.postingDocument,pb.postingStatus, pb.postingStatusMessage, pb.postingType, 
+        je.BATCHID, je.POSTINGBATCHID,je.items: redirected to JournalEntryItem on BATCHID=BATCHID and POSTINGBATCHID=POSTINGBATCHID
+    };
+
     // Staging
     entity StagingUploads      as projection on staging.UploadHeader actions {
         action approve();
         action enrich();
+        action trigger();
     };
     entity StagingUploadItems  as projection on staging.UploadItems;
 
@@ -46,6 +54,8 @@ service PayrollService  @(requires: 'authenticated-user') {
     // JournalEntries for Posting
     @readonly entity JournalEntry        as projection on CV_JOURNALENTRY;
     @readonly entity JournalEntryItem    as projection on CV_JOURNALENTRY_ITEM;
+    @readonly entity JournalEntryCB        as projection on CV_JOURNALENTRY_CB;
+    @readonly entity JournalEntryItemCB    as projection on CV_JOURNALENTRY_ITEM_CB;
     @readonly entity ApprovalSummary as projection on CV_APPROVALSUMMARY;
     @readonly entity AmountSummary as projection on CV_AMOUNTSUMMARY;
 

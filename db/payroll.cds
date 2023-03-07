@@ -1,8 +1,5 @@
 using { cuid, managed } from '@sap/cds/common';
-using {
-    CV_JOURNALENTRY,
-    CV_JOURNALENTRY_ITEM
-} from '../db/virtual';
+
 namespace payroll;
 
 entity PayrollHeader: managed {
@@ -37,13 +34,12 @@ entity PayrollDetails: managed {
     chargeAmount: Decimal(15,2);
     chargeCompany: String;
     chargeConversionDate: Date;
-    chargeConversionRate: Integer;
+    chargeConversionRate:  Decimal(9,5);
     chargeConversionType: String(20);
     chargeCostCenter: String(8);
     chargeCurrencyCode: String(3);
     chargeDepartment: String(5);
     chargeGOC: String(3);
-    department: String(5);
     fcat: String(3);
     fmno: String(9);
     glAccount: Integer;
@@ -53,7 +49,7 @@ entity PayrollDetails: managed {
     glPostAmount: Decimal(15,2);
     glPostCompany: String(4);
     glPostCostCenter: String(8);
-    glPostDeparment: String(5);
+    glPostDepartment: String(5);
     glPostGOC: String(3);
     legalEntityGroupCode: String(4);
     loanNumber: String(20);
@@ -72,7 +68,7 @@ entity PayrollDetails: managed {
     sourceCompany: String(4);
     sourceCurrencyCode: String(4);
     usdAmount: Decimal(15,2);
-    usdConversionRate: Integer;
+    usdConversionRate:  Decimal(9,5);
     usdConversionType: String(20);
     usPsrpReportingCode: String(10);
 };

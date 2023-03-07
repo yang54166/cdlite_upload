@@ -23,7 +23,8 @@
     {
       "name": "companycode",
       "description": "companycode",
-      "valueType": "s"
+      "valueType": "s",
+      "valueRequired": true
     }
   ],
   "role-templates": [
