@@ -756,6 +756,33 @@ sap.ui.define([
 
         },
 
+        revalUploads: function () {
+            var sPath = this.getView().getBindingContext().sPath;
+            var csrfToken = this.getView().getModel().getHttpHeaders()['X-CSRF-Token'];
+            var sHeaders = { "content-type": "application/json", "x-csrf-token": `${csrfToken}` };
+            sap.ui.core.BusyIndicator.show();
+            var that = this;
+            jQuery.ajax({
+                url: "payroll" + sPath + "/enrich",
+                type: "POST",
+                async: true,
+                data: {},
+                dataType: "json",
+                headers: sHeaders,
+                success: function (result) {
+                    sap.ui.core.BusyIndicator.hide();
+                    var sMsg = "BATCH " + that._ID + " was revalidated successfully!";
+                    MessageBox.success(sMsg);
+                },
+                error: function (e) {
+                    sap.ui.core.BusyIndicator.hide();
+                    var sMsg = "Error while performing revalidation";
+                    MessageBox.error(sMsg);
+                }
+            })
+           
+        },
+
         approveUploads: function () {
             var sPath = this.getView().getBindingContext().sPath;
             var csrfToken = this.getView().getModel().getHttpHeaders()['X-CSRF-Token'];

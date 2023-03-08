@@ -31,7 +31,7 @@
                 <actions>
                     <m:Button id="dtlApproveBtn" text="Approve" press="onPressApprove" type="Emphasized" enabled="{objectView>/enableApproveButton}" />
                     <m:Button id="dtlDeleteBtn" text="Delete" press="onPressDelete" enabled="{objectView>/enableDeleteButton}" />
-                    <m:Button id="dtlRevalideBtn" text="Revalidation" press="onRevalidatation" enabled="{objectView>/enableRevalButton}" />
+                    <m:Button id="dtlRevalideBtn" text="Revalidation" press="revalUploads" enabled="{objectView>/enableRevalButton}" />
                     <m:Button id="dtlRefreshBtn" icon="sap-icon://refresh" press="onPressRefresh" />
                     
                 </actions>
