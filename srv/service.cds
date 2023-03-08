@@ -59,7 +59,10 @@ service PayrollService  @(requires: 'authenticated-user') {
         IP_PERIOD : : IP_PERIOD
     ) {*};
 
-    // Masterdata from FDM
+    // Masterdata from FDM & Value Helps
     @readonly entity CompanyCodes as projection on fdm_masterdata.COMPANY_CODE_API;
     @readonly entity Currency as projection on fdm_masterdata.CURRENCY_API;
+    @readonly entity LegalEntityGroups as SELECT DISTINCT(legalEntityGroupCode) from mapping.LegalEntityGrouping order by legalEntityGroupCode;
+    @readonly entity PayrollCodes as SELECT DISTINCT(payrollCode) from mapping.PaycodeGLMapping order by payrollCode;
+    @readonly entity PayrollCodeSequences as SELECT DISTINCT(payrollCodeSequence) from mapping.PaycodeGLMapping order by payrollCodeSequence;
 }

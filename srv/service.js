@@ -113,6 +113,8 @@ class PayrollService extends cds.ApplicationService {
             const mappingData = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
 
             let fmnoErrorList = [];
+            let fmnoTotals = new Map();
+
             // Update Staging Data
             let updatedItems = stagingDataItems.map((item) => {
                 let errorsForRow = [];
@@ -183,6 +185,10 @@ class PayrollService extends cds.ApplicationService {
                     }
                 }
 
+                // Update fmno totals
+                const newTotal = ((parseFloat(fmnoTotals.get(item.FMNO)) || 0) + parseFloat(item.AMOUNT)).toFixed(2);
+                fmnoTotals.set(item.FMNO, newTotal);
+
                 return {
                     ...item,
                     STATUS: rowStatus.STATUS,
@@ -200,11 +206,21 @@ class PayrollService extends cds.ApplicationService {
             });
 
             // Mark rows invalid if any errors for that FMNO
-            updatedItems = updatedItems.map((item) => ({
-                ...item,
-                STATUS: fmnoErrorList.indexOf(item.FMNO) > -1 ? 'INVALID' : item.STATUS,
-                STATUSMESSAGE: fmnoErrorList.indexOf(item.FMNO) > -1 ? (item.STATUSMESSAGE || 'FMNO skipped due to errors in other rows.') : item.STATUSMESSAGE
-            }));
+            updatedItems = updatedItems.map((item) => {
+                let errorMessage=undefined;
+                const fmnoTotal = parseFloat(fmnoTotals.get(item.FMNO));
+                if ( fmnoErrorList.indexOf(item.FMNO) > -1 ){
+                    errorMessage = 'FMNO skipped due to errors in other rows.';
+                }
+                if ( fmnoTotal !== 0){
+                    errorMessage = `FMNO skipped due to non-zero balance for sum of all rows. ${fmnoTotal}`;
+                } 
+                return {
+                    ...item,
+                    STATUS: errorMessage ? 'INVALID' : item.STATUS,
+                    STATUSMESSAGE: errorMessage ? (item.STATUSMESSAGE || errorMessage) : item.STATUSMESSAGE
+                }
+            });
 
             // Save back to DB
             const resultSave = await HANAUtils.callStoredProc(
@@ -313,16 +329,16 @@ class PayrollService extends cds.ApplicationService {
                                 }
                             })();
 
-                            const glPostCostCenter = mapObj.defaultDepartment ? ( `${employeeObj.costCenter.substring(0,3)}${mapObj.defaultDepartment}`) : item.glCostCenter;
+                            const glPostCostCenter = mapObj.defaultDepartment ? (`${employeeObj.costCenter.substring(0, 3)}${mapObj.defaultDepartment}`) : item.glCostCenter;
 
                             return {
                                 batchID_batchID: batchToApprove,
                                 batchLineNumber: lineCounter += 1,
                                 postingBatchID: `${postingBatches}.1`,
-                                postingBatchIDCBLedger:  ['01', '02', '04'].includes(transactionType) ? `${postingBatches}.2` : null,
+                                postingBatchIDCBLedger: ['01', '02', '04'].includes(transactionType) ? `${postingBatches}.2` : null,
                                 fcat: item.fcat,
                                 fmno: item.fmno,
-                                paymentID: item.paymentID,
+                                paymentID: item.paymentId,
                                 payrollCode: item.payrollCode,
                                 payrollCodeSequence: item.payrollCodeSequence,
                                 payrollCodeClass: mapObj.payrollCodeClass,
@@ -330,7 +346,6 @@ class PayrollService extends cds.ApplicationService {
                                 sourceAmount: item.amount,
                                 sourceCurrencyCode: currencyCode,
                                 sourceCompany: glCompanyCode,
-                                paymentID: item.paymentID,
                                 pernr: item.pernr,
                                 legalEntityGroupCode: le.LEGALENTITYGROUPCODE,
                                 locationCode: item.locationCode,
@@ -346,13 +361,13 @@ class PayrollService extends cds.ApplicationService {
                                 chargeCostCenter: item.glCostCenter,
                                 chargeCurrencyCode: item.glCurrencyCode,
                                 chargeDepartment: item.glCostCenter.slice(-5),
-                                chargeGoc: item.glCostCenter.substring(0,3),
+                                chargeGoc: item.glCostCenter.substring(0, 3),
                                 glAccount: item.glAccount,
                                 glPostAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
                                 glPostCompany: glCompanyCode,
                                 glPostCostCenter: glPostCostCenter,
                                 glPostDepartment: glPostCostCenter.slice(-5),
-                                glPostGoc: glPostCostCenter.substring(0,3),
+                                glPostGoc: glPostCostCenter.substring(0, 3),
                                 glConversionRate: glExchangeRateSourceToCompany.exchangeRate,
                                 glCurrencyCode: currencyCode,
                                 postingAggregation: aggregationType,
@@ -360,7 +375,7 @@ class PayrollService extends cds.ApplicationService {
                                 loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.loanAdvanceReferenceNumber : null,
                                 usdAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToUSD.exchangeRate),
                                 usdConversionRate: glExchangeRateSourceToUSD.exchangeRate,
-                                usdConversionType:  "MNTHLY_EXCHG_RATE",
+                                usdConversionType: "MNTHLY_EXCHG_RATE",
                                 usPsrpReportingCode: mapObj.usPsrpCategory
                             }
                         });
@@ -368,7 +383,7 @@ class PayrollService extends cds.ApplicationService {
                         const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
                         console.log(`Details added to results table: ${resultCopyItems.results.length}`);
 
-                        for ( var postingBatchID = 1; postingBatchID <= postingBatches; postingBatchID += 1) {
+                        for (var postingBatchID = 1; postingBatchID <= postingBatches; postingBatchID += 1) {
                             const resultCreatePostingBatch = await INSERT.into(PostingBatch).entries({
                                 batchId: dataHeader.ID,
                                 postingBatchId: `${postingBatchID}.1`,
@@ -412,7 +427,7 @@ class PayrollService extends cds.ApplicationService {
             const batchId = req.data.batchToApprove || req.params[0];
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
             const responseCPI = await cpi.send({ path: `cd_lass_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
-            console.log(`CPI Trigger - Response: ${responseCPI}`);
+            //console.log(`CPI Trigger - Response: ${responseCPI}`);
             // const cpiTrigger = () => {
             //     return new Promise(async (resolve, reject) => {
             //         setTimeout(async () => {
