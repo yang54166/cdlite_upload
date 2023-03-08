@@ -149,6 +149,14 @@ resources:
             URL: ~{srv-api/srv-url}
             HTML5.DynamicDestination: true
             HTML5.ForwardAuthToken: true
+          - Authentication: OAuth2ClientCredentials
+            Name: cpi
+            ProxyType: Internet
+            Type: HTTP
+            clientId: sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912
+            clientSecret: 07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=
+            tokenServiceURL: https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token
+            URL: https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com
           existing_destinations_policy: update
       version: 1.0.0
     service: destination

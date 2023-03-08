@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_JOURNALENTRY_ITEM" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
-<descriptions defaultDescription="CV_JOURNALENRY_ITEM"/>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_JOURNALENTRY_ITEM_CB" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<descriptions defaultDescription="CV_JOURNALENRY_ITEM_CB"/>
 <localVariables/>
 <variableMappings/>
 <dataSources>
@@ -33,7 +33,11 @@
     </viewAttributes>
     <calculatedViewAttributes/>
     <restrictedViewAttributes/>
-    <input node="PAYROLL_PAYROLLDETAILS"/>
+    <input node="PAYROLL_PAYROLLDETAILS">
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNTCBLEDGER"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHIDCBLEDGER"/>
+    </input>
     <filter>&quot;POSTINGAGGREGATION&quot;='BUSINESSAREA'</filter>
   </calculationView>
   <calculationView xsi:type="Calculation:ProjectionView" id="Projection_NonAggregated" filterExpressionLanguage="SQL">
@@ -54,7 +58,11 @@
       <viewAttribute id="PERNR"/>
     </viewAttributes>
     <calculatedViewAttributes/>
-    <input node="Projection_NonAggregated$$$$PAYROLL_PAYROLLDETAILS$$"/>
+    <input node="Projection_NonAggregated$$$$PAYROLL_PAYROLLDETAILS$$">
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNTCBLEDGER"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHIDCBLEDGER"/>
+    </input>
     <filter>&quot;POSTINGAGGREGATION&quot;='NONE'</filter>
   </calculationView>
   <calculationView xsi:type="Calculation:AggregationView" id="Aggr_GL" filterExpressionLanguage="SQL">
@@ -67,7 +75,11 @@
       <viewAttribute id="GLCURRENCYCODE"/></viewAttributes>
     <calculatedViewAttributes/>
     <restrictedViewAttributes/>
-    <input node="Aggr_GL$$$$PAYROLL_PAYROLLDETAILS$$"/>
+    <input node="Aggr_GL$$$$PAYROLL_PAYROLLDETAILS$$">
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNTCBLEDGER"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHIDCBLEDGER"/>
+    </input>
     <filter>&quot;POSTINGAGGREGATION&quot;='GLACCOUNT'</filter>
   </calculationView>
   <calculationView xsi:type="Calculation:UnionView" id="Union_1">
@@ -301,33 +313,33 @@ END</formula>
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="407.13882283569956" y="112"/>
+      <upperLeftCorner x="407" y="112"/>
     
       <rectangleSize width="160"/>
     </shape>
     
   
     <shape expanded="true" modelObjectName="Aggr_BusArea" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="91.99999999999996" y="496.9999976158142"/>
+      <upperLeftCorner x="91" y="496"/>
       <rectangleSize height="30" width="191"/>
     </shape>
   
     <shape expanded="true" modelObjectName="Projection_NonAggregated" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="543" y="496.9999976158142"/>
+      <upperLeftCorner x="543" y="496"/>
       <rectangleSize height="30" width="160"/>
     </shape>
   
     <shape expanded="true" modelObjectName="Aggr_GL" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="332.99999999999994" y="496.9999976158142"/>
+      <upperLeftCorner x="332" y="496"/>
       <rectangleSize width="160"/>
     </shape>
   
     <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="332.99999999999994" y="341.9999988079071"/>
+      <upperLeftCorner x="332" y="341"/>
       <rectangleSize height="30" width="160"/>
     </shape>
     <shape expanded="true" modelObjectName="ROWNUMBERS" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="407.13882283569956" y="217"/>
+      <upperLeftCorner x="407" y="217"/>
       <rectangleSize height="30" width="160"/>
     </shape></shapes>
 </layout>

@@ -16,6 +16,7 @@ entity PaycodeGLMapping: managed {
     key effectiveDate: Date;
     endDate: Date;
     glAccount: Integer;
+    glAccountCB: Integer;
     payrollCodeClass: String(10);
     payrollCodeType: String(10);
     qualifiedCompensation: String(1);
@@ -27,5 +28,6 @@ entity PayrollLedgerControl: managed {
     key transactionType: String(02);
         docType: String(10);
         ledgerGroup: String(4);
+        ledgerGroupCB: String(4);
         docHeaderText: String(25);
 }

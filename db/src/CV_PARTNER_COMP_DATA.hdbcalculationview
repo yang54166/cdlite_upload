@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_PARTNER_COMP_DATA" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<descriptions defaultDescription="CV_PARTNER_COMP_DATA"/>
+<localVariables>
+  <variable id="IP_PERIOD" parameter="true">
+    <descriptions defaultDescription="GL Date"/>
+    <variableProperties datatype="NVARCHAR" length="13" mandatory="true">
+      <valueDomain type="empty"/>
+      <selection multiLine="false" type="SingleValue"/>
+    </variableProperties>
+  </variable>
+</localVariables>
+<variableMappings/>
+<dataSources>
+  <DataSource id="PAYROLL_PAYROLLDETAILS">
+    <resourceUri>PAYROLL_PAYROLLDETAILS</resourceUri>
+  </DataSource>
+  <DataSource id="MAPPING_PAYCODEGLMAPPING">
+    <resourceUri>MAPPING_PAYCODEGLMAPPING</resourceUri>
+  </DataSource>
+  <DataSource id="PAYROLL_PAYROLLHEADER">
+    <resourceUri>PAYROLL_PAYROLLHEADER</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_1" cardinality="C1_1" joinType="inner" multiJoinNode="Join_1" multiJoinCentralTable="PAYROLL_PAYROLLHEADER" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="BATCHLINENUMBER"/>
+      <viewAttribute id="CHARGEAMOUNT"/>
+      <viewAttribute id="CHARGECOSTCENTER"/>
+      <viewAttribute id="CHARGECURRENCYCODE"/>
+      <viewAttribute id="FCAT"/>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="GLACCOUNT"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="GLPOSTDEPARTMENT"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="SKILLCODE"/>
+      <viewAttribute id="SOURCEAMOUNT"/>
+      <viewAttribute id="GLPOSTCOMPANY"/>
+      <viewAttribute id="USDAMOUNT"/>
+      <viewAttribute id="DESCRIPTION"/>
+      <viewAttribute id="BATCHID_BATCHID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="PAYROLL_PAYROLLDETAILS">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHLINENUMBER" source="BATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEAMOUNT" source="CHARGEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOSTCENTER" source="CHARGECOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECURRENCYCODE" source="CHARGECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTDEPARTMENT" source="GLPOSTDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SKILLCODE" source="SKILLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOMPANY" source="GLPOSTCOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDAMOUNT" source="USDAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
+    </input>
+    <input node="MAPPING_PAYCODEGLMAPPING">
+      <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+    </input>
+    <joinAttribute name="PAYROLLCODE"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_2" cardinality="C1_N" joinType="inner" filterExpressionLanguage="SQL" multiJoinNode="Join_1" multiJoinCentralTable="PAYROLL_PAYROLLHEADER" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="BATCHID"/>
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="GLDATE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
+      <viewAttribute id="SOURCESYSTEM"/>
+      <viewAttribute id="BATCHSTATUS"/>
+      <viewAttribute id="BATCHLINENUMBER"/>
+      <viewAttribute id="CHARGEAMOUNT"/>
+      <viewAttribute id="CHARGECOSTCENTER"/>
+      <viewAttribute id="CHARGECURRENCYCODE"/>
+      <viewAttribute id="FCAT"/>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="GLACCOUNT"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="GLPOSTDEPARTMENT"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="SKILLCODE"/>
+      <viewAttribute id="SOURCEAMOUNT"/>
+      <viewAttribute id="GLPOSTCOMPANY"/>
+      <viewAttribute id="USDAMOUNT"/>
+      <viewAttribute id="DESCRIPTION"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="PAYROLL_PAYROLLHEADER">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CDTRANSACTIONTYPE" source="CDTRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLDATE" source="GLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLPERIOD" source="PAYROLLPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCESYSTEM" source="SOURCESYSTEM"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHSTATUS" source="BATCHSTATUS"/>
+    </input>
+    <input node="Join_1_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHLINENUMBER" source="BATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEAMOUNT" source="CHARGEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOSTCENTER" source="CHARGECOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECURRENCYCODE" source="CHARGECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTDEPARTMENT" source="GLPOSTDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SKILLCODE" source="SKILLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOMPANY" source="GLPOSTCOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDAMOUNT" source="USDAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID_BATCHID"/>
+    </input>
+    <filter>(&quot;FCAT&quot; = '100' or &quot;FCAT&quot; = '200') and
+&quot;GLACCOUNT&quot; in (51000000,
+51000001,51100000,51000005,51300001,51400000,51400001,52100000,51000007,51100001,
+99503120,51400003) and
+&quot;GLDATE&quot; = '$$IP_PERIOD$$'</filter>
+    <joinAttribute name="BATCHID"/>
+  </calculationView>
+</calculationViews>
+
+<logicalModel id="Join_1_2">
+  <attributes>
+    <attribute id="BATCHID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHID"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="BATCHID"/>
+    </attribute>
+    <attribute id="CDTRANSACTIONTYPE" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CDTRANSACTIONTYPE"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="CDTRANSACTIONTYPE"/>
+    </attribute>
+    <attribute id="GLDATE" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLDATE"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="GLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLPERIOD" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLPERIOD"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="PAYROLLPERIOD"/>
+    </attribute>
+    <attribute id="SOURCESYSTEM" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCESYSTEM"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="SOURCESYSTEM"/>
+    </attribute>
+    <attribute id="BATCHSTATUS" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHSTATUS"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="BATCHSTATUS"/>
+    </attribute>
+    <attribute id="BATCHLINENUMBER" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHLINENUMBER"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="BATCHLINENUMBER"/>
+    </attribute>
+    <attribute id="CHARGEAMOUNT" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGEAMOUNT"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="CHARGEAMOUNT"/>
+    </attribute>
+    <attribute id="CHARGECOSTCENTER" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECOSTCENTER"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="CHARGECOSTCENTER"/>
+    </attribute>
+    <attribute id="CHARGECURRENCYCODE" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECURRENCYCODE"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="CHARGECURRENCYCODE"/>
+    </attribute>
+    <attribute id="FCAT" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FCAT"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="FCAT"/>
+    </attribute>
+    <attribute id="FMNO" order="12" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FMNO"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="FMNO"/>
+    </attribute>
+    <attribute id="GLACCOUNT" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLACCOUNT"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="GLACCOUNT"/>
+    </attribute>
+    <attribute id="GLCURRENCYCODE" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLCURRENCYCODE"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="GLCURRENCYCODE"/>
+    </attribute>
+    <attribute id="GLPOSTCOSTCENTER" order="15" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOSTCENTER"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="GLPOSTCOSTCENTER"/>
+    </attribute>
+    <attribute id="GLPOSTDEPARTMENT" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTDEPARTMENT"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="GLPOSTDEPARTMENT"/>
+    </attribute>
+    <attribute id="PAYROLLCODE" order="17" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODE"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="PAYROLLCODE"/>
+    </attribute>
+    <attribute id="SKILLCODE" order="18" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SKILLCODE"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="SKILLCODE"/>
+    </attribute>
+    <attribute id="SOURCEAMOUNT" order="19" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCEAMOUNT"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="SOURCEAMOUNT"/>
+    </attribute>
+    <attribute id="GLPOSTCOMPANY" order="20" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOMPANY"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="GLPOSTCOMPANY"/>
+    </attribute>
+    <attribute id="USDAMOUNT" order="21" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="USDAMOUNT"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="USDAMOUNT"/>
+    </attribute>
+    <attribute id="DESCRIPTION" order="22" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DESCRIPTION"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="DESCRIPTION"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures/>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+    
+  
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="100" y="202"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+  
+    <shape modelObjectName="PAYROLL_PAYROLLHEADER" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="232.029296875"/>
+    </shape>
+    <shape modelObjectName="PAYROLL_PAYROLLDETAILS" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="579" y="30"/>
+      <rectangleSize width="244.0927734375"/>
+    </shape>
+    <shape modelObjectName="MAPPING_PAYCODEGLMAPPING" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="1193" y="506"/>
+      <rectangleSize width="256.697265625"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

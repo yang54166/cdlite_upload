@@ -19,6 +19,19 @@ class HANAUtils {
     }
   }
 
+  static async execQuery(db, query) {
+    try {
+      let dbConn = new dbClass(
+        await dbClass.createConnection(db)
+      );
+      const statement = await dbConn.preparePromisified(query);
+      const results = await dbConn.statementExecPromisified(statement, []);
+      return results;
+    } catch (ex) {
+      throw ex;
+    }
+  }
+
   static async getNextBatchId(db,) {
     return new Promise((resolve, reject) => {
       let nextNumber = 0;

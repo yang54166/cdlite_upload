@@ -1,5 +1,15 @@
+### Authenticate
+# @name auth
+POST https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token HTTP/1.1
+Content-type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id=sb-cd_cdlitepayrollupload_fs-ErpDevOrg-ErpDevSpcCdApp!t126539
+&client_secret=PeK8fptaCVkDFYEgQOlb/eChcZQ%3D
+
 ### LegalEntityGrouping
 PUT http://localhost:4004/payroll/MappingUploadFile/content HTTP/1.1
+Authorization: Bearer {{auth.response.body.access_token}}
 Content-Type: text/csv
 Content-Disposition: form-data; filename="pay code mapping - le.csv"; mappingTable="LegalEntityGrouping"
 
@@ -7,6 +17,7 @@ Content-Disposition: form-data; filename="pay code mapping - le.csv"; mappingTab
 
 ### PaycodeGLMapping
 PUT http://localhost:4004/payroll/MappingUploadFile/content HTTP/1.1
+Authorization: Bearer {{auth.response.body.access_token}}
 Content-Type: text/csv
 Content-Disposition: form-data; filename="pay code mapping - gl.csv"; mappingTable="PaycodeGLMapping"
 
@@ -14,7 +25,16 @@ Content-Disposition: form-data; filename="pay code mapping - gl.csv"; mappingTab
 
 ### LegdgerControl
 PUT http://localhost:4004/payroll/MappingUploadFile/content HTTP/1.1
+Authorization: Bearer {{auth.response.body.access_token}}
 Content-Type: text/csv
 Content-Disposition: form-data; filename="pay code mapping - lc.csv"; mappingTable="PayrollLedgerControl"
 
 < ./pay code mapping - lc.csv
+
+
+### Delete All
+POST http://localhost:4004/payroll/deleteAllMapping
+Authorization: Bearer {{auth.response.body.access_token}}
+Content-Type: application/json
+
+{ "mappingTable": "LegalEntityGrouping" }

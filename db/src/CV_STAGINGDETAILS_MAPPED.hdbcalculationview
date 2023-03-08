@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_AMOUNTSUMMARY" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_STAGINGDETAILS_MAPPED" applyPrivilegeType="NONE" dataCategory="DIMENSION" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
 <descriptions defaultDescription="CV_AMOUNTSUMMARY"/>
 <localVariables/>
 <variableMappings/>
@@ -21,7 +21,7 @@
 <calculationViews>
   <calculationView xsi:type="Calculation:JoinView" id="Join_StagingData_1" cardinality="CN_N" joinType="inner" multiJoinNode="Join_StagingData" multiJoinCentralTable="STAGING_UPLOADITEMS" multiJoinOrder="Outside In">
     <viewAttributes>
-      <viewAttribute id="ID" aggregationType="sum"/>
+      <viewAttribute id="ID"/>
       <viewAttribute id="GLCOMPANYCODE"/>
       <viewAttribute id="CURRENCYCODE"/>
       <viewAttribute id="TRANSACTIONTYPE"/>
@@ -48,7 +48,7 @@
   </calculationView>
   <calculationView xsi:type="Calculation:JoinView" id="Join_StagingData_2" cardinality="CN_N" joinType="inner" multiJoinNode="Join_StagingData" multiJoinCentralTable="STAGING_UPLOADITEMS" multiJoinOrder="Outside In">
     <viewAttributes>
-      <viewAttribute id="ID" aggregationType="sum"/>
+      <viewAttribute id="ID"/>
       <viewAttribute id="GLCOMPANYCODE"/>
       <viewAttribute id="CURRENCYCODE"/>
       <viewAttribute id="TRANSACTIONTYPE"/>
@@ -56,11 +56,13 @@
       <viewAttribute id="EFFECTIVEPERIOD"/>
       <viewAttribute id="PAYROLLDATE"/>
       <viewAttribute id="PAYROLLCODE"/>
-      <viewAttribute id="PAYROLLCODESEQUENCE" aggregationType="sum"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE"/>
       <viewAttribute id="GLCOSTCENTER"/>
-      <viewAttribute id="AMOUNT" aggregationType="sum"/>
-      <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
+      <viewAttribute id="AMOUNT"/>
+      <viewAttribute id="GLACCOUNT"/>
       <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute id="ROW"/>
+      <viewAttribute id="STATUS"/>
       <viewAttribute hidden="true" id="JOIN$PARENT_ID$ID"/>
     </viewAttributes>
     <calculatedViewAttributes/>
@@ -70,6 +72,8 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="GLCOSTCENTER" source="GLCOSTCENTER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ROW" source="ROW"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$PARENT_ID$ID" source="PARENT_ID"/>
     </input>
     <input node="Join_StagingData_1">
@@ -85,9 +89,9 @@
     </input>
     <joinAttribute name="JOIN$PARENT_ID$ID"/>
   </calculationView>
-  <calculationView xsi:type="Calculation:JoinView" id="Join_Mapping" cardinality="CN_N" joinType="inner" filterExpressionLanguage="SQL">
+  <calculationView xsi:type="Calculation:JoinView" id="Join_Mapping" cardinality="CN_N" joinType="inner">
     <viewAttributes>
-      <viewAttribute id="ID" aggregationType="sum"/>
+      <viewAttribute id="ID"/>
       <viewAttribute id="GLCOMPANYCODE"/>
       <viewAttribute id="CURRENCYCODE"/>
       <viewAttribute id="TRANSACTIONTYPE"/>
@@ -95,13 +99,16 @@
       <viewAttribute id="EFFECTIVEPERIOD"/>
       <viewAttribute id="PAYROLLDATE"/>
       <viewAttribute id="PAYROLLCODE"/>
-      <viewAttribute id="PAYROLLCODESEQUENCE" aggregationType="sum"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE"/>
       <viewAttribute id="GLCOSTCENTER"/>
-      <viewAttribute id="AMOUNT" aggregationType="sum"/>
-      <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
+      <viewAttribute id="AMOUNT"/>
+      <viewAttribute id="GLACCOUNT"/>
       <viewAttribute id="PAYROLLCODETYPE"/>
       <viewAttribute id="LEGALENTITYGROUPCODE"/>
       <viewAttribute id="DESCRIPTION"/>
+    
+      <viewAttribute id="ROW"/>
+      <viewAttribute id="STATUS"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Join_StagingData_2">
@@ -118,6 +125,9 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="ROW" source="ROW"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
     </input>
     <input node="MAPPING_PAYCODEGLMAPPING">
       <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODETYPE" source="PAYROLLCODETYPE"/>
@@ -134,7 +144,7 @@
   </calculationView>
 </calculationViews>
 
-<logicalModel id="Join_Mapping">
+<logicalModel id="Join_Mapping" filterExpressionLanguage="SQL">
   <attributes>
     <attribute id="BATCH_ID" order="1" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCH_ID"/>
@@ -184,14 +194,32 @@
       <descriptions defaultDescription="GLACCOUNT"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="GLACCOUNT"/>
     </attribute>
+  
+    <attribute id="AMOUNT" order="13" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="AMOUNT"/>
+  
+      <keyMapping columnObjectName="Join_Mapping" columnName="AMOUNT"/>
+  
+    </attribute>
+  
+    <attribute id="PAYROLLCODETYPE" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODETYPE"/>
+  
+      <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLCODETYPE"/>
+  
+    </attribute>
+  
+    <attribute id="ROW" order="15" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ROW"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="ROW"/>
+    </attribute>
+    <attribute id="STATUS" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="STATUS"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="STATUS"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
-  <baseMeasures>
-    <measure id="AMOUNT" order="13" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
-      <descriptions defaultDescription="AMOUNT"/>
-      <measureMapping columnObjectName="Join_Mapping" columnName="AMOUNT"/>
-    </measure>
-  </baseMeasures>
+  <baseMeasures/>
   <calculatedMeasures/>
   <restrictedMeasures/>
 
@@ -202,7 +230,9 @@
     <sortAttribute id="GLACCOUNT" direction="ASC"/>
 
   </sortAttributes>
-  <localDimensions/>
+
+  <filter>&quot;PAYROLLCODETYPE&quot;!='NOTIONAL'</filter>
+
 </logicalModel>
 <layout>
   <shapes>
@@ -218,7 +248,7 @@
     <shape modelObjectName="Join_StagingData_2" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="20" y="30"/>
       <rectangleSize width="250"/>
-    </shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape>
+    </shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape>
   
     <shape modelObjectName="MAPPING_PAYCODEGLMAPPING" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="343" y="30"/>
@@ -228,7 +258,7 @@
     
   
     <shape expanded="true" modelObjectName="Join_StagingData" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="92" y="314"/>
+      <upperLeftCorner x="67" y="330"/>
       <rectangleSize height="30" width="160"/>
     </shape>
     <shape modelObjectName="STAGING_UPLOADITEMS" modelObjectNameSpace="Join_StagingData" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_StagingData">

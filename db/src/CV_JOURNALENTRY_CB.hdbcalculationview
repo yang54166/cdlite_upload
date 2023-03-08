@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_JOURNALENTRY" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
-<descriptions defaultDescription="CV_JOURNALENTRY"/>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_JOURNALENTRY_CB" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true">
+<descriptions defaultDescription="CV_JOURNALENTRYCB"/>
 <localVariables/>
 <variableMappings/>
 <dataSources>
@@ -56,7 +56,7 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGTYPE" source="POSTINGTYPE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
     </input>
-    <filter>&quot;POSTINGTYPE&quot;='STANDARD'</filter>
+    <filter>&quot;POSTINGTYPE&quot;='CBLEDGER'</filter>
     <joinAttribute name="BATCHID"/>
   </calculationView>
   <calculationView xsi:type="Calculation:JoinView" id="Join_Mapping" cardinality="CN_N" joinType="inner">
@@ -82,7 +82,7 @@
     <calculatedViewAttributes/>
     <input node="MAPPING_PAYROLLLEDGERCONTROL">
       <mapping xsi:type="Calculation:AttributeMapping" target="DOCTYPE" source="DOCTYPE"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="LEDGERGROUP" source="LEDGERGROUP"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEDGERGROUP" source="LEDGERGROUPCB"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="DOCHEADERTEXT" source="DOCHEADERTEXT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$TRANSACTIONTYPE$CDTRANSACTIONTYPE" source="TRANSACTIONTYPE"/>
     </input>

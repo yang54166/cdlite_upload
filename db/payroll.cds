@@ -23,9 +23,10 @@ entity PayrollHeader: managed {
 entity PayrollDetails: managed {
     key batchId: Association to PayrollHeader;
     key batchLineNumber: Integer;
-    postingAggregation: Boolean;
-    postingBatchId: Integer;
+    postingAggregation: String;
+    postingBatchId: String;
     postingBatchLineNumber: Integer;
+    postingBatchIdCBLedger: String;
     postingDocument: String;
     advanceNumber: String(20);
     apArId: String(20);      //future?
@@ -33,22 +34,22 @@ entity PayrollDetails: managed {
     chargeAmount: Decimal(15,2);
     chargeCompany: String;
     chargeConversionDate: Date;
-    chargeConversionRate: Integer;
+    chargeConversionRate:  Decimal(9,5);
     chargeConversionType: String(20);
     chargeCostCenter: String(8);
     chargeCurrencyCode: String(3);
     chargeDepartment: String(5);
     chargeGOC: String(3);
-    department: String(5);
     fcat: String(3);
     fmno: String(9);
     glAccount: Integer;
+    glAccountCBLedger: Integer;
     glCurrencyCode: String(4);
     glConversionRate: Decimal(9,5);
     glPostAmount: Decimal(15,2);
     glPostCompany: String(4);
     glPostCostCenter: String(8);
-    glPostDeparment: String(5);
+    glPostDepartment: String(5);
     glPostGOC: String(3);
     legalEntityGroupCode: String(4);
     loanNumber: String(20);
@@ -67,15 +68,16 @@ entity PayrollDetails: managed {
     sourceCompany: String(4);
     sourceCurrencyCode: String(4);
     usdAmount: Decimal(15,2);
-    usdConversionRate: Integer;
+    usdConversionRate:  Decimal(9,5);
     usdConversionType: String(20);
     usPsrpReportingCode: String(10);
 };
 
 entity PostingBatch {
     key batchId: Integer;
-    key postingBatchId: Integer;
+    key postingBatchId: String;
         postingStatus: String;
         postingStatusMessage: String;
         postingDocument: String;
+        postingType: String;
 };

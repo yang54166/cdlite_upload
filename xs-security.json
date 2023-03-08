@@ -23,7 +23,8 @@
     {
       "name": "companycode",
       "description": "companycode",
-      "valueType": "s"
+      "valueType": "s",
+      "valueRequired": true
     }
   ],
   "role-templates": [
@@ -165,50 +166,50 @@
   ],
   "role-collections": [
     {
-      "name": "YBUC_PAB:UPLD_US",
+      "name": "ZBC:APP_PAB:UPLD_US",
       "description": "US accounting user role",
       "role-template-references": [
         "$XSAPPNAME.Accounting_US"
       ]
     },
     {
-      "name": "YBUC_PAB:UPLD_CA",
+      "name": "ZBC:APP_PAB:UPLD_CA",
       "description": "CA accounting user role",
       "role-template-references": [
         "$XSAPPNAME.Accounting_CA"
       ]
     },
     {
-      "name": "YBUC_PAB:UPLD_DE",
+      "name": "ZBC:APP_PAB:UPLD_DE",
       "description": "DE accounting user role",
       "role-template-references": [
         "$XSAPPNAME.Accounting_DE"
       ]
     },
     {
-      "name": "YBUC_PAB:UPLD_GB",
+      "name": "ZBC:APP_PAB:UPLD_GB",
       "description": "GB accounting user role",
       "role-template-references": [
         "$XSAPPNAME.Accounting_GB"
       ]
     },
     {
-      "name": "YBUC_PAB:APR_NA",
-      "description": "NA accounting user role",
+      "name": "ZBC:APP_PAB:APR_NA",
+      "description": "NA approver role",
       "role-template-references": [
         "$XSAPPNAME.Approver_NA"
       ]
     },
     {
-      "name": "YBUC_PAB:APR_EU",
-      "description": "EU accounting user role",
+      "name": "ZBC:APP_PAB:APR_EU",
+      "description": "EU approver role",
       "role-template-references": [
         "$XSAPPNAME.Approver_EU"
       ]
     },
     {
-      "name": "YBUC_PAB:ADM",
-      "description": "admin role",
+      "name": "ZBC:APP_PAB:ADM",
+      "description": "Global admin role",
       "role-template-references": [
         "$XSAPPNAME.Admin"
       ]
