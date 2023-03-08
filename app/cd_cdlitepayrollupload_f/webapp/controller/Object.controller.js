@@ -17,7 +17,7 @@ sap.ui.define([
     "sap/m/Column",
     "sap/m/ColumnListItem",
     "sap/m/Label"
-], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem,Label) {
+], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label) {
     "use strict";
 
     var EdmType = exportLibrary.EdmType;
@@ -284,7 +284,7 @@ sap.ui.define([
             if (that._sHeaderStatus.toUpperCase() === 'APPROVED') {
                 var oApproveList = that._oModel.bindContext("/PayrollHeader(" + that._ID + ")");
                 oApproveList.requestObject().then(function (sObject) {
-                    console.log(sObject);
+                  //  console.log(sObject);
                     that.getView().byId("approvedByTxt").setText(sObject.approvedBy);
                     that.getView().byId("approvedAtTxt").setText(sObject.approvedAt);
                 });
@@ -448,7 +448,7 @@ sap.ui.define([
             var listPostingSummary = this.getView().byId("postingSummaryList");
             listPostingSummary.setBusy(true);
 
-            window.setTimeout(()=>{
+            window.setTimeout(() => {
                 var batchId = this.getView().getBindingContext().getObject().ID
                 var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(batchId));
                 var oPostingList = this._oModel.bindList('/PostingBatch', undefined, undefined, sPostingFilter, undefined);
@@ -456,11 +456,11 @@ sap.ui.define([
                 oPostingList.requestContexts().then(function (aContexts) {
                     oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
                     oView.setModel(oPostingData, "postingView");
-    
+
                     listPostingSummary.setBusy(false);
                 });
             }, 1000);
-           
+
         },
 
         getValidTotalAmt: function (arr) {
@@ -806,7 +806,7 @@ sap.ui.define([
                     MessageBox.error(sMsg);
                 }
             })
-           
+
         },
 
         approveUploads: function () {
@@ -1019,6 +1019,8 @@ sap.ui.define([
 
         handlePopoverPress: function (oEvent) {
             var oCtx = oEvent.getSource().getBindingContext(),
+                //  selectedRow = oEvent.getParameter("listItems").getBindingContext();
+                sPath = oEvent.getSource().getParent().getBindingContextPath(),
                 oControl = oEvent.getSource(),
                 oView = this.getView();
 
@@ -1030,13 +1032,13 @@ sap.ui.define([
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);
-                    oView.byId("popGLAct").setValue(oCtx.getProperty("glAccount"));
-                    oView.byId("popCurrencyCode").setValue(oCtx.getProperty("glCurrencyCode"));
-                    oView.byId("popFCAT").setValue(oCtx.getProperty("fcat"));
-                    oView.byId("popGLCostCenter").setValue(oCtx.getProperty("glCostCenter"));
-                    oView.byId("popLocCode").setValue(oCtx.getProperty("locationCode"));
-                    oView.byId("popPernr").setValue(oCtx.getProperty("pernr"));
-                    oView.byId("popSkillCode").setValue(oCtx.getProperty("skillCode"));
+                    /*     oView.byId("popGLAct").setValue(oCtx.getProperty("glAccount"));
+                         oView.byId("popCurrencyCode").setValue(oCtx.getProperty("glCurrencyCode"));
+                         oView.byId("popFCAT").setValue(oCtx.getProperty("fcat"));
+                         oView.byId("popGLCostCenter").setValue(oCtx.getProperty("glCostCenter"));
+                         oView.byId("popLocCode").setValue(oCtx.getProperty("locationCode"));
+                         oView.byId("popPernr").setValue(oCtx.getProperty("pernr"));
+                         oView.byId("popSkillCode").setValue(oCtx.getProperty("skillCode")); */
                     oPopover.attachAfterOpen(function () {
                         this.disablePointerEvents();
                     }, this);
@@ -1048,6 +1050,13 @@ sap.ui.define([
             }
             this._pPopover.then(function (oPopover) {
                 oPopover.bindElement(oCtx.getPath());
+                oView.byId("popGLAct").setValue(oCtx.getProperty("glAccount"));
+                oView.byId("popCurrencyCode").setValue(oCtx.getProperty("glCurrencyCode"));
+                oView.byId("popFCAT").setValue(oCtx.getProperty("fcat"));
+                oView.byId("popGLCostCenter").setValue(oCtx.getProperty("glCostCenter"));
+                oView.byId("popLocCode").setValue(oCtx.getProperty("locationCode"));
+                oView.byId("popPernr").setValue(oCtx.getProperty("pernr"));
+                oView.byId("popSkillCode").setValue(oCtx.getProperty("skillCode"));
                 oPopover.openBy(oControl);
             });
         },
