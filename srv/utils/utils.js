@@ -80,7 +80,7 @@ const utils = {
                 ROW: lineNum += 1,
                 FMNO: arrCols[0],
                 PAYROLLCODE: arrCols[1],
-                PAYROLLCODESEQUENCE: arrCols[2] || null,
+                PAYROLLCODESEQUENCE: arrCols[2] || 1,
                 NAME: arrCols[3],
                 AMOUNT: arrCols[4],
                 PAYMENTNUMBER: arrCols[5] || null,
