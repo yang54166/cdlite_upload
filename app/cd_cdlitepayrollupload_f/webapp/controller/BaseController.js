@@ -8,7 +8,7 @@ sap.ui.define([
     // shortcut for sap.m.URLHelper
     var URLHelper = mobileLibrary.URLHelper;
 
-    return Controller.extend("batchuploads.controller.BaseController", {
+    return Controller.extend("mck.cdlite.payrollupload.controller.BaseController", {
         /**
          * Convenience method for accessing the router.
          * @public

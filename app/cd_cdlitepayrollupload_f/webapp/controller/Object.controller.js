@@ -11,13 +11,18 @@ sap.ui.define([
     "sap/ui/export/library",
     "sap/ui/export/Spreadsheet",
     "sap/ui/core/util/Export",
-    "sap/ui/core/util/ExportTypeCSV"
-], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV) {
+    "sap/ui/core/util/ExportTypeCSV",
+    "sap/ui/core/BusyIndicator",
+    "sap/m/Text",
+    "sap/m/Column",
+    "sap/m/ColumnListItem",
+    "sap/m/Label"
+], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem,Label) {
     "use strict";
 
     var EdmType = exportLibrary.EdmType;
 
-    return BaseController.extend("batchuploads.controller.Object", {
+    return BaseController.extend("mck.cdlite.payrollupload.controller.Object", {
 
         formatter: formatter,
 
@@ -341,7 +346,7 @@ sap.ui.define([
             }
             oViewModel.setProperty("/lineItemListTitle", sTitle);
 
-            sap.ui.core.BusyIndicator.hide();
+            BusyIndicator.hide();
         },
 
         onDownload: function () {
@@ -434,7 +439,28 @@ sap.ui.define([
         },
         onRefresh: function () {
             var oTable = this.byId("lineItemsList");
-            oTable.getBinding("items").refresh();
+            oTable.getBinding("items").refresh(true);
+
+        },
+
+        onPressRefresh: function () {
+            var oView = this.getView();
+            var listPostingSummary = this.getView().byId("postingSummaryList");
+            listPostingSummary.setBusy(true);
+
+            window.setTimeout(()=>{
+                var batchId = this.getView().getBindingContext().getObject().ID
+                var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(batchId));
+                var oPostingList = this._oModel.bindList('/PostingBatch', undefined, undefined, sPostingFilter, undefined);
+                var oPostingData = new JSONModel();
+                oPostingList.requestContexts().then(function (aContexts) {
+                    oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
+                    oView.setModel(oPostingData, "postingView");
+    
+                    listPostingSummary.setBusy(false);
+                });
+            }, 1000);
+           
         },
 
         getValidTotalAmt: function (arr) {
@@ -457,12 +483,12 @@ sap.ui.define([
 
             var oView = this.getView();
 
-            var oTemplate = new sap.m.ColumnListItem({
+            var oTemplate = new ColumnListItem({
                 cells: [
-                    new sap.m.Text({ text: "{STATUS}" }),
-                    new sap.m.Text({ text: "{LINES_COUNT}" }),
-                    new sap.m.Text({ text: "{FMNO_COUNT}" }),
-                    new sap.m.Text({ text: "{TOTAL_AMOUNT}" })
+                    new Text({ text: "{STATUS}" }),
+                    new Text({ text: "{LINES_COUNT}" }),
+                    new Text({ text: "{FMNO_COUNT}" }),
+                    new Text({ text: "{TOTAL_AMOUNT}" })
                 ]
             });
             var that = this;
@@ -482,7 +508,7 @@ sap.ui.define([
                 // load asynchronous XML fragment
                 Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Approve",
+                    name: "mck.cdlite.payrollupload.fragments.Approve",
                     controller: that
                 }).then(function (oDialog) {
                     oView.addDependent(oDialog);
@@ -590,7 +616,7 @@ sap.ui.define([
                     // load asynchronous XML fragment
                     Fragment.load({
                         id: oView.getId(),
-                        name: "batchuploads.fragments.Approve",
+                        name: "mck.cdlite.payrollupload.fragments.Approve",
                         controller: that
                     }).then(function (oDialog) {
                         oView.addDependent(oDialog);
@@ -617,36 +643,36 @@ sap.ui.define([
 
         createTotalTable: function () {
             var oTable = this.byId("approveSummaryList");
-            var col1 = new sap.m.Column("col1", {
+            var col1 = new Column("col1", {
                 width: "4rem",
-                header: new sap.m.Label({
+                header: new Label({
                     text: ""
                 })
             });
-            var col2 = new sap.m.Column("col2", {
+            var col2 = new Column("col2", {
                 width: "4rem",
-                header: new sap.m.Label({
+                header: new Label({
                     text: "Number of Lines"
                 })
             });
-            var col3 = new sap.m.Column("col3", {
+            var col3 = new Column("col3", {
                 width: "4rem",
-                header: new sap.m.Label({
+                header: new Label({
                     text: "Number of FMNO's"
                 })
             });
             oTable.addColumn(col1);
             oTable.addColumn(col2);
             oTable.addColumn(col3);
-            oTable.bindItems("summaryView>/", new sap.m.ColumnListItem({
+            oTable.bindItems("summaryView>/", new ColumnListItem({
                 cells: [
-                    new sap.m.Text({
+                    new Text({
                         text: "{summaryView>rowHeader}"
                     }),
-                    new sap.m.Text({
+                    new Text({
                         text: "{summaryView>lineCnt}"
                     }),
-                    new sap.m.Text({
+                    new Text({
                         text: "{summaryView>fmnoCnt}"
                     })
                 ]
@@ -705,7 +731,7 @@ sap.ui.define([
                         // load asynchronous XML fragment
                         Fragment.load({
                             id: oView.getId(),
-                            name: "batchuploads.fragments.Approve",
+                            name: "mck.cdlite.payrollupload.fragments.Approve",
                             controller: that
                         }).then(function (oDialog) {
                             oView.addDependent(oDialog);
@@ -1000,7 +1026,7 @@ sap.ui.define([
             if (!this._pPopover) {
                 this._pPopover = Fragment.load({
                     id: oView.getId(),
-                    name: "batchuploads.fragments.Popover",
+                    name: "mck.cdlite.payrollupload.fragments.Popover",
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);

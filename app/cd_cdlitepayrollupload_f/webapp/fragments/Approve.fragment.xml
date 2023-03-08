@@ -1,10 +1,10 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:semantic="sap.f.semantic" xmlns:f="sap.ui.layout.form" xmlns:u="sap.ui.unified">
-    <Dialog id="approveDialog" resizable="true" draggable="true" showHeader="false" afterClose="onAfterClose" contentWidth="780px" contentHeight="450px">
+    <Dialog id="approveDialog" resizable="true" draggable="true" showHeader="false" afterClose="onAfterClose" contentWidth="780px" contentHeight="500px">
         <beginButton>
-            <Button text="Approve" enabled="{totalAmt>/approvalDisabled}" press="approveUploads" />
+            <Button text="{i18n>btnApprove}" enabled="{totalAmt>/approvalDisabled}" press="approveUploads" />
         </beginButton>
         <endButton>
-            <Button text="Cancel" press="closeApprovalDialog" />
+            <Button text="{i18n>btnCancel}" press="closeApprovalDialog" />
         </endButton>
         <content>
             <semantic:SemanticPage id="approvePage" headerPinnable="false" toggleHeaderOnTitleClick="false" busy="{objectView>/busy}" busyIndicatorDelay="{objectView>/delay}">
@@ -26,21 +26,21 @@
                     </l:HorizontalLayout>
                 </semantic:headerContent>
                 <semantic:content>
-                    <l:VerticalLayout>
+                    <l:VerticalLayout class="sapUiTinyMargin">
                         <l:HorizontalLayout id="approveDtlV">
-                            <Table id="approveSummaryList" sticky="HeaderToolbar,ColumnHeaders" items="{approvalView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
+                            <Table id="approveSummaryList" sticky="HeaderToolbar,ColumnHeaders" items="{approvalView>/}" class="sapUiTinylMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
                                 <columns>
                                     <Column id="statusHeader">
-                                        <Text id="totalFmnoTxt" text="Status" />
+                                        <Text id="totalFmnoTxt" text="{i18n>colStatus}" />
                                     </Column>
                                     <Column id="lineCntCol">
-                                        <Text text="Number of Lines" />
+                                        <Text text="{i18n>colNumLines}" />
                                     </Column>
                                     <Column id="fmnoCntCol" demandPopin="false" minScreenWidth="Tablet">
-                                        <Text text="Number of FMNO's" />
+                                        <Text text="{i18n>colNumFmno}" />
                                     </Column>
                                     <Column id="totalAmtCol" demandPopin="false" minScreenWidth="Tablet">
-                                        <Text text="Total Amount" />
+                                        <Text text="{i18n>colTotalAmount}" />
                                     </Column>
                                 </columns>
                                 <items>
@@ -59,8 +59,9 @@
                             <FormattedText htmlText="{totalAmt>/HTML}" />
                         </l:HorizontalLayout>
                         <l:HorizontalLayout class="sapUiContentPadding">
-                            <Text text="Describes what happens when click approve, any errors will be skipped and will have to be manually reprocessed. Recommed download errors (link above)." />
+                            <Text text="{i18n>lblApprovalWarning}" />
                         </l:HorizontalLayout>
+                        <Link class="sapUiSmallMarginBegin" text="{i18n>btnDownloadErrors}" press="onDownload"/>
                     </l:VerticalLayout>
                 </semantic:content>
             </semantic:SemanticPage>

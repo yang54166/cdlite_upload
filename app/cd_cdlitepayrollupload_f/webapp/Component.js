@@ -6,7 +6,7 @@ sap.ui.define([
 ], function (UIComponent, Device, models, ErrorHandler) {
     "use strict";
 
-    return UIComponent.extend("batchuploads.Component", {
+    return UIComponent.extend("mck.cdlite.payrollupload.Component", {
 
         metadata : {
             manifest: "json"

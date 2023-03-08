@@ -91,7 +91,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "batchuploads.i18n.i18n"
+          "bundleName": "mck.cdlite.payrollupload.i18n.i18n"
         }
       },
       "": {
@@ -129,7 +129,7 @@
       "config": {
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
-        "viewPath": "batchuploads.view",
+        "viewPath": "mck.cdlite.payrollupload.view",
         "controlId": "app",
         "controlAggregation": "pages",
         "bypassed": {
@@ -138,7 +138,7 @@
           ]
         },
         "async": true,
-        "path": "batchuploads.view"
+        "path": "mck.cdlite.payrollupload.view"
       },
       "routes": [
         {
@@ -176,7 +176,7 @@
       }
     },
     "rootView": {
-      "viewName": "batchuploads.view.App",
+      "viewName": "mck.cdlite.payrollupload.view.App",
       "type": "XML",
       "async": true,
       "id": "app"
