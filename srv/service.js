@@ -338,7 +338,7 @@ class PayrollService extends cds.ApplicationService {
                                 postingBatchIDCBLedger: ['01', '02', '04'].includes(transactionType) ? `${postingBatches}.2` : null,
                                 fcat: item.fcat,
                                 fmno: item.fmno,
-                                paymentID: item.paymentID,
+                                paymentID: item.paymentId,
                                 payrollCode: item.payrollCode,
                                 payrollCodeSequence: item.payrollCodeSequence,
                                 payrollCodeClass: mapObj.payrollCodeClass,
@@ -346,7 +346,6 @@ class PayrollService extends cds.ApplicationService {
                                 sourceAmount: item.amount,
                                 sourceCurrencyCode: currencyCode,
                                 sourceCompany: glCompanyCode,
-                                paymentID: item.paymentID,
                                 pernr: item.pernr,
                                 legalEntityGroupCode: le.LEGALENTITYGROUPCODE,
                                 locationCode: item.locationCode,
@@ -428,7 +427,7 @@ class PayrollService extends cds.ApplicationService {
             const batchId = req.data.batchToApprove || req.params[0];
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
             const responseCPI = await cpi.send({ path: `cd_lass_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
-            console.log(`CPI Trigger - Response: ${responseCPI}`);
+            //console.log(`CPI Trigger - Response: ${responseCPI}`);
             // const cpiTrigger = () => {
             //     return new Promise(async (resolve, reject) => {
             //         setTimeout(async () => {
