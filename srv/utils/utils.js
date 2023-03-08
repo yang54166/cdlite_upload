@@ -19,7 +19,7 @@ const utils = {
     },
 
     convertAmountByExchangeRate: (amount, exchangeRate) => {
-        return (amount * exchangeRate).toFixed(2);
+        return (amount / exchangeRate).toFixed(2);
     },
 
     isDecimal: (value, precision, scale)=>{
