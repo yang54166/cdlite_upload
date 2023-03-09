@@ -6,6 +6,7 @@ const utils = require('./utils/utils');
 const { HANAUtils } = require('./utils/HANAUtils');
 const { SecurityUtils } = require('./utils/SecurityUtils');
 const { FDMUtils } = require('./utils/FDMUtils');
+const { data } = require('hdb/lib/protocol');
 
 class PayrollService extends cds.ApplicationService {
     async init() {
@@ -54,30 +55,35 @@ class PayrollService extends cds.ApplicationService {
 
         this.on("PUT", "MappingUploadFile", async (req) => {
             if (req.data.content) {
-                const contentType = req._.req.headers['content-type'];
-                const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
-                    return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
-                }));
-                const mappingTable = contentPropertyMap.get("mappingTable");
-                const fileName = contentPropertyMap.get("filename");
+                try {
+                    const contentType = req._.req.headers['content-type'];
+                    const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
+                        return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
+                    }));
+                    const mappingTable = contentPropertyMap.get("mappingTable");
+                    const fileName = contentPropertyMap.get("filename");
 
-                console.log(`DEBUG: Upload started for mappingTable ${mappingTable}.`);
-                let content = await utils.readUploadStream(req.data.content);
-                console.log(`DEBUG: Upload complete for mappingTable ${mappingTable}.  Starting to parse file content.`);
+                    console.log(`DEBUG: Upload started for mappingTable ${mappingTable}.`);
+                    let content = await utils.readUploadStream(req.data.content);
+                    console.log(`DEBUG: Upload complete for mappingTable ${mappingTable}.  Starting to parse file content.`);
 
-                const mappingDBTable = utils.getMappingDBTable(mappingTable);
-                if (mappingDBTable) {
-                    const dataToImport = utils.parseMappingUpload(content, mappingDBTable);
-                    const result = await HANAUtils.callStoredProc(
-                        db.options.credentials,
-                        db.options.credentials.schema,
-                        `SP_UPSERT_${mappingDBTable}`,
-                        dataToImport
-                    );
-                    console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
-                    return;
-                } else {
-                    req.error({ code: 400, message: `Invalid mappingTable : ${mappingTable}.` });
+                    const mappingDBTable = utils.getMappingDBTable(mappingTable);
+                    if (mappingDBTable) {
+                        const dataToImport = utils.parseMappingUpload(content, mappingDBTable);
+                        dataToImport.filter((row) => row == null);
+                        const result = await HANAUtils.callStoredProc(
+                            db.options.credentials,
+                            db.options.credentials.schema,
+                            `SP_UPSERT_${mappingDBTable}`,
+                            dataToImport
+                        );
+                        console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                        return;
+                    } else {
+                        req.error({ code: 400, message: `Invalid mappingTable : ${mappingTable}.` });
+                    }
+                } catch (ex) {
+                    req.error({ code: 400, message: `Error while uploading file: ${ex.message}` });
                 }
             }
         });
@@ -315,7 +321,7 @@ class PayrollService extends cds.ApplicationService {
                                 const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate('USD', currencyCode);
                                 const glExchangeRateSourceToCompany = fdmUtils.getExchangeRate(currencyCode, currencyCode);
                                 if (!glExchangeRateSourceToCompany) {
-                                    throw({ message: `Unable to approve Batch ID:${batchToApprove}. Exchange Rate does not exist for ${currencyCode} to ${currencyCode}` });
+                                    throw ({ message: `Unable to approve Batch ID:${batchToApprove}. Exchange Rate does not exist for ${currencyCode} to ${currencyCode}` });
                                 }
                                 //const glExchangeRateSourceToChargeCompany = fdmUtils.getExchangeRate(item.glCurrencyCode, currencyCode);
 

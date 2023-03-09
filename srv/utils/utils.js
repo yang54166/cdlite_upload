@@ -1,11 +1,19 @@
 const { PassThrough } = require('node:stream');
-const monthNames = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 const utils = {
     convertPeriodToDate: (period) => {
         const yyyy = parseInt(period.substr(0, 4));
         const mm = parseInt(period.substr(4, 2));
         return new Date(yyyy, mm, 0).toISOString().substring(0, 10);
+    },
+
+    convertExcelDateStringToDBDateString: (dateStr)=>{
+        const dateObj = new Date(dateStr);
+        if (dateObj.toString() !== "Invalid Date") { 
+            return `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2,0)}-${dateObj.getDate().toString().padStart(2,0)}` 
+        }
+        else { return null }
     },
 
     convertDateToPayPeriod: (payrollDate) => {
@@ -22,28 +30,32 @@ const utils = {
         return (amount / exchangeRate).toFixed(2);
     },
 
-    isDecimal: (value, precision, scale)=>{
-        const regexDecimal= new RegExp(`^[+-]?[0-9]{1,${precision}}(?:\.[0-9]{1,${scale}})?$`);
+    isDecimal: (value, precision, scale) => {
+        const regexDecimal = new RegExp(`^[+-]?[0-9]{1,${precision}}(?:\.[0-9]{1,${scale}})?$`);
         return regexDecimal.test(value);
     },
 
     CSVtoArray: (text) => {
-        var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
-        var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
-        // Return NULL if input string is not well formed CSV string.
-        if (!re_valid.test(text)) return null;
-        var a = [];                     // Initialize array to receive values.
-        text.replace(re_value, // "Walk" the string using replace with callback.
-            function (m0, m1, m2, m3) {
-                // Remove backslash from \' in single quoted values.
-                if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
-                // Remove backslash from \" in double quoted values.
-                else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
-                else if (m3 !== undefined) a.push(m3);
-                return ''; // Return empty string.
-            });
-        // Handle special case of empty last value.
-        if (/,\s*$/.test(text)) a.push('');
+        // var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
+        // var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
+        // // Return NULL if input string is not well formed CSV string.
+        // if (!re_valid.test(text)) return null;
+        // var a = [];                     // Initialize array to receive values.
+        // text.replace(re_value, // "Walk" the string using replace with callback.
+        //     function (m0, m1, m2, m3) {
+        //         // Remove backslash from \' in single quoted values.
+        //         if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
+        //         // Remove backslash from \" in double quoted values.
+        //         else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
+        //         else if (m3 !== undefined) a.push(m3);
+        //         return ''; // Return empty string.
+        //     });
+        // // Handle special case of empty last value.
+        // if (/,\s*$/.test(text)) a.push('');
+        //var a = text.split(",");
+        var a = text.match(/(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))/g)
+            .map((s)=>(s.replace(/(^,)/,"")));
+        
         return a;
     },
 
@@ -155,41 +167,49 @@ const utils = {
             case "MAPPING_LEGALENTITYGROUPING":
                 return fileRows.map((line) => {
                     let arrCols = utils.CSVtoArray(line);
-                    return {
-                        LEGALENTITYGROUPCODE: arrCols[0],
-                        COMPANYCODE: arrCols[1]
-                    };
+                    if (arrCols) {
+                        return {
+                            LEGALENTITYGROUPCODE: arrCols[0],
+                            COMPANYCODE: arrCols[1]
+                        };
+                    }
                 });
             case "MAPPING_PAYCODEGLMAPPING":
                 return fileRows.map((line) => {
                     let arrCols = utils.CSVtoArray(line);
-                    return {
-                        LEGALENTITYGROUPCODE: arrCols[0],
-                        PAYROLLCODE: arrCols[1],
-                        PAYROLLCODESEQUENCE: arrCols[2],
-                        DEFAULTDEPARTMENT: arrCols[3],
-                        DESCRIPTION: arrCols[4],
-                        EFFECTIVEDATE: arrCols[5],
-                        ENDDATE: arrCols[6],
-                        GLACCOUNT: arrCols[7],
-                        GLACCOUNTCB: arrCols[8],
-                        PAYROLLCODECLASS: arrCols[9],
-                        PAYROLLCODETYPE: arrCols[10],
-                        QUALIFIEDCOMPENSATION: arrCols[11],
-                        TRANSACTIONDESCRIPTION: arrCols[12],
-                        USPSRPCATEGORY: arrCols[13]
-                    };
+                    if (arrCols && (arrCols.length == 14)) {
+                        return {
+                            LEGALENTITYGROUPCODE: arrCols[0],
+                            PAYROLLCODE: arrCols[1],
+                            PAYROLLCODESEQUENCE: arrCols[2],
+                            DEFAULTDEPARTMENT: arrCols[3],
+                            DESCRIPTION: arrCols[4],
+                            EFFECTIVEDATE: utils.convertExcelDateStringToDBDateString(arrCols[5]),
+                            ENDDATE:  utils.convertExcelDateStringToDBDateString(arrCols[6]),
+                            GLACCOUNT: arrCols[7] || null,
+                            GLACCOUNTCB: arrCols[8] || null,
+                            PAYROLLCODECLASS: arrCols[9],
+                            PAYROLLCODETYPE: arrCols[10],
+                            QUALIFIEDCOMPENSATION: arrCols[11],
+                            TRANSACTIONDESCRIPTION: arrCols[12],
+                            USPSRPCATEGORY: arrCols[13]
+                        };
+                    } else {
+                        throw({message: `Unable to parse file. Check for empty rows or invalid number of columns. LINE: ${line}`});
+                    }
                 });
             case "MAPPING_PAYROLLLEDGERCONTROL":
                 return fileRows.map((line) => {
                     let arrCols = utils.CSVtoArray(line);
-                    return {
-                        TRANSACTIONTYPE: arrCols[0],
-                        DOCTYPE: arrCols[1],
-                        LEDGERGROUP: arrCols[2],
-                        LEDGERGROUPCB: arrCols[3],
-                        DOCHEADERTEXT: arrCols[4]
-                    };
+                    if (arrCols) {
+                        return {
+                            TRANSACTIONTYPE: arrCols[0],
+                            DOCTYPE: arrCols[1],
+                            LEDGERGROUP: arrCols[2],
+                            LEDGERGROUPCB: arrCols[3],
+                            DOCHEADERTEXT: arrCols[4]
+                        };
+                    }
                 });
         }
         return mappedResult;
