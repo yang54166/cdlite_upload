@@ -13,7 +13,7 @@ entity PaycodeGLMapping: managed {
     key payrollCodeSequence: Integer;
     defaultDepartment: String(5);
     description: String;
-    key effectiveDate: Date;
+    effectiveDate: Date;
     endDate: Date;
     glAccount: Integer;
     glAccountCB: Integer;
