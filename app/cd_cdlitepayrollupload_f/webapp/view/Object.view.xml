@@ -245,11 +245,14 @@
                                     width="auto"
                                     items="{
                                         path: 'items',
+                                     
                                         sorter: {
                                             path: 'fmno',
                                             descending: false
                                         }
                                     }"
+                                    growing="true"
+                                    growingScrollToLoad="true"
                                     updateFinished=".onListUpdateFinished"
                                     noDataText="{i18n>detailLineItemTableNoDataText}"
                                     busyIndicatorDelay="{objectView>/tableBusyDelay}"
