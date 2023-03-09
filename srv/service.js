@@ -481,12 +481,18 @@ class PayrollService extends cds.ApplicationService {
             return sortedList;
         });
 
-        this.on("READ", "CompanyCodes", async (result) => {
+        this.on("READ", "CompanyCodes", async (req) => {
+            const permittedCompanyCodes = req.user.is("admin") ? "*" : req.user.attr.companycode || [];
             const fdmUtils = new FDMUtils(fdm);
-            return fdmUtils.getCompanyCodes();
+            const allCompanyCodes = await fdmUtils.getCompanyCodes();
+
+            // Return all for admin, filter for everyone else.
+            return allCompanyCodes.filter((cc)=> {
+                return (permittedCompanyCodes == "*") || (permittedCompanyCodes.indexOf(cc.companyCode) > -1 );
+            })
         });
 
-        this.on("READ", "Currency", async (result) => {
+        this.on("READ", "Currency", async (req) => {
             const fdmUtils = new FDMUtils(fdm);
             return fdmUtils.getCurrency();
         });
