@@ -131,7 +131,7 @@ class PayrollService extends cds.ApplicationService {
 
                 // Validations
                 if (!employeeObj) {
-                    errorsForRow.push(`FMNO ${item.FMNO} not found or invalid.`);
+                    errorsForRow.push(`FMNO ${item.FMNO} not found in ${stagingHeader.glCompanyCode}, or invalid.`);
                 } else {
                     if (!employeeObj.costCenter || employeeObj.costCenter == "") {
                         errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
@@ -168,7 +168,7 @@ class PayrollService extends cds.ApplicationService {
                 if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()) {
                     errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
                 }
-                const companyCodeForEmployee = fdmUtils.getCompanyCode(employeeObj?.branchId || stagingHeader.glCompanyCode);
+                //const companyCodeForEmployee = fdmUtils.getCompanyCode(employeeObj?.branchId || stagingHeader.glCompanyCode);
 
                 if (item.projectCode) {
                     const projectCode = fdmUtils.getWbsElement(item.projectCode);
@@ -202,12 +202,12 @@ class PayrollService extends cds.ApplicationService {
                     GLCOSTCENTER: employeeObj?.costCenter,
                     GLACCOUNT: glAccountObj?.glAccount || null,
                     GLACCOUNTTYPE: glAccountObj?.glAccountType || null,
-                    GLCURRENCYCODE: companyCodeForEmployee?.currencyCode,
+                    GLCURRENCYCODE: companyCode?.currencyCode,
                     FCAT: userFCAT,
                     PERNR: employeeObj?.personidExt,
                     LOCATIONCODE: employeeObj?.userLocation,
                     SKILLCODE: employeeObj?.skillCode,
-                    CHARGECOMPANY: companyCodeForEmployee?.companyCode
+                    CHARGECOMPANY: companyCode?.companyCode
                 }
             });
 
@@ -259,10 +259,6 @@ class PayrollService extends cds.ApplicationService {
                         // Get Posting Config
                         const postingConfig = await SELECT.one.from(PostingBatchConfig);
 
-                        // Get FDM Data
-                        const fdmUtils = new FDMUtils(fdm);
-                        await fdmUtils.getExchangeRates();
-
                         // Get Data to Copy
                         const dataHeader = await SELECT.one.from(UploadHeader).where({ ID: batchToApprove, STATUS: 'APPROVED' });
                         const dataItems = (await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' }))
@@ -271,6 +267,11 @@ class PayrollService extends cds.ApplicationService {
                                 if (a.FMNO > b.FMNO) { return 1 }
                                 return 0
                             });
+
+                            
+                        // Get FDM Data
+                        const fdmUtils = new FDMUtils(fdm);
+                        await fdmUtils.getExchangeRates(dataHeader.currencyCode);
 
                         // Get Mapping Data
                         const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: dataHeader.glCompanyCode });
@@ -414,9 +415,9 @@ class PayrollService extends cds.ApplicationService {
                             const tx = cds.tx()
                             await tx.commit();
 
-                            this.emit("trigger", { batchToApprove });
+                            return this.emit("trigger", { batchToApprove });
 
-                            return batchToApprove;
+                            //return batchToApprove;
                         } else {
                             req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
                         }
@@ -437,27 +438,8 @@ class PayrollService extends cds.ApplicationService {
         this.on("trigger", async req => {
             const batchId = req.data.batchToApprove || req.params[0];
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
-            const responseCPI = await cpi.send({ path: `cd_lass_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
-            //console.log(`CPI Trigger - Response: ${responseCPI}`);
-            // const cpiTrigger = () => {
-            //     return new Promise(async (resolve, reject) => {
-            //         setTimeout(async () => {
-            //             console.log(`CPI Trigger - Starting for batch ${batchId}`);
-            //             const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
-            //             try {
-            //                 axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
-            //                 axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
-            //                 const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchId}`;
-            //                 const responseCPI = await axios.get(cpiURL);
-            //                 console.log(`CPI Trigger - Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
-            //                 resolve(responseCPI);
-            //             } catch (ex) {
-            //                 console.log("CPI Trigger - Error:: " + ex.message);
-            //             };
-            //         }, 3000);
-            //     })
-            // };
-            // await cpiTrigger();
+            const resultTrigger = await cpi.send({ path: `cd_lass_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
+            console.log(`CPI Response: ${resultTrigger}`);
         });
 
         this.after("READ", "StagingUploads", async (result) => {

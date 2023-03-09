@@ -14,14 +14,14 @@ class FDMUtils {
         this.sapClient = remoteService.options.credentials.queries["sap-client"];
     };
 
-    async getEmployeeData() {
-        let result = await this.apiService.get("S4_FMNO_MASTER_API").where({ client: this.sapClient });
+    async getEmployeeData(companyCode) {
+        let result = await this.apiService.get("S4_FMNO_MASTER_API").where({ client: this.sapClient, branchId: companyCode });
         this.employeeData.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);
             this.employeeData.push(...result);
         }
-        console.log(`Found ${this.employeeData.length} FMNOs for client ${this.sapClient}`);
+        console.log(`Found ${this.employeeData.length} FMNOs for client ${this.sapClient} and companyCode ${companyCode}`);
         return this.employeeData;
     };
 
@@ -90,9 +90,14 @@ class FDMUtils {
         return this.wbsElements.find((proj) => proj.wbsCode == wbsElementCode);
     };
 
-
-    async getExchangeRates() {
-        let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API");//.where({ mandt: this.sapClient });
+    async getExchangeRates(currencyCode) {
+        let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API").where({ 
+            mandt: this.sapClient , 
+            and: {
+                fromCurrency: currencyCode,
+                or: { 
+                    toCurrency: currencyCode }
+        }});
         this.exchangeRates.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);
