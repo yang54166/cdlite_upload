@@ -781,7 +781,7 @@ sap.ui.define([
 
         handlePopoverPress: function (oEvent) {
             var oCtx = oEvent.getSource().getBindingContext(),
-                //  selectedRow = oEvent.getParameter("listItems").getBindingContext();
+               
                 sPath = oEvent.getSource().getParent().getBindingContextPath(),
                 oControl = oEvent.getSource(),
                 oView = this.getView();
@@ -794,13 +794,7 @@ sap.ui.define([
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);
-                    /*     oView.byId("popGLAct").setValue(oCtx.getProperty("glAccount"));
-                         oView.byId("popCurrencyCode").setValue(oCtx.getProperty("glCurrencyCode"));
-                         oView.byId("popFCAT").setValue(oCtx.getProperty("fcat"));
-                         oView.byId("popGLCostCenter").setValue(oCtx.getProperty("glCostCenter"));
-                         oView.byId("popLocCode").setValue(oCtx.getProperty("locationCode"));
-                         oView.byId("popPernr").setValue(oCtx.getProperty("pernr"));
-                         oView.byId("popSkillCode").setValue(oCtx.getProperty("skillCode")); */
+                 
                     oPopover.attachAfterOpen(function () {
                         this.disablePointerEvents();
                     }, this);
@@ -813,6 +807,7 @@ sap.ui.define([
             this._pPopover.then(function (oPopover) {
                 oPopover.bindElement(oCtx.getPath());
                 oView.byId("popGLAct").setValue(oCtx.getProperty("glAccount"));
+                oView.byId("popGLActCB").setValue(oCtx.getProperty("glAccountCB"));
                 oView.byId("popCurrencyCode").setValue(oCtx.getProperty("glCurrencyCode"));
                 oView.byId("popFCAT").setValue(oCtx.getProperty("fcat"));
                 oView.byId("popGLCostCenter").setValue(oCtx.getProperty("glCostCenter"));

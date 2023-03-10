@@ -190,16 +190,23 @@ sap.ui.define([
 
                 var filters = [];
 
-                var oFilter = new Filter({
+                var oFilterDesc = new Filter({
                     path: 'batchDescription',
                     operator: FilterOperator.Contains,
                     value1: sQuery,
                     caseSensitive: false
                 });
+
+                var oFilterBatchId = new Filter({
+                    path: 'ID',
+                    operator: FilterOperator.EQ,
+                    value1: sQuery
+                });
                 //filters.push(new Filter("batchDescription", FilterOperator.Contains, sQuery.toLowerCase()));
                 //   filters.push(new Filter("ID", FilterOperator.EQ, sQuery));
 
-                filters.push(oFilter);
+                filters.push(oFilterDesc);
+                filters.push(oFilterBatchId);
                 var orFilters = new Filter(filters, false);
                 if (sQuery && sQuery.length > 0) {
                     aTableSearchState = orFilters;
