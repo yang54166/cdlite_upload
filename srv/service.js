@@ -43,7 +43,8 @@ class PayrollService extends cds.ApplicationService {
                     );
                     console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
-                    await this.emit("enrich", { batchID });
+                    //await this.emit("enrich", { batchID });
+                    await enrichBatch( batchID );
 
                     // Update filename
                     return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
@@ -107,10 +108,7 @@ class PayrollService extends cds.ApplicationService {
             context.data.ID = batchId;
         });
 
-        this.on('enrich', async req => {
-            const batchID = req.data.batchID || req.params[0];
-            console.log("enriching batchId: " + batchID);
-
+        const enrichBatch = async (batchID) => {
             // Get Staging Data
             const stagingHeader = await SELECT.one.from(UploadHeader).where({ ID: batchID });
             const stagingDataItems = await SELECT.from(UploadItems)
@@ -260,6 +258,13 @@ class PayrollService extends cds.ApplicationService {
 
             console.log("DEBUG: enrichment complete. Set batch to VALIDATED.");
             return resultSave;
+        };
+
+        this.on('enrich', async req => {
+            const batchID = req.data.batchID || req.params[0];
+            console.log("enriching batchId: " + batchID);
+
+            return enrichBatch(batchID);
         });
 
         this.on('approve', async req => {
