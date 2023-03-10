@@ -58,7 +58,7 @@ Content-Type: application/json
 {}
 
 ### Trigger
-POST http://localhost:4004/payroll/Payroll({{batchResponse.response.body.ID}})/trigger
+POST http://localhost:4004/payroll/StagingUploads({{batchResponse.response.body.ID}})/trigger
 Authorization: Bearer {{auth.response.body.access_token}}
 Content-Type: application/json
 

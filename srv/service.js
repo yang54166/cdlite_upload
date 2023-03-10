@@ -437,10 +437,9 @@ class PayrollService extends cds.ApplicationService {
                             }
 
                             // Commit before trigger
-                            const tx = cds.tx()
-                            await tx.commit();
+                            await db.commit();
 
-                            return this.emit("trigger", { batchToApprove });
+                            await this.emit("trigger", { batchToApprove });
 
                             //return batchToApprove;
                         } else {
@@ -465,6 +464,7 @@ class PayrollService extends cds.ApplicationService {
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
             const resultTrigger = await cpi.send({ path: `cd_lass_payroll_trigger1?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
             console.log(`CPI Response: ${resultTrigger}`);
+            return true;
         });
 
         this.after("READ", "StagingUploads", async (result) => {
