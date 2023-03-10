@@ -40,7 +40,7 @@ service PayrollService  @(requires: 'authenticated-user') {
     entity PayrollHeader       as projection on payroll.PayrollHeader;
     entity PayrollDetails      as projection on payroll.PayrollDetails;
     entity PostingBatch        as projection on payroll.PostingBatch
-        excluding {postingType};
+        excluding {postingType, createdAt, createdBy, modifiedAt, modifiedBy};
 
     // Mapping
     entity LegalEntityGrouping as projection on mapping.LegalEntityGrouping ;

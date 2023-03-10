@@ -73,7 +73,7 @@ entity PayrollDetails: managed {
     usPsrpReportingCode: String(10);
 };
 
-entity PostingBatch {
+entity PostingBatch : managed {
     key batchId: Integer;
     key postingBatchId: String;
         postingStatus: String;
