@@ -17,7 +17,7 @@ class PayrollService extends cds.ApplicationService {
         const { PostingBatch: PostingBatchConfig } = db.entities('config');
         const { PayrollHeader, PayrollDetails, PostingBatch } = db.entities('payroll');
         const { UploadHeader, UploadItems } = db.entities('staging');
-        const { LegalEntityGrouping, PaycodeGLMapping } = db.entities('mapping');
+        const { LegalEntityGrouping, PaycodeGLMapping, PayrollLedgerControl } = db.entities('mapping');
 
         this.on("PUT", "PayrollUploadFile", async (req) => {
             if (req.data.content) {
@@ -67,23 +67,37 @@ class PayrollService extends cds.ApplicationService {
                     let content = await utils.readUploadStream(req.data.content);
                     console.log(`DEBUG: Upload complete for mappingTable ${mappingTable}.  Starting to parse file content.`);
 
+                    const entityType = (() => {
+                        switch (mappingTable.toUpperCase()) {
+                            case "LEGALENTITYGROUPING":
+                                return LegalEntityGrouping
+                            case "PAYCODEGLMAPPING":
+                                return PaycodeGLMapping;
+                            case "PAYROLLLEDGERCONTROL":
+                                return PayrollLedgerControl;
+                        }
+                    })();
                     const mappingDBTable = utils.getMappingDBTable(mappingTable);
                     if (mappingDBTable) {
                         const dataToImport = utils.parseMappingUpload(content, mappingDBTable);
-                        dataToImport.filter((row) => row == null);
-                        const result = await HANAUtils.callStoredProc(
-                            db.options.credentials,
-                            db.options.credentials.schema,
-                            `SP_UPSERT_${mappingDBTable}`,
-                            dataToImport
-                        );
-                        console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
-                        return;
+                        const validationResult = utils.validateEntities(dataToImport, entityType);
+                        if (validationResult.isValid) {
+                            const result = await HANAUtils.callStoredProc(
+                                db.options.credentials,
+                                db.options.credentials.schema,
+                                `SP_UPSERT_${mappingDBTable}`,
+                                dataToImport
+                            );
+                            console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                            return;
+                        } else {
+                            return req.error({ code: 3, status: 400, message: validationResult.errorMessage, target: 'MappingUploadFile' });
+                        }
                     } else {
-                        req.error({ code: 400, message: `Invalid mappingTable : ${mappingTable}.` });
+                        req.error({ code: 2, status: 400, message: `Invalid mappingTable : ${mappingTable}.` });
                     }
                 } catch (ex) {
-                    req.error({ code: 400, message: `Error while uploading file: ${ex.message}` });
+                    req.error({ code: 1, status: 400, message: `Error while uploading file: ${ex.message}` });
                 }
             }
         });
@@ -273,7 +287,7 @@ class PayrollService extends cds.ApplicationService {
                                 return 0
                             });
 
-                            
+
                         // Get FDM Data
                         const fdmUtils = new FDMUtils(fdm);
                         await fdmUtils.getExchangeRates(dataHeader.currencyCode);

@@ -112,8 +112,22 @@ const utils = {
         let result = { isValid: true, errorMessage: "" };
         let errorList = [];
         let rowNumber = 0;
+
+        // Collect keys for check
+        let keys = [];
+        for (const prop in entityType.keys){
+            const elem = entityType.elements[prop];
+            if (elem.type != 'cds.Association') { keys.push(elem.name) }; 
+        }
+        let keysFound = [];
+
         entityList.forEach((row) => {
             rowNumber += 1;
+            const keyString = keys.reduce((acc,value)=> acc + "-" + row[value.toUpperCase()], 'PK');
+            if (keysFound.includes(keyString)) { 
+                errorList.push(`Duplicate key ${keyString} on row ${rowNumber}`);
+            } else { keysFound.push( keyString) };
+
             for (const [key, value] of Object.entries(row)) {
                 if (value) {
                     const elemType = entityType.elements[Object.keys(entityType.elements).find((el) => el.toLowerCase() == key.toLowerCase())];
