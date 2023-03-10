@@ -7,44 +7,44 @@
             <Button text="{i18n>btnCancel}" press="closeApprovalDialog" />
         </endButton>
         <content>
-            <semantic:SemanticPage id="approvePage" headerPinnable="false" toggleHeaderOnTitleClick="false" busy="{objectView>/busy}" busyIndicatorDelay="{objectView>/delay}">
+            <semantic:SemanticPage headerPinnable="false" toggleHeaderOnTitleClick="false" busy="{objectView>/busy}" busyIndicatorDelay="{objectView>/delay}">
                 <semantic:titleHeading>
-                    <Title id="approvePageTitle" text="" level="H2" />
+                    <Title text="Upload Batch {ID} Summary" level="H2" />
                 </semantic:titleHeading>
 
                 <semantic:headerContent>
-                    <l:HorizontalLayout id="apporveHeaderL">
-                        <l:VerticalLayout id="apporveHeaderV1" class="sapUiMediumMarginEnd">
-                            <ObjectAttribute id="approveDesc" title="{i18n>detailPayrollDesc}" text="" />
-                            <ObjectAttribute id="approveCompanyCode" title="{i18n>detailCompanyCode}" text="" />
-                            <ObjectAttribute id="aprroveCurrency" title="{i18n>detailCurrencyCode}" text="" />
+                    <l:HorizontalLayout>
+                        <l:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>detailPayrollDesc}" text="{batchDescription}" />
+                            <ObjectAttribute title="{i18n>detailCompanyCode}" text="{glCompanyCode}" />
+                            <ObjectAttribute title="{i18n>detailCurrencyCode}" text="{currencyCode}" />
                         </l:VerticalLayout>
-                        <l:VerticalLayout id="apporveHeaderV2" class="sapUiMediumMarginEnd">
-                            <ObjectAttribute id="approvePayrollDate" title="{i18n>detailPayrollDate}" text="" />
-                            <ObjectAttribute id="approveEffectivePeriod" title="{i18n>detailEffectivePeriod}" text="" />
+                        <l:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>detailPayrollDate}" text="{payrollDate}" />
+                            <ObjectAttribute title="{i18n>detailEffectivePeriod}" text="{effectivePeriod}" />
                         </l:VerticalLayout>
                     </l:HorizontalLayout>
                 </semantic:headerContent>
                 <semantic:content>
                     <l:VerticalLayout class="sapUiTinyMargin">
-                        <l:HorizontalLayout id="approveDtlV">
-                            <Table id="approveSummaryList" sticky="HeaderToolbar,ColumnHeaders" items="{approvalView>/}" class="sapUiTinylMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
+                        <l:HorizontalLayout>
+                            <Table sticky="HeaderToolbar,ColumnHeaders" items="{approvalView>/}" class="sapUiTinylMarginTop" mode="None" width="auto" updateFinished=".onSummaryListFinished">
                                 <columns>
-                                    <Column id="statusHeader">
-                                        <Text id="totalFmnoTxt" text="{i18n>colStatus}" />
+                                    <Column>
+                                        <Text text="{i18n>colStatus}" />
                                     </Column>
-                                    <Column id="lineCntCol">
+                                    <Column>
                                         <Text text="{i18n>colNumLines}" />
                                     </Column>
-                                    <Column id="fmnoCntCol" demandPopin="false" minScreenWidth="Tablet">
+                                    <Column >
                                         <Text text="{i18n>colNumFmno}" />
                                     </Column>
-                                    <Column id="totalAmtCol" demandPopin="false" minScreenWidth="Tablet">
+                                    <Column >
                                         <Text text="{i18n>colTotalAmount}" />
                                     </Column>
                                 </columns>
                                 <items>
-                                    <ColumnListItem id="colListItm">
+                                    <ColumnListItem >
                                         <cells>
                                             <Text text="{approvalView>STATUS}" />
                                             <Text text="{approvalView>LINES_COUNT}" />
@@ -61,7 +61,7 @@
                         <l:HorizontalLayout class="sapUiContentPadding">
                             <Text text="{i18n>lblApprovalWarning}" />
                         </l:HorizontalLayout>
-                        <Link class="sapUiSmallMarginBegin" text="{i18n>btnDownloadErrors}" press="onDownload"/>
+                        <Link class="sapUiSmallMarginBegin" text="{i18n>btnDownloadErrors}" press="onDownload" />
                     </l:VerticalLayout>
                 </semantic:content>
             </semantic:SemanticPage>

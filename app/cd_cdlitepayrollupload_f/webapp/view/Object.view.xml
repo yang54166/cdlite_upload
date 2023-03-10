@@ -214,7 +214,7 @@
                                             <m:Text text="{costCenterView>PAYROLLCODE_DESCRIPTION}" />
                                             <m:Text text="{costCenterView>PAYROLLDATE}" />
                                             <m:Text text="{costCenterView>TRANSACTIONTYPE}" />
-                                            <m:Text text="{costCenterView>AMOUNT}" />
+                                            <m:Text text="{path: 'costCenterView>AMOUNT', formatter: '.formatter.getLocalAmount'}" />
                                         </m:cells>
                                     </m:ColumnListItem>
                                 </m:items>
