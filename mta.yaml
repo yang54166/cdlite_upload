@@ -150,6 +150,9 @@ resources:
             URL: ~{srv-api/srv-url}
             HTML5.DynamicDestination: true
             HTML5.ForwardAuthToken: true
+            HTML5.Timeout: 120000
+            HTML5.SocketReadTimeoutInSeconds: 120
+            timeout: 120000
           - Authentication: OAuth2ClientCredentials
             Name: cpi
             ProxyType: Internet

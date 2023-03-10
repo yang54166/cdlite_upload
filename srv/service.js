@@ -17,7 +17,7 @@ class PayrollService extends cds.ApplicationService {
         const { PostingBatch: PostingBatchConfig } = db.entities('config');
         const { PayrollHeader, PayrollDetails, PostingBatch } = db.entities('payroll');
         const { UploadHeader, UploadItems } = db.entities('staging');
-        const { LegalEntityGrouping, PaycodeGLMapping } = db.entities('mapping');
+        const { LegalEntityGrouping, PaycodeGLMapping, PayrollLedgerControl } = db.entities('mapping');
 
         this.on("PUT", "PayrollUploadFile", async (req) => {
             if (req.data.content) {
@@ -43,7 +43,8 @@ class PayrollService extends cds.ApplicationService {
                     );
                     console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
-                    await this.emit("enrich", { batchID });
+                    //await this.emit("enrich", { batchID });
+                    await enrichBatch( batchID );
 
                     // Update filename
                     return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
@@ -67,23 +68,37 @@ class PayrollService extends cds.ApplicationService {
                     let content = await utils.readUploadStream(req.data.content);
                     console.log(`DEBUG: Upload complete for mappingTable ${mappingTable}.  Starting to parse file content.`);
 
+                    const entityType = (() => {
+                        switch (mappingTable.toUpperCase()) {
+                            case "LEGALENTITYGROUPING":
+                                return LegalEntityGrouping
+                            case "PAYCODEGLMAPPING":
+                                return PaycodeGLMapping;
+                            case "PAYROLLLEDGERCONTROL":
+                                return PayrollLedgerControl;
+                        }
+                    })();
                     const mappingDBTable = utils.getMappingDBTable(mappingTable);
                     if (mappingDBTable) {
                         const dataToImport = utils.parseMappingUpload(content, mappingDBTable);
-                        dataToImport.filter((row) => row == null);
-                        const result = await HANAUtils.callStoredProc(
-                            db.options.credentials,
-                            db.options.credentials.schema,
-                            `SP_UPSERT_${mappingDBTable}`,
-                            dataToImport
-                        );
-                        console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
-                        return;
+                        const validationResult = utils.validateEntities(dataToImport, entityType);
+                        if (validationResult.isValid) {
+                            const result = await HANAUtils.callStoredProc(
+                                db.options.credentials,
+                                db.options.credentials.schema,
+                                `SP_UPSERT_${mappingDBTable}`,
+                                dataToImport
+                            );
+                            console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                            return;
+                        } else {
+                            return req.error({ code: 3, status: 400, message: validationResult.errorMessage, target: 'MappingUploadFile' });
+                        }
                     } else {
-                        req.error({ code: 400, message: `Invalid mappingTable : ${mappingTable}.` });
+                        req.error({ code: 2, status: 400, message: `Invalid mappingTable : ${mappingTable}.` });
                     }
                 } catch (ex) {
-                    req.error({ code: 400, message: `Error while uploading file: ${ex.message}` });
+                    req.error({ code: 1, status: 400, message: `Error while uploading file: ${ex.message}` });
                 }
             }
         });
@@ -93,10 +108,7 @@ class PayrollService extends cds.ApplicationService {
             context.data.ID = batchId;
         });
 
-        this.on('enrich', async req => {
-            const batchID = req.data.batchID || req.params[0];
-            console.log("enriching batchId: " + batchID);
-
+        const enrichBatch = async (batchID) => {
             // Get Staging Data
             const stagingHeader = await SELECT.one.from(UploadHeader).where({ ID: batchID });
             const stagingDataItems = await SELECT.from(UploadItems)
@@ -246,6 +258,13 @@ class PayrollService extends cds.ApplicationService {
 
             console.log("DEBUG: enrichment complete. Set batch to VALIDATED.");
             return resultSave;
+        };
+
+        this.on('enrich', async req => {
+            const batchID = req.data.batchID || req.params[0];
+            console.log("enriching batchId: " + batchID);
+
+            return enrichBatch(batchID);
         });
 
         this.on('approve', async req => {
@@ -273,7 +292,7 @@ class PayrollService extends cds.ApplicationService {
                                 return 0
                             });
 
-                            
+
                         // Get FDM Data
                         const fdmUtils = new FDMUtils(fdm);
                         await fdmUtils.getExchangeRates(dataHeader.currencyCode);
@@ -444,7 +463,7 @@ class PayrollService extends cds.ApplicationService {
         this.on("trigger", async req => {
             const batchId = req.data.batchToApprove || req.params[0];
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
-            const resultTrigger = await cpi.send({ path: `cd_lass_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
+            const resultTrigger = await cpi.send({ path: `cd_lass_payroll_trigger1?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
             console.log(`CPI Response: ${resultTrigger}`);
         });
 
