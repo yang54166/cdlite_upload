@@ -142,13 +142,13 @@ class PayrollService extends cds.ApplicationService {
                     }
                 }
 
-                const mappedAccounts = mappingData.filter((mappingRow) =>
+                const mappedAccount = mappingData.find((mappingRow) =>
                     (mappingRow.payrollCode == item.PAYROLLCODE)
                     && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1))
-                    && (new Date(mappingRow.effectiveDate) < new Date()));
+                );
                 // Get newest by EffectiveDate
-                const newestEfectiveDate = new Date(Math.max(...mappedAccounts.map(a => new Date(a.effectiveDate))));
-                const mappedAccount = mappedAccounts.find(a => new Date(a.effectiveDate).valueOf() == newestEfectiveDate.valueOf());
+                //const newestEfectiveDate = new Date(Math.max(...mappedAccounts.map(a => new Date(a.effectiveDate))));
+                //const mappedAccount = mappedAccounts.find(a => new Date(a.effectiveDate).valueOf() == newestEfectiveDate.valueOf());
                 if (!mappedAccount) {
                     errorsForRow.push(`Unable to find GL account mapping for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
                 } else {
@@ -161,7 +161,11 @@ class PayrollService extends cds.ApplicationService {
 
                 const glAccountObj = fdmUtils.getGLAccount(mappedAccount.glAccount);
                 if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
-                    errorsForRow.push(`Invalid GL account ${glAccountObj.glAccount}.`);
+                    errorsForRow.push(`Invalid GL account ${mappedAccount.glAccount}.`);
+                }
+                const glAccountCBObj = fdmUtils.getGLAccount(mappedAccount.glAccountCB);
+                if (!glAccountCBObj || glAccountCBObj.accountMarkedForDeletion == 'X' || glAccountCBObj.accountBlockedForPosting == 'X') {
+                    errorsForRow.push(`Invalid GL CB account ${mappedAccount.glAccount}.`);
                 }
 
                 const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
@@ -201,6 +205,7 @@ class PayrollService extends cds.ApplicationService {
                     STATUSMESSAGE: rowStatus.STATUSMESSAGE,
                     GLCOSTCENTER: employeeObj?.costCenter,
                     GLACCOUNT: glAccountObj?.glAccount || null,
+                    GLACCOUNTCB: glAccountCBObj?.glAccount || null,
                     GLACCOUNTTYPE: glAccountObj?.glAccountType || null,
                     GLCURRENCYCODE: companyCode?.currencyCode,
                     FCAT: userFCAT,
@@ -364,7 +369,7 @@ class PayrollService extends cds.ApplicationService {
                                     cashAmount: item.amount,
                                     chargeAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
                                     chargeCompany: item.glCompanyCode,
-                                    chargeConversionDate: glExchangeRateSourceToCompany.updateDate,
+                                    //chargeConversionDate: glExchangeRateSourceToCompany.updateDate,
                                     chargeConversionRate: glExchangeRateSourceToCompany.exchangeRate,
                                     chargeConversionType: "M",
                                     chargeCostCenter: item.glCostCenter,
@@ -372,6 +377,7 @@ class PayrollService extends cds.ApplicationService {
                                     chargeDepartment: item.glCostCenter.slice(-5),
                                     chargeGoc: item.glCostCenter.substring(0, 3),
                                     glAccount: item.glAccount,
+                                    glAccountCBLedger: item.glAccountCB,
                                     glPostAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
                                     glPostCompany: glCompanyCode,
                                     glPostCostCenter: glPostCostCenter,
