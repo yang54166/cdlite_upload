@@ -122,7 +122,6 @@
                             <Text id="txtCreatedBy" text="{createdBy}" />
                             <Text id="txtCreatedAt" text="{createdAt}" />
 
-                            <!--<Button id="approvalBtn" type="Accept" text="Approve" press="onPressApprove" ariaDescribedBy="acceptButtonDescription genericButtonDescription" /> -->
                         </cells>
                     </ColumnListItem>
                 </items>

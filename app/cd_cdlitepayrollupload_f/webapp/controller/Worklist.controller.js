@@ -309,9 +309,12 @@ sap.ui.define([
                 this.onRefresh();
                 sMessage = "BATCH " + that._newBatchId + " uploaded successfully!";
                 MessageBox.success(sMessage);
-
+            } else if (status === 504 || status === 502 || status === 503) {
+                sMessage = "Error occurred while processing. If batch is not yet VALIDATED, please open and click 'Revalidate'.";
+                MessageBox.error(sMessage);
             } else {
                 var errorMsg = JSON.parse(oEvent.getParameter("responseRaw"))?.error?.message;
+              
                 oContext.delete().then(function () {
                     if (status === 400)
                         errorMsg = JSON.parse(errorMsg).join('\n');
