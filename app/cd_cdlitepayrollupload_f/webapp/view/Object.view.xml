@@ -38,22 +38,21 @@
 
         <headerContent>
             <m:HeaderContainer id="headerContainer" scrollStep="200" showDividers="false">
-                <m:HBox id="headerContainerH" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
-                    <m:VBox id="uploadHeaderSec1" class="sapUiSmallMarginBottom">
-                        <m:HBox id="uploadHeaderSec1V1" class="sapUiTinyMarginBottom" renderType="Bare">
-                            <m:Label id="companyCodeLbl" text="{i18n>detailCompanyCode}" class="sapUiTinyMarginEnd" />
-                            <m:Text id="companyCodeTxt" text="{glCompanyCode}" />
-                        </m:HBox>
-                        <m:HBox id="uploadHeaderSec1V2" class="sapUiTinyMarginBottom">
-                            <m:Label id="currencyCodeLbl" text="{i18n>detailCurrencyCode}" class="sapUiTinyMarginEnd" />
-                            <m:Text id="currencyCodeTxt" text="{currencyCode}" />
-                        </m:HBox>
-                        <m:HBox id="uploadHeaderSec1V3" class="sapUiTinyMarginBottom">
-                            <m:Label id="detailTransTypeLbl" text="{i18n>transType}" class="sapUiTinyMarginEnd" />
-                            <m:Text id="detailTransTypeTxt" text="{transactionType}" />
-                        </m:HBox>
-                    </m:VBox>
-                </m:HBox>
+                
+                <m:VBox id="uploadHeaderSec1" class="sapUiSmallMarginBottom">
+                    <m:HBox id="uploadHeaderSec1V1" class="sapUiTinyMarginBottom" renderType="Bare">
+                        <m:Label id="companyCodeLbl" text="{i18n>detailCompanyCode}" class="sapUiTinyMarginEnd" />
+                        <m:Text id="companyCodeTxt" text="{glCompanyCode}" />
+                    </m:HBox>
+                    <m:HBox id="uploadHeaderSec1V2" class="sapUiTinyMarginBottom">
+                        <m:Label id="currencyCodeLbl" text="{i18n>detailCurrencyCode}" class="sapUiTinyMarginEnd" />
+                        <m:Text id="currencyCodeTxt" text="{currencyCode}" />
+                    </m:HBox>
+                    <m:HBox id="uploadHeaderSec1V3" class="sapUiTinyMarginBottom">
+                        <m:Label id="detailTransTypeLbl" text="{i18n>transType}" class="sapUiTinyMarginEnd" />
+                        <m:Text id="detailTransTypeTxt" text="{transactionType}" />
+                    </m:HBox>
+                </m:VBox>
 
                 <m:VBox id="uploadHeaderSec2" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
                     <m:HBox id="uploadHeaderSec2V1" class="sapUiTinyMarginBottom">
@@ -327,7 +326,7 @@
                                         <m:Column id="skillCodeColumn" visible="false">
                                             <m:Text id="dtlSkillCode" text="" />
                                         </m:Column>
-                                          <m:Column id="glAcctCBColumn" visible="false">
+                                        <m:Column id="glAcctCBColumn" visible="false">
                                             <m:Text id="dtGLAcctCB" text="" />
                                         </m:Column>
                                     </m:columns>
