@@ -10,6 +10,7 @@
             <l:content>
                 <List id="popoverLst">
                     <DisplayListItem id="popGLAct" label="{i18n>colGlAccount}" value="" />
+                    <DisplayListItem id="popGLActCB" label="{i18n>colGlAccountCB}" value="" />
                     <DisplayListItem id="popGLCostCenter" label="{i18n>colGlCostCenter}" value="" />
                     <DisplayListItem id="popCurrencyCode" label="{i18n>colCurrency}" value="" />
                     <DisplayListItem id="popFCAT" label="{i18n>colFCAT}" />

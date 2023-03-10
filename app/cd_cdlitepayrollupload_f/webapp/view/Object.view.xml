@@ -31,7 +31,7 @@
                 <actions>
                     <m:Button id="dtlApproveBtn" text="{i18n>btnApprove}" press="onPressApprove" type="Emphasized" enabled="{objectView>/enableApproveButton}" />
                     <m:Button id="dtlDeleteBtn" text="{i18n>btnDelete}" press="onPressDelete" enabled="{objectView>/enableDeleteButton}" />
-                    <m:Button id="dtlRevalideBtn" text="{i18n>btnRevalidate}" press="onRevalidatation" enabled="{objectView>/enableRevalButton}" />
+                    <m:Button id="dtlRevalideBtn" text="{i18n>btnRevalidate}" press="revalUploads" enabled="{objectView>/enableRevalButton}" />
                 </actions>
             </ObjectPageDynamicHeaderTitle>
         </headerTitle>
@@ -327,6 +327,9 @@
                                         <m:Column id="skillCodeColumn" visible="false">
                                             <m:Text id="dtlSkillCode" text="" />
                                         </m:Column>
+                                          <m:Column id="glAcctCBColumn" visible="false">
+                                            <m:Text id="dtGLAcctCB" text="" />
+                                        </m:Column>
                                     </m:columns>
                                     <m:items>
                                         <m:ColumnListItem id="colBatchItems">
@@ -351,6 +354,7 @@
                                                 <m:Text id="txtDtlPernr" text="{pernr}" visible="false" />
                                                 <m:Text id="txtDtlLocCode" text="{locationCode}" visible="false" />
                                                 <m:Text id="txtDtlSkillCode" text="{skillCode}" visible="false" />
+                                                <m:Text id="txtDtlGLAcctCB" text="{glAccountCB}" visible="false" />
                                             </m:cells>
                                         </m:ColumnListItem>
                                     </m:items>
