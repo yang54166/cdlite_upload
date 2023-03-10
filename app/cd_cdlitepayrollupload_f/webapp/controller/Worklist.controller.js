@@ -252,43 +252,6 @@ sap.ui.define([
             }
         },
 
-        onPressApprove: function (oEvent) {
-
-            // var sMsg = "BATCH " + oEvent.getSource().getBindingContext().getProperty("BATCHNUMBER") + " got approved successfully!";
-            // MessageBox.success(sMsg);
-
-            var sID = oEvent.getSource().getParent().getBindingContext().getProperty("ID");
-            var sBatchDesc = oEvent.getSource().getParent().getBindingContext().getProperty("batchDescription");
-            var sGLCompanyCode = oEvent.getSource().getParent().getBindingContext().getProperty("glCompanyCode");
-            var sCurrencyCode = oEvent.getSource().getParent().getBindingContext().getProperty("currencyCode");
-            var sPayrollDate = oEvent.getSource().getParent().getBindingContext().getProperty("payrollDate");
-            var sEffectivePeriod = oEvent.getSource().getParent().getBindingContext().getProperty("effectivePeriod");
-
-            var oView = this.getView();
-            var that = this;
-
-            // create dialog lazily
-            if (!that._oDialog) {
-                // load asynchronous XML fragment
-                Fragment.load({
-                    id: oView.getId(),
-                    name: "mck.cdlite.payrollupload.fragments.Approve",
-                    controller: that
-                }).then(function (oDialog) {
-                    that._oDialog = oDialog;
-                    oView.addDependent(oDialog);
-                    oView.byId("approvePageTitle").setText("Upload Batch " + sID);
-                    oView.byId("approveDesc").setText(sBatchDesc);
-                    oView.byId("aprroveCurrency").setText(sCurrencyCode);
-                    oView.byId("approveCompanyCode").setText(sGLCompanyCode);
-                    oView.byId("approvePayrollDate").setText(sPayrollDate);
-                    oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
-                    oDialog.open();
-                });
-            } else {
-                that._oDialog.open();
-            }
-        },
 
         closeApprovalDialog: function () {
             if (this._oDialog) {
