@@ -17,6 +17,7 @@ modules:
       srv-url: ${default-url}
   parameters:
     buildpack: nodejs_buildpack
+    memory: 4096M
   build-parameters:
     builder: npm-ci
 

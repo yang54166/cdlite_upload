@@ -55,9 +55,6 @@ service PayrollService  @(requires: 'authenticated-user') {
     @readonly entity JournalEntryItemCB    as projection on CV_JOURNALENTRY_ITEM_CB;
     @readonly entity ApprovalSummary as projection on CV_APPROVALSUMMARY;
     @readonly entity AmountSummary as projection on CV_AMOUNTSUMMARY;
-    @readonly entity PartnerCompData(IP_PERIOD : String(13)) as select from CV_PARTNER_COMP_DATA(
-        IP_PERIOD : : IP_PERIOD
-    ) {*};
 
     // Masterdata from FDM & Value Helps
     @readonly entity CompanyCodes as projection on fdm_masterdata.COMPANY_CODE_API;
@@ -65,4 +62,10 @@ service PayrollService  @(requires: 'authenticated-user') {
     @readonly entity LegalEntityGroups as SELECT DISTINCT(legalEntityGroupCode) from mapping.LegalEntityGrouping order by legalEntityGroupCode;
     @readonly entity PayrollCodes as SELECT DISTINCT(payrollCode) from mapping.PaycodeGLMapping order by payrollCode;
     @readonly entity PayrollCodeSequences as SELECT DISTINCT(payrollCodeSequence) from mapping.PaycodeGLMapping order by payrollCodeSequence;
+}
+// Separate endpoint for PAS consumption only 
+service CdPasService  @(requires: 'authenticated-user') {
+    @readonly entity PartnerCompData(IP_PERIOD : String(13)) as select from CV_PARTNER_COMP_DATA(
+        IP_PERIOD : : IP_PERIOD
+    ) {*};
 }

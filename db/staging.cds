@@ -40,6 +40,7 @@ entity UploadItems: managed {
     projectCode: String(8);
     projectTask: String(2);
     glAccount: Integer;     // 8
+    glAccountCB: Integer;    // 8
     glAccountType: String(60);
     glCurrencyCode: String(3); // Actually Charge CC
     glCostCenter: String(8);

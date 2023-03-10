@@ -1,7 +1,7 @@
-"TRANSACTIONTYPE","DOCTYPE","LEDGERGROUP","DOCHEADERTEXT"
-"01","ZE","","Regular Payroll"
-"02","ZE","","Employer Tax"
-"03","ZE","0L","US Ledger Only"
-"04","ZE","","Adjustments"
-"10","ZE","","Accounts Payable"
-"11","ZE","","Accounts Receivable"
+TRANSACTIONTYPE,DOCTYPE,LEDGERGROUP,LEDGERGROUPCB,DOCHEADERTEXT
+01,ZE,,CB,Regular Payroll
+02,ZE,,CB,Employer Tax
+03,ZE,0L,,US Ledger Only
+04,ZE,,CB,Adjustments
+10,ZE,,,Accounts Payable
+11,ZE,,,Accounts Receivable
