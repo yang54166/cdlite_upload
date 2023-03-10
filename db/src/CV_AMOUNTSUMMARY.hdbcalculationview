@@ -46,7 +46,7 @@
     </input>
     <joinAttribute name="GLCOMPANYCODE"/>
   </calculationView>
-  <calculationView xsi:type="Calculation:JoinView" id="Join_StagingData_2" cardinality="CN_N" joinType="inner" multiJoinNode="Join_StagingData" multiJoinCentralTable="STAGING_UPLOADITEMS" multiJoinOrder="Outside In">
+  <calculationView xsi:type="Calculation:JoinView" id="Join_StagingData_2" cardinality="CN_N" joinType="inner" filterExpressionLanguage="SQL" multiJoinNode="Join_StagingData" multiJoinCentralTable="STAGING_UPLOADITEMS" multiJoinOrder="Outside In">
     <viewAttributes>
       <viewAttribute id="ID" aggregationType="sum"/>
       <viewAttribute id="GLCOMPANYCODE"/>
@@ -61,6 +61,7 @@
       <viewAttribute id="AMOUNT" aggregationType="sum"/>
       <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
       <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute id="STATUS"/>
       <viewAttribute hidden="true" id="JOIN$PARENT_ID$ID"/>
     </viewAttributes>
     <calculatedViewAttributes/>
@@ -70,6 +71,7 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="GLCOSTCENTER" source="GLCOSTCENTER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$PARENT_ID$ID" source="PARENT_ID"/>
     </input>
     <input node="Join_StagingData_1">
@@ -83,6 +85,7 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$PARENT_ID$ID" source="ID"/>
     </input>
+    <filter>&quot;STATUS&quot;='VALID'</filter>
     <joinAttribute name="JOIN$PARENT_ID$ID"/>
   </calculationView>
   <calculationView xsi:type="Calculation:JoinView" id="Join_Mapping" cardinality="CN_N" joinType="inner">
@@ -218,7 +221,7 @@
     <shape modelObjectName="Join_StagingData_2" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="20" y="30"/>
       <rectangleSize width="250"/>
-    </shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape>
+    </shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape>
   
     <shape modelObjectName="MAPPING_PAYCODEGLMAPPING" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="343" y="30"/>

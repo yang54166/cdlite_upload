@@ -165,7 +165,7 @@ class PayrollService extends cds.ApplicationService {
                 }
                 const glAccountCBObj = fdmUtils.getGLAccount(mappedAccount.glAccountCB);
                 if (!glAccountCBObj || glAccountCBObj.accountMarkedForDeletion == 'X' || glAccountCBObj.accountBlockedForPosting == 'X') {
-                    errorsForRow.push(`Invalid GL CB account ${mappedAccount.glAccount}.`);
+                    errorsForRow.push(`Invalid GL CB account ${mappedAccount.glAccountCB}.`);
                 }
 
                 const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
