@@ -200,6 +200,10 @@
       <descriptions defaultDescription="FMNO"/>
       <keyMapping columnObjectName="Projection_1" columnName="FMNO"/>
     </attribute>
+    <attribute id="GLACCOUNT" order="30" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLACCOUNT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLACCOUNT"/>
+    </attribute>
     <attribute id="GLCURRENCYCODE" order="31" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLCURRENCYCODE"/>
       <keyMapping columnObjectName="Projection_1" columnName="GLCURRENCYCODE"/>
@@ -362,10 +366,6 @@
     <measure id="CHARGEAMOUNT" order="19" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="CHARGEAMOUNT"/>
       <measureMapping columnObjectName="Projection_1" columnName="CHARGEAMOUNT"/>
-    </measure>
-    <measure id="GLACCOUNT" order="30" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
-      <descriptions defaultDescription="GLACCOUNT"/>
-      <measureMapping columnObjectName="Projection_1" columnName="GLACCOUNT"/>
     </measure>
     <measure id="GLPOSTAMOUNT" order="33" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="GLPOSTAMOUNT"/>
