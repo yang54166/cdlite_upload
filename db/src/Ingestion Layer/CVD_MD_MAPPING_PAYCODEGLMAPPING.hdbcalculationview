@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CVD_MD_MAPPING_PAYCODEGLMAPPING" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="CVD_MD_MAPPING_PAYCODEGLMAPPING.hdbcalculationview"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="MAPPING_PAYCODEGLMAPPING">
+    <resourceUri>MAPPING_PAYCODEGLMAPPING</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews/>
+<logicalModel id="MAPPING_PAYCODEGLMAPPING">
+  <attributes>
+    <attribute id="CREATEDAT" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDAT"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="CREATEDAT"/>
+    </attribute>
+    <attribute id="CREATEDBY" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDBY"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="CREATEDBY"/>
+    </attribute>
+    <attribute id="MODIFIEDAT" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDAT"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="MODIFIEDAT"/>
+    </attribute>
+    <attribute id="MODIFIEDBY" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDBY"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="MODIFIEDBY"/>
+    </attribute>
+    <attribute id="LEGALENTITYGROUPCODE" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LEGALENTITYGROUPCODE"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="LEGALENTITYGROUPCODE"/>
+    </attribute>
+    <attribute id="PAYROLLCODE" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODE"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="PAYROLLCODE"/>
+    </attribute>
+    <attribute id="PAYROLLCODESEQUENCE" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODESEQUENCE"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="PAYROLLCODESEQUENCE"/>
+    </attribute>
+    <attribute id="DEFAULTDEPARTMENT" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DEFAULTDEPARTMENT"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="DEFAULTDEPARTMENT"/>
+    </attribute>
+    <attribute id="DESCRIPTION" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DESCRIPTION"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="DESCRIPTION"/>
+    </attribute>
+    <attribute id="EFFECTIVEDATE" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="EFFECTIVEDATE"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="EFFECTIVEDATE"/>
+    </attribute>
+    <attribute id="ENDDATE" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ENDDATE"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="ENDDATE"/>
+    </attribute>
+    <attribute id="GLACCOUNT" order="12" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLACCOUNT"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="GLACCOUNT"/>
+    </attribute>
+    <attribute id="PAYROLLCODECLASS" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODECLASS"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="PAYROLLCODECLASS"/>
+    </attribute>
+    <attribute id="PAYROLLCODETYPE" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODETYPE"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="PAYROLLCODETYPE"/>
+    </attribute>
+    <attribute id="QUALIFIEDCOMPENSATION" order="15" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="QUALIFIEDCOMPENSATION"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="QUALIFIEDCOMPENSATION"/>
+    </attribute>
+    <attribute id="TRANSACTIONDESCRIPTION" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TRANSACTIONDESCRIPTION"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="TRANSACTIONDESCRIPTION"/>
+    </attribute>
+    <attribute id="USPSRPCATEGORY" order="17" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="USPSRPCATEGORY"/>
+      <keyMapping columnObjectName="MAPPING_PAYCODEGLMAPPING" columnName="USPSRPCATEGORY"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures/>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>
