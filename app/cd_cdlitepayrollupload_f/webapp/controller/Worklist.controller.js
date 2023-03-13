@@ -25,7 +25,7 @@ sap.ui.define([
         onInit: function () {
             var oViewModel;
             this._oModel = this.getOwnerComponent().getModel();
-           // var currentUser = this._oModel.bindContext("/user-api/currentUser");
+            // var currentUser = this._oModel.bindContext("/user-api/currentUser");
             var url = "/user-api/currentUser";
             $.ajax({
                 url: url,
@@ -136,11 +136,11 @@ sap.ui.define([
             if (oCompanyCodeList.getSelectedKey().length > 0) {
                 filters.push(new Filter('glCompanyCode', FilterOperator.EQ, oCompanyCodeList.getSelectedKey()));
             }
-            if (oMonthYearList.getSelectedKey() !== "00"){
+            if (oMonthYearList.getSelectedKey() !== "00") {
                 const OldestDate = new Date();
                 OldestDate.setDate(OldestDate.getDate() - parseInt(oMonthYearList.getSelectedKey()));
                 filters.push(new Filter('createdAt', FilterOperator.GT, OldestDate.toISOString()));
-            } 
+            }
             oBinding.filter(filters);
 
         },
@@ -196,17 +196,19 @@ sap.ui.define([
                     value1: sQuery,
                     caseSensitive: false
                 });
+                filters.push(oFilterDesc);
 
-                var oFilterBatchId = new Filter({
-                    path: 'ID',
-                    operator: FilterOperator.EQ,
-                    value1: sQuery
-                });
+                if (Number.isInteger(parseInt(sQuery))) {
+                    var oFilterBatchId = new Filter({
+                        path: 'ID',
+                        operator: FilterOperator.EQ,
+                        value1: sQuery
+                    });
+                    filters.push(oFilterBatchId);
+                }
                 //filters.push(new Filter("batchDescription", FilterOperator.Contains, sQuery.toLowerCase()));
                 //   filters.push(new Filter("ID", FilterOperator.EQ, sQuery));
 
-                filters.push(oFilterDesc);
-                filters.push(oFilterBatchId);
                 var orFilters = new Filter(filters, false);
                 if (sQuery && sQuery.length > 0) {
                     aTableSearchState = orFilters;
@@ -240,7 +242,7 @@ sap.ui.define([
             this.getRouter().navTo("object", {
                 objectId: oItem.getBindingContext().getPath().substring("/StagingUploads".length)
             });
-           
+
             sap.ui.core.BusyIndicator.show();
         },
 
@@ -321,7 +323,7 @@ sap.ui.define([
                 MessageBox.error(sMessage);
             } else {
                 var errorMsg = JSON.parse(oEvent.getParameter("responseRaw"))?.error?.message;
-              
+
                 oContext.delete().then(function () {
                     if (status === 400)
                         errorMsg = JSON.parse(errorMsg).join('\n');

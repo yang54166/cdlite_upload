@@ -44,7 +44,7 @@ class PayrollService extends cds.ApplicationService {
                     console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
                     //await this.emit("enrich", { batchID });
-                    await enrichBatch( batchID );
+                    await enrichBatch(batchID);
 
                     // Update filename
                     return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
@@ -109,155 +109,159 @@ class PayrollService extends cds.ApplicationService {
         });
 
         const enrichBatch = async (batchID) => {
-            // Get Staging Data
-            const stagingHeader = await SELECT.one.from(UploadHeader).where({ ID: batchID });
-            const stagingDataItems = await SELECT.from(UploadItems)
-                .columns("PARENT_ID", "ROW", "STATUS", "STATUSMESSAGE", "FMNO", "PAYROLLCODE", "PAYROLLCODESEQUENCE",
-                    "NAME", "AMOUNT", "PAYMENTNUMBER", "PAYMENTID", "PAYMENTFORM", "USERFIELD1", "USERFIELD2", "REMARKS",
-                    "LOANADVANCEREFERENCENUMBER", "PROJECTCODE", "PROJECTTASK", "GLACCOUNT", "GLCOSTCENTER", "FCAT")
-                .where({ PARENT_ID: batchID });
+            try {
+                // Get Staging Data
+                const stagingHeader = await SELECT.one.from(UploadHeader).where({ ID: batchID });
+                const stagingDataItems = await SELECT.from(UploadItems)
+                    .columns("PARENT_ID", "ROW", "STATUS", "STATUSMESSAGE", "FMNO", "PAYROLLCODE", "PAYROLLCODESEQUENCE",
+                        "NAME", "AMOUNT", "PAYMENTNUMBER", "PAYMENTID", "PAYMENTFORM", "USERFIELD1", "USERFIELD2", "REMARKS",
+                        "LOANADVANCEREFERENCENUMBER", "PROJECTCODE", "PROJECTTASK", "GLACCOUNT", "GLCOSTCENTER", "FCAT")
+                    .where({ PARENT_ID: batchID });
 
 
-            // Get Info from FDM
-            const fdmUtils = new FDMUtils(fdm);
-            await fdmUtils.getEmployeeData(stagingHeader.glCompanyCode);
-            await fdmUtils.getGLAccounts();
-            await fdmUtils.getCompanyCodes();
-            await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
-            //await fdmUtils.getExchangeRates();
+                // Get Info from FDM
+                const fdmUtils = new FDMUtils(fdm);
+                await fdmUtils.getEmployeeData(stagingHeader.glCompanyCode);
+                await fdmUtils.getGLAccounts();
+                await fdmUtils.getCompanyCodes();
+                await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
+                //await fdmUtils.getExchangeRates();
 
-            // Get Mapping Data
-            const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
-            const mappingData = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
+                // Get Mapping Data
+                const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
+                const mappingData = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
 
-            let fmnoErrorList = [];
-            let fmnoTotals = new Map();
+                let fmnoErrorList = [];
+                let fmnoTotals = new Map();
 
-            // Update Staging Data
-            let updatedItems = stagingDataItems.map((item) => {
-                let errorsForRow = [];
-                const employeeObj = fdmUtils.findEmployeeByFMNO(item.FMNO, stagingHeader.payrollDate);
-                let userFCAT = employeeObj?.fcat ?
-                    employeeObj?.fcat?.split(" ")[0].toString().substring(0, 3) :
-                    null;
+                // Update Staging Data
+                let updatedItems = stagingDataItems.map((item) => {
+                    let errorsForRow = [];
+                    const employeeObj = fdmUtils.findEmployeeByFMNO(item.FMNO, stagingHeader.payrollDate);
+                    let userFCAT = employeeObj?.fcat ?
+                        employeeObj?.fcat?.split(" ")[0].toString().substring(0, 3) :
+                        null;
 
-                // Validations
-                if (!employeeObj) {
-                    errorsForRow.push(`FMNO ${item.FMNO} not found in ${stagingHeader.glCompanyCode}, or invalid.`);
-                } else {
-                    if (!employeeObj.costCenter || employeeObj.costCenter == "") {
-                        errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
-                    } else if (!userFCAT || userFCAT == "" || userFCAT == "000") {
-                        errorsForRow.push(`FMNO ${item.FMNO} does not have a valid FCAT (${userFCAT})`);
-                    } else if (new Date(employeeObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
-                        errorsForRow.push(`FMNO ${item.FMNO} was not active for payroll date.`);
-                    }
-                }
-
-                const mappedAccount = mappingData.find((mappingRow) =>
-                    (mappingRow.payrollCode == item.PAYROLLCODE)
-                    && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1))
-                );
-                // Get newest by EffectiveDate
-                //const newestEfectiveDate = new Date(Math.max(...mappedAccounts.map(a => new Date(a.effectiveDate))));
-                //const mappedAccount = mappedAccounts.find(a => new Date(a.effectiveDate).valueOf() == newestEfectiveDate.valueOf());
-                if (!mappedAccount) {
-                    errorsForRow.push(`Unable to find GL account mapping for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
-                } else {
-                    if (mappedAccount.payrollCodeClass == "ADVANCE" || mappedAccount.payrollCodeClass == "LOAN") {
-                        if (!item.LOANADVANCEREFERENCENUMBER) {
-                            errorsForRow.push(`PayrollCodeClass ${mappedAccount.payrollCodeClass} requires a reference number, which is not present.`);
+                    // Validations
+                    if (!employeeObj) {
+                        errorsForRow.push(`FMNO ${item.FMNO} not found in ${stagingHeader.glCompanyCode}, or invalid.`);
+                    } else {
+                        if (!employeeObj.costCenter || employeeObj.costCenter == "") {
+                            errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
+                        } else if (!userFCAT || userFCAT == "" || userFCAT == "000") {
+                            errorsForRow.push(`FMNO ${item.FMNO} does not have a valid FCAT (${userFCAT})`);
+                        } else if (new Date(employeeObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
+                            errorsForRow.push(`FMNO ${item.FMNO} was not active for payroll date.`);
                         }
                     }
-                }
 
-                const glAccountObj = fdmUtils.getGLAccount(mappedAccount.glAccount);
-                if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
-                    errorsForRow.push(`Invalid GL account ${mappedAccount.glAccount}.`);
-                }
-                const glAccountCBObj = fdmUtils.getGLAccount(mappedAccount.glAccountCB);
-                if (!glAccountCBObj || glAccountCBObj.accountMarkedForDeletion == 'X' || glAccountCBObj.accountBlockedForPosting == 'X') {
-                    errorsForRow.push(`Invalid GL CB account ${mappedAccount.glAccountCB}.`);
-                }
-
-                const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
-                if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()) {
-                    errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
-                }
-                //const companyCodeForEmployee = fdmUtils.getCompanyCode(employeeObj?.branchId || stagingHeader.glCompanyCode);
-
-                if (item.projectCode) {
-                    const projectCode = fdmUtils.getWbsElement(item.projectCode);
-                    // TODO: More Checks for validity?
-                    if (!projectCode) {
-                        errorsForRow.push(`WBS Element (Project) ${item.projectCode} is not valid.`);
+                    const mappedAccount = mappingData.find((mappingRow) =>
+                        (mappingRow.payrollCode == item.PAYROLLCODE)
+                        && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1))
+                    );
+                    // Get newest by EffectiveDate
+                    //const newestEfectiveDate = new Date(Math.max(...mappedAccounts.map(a => new Date(a.effectiveDate))));
+                    //const mappedAccount = mappedAccounts.find(a => new Date(a.effectiveDate).valueOf() == newestEfectiveDate.valueOf());
+                    if (!mappedAccount) {
+                        errorsForRow.push(`Unable to find GL account mapping for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
+                    } else {
+                        if (mappedAccount.payrollCodeClass == "ADVANCE" || mappedAccount.payrollCodeClass == "LOAN") {
+                            if (!item.LOANADVANCEREFERENCENUMBER) {
+                                errorsForRow.push(`PayrollCodeClass ${mappedAccount.payrollCodeClass} requires a reference number, which is not present.`);
+                            }
+                        }
                     }
-                }
 
-                // Default to INVALID, and only mark valid if confirmed no errors.
-                let rowStatus = { STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
-                if (!errorsForRow.length) {
-                    // VALID
-                    rowStatus.STATUS = 'VALID';
-                    rowStatus.STATUSMESSAGE = ''
-                } else {
-                    // Keep list of fmnos with errors
-                    if (fmnoErrorList.indexOf(item.FMNO) < 0) {
-                        fmnoErrorList.push(item.FMNO);
+                    const glAccountObj = fdmUtils.getGLAccount(mappedAccount?.glAccount);
+                    if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
+                        errorsForRow.push(`Invalid GL account ${mappedAccount?.glAccount}.`);
                     }
-                }
+                    const glAccountCBObj = fdmUtils.getGLAccount(mappedAccount?.glAccountCB);
+                    if (!glAccountCBObj || glAccountCBObj.accountMarkedForDeletion == 'X' || glAccountCBObj.accountBlockedForPosting == 'X') {
+                        errorsForRow.push(`Invalid GL CB account ${mappedAccount?.glAccountCB}.`);
+                    }
 
-                // Update fmno totals
-                const newTotal = ((parseFloat(fmnoTotals.get(item.FMNO)) || 0) + parseFloat(item.AMOUNT)).toFixed(2);
-                fmnoTotals.set(item.FMNO, newTotal);
+                    const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
+                    if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()) {
+                        errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
+                    }
+                    //const companyCodeForEmployee = fdmUtils.getCompanyCode(employeeObj?.branchId || stagingHeader.glCompanyCode);
 
-                return {
-                    ...item,
-                    STATUS: rowStatus.STATUS,
-                    STATUSMESSAGE: rowStatus.STATUSMESSAGE,
-                    GLCOSTCENTER: employeeObj?.costCenter,
-                    GLACCOUNT: glAccountObj?.glAccount || null,
-                    GLACCOUNTCB: glAccountCBObj?.glAccount || null,
-                    GLACCOUNTTYPE: glAccountObj?.glAccountType || null,
-                    GLCURRENCYCODE: companyCode?.currencyCode,
-                    FCAT: userFCAT,
-                    PERNR: employeeObj?.personidExt,
-                    LOCATIONCODE: employeeObj?.userLocation,
-                    SKILLCODE: employeeObj?.skillCode,
-                    CHARGECOMPANY: companyCode?.companyCode
-                }
-            });
+                    if (item.projectCode) {
+                        const projectCode = fdmUtils.getWbsElement(item.projectCode);
+                        // TODO: More Checks for validity?
+                        if (!projectCode) {
+                            errorsForRow.push(`WBS Element (Project) ${item.projectCode} is not valid.`);
+                        }
+                    }
 
-            // Mark rows invalid if any errors for that FMNO
-            updatedItems = updatedItems.map((item) => {
-                let errorMessage = undefined;
-                const fmnoTotal = parseFloat(fmnoTotals.get(item.FMNO));
-                if (fmnoErrorList.indexOf(item.FMNO) > -1) {
-                    errorMessage = 'FMNO skipped due to errors in other rows.';
-                }
-                if (fmnoTotal !== 0) {
-                    errorMessage = `FMNO skipped due to non-zero balance for sum of all rows. ${fmnoTotal}`;
-                }
-                return {
-                    ...item,
-                    STATUS: errorMessage ? 'INVALID' : item.STATUS,
-                    STATUSMESSAGE: errorMessage ? (item.STATUSMESSAGE || errorMessage) : item.STATUSMESSAGE
-                }
-            });
+                    // Default to INVALID, and only mark valid if confirmed no errors.
+                    let rowStatus = { STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
+                    if (!errorsForRow.length) {
+                        // VALID
+                        rowStatus.STATUS = 'VALID';
+                        rowStatus.STATUSMESSAGE = ''
+                    } else {
+                        // Keep list of fmnos with errors
+                        if (fmnoErrorList.indexOf(item.FMNO) < 0) {
+                            fmnoErrorList.push(item.FMNO);
+                        }
+                    }
 
-            // Save back to DB
-            const resultSave = await HANAUtils.callStoredProc(
-                db.options.credentials,
-                db.options.credentials.schema,
-                "SP_UPLOADINSERT",
-                updatedItems
-            );
+                    // Update fmno totals
+                    const newTotal = ((parseFloat(fmnoTotals.get(item.FMNO)) || 0) + parseFloat(item.AMOUNT)).toFixed(2);
+                    fmnoTotals.set(item.FMNO, newTotal);
 
-            // Update Header Status
-            const resultValidatedHeader = await UPDATE(UploadHeader).set({ STATUS: 'VALIDATED' }).where({ ID: batchID });
+                    return {
+                        ...item,
+                        STATUS: rowStatus.STATUS,
+                        STATUSMESSAGE: rowStatus.STATUSMESSAGE,
+                        GLCOSTCENTER: employeeObj?.costCenter,
+                        GLACCOUNT: glAccountObj?.glAccount || null,
+                        GLACCOUNTCB: glAccountCBObj?.glAccount || null,
+                        GLACCOUNTTYPE: glAccountObj?.glAccountType || null,
+                        GLCURRENCYCODE: companyCode?.currencyCode,
+                        FCAT: userFCAT,
+                        PERNR: employeeObj?.personidExt,
+                        LOCATIONCODE: employeeObj?.userLocation,
+                        SKILLCODE: employeeObj?.skillCode,
+                        CHARGECOMPANY: companyCode?.companyCode
+                    }
+                });
 
-            console.log("DEBUG: enrichment complete. Set batch to VALIDATED.");
-            return resultSave;
+                // Mark rows invalid if any errors for that FMNO
+                updatedItems = updatedItems.map((item) => {
+                    let errorMessage = undefined;
+                    const fmnoTotal = parseFloat(fmnoTotals.get(item.FMNO));
+                    if (fmnoErrorList.indexOf(item.FMNO) > -1) {
+                        errorMessage = 'FMNO skipped due to errors in other rows.';
+                    }
+                    if (fmnoTotal !== 0) {
+                        errorMessage = `FMNO skipped due to non-zero balance for sum of all rows. ${fmnoTotal}`;
+                    }
+                    return {
+                        ...item,
+                        STATUS: errorMessage ? 'INVALID' : item.STATUS,
+                        STATUSMESSAGE: errorMessage ? (item.STATUSMESSAGE || errorMessage) : item.STATUSMESSAGE
+                    }
+                });
+
+                // Save back to DB
+                const resultSave = await HANAUtils.callStoredProc(
+                    db.options.credentials,
+                    db.options.credentials.schema,
+                    "SP_UPLOADINSERT",
+                    updatedItems
+                );
+
+                // Update Header Status
+                const resultValidatedHeader = await UPDATE(UploadHeader).set({ STATUS: 'VALIDATED' }).where({ ID: batchID });
+
+                console.log("DEBUG: enrichment complete. Set batch to VALIDATED.");
+                return resultSave;
+            } catch (ex) {
+                req.error({ code: 400, message: `Error while enriching batch ID:${batchID}: ${ex.message}` });
+            }
         };
 
         this.on('enrich', async req => {
@@ -343,10 +347,10 @@ class PayrollService extends cds.ApplicationService {
                                 const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
                                 if (!mapObj) { console.log(`Unable to find mapping for ${item.payrollCode} : ${item.payrollCodeSequence}`) };
 
-                                const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate('USD', currencyCode);
-                                const glExchangeRateSourceToCompany = fdmUtils.getExchangeRate(currencyCode, currencyCode);
+                                const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate( currencyCode, 'USD');
+                                const glExchangeRateSourceToCompany = fdmUtils.getExchangeRate(currencyCode, item.glCurrencyCode);
                                 if (!glExchangeRateSourceToCompany) {
-                                    throw ({ message: `Unable to approve Batch ID:${batchToApprove}. Exchange Rate does not exist for ${currencyCode} to ${currencyCode}` });
+                                    throw ({ message: `Unable to approve Batch ID:${batchToApprove}. Exchange Rate does not exist for ${currencyCode} to ${item.glCurrencyCode}` });
                                 }
                                 //const glExchangeRateSourceToChargeCompany = fdmUtils.getExchangeRate(item.glCurrencyCode, currencyCode);
 
@@ -403,7 +407,7 @@ class PayrollService extends cds.ApplicationService {
                                     glPostDepartment: glPostCostCenter.slice(-5),
                                     glPostGoc: glPostCostCenter.substring(0, 3),
                                     glConversionRate: glExchangeRateSourceToCompany.exchangeRate,
-                                    glCurrencyCode: currencyCode,
+                                    glCurrencyCode: item.glCurrencyCode,
                                     postingAggregation: aggregationType,
                                     advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.loanAdvanceReferenceNumber : null,
                                     loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.loanAdvanceReferenceNumber : null,

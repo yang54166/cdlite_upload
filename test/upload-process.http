@@ -17,7 +17,7 @@ Content-Type: application/json
 {
    "glCompanyCode": "US10",
    "transactionType": "01",
-   "currencyCode": "USD",
+   "currencyCode": "CAD",
    "payrollDate": "2023-01-15",
    "glPeriod": "202301",
    "effectivePeriod": "202301",

@@ -92,9 +92,12 @@ class FDMUtils {
 
     async getExchangeRates(currencyCode) {
         let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API").where({ 
-                fromCurrency: currencyCode,
-                or: { 
-                    toCurrency: currencyCode }
+                period: '202212',
+                and: {
+                    fromCurrency: currencyCode,
+                    or: { 
+                        toCurrency: currencyCode }
+                }
         });
         this.exchangeRates.push(...result);
         while (result.$nextLink) {
