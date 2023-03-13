@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CVC_R_PAYROLL_DETAILS" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="CVC_R_PAYROLL_DETAILS.hdbcalculationview"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="CVS_I_PAYROLL_DETAILS">
+    <resourceUri>CVS_I_PAYROLL_DETAILS</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="DEFAULTDEPARTMENT"/>
+      <viewAttribute id="DESCRIPTION"/>
+      <viewAttribute id="ENDDATE"/>
+      <viewAttribute id="TRANSACTIONDESCRIPTION"/>
+      <viewAttribute id="USPSRPCATEGORY"/>
+      <viewAttribute id="CREATEDAT"/>
+      <viewAttribute id="CREATEDBY"/>
+      <viewAttribute id="MODIFIEDAT"/>
+      <viewAttribute id="MODIFIEDBY"/>
+      <viewAttribute id="BATCHID_BATCHID"/>
+      <viewAttribute id="BATCHLINENUMBER"/>
+      <viewAttribute id="POSTINGAGGREGATION"/>
+      <viewAttribute id="POSTINGBATCHID"/>
+      <viewAttribute id="POSTINGBATCHLINENUMBER"/>
+      <viewAttribute id="POSTINGDOCUMENT"/>
+      <viewAttribute id="ADVANCENUMBER"/>
+      <viewAttribute id="APARID"/>
+      <viewAttribute id="CASHAMOUNT"/>
+      <viewAttribute id="CHARGEAMOUNT"/>
+      <viewAttribute id="CHARGECOMPANY"/>
+      <viewAttribute id="CHARGECONVERSIONDATE"/>
+      <viewAttribute id="CHARGECONVERSIONRATE"/>
+      <viewAttribute id="CHARGECONVERSIONTYPE"/>
+      <viewAttribute id="CHARGECOSTCENTER"/>
+      <viewAttribute id="CHARGECURRENCYCODE"/>
+      <viewAttribute id="CHARGEDEPARTMENT"/>
+      <viewAttribute id="CHARGEGOC"/>
+      <viewAttribute id="FCAT"/>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="GLACCOUNT"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="GLCONVERSIONRATE"/>
+      <viewAttribute id="GLPOSTAMOUNT"/>
+      <viewAttribute id="GLPOSTCOMPANY"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="GLPOSTGOC"/>
+      <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute id="LOANNUMBER"/>
+      <viewAttribute id="LOCATIONCODE"/>
+      <viewAttribute id="PAYMENTID"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE"/>
+      <viewAttribute id="PAYROLLCODECLASS"/>
+      <viewAttribute id="PAYROLLCODETYPE"/>
+      <viewAttribute id="PERNR"/>
+      <viewAttribute id="PROJECTCODE"/>
+      <viewAttribute id="QUALIFIEDCOMPENSATION"/>
+      <viewAttribute id="SHADOWPROCESS"/>
+      <viewAttribute id="SKILLCODE"/>
+      <viewAttribute id="SOURCEAMOUNT"/>
+      <viewAttribute id="SOURCECOMPANY"/>
+      <viewAttribute id="SOURCECURRENCYCODE"/>
+      <viewAttribute id="USDAMOUNT"/>
+      <viewAttribute id="USDCONVERSIONRATE"/>
+      <viewAttribute id="USDCONVERSIONTYPE"/>
+      <viewAttribute id="USPSRPREPORTINGCODE"/>
+      <viewAttribute id="BATCHID"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
+      <viewAttribute id="BATCHSTATUS"/>
+      <viewAttribute id="APPROVEDAT"/>
+      <viewAttribute id="APPROVEDBY"/>
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="CONTROLAMOUNT"/>
+      <viewAttribute id="CONTROLCOUNT"/>
+      <viewAttribute id="EFFECTIVEDATE"/>
+      <viewAttribute id="GLDATE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
+      <viewAttribute id="SOURCESYSTEM"/>
+      <viewAttribute id="COMPANYCODE"/>
+      <viewAttribute id="POSTINGBATCHIDCBLEDGER"/>
+      <viewAttribute id="GLACCOUNTCBLEDGER"/>
+      <viewAttribute id="GLPOSTDEPARTMENT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="CVS_I_PAYROLL_DETAILS"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Projection_1">
+  <attributes>
+    <attribute id="DEFAULTDEPARTMENT" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DEFAULTDEPARTMENT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="DEFAULTDEPARTMENT"/>
+    </attribute>
+    <attribute id="DESCRIPTION" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DESCRIPTION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="DESCRIPTION"/>
+    </attribute>
+    <attribute id="ENDDATE" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ENDDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="ENDDATE"/>
+    </attribute>
+    <attribute id="TRANSACTIONDESCRIPTION" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TRANSACTIONDESCRIPTION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TRANSACTIONDESCRIPTION"/>
+    </attribute>
+    <attribute id="USPSRPCATEGORY" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="USPSRPCATEGORY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="USPSRPCATEGORY"/>
+    </attribute>
+    <attribute id="CREATEDAT" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDAT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CREATEDAT"/>
+    </attribute>
+    <attribute id="CREATEDBY" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDBY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CREATEDBY"/>
+    </attribute>
+    <attribute id="MODIFIEDAT" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDAT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="MODIFIEDAT"/>
+    </attribute>
+    <attribute id="MODIFIEDBY" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDBY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="MODIFIEDBY"/>
+    </attribute>
+    <attribute id="BATCHID_BATCHID" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHID_BATCHID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHID_BATCHID"/>
+    </attribute>
+    <attribute id="BATCHLINENUMBER" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHLINENUMBER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHLINENUMBER"/>
+    </attribute>
+    <attribute id="POSTINGAGGREGATION" order="12" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGAGGREGATION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="POSTINGAGGREGATION"/>
+    </attribute>
+    <attribute id="POSTINGBATCHID" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGBATCHID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="POSTINGBATCHID"/>
+    </attribute>
+    <attribute id="POSTINGBATCHLINENUMBER" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGBATCHLINENUMBER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="POSTINGBATCHLINENUMBER"/>
+    </attribute>
+    <attribute id="POSTINGDOCUMENT" order="15" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGDOCUMENT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="POSTINGDOCUMENT"/>
+    </attribute>
+    <attribute id="ADVANCENUMBER" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ADVANCENUMBER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="ADVANCENUMBER"/>
+    </attribute>
+    <attribute id="APARID" order="17" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="APARID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="APARID"/>
+    </attribute>
+    <attribute id="CHARGECOMPANY" order="20" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECOMPANY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECOMPANY"/>
+    </attribute>
+    <attribute id="CHARGECONVERSIONDATE" order="21" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECONVERSIONDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECONVERSIONDATE"/>
+    </attribute>
+    <attribute id="CHARGECONVERSIONRATE" order="22" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECONVERSIONRATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECONVERSIONRATE"/>
+    </attribute>
+    <attribute id="CHARGECONVERSIONTYPE" order="23" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECONVERSIONTYPE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECONVERSIONTYPE"/>
+    </attribute>
+    <attribute id="CHARGECOSTCENTER" order="24" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECOSTCENTER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECOSTCENTER"/>
+    </attribute>
+    <attribute id="CHARGECURRENCYCODE" order="25" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECURRENCYCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECURRENCYCODE"/>
+    </attribute>
+    <attribute id="CHARGEDEPARTMENT" order="26" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGEDEPARTMENT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGEDEPARTMENT"/>
+    </attribute>
+    <attribute id="CHARGEGOC" order="27" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGEGOC"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGEGOC"/>
+    </attribute>
+    <attribute id="FCAT" order="28" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FCAT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="FCAT"/>
+    </attribute>
+    <attribute id="FMNO" order="29" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FMNO"/>
+      <keyMapping columnObjectName="Projection_1" columnName="FMNO"/>
+    </attribute>
+    <attribute id="GLACCOUNT" order="30" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLACCOUNT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLACCOUNT"/>
+    </attribute>
+    <attribute id="GLCURRENCYCODE" order="31" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLCURRENCYCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLCURRENCYCODE"/>
+    </attribute>
+    <attribute id="GLCONVERSIONRATE" order="32" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLCONVERSIONRATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLCONVERSIONRATE"/>
+    </attribute>
+    <attribute id="GLPOSTCOMPANY" order="34" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOMPANY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTCOMPANY"/>
+    </attribute>
+    <attribute id="GLPOSTCOSTCENTER" order="35" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOSTCENTER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTCOSTCENTER"/>
+    </attribute>
+    <attribute id="GLPOSTGOC" order="36" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTGOC"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTGOC"/>
+    </attribute>
+    <attribute id="LEGALENTITYGROUPCODE" order="37" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LEGALENTITYGROUPCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="LEGALENTITYGROUPCODE"/>
+    </attribute>
+    <attribute id="LOANNUMBER" order="38" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LOANNUMBER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="LOANNUMBER"/>
+    </attribute>
+    <attribute id="LOCATIONCODE" order="39" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LOCATIONCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="LOCATIONCODE"/>
+    </attribute>
+    <attribute id="PAYMENTID" order="40" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYMENTID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYMENTID"/>
+    </attribute>
+    <attribute id="PAYROLLCODE" order="41" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLCODE"/>
+    </attribute>
+    <attribute id="PAYROLLCODESEQUENCE" order="42" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODESEQUENCE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLCODESEQUENCE"/>
+    </attribute>
+    <attribute id="PAYROLLCODECLASS" order="43" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODECLASS"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLCODECLASS"/>
+    </attribute>
+    <attribute id="PAYROLLCODETYPE" order="44" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODETYPE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLCODETYPE"/>
+    </attribute>
+    <attribute id="PERNR" order="45" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PERNR"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PERNR"/>
+    </attribute>
+    <attribute id="PROJECTCODE" order="46" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PROJECTCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PROJECTCODE"/>
+    </attribute>
+    <attribute id="QUALIFIEDCOMPENSATION" order="47" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="QUALIFIEDCOMPENSATION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="QUALIFIEDCOMPENSATION"/>
+    </attribute>
+    <attribute id="SHADOWPROCESS" order="48" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SHADOWPROCESS"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SHADOWPROCESS"/>
+    </attribute>
+    <attribute id="SKILLCODE" order="49" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SKILLCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SKILLCODE"/>
+    </attribute>
+    <attribute id="SOURCECOMPANY" order="51" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCECOMPANY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCECOMPANY"/>
+    </attribute>
+    <attribute id="SOURCECURRENCYCODE" order="52" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCECURRENCYCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCECURRENCYCODE"/>
+    </attribute>
+    <attribute id="USDCONVERSIONRATE" order="54" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="USDCONVERSIONRATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="USDCONVERSIONRATE"/>
+    </attribute>
+    <attribute id="USDCONVERSIONTYPE" order="55" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="USDCONVERSIONTYPE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="USDCONVERSIONTYPE"/>
+    </attribute>
+    <attribute id="USPSRPREPORTINGCODE" order="56" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="USPSRPREPORTINGCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="USPSRPREPORTINGCODE"/>
+    </attribute>
+    <attribute id="BATCHID" order="57" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHID"/>
+    </attribute>
+    <attribute id="BATCHDESCRIPTION" order="58" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHDESCRIPTION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHDESCRIPTION"/>
+    </attribute>
+    <attribute id="BATCHSTATUS" order="59" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHSTATUS"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHSTATUS"/>
+    </attribute>
+    <attribute id="APPROVEDAT" order="60" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="APPROVEDAT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="APPROVEDAT"/>
+    </attribute>
+    <attribute id="APPROVEDBY" order="61" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="APPROVEDBY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="APPROVEDBY"/>
+    </attribute>
+    <attribute id="CDTRANSACTIONTYPE" order="62" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CDTRANSACTIONTYPE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CDTRANSACTIONTYPE"/>
+    </attribute>
+    <attribute id="EFFECTIVEDATE" order="65" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="EFFECTIVEDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="EFFECTIVEDATE"/>
+    </attribute>
+    <attribute id="GLDATE" order="66" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLDATE" order="67" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLPERIOD" order="68" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLPERIOD"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLPERIOD"/>
+    </attribute>
+    <attribute id="SOURCESYSTEM" order="69" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCESYSTEM"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCESYSTEM"/>
+    </attribute>
+    <attribute id="COMPANYCODE" order="70" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="COMPANYCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="COMPANYCODE"/>
+    </attribute>
+    <attribute id="POSTINGBATCHIDCBLEDGER" order="71" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGBATCHIDCBLEDGER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="POSTINGBATCHIDCBLEDGER"/>
+    </attribute>
+    <attribute id="GLACCOUNTCBLEDGER" order="72" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLACCOUNTCBLEDGER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLACCOUNTCBLEDGER"/>
+    </attribute>
+    <attribute id="GLPOSTDEPARTMENT" order="73" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTDEPARTMENT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTDEPARTMENT"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="CASHAMOUNT" order="18" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="CASHAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CASHAMOUNT"/>
+    </measure>
+    <measure id="CHARGEAMOUNT" order="19" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="CHARGEAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CHARGEAMOUNT"/>
+    </measure>
+    <measure id="GLPOSTAMOUNT" order="33" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="GLPOSTAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="GLPOSTAMOUNT"/>
+    </measure>
+    <measure id="SOURCEAMOUNT" order="50" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="SOURCEAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="SOURCEAMOUNT"/>
+    </measure>
+    <measure id="USDAMOUNT" order="53" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="USDAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="USDAMOUNT"/>
+    </measure>
+    <measure id="CONTROLAMOUNT" order="63" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="CONTROLAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CONTROLAMOUNT"/>
+    </measure>
+    <measure id="CONTROLCOUNT" order="64" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="CONTROLCOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CONTROLCOUNT"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="92" y="112"/>
+    
+      <rectangleSize width="160"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="217"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>
