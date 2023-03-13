@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CVC_IG_PAYROLL_PAYROLLHEADER" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="CVC_IG_PAYROLL_PAYROLLHEADER.hdbcalculationview"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="PAYROLL_PAYROLLHEADER">
+    <resourceUri>PAYROLL_PAYROLLHEADER</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="CREATEDAT"/>
+      <viewAttribute id="CREATEDBY"/>
+      <viewAttribute id="MODIFIEDAT"/>
+      <viewAttribute id="MODIFIEDBY"/>
+      <viewAttribute id="BATCHID"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
+      <viewAttribute id="BATCHSTATUS"/>
+      <viewAttribute id="APPROVEDAT"/>
+      <viewAttribute id="APPROVEDBY"/>
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="CONTROLAMOUNT"/>
+      <viewAttribute id="CONTROLCOUNT"/>
+      <viewAttribute id="EFFECTIVEDATE"/>
+      <viewAttribute id="GLDATE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
+      <viewAttribute id="SOURCESYSTEM"/>
+      <viewAttribute id="COMPANYCODE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="PAYROLL_PAYROLLHEADER"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Projection_1">
+  <attributes>
+    <attribute id="CREATEDAT" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDAT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CREATEDAT"/>
+    </attribute>
+    <attribute id="CREATEDBY" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDBY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CREATEDBY"/>
+    </attribute>
+    <attribute id="MODIFIEDAT" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDAT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="MODIFIEDAT"/>
+    </attribute>
+    <attribute id="MODIFIEDBY" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDBY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="MODIFIEDBY"/>
+    </attribute>
+    <attribute id="BATCHID" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHID"/>
+    </attribute>
+    <attribute id="BATCHDESCRIPTION" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHDESCRIPTION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHDESCRIPTION"/>
+    </attribute>
+    <attribute id="BATCHSTATUS" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHSTATUS"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHSTATUS"/>
+    </attribute>
+    <attribute id="APPROVEDAT" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="APPROVEDAT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="APPROVEDAT"/>
+    </attribute>
+    <attribute id="APPROVEDBY" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="APPROVEDBY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="APPROVEDBY"/>
+    </attribute>
+    <attribute id="CDTRANSACTIONTYPE" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CDTRANSACTIONTYPE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CDTRANSACTIONTYPE"/>
+    </attribute>
+    <attribute id="EFFECTIVEDATE" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="EFFECTIVEDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="EFFECTIVEDATE"/>
+    </attribute>
+    <attribute id="GLDATE" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLDATE" order="15" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLPERIOD" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLPERIOD"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLPERIOD"/>
+    </attribute>
+    <attribute id="SOURCESYSTEM" order="17" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCESYSTEM"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCESYSTEM"/>
+    </attribute>
+    <attribute id="COMPANYCODE" order="18" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="COMPANYCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="COMPANYCODE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="CONTROLAMOUNT" order="11" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="CONTROLAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CONTROLAMOUNT"/>
+    </measure>
+    <measure id="CONTROLCOUNT" order="12" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="CONTROLCOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CONTROLCOUNT"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="100" y="209"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>
