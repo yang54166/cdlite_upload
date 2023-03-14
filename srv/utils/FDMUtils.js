@@ -91,13 +91,14 @@ class FDMUtils {
     };
 
     async getExchangeRates(currencyCode) {
-        let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API").where({ 
-                period: '202212',
-                and: {
-                    fromCurrency: currencyCode,
-                    or: { 
-                        toCurrency: currencyCode }
+        let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API").where({
+            period: '202212',
+            and: {
+                fromCurrency: currencyCode,
+                or: {
+                    toCurrency: currencyCode
                 }
+            }
         });
         this.exchangeRates.push(...result);
         while (result.$nextLink) {
@@ -109,7 +110,10 @@ class FDMUtils {
     };
 
     getExchangeRate(sourceCurrency, targetCurrency) {
-        return this.exchangeRates.find((rate) => ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
+        if (sourceCurrency == targetCurrency) { return { exchangeRate: 1.00 } }
+        else {
+            return this.exchangeRates.find((rate) => ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
+        }
     };
 
     async getCurrency() {

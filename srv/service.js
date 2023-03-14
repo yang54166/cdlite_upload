@@ -44,7 +44,7 @@ class PayrollService extends cds.ApplicationService {
                     console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
                     //await this.emit("enrich", { batchID });
-                    await enrichBatch(batchID);
+                    await enrichBatch(req, batchID);
 
                     // Update filename
                     return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
@@ -108,7 +108,7 @@ class PayrollService extends cds.ApplicationService {
             context.data.ID = batchId;
         });
 
-        const enrichBatch = async (batchID) => {
+        const enrichBatch = async (req, batchID) => {
             try {
                 // Get Staging Data
                 const stagingHeader = await SELECT.one.from(UploadHeader).where({ ID: batchID });
@@ -118,6 +118,8 @@ class PayrollService extends cds.ApplicationService {
                         "LOANADVANCEREFERENCENUMBER", "PROJECTCODE", "PROJECTTASK", "GLACCOUNT", "GLCOSTCENTER", "FCAT")
                     .where({ PARENT_ID: batchID });
 
+                // Update Header with Payroll Period
+                const resultsHeaderUpdate = await UPDATE(UploadHeader).set({ payrollPeriod: utils.convertDateToPayPeriod(new Date(stagingHeader.payrollDate)) }).where({ ID: batchID });
 
                 // Get Info from FDM
                 const fdmUtils = new FDMUtils(fdm);
@@ -155,13 +157,11 @@ class PayrollService extends cds.ApplicationService {
                         }
                     }
 
+                    // Get Mapping
                     const mappedAccount = mappingData.find((mappingRow) =>
                         (mappingRow.payrollCode == item.PAYROLLCODE)
-                        && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1))
+                        && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE))
                     );
-                    // Get newest by EffectiveDate
-                    //const newestEfectiveDate = new Date(Math.max(...mappedAccounts.map(a => new Date(a.effectiveDate))));
-                    //const mappedAccount = mappedAccounts.find(a => new Date(a.effectiveDate).valueOf() == newestEfectiveDate.valueOf());
                     if (!mappedAccount) {
                         errorsForRow.push(`Unable to find GL account mapping for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
                     } else {
@@ -170,28 +170,37 @@ class PayrollService extends cds.ApplicationService {
                                 errorsForRow.push(`PayrollCodeClass ${mappedAccount.payrollCodeClass} requires a reference number, which is not present.`);
                             }
                         }
+                        if (mappedAccount.payrollCodeClass == "PROJECT") {
+                            if (!item.PROJECTCODE) {
+                                errorsForRow.push(`PayrollCodeClass ${mappedAccount.payrollCodeClass} requires a project code, which is not present.`);
+                            }
+                        }
                     }
 
+                    // GL Accounts
                     const glAccountObj = fdmUtils.getGLAccount(mappedAccount?.glAccount);
-                    if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
-                        errorsForRow.push(`Invalid GL account ${mappedAccount?.glAccount}.`);
-                    }
                     const glAccountCBObj = fdmUtils.getGLAccount(mappedAccount?.glAccountCB);
-                    if (!glAccountCBObj || glAccountCBObj.accountMarkedForDeletion == 'X' || glAccountCBObj.accountBlockedForPosting == 'X') {
-                        errorsForRow.push(`Invalid GL CB account ${mappedAccount?.glAccountCB}.`);
+                    if (item.PAYROLLCODETYPE != "NOTIONAL") {
+                        if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
+                            errorsForRow.push(`Invalid GL account ${mappedAccount?.glAccount}.`);
+                        }
+                        if (!glAccountCBObj || glAccountCBObj.accountMarkedForDeletion == 'X' || glAccountCBObj.accountBlockedForPosting == 'X') {
+                            errorsForRow.push(`Invalid GL CB account ${mappedAccount?.glAccountCB}.`);
+                        }
                     }
 
+                    // Company Info
                     const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
                     if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()) {
                         errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
                     }
                     //const companyCodeForEmployee = fdmUtils.getCompanyCode(employeeObj?.branchId || stagingHeader.glCompanyCode);
 
-                    if (item.projectCode) {
-                        const projectCode = fdmUtils.getWbsElement(item.projectCode);
-                        // TODO: More Checks for validity?
+                    // Validate Project Code / WBS 
+                    if (item.PROJECTCODE) {
+                        const projectCode = fdmUtils.getWbsElement(item.PROJECTCODE);
                         if (!projectCode) {
-                            errorsForRow.push(`WBS Element (Project) ${item.projectCode} is not valid.`);
+                            errorsForRow.push(`WBS Element (Project) ${item.PROJECTCODE} is not valid.`);
                         }
                     }
 
@@ -208,9 +217,11 @@ class PayrollService extends cds.ApplicationService {
                         }
                     }
 
-                    // Update fmno totals
-                    const newTotal = ((parseFloat(fmnoTotals.get(item.FMNO)) || 0) + parseFloat(item.AMOUNT)).toFixed(2);
-                    fmnoTotals.set(item.FMNO, newTotal);
+                    // Update fmno totals for NET ZERO
+                    if (item.PAYROLLCODETYPE != "NOTIONAL") {
+                        const newTotal = ((parseFloat(fmnoTotals.get(item.FMNO)) || 0) + parseFloat(item.AMOUNT)).toFixed(2);
+                        fmnoTotals.set(item.FMNO, newTotal);
+                    }
 
                     return {
                         ...item,
@@ -232,13 +243,18 @@ class PayrollService extends cds.ApplicationService {
                 // Mark rows invalid if any errors for that FMNO
                 updatedItems = updatedItems.map((item) => {
                     let errorMessage = undefined;
-                    const fmnoTotal = parseFloat(fmnoTotals.get(item.FMNO));
                     if (fmnoErrorList.indexOf(item.FMNO) > -1) {
                         errorMessage = 'FMNO skipped due to errors in other rows.';
                     }
-                    if (fmnoTotal !== 0) {
-                        errorMessage = `FMNO skipped due to non-zero balance for sum of all rows. ${fmnoTotal}`;
+
+                    // NET ZERO validation for FMNO
+                    if (utils.validateTransactionTypeShouldNetZero()) {
+                        const fmnoTotal = parseFloat(fmnoTotals.get(item.FMNO));
+                        if (fmnoTotal !== 0) {
+                            errorMessage = `FMNO skipped due to non-zero balance for sum of all rows. ${fmnoTotal}`;
+                        }
                     }
+
                     return {
                         ...item,
                         STATUS: errorMessage ? 'INVALID' : item.STATUS,
@@ -268,7 +284,7 @@ class PayrollService extends cds.ApplicationService {
             const batchID = req.data.batchID || req.params[0];
             console.log("enriching batchId: " + batchID);
 
-            return enrichBatch(batchID);
+            return enrichBatch(req, batchID);
         });
 
         this.on('approve', async req => {
@@ -347,7 +363,7 @@ class PayrollService extends cds.ApplicationService {
                                 const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
                                 if (!mapObj) { console.log(`Unable to find mapping for ${item.payrollCode} : ${item.payrollCodeSequence}`) };
 
-                                const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate( currencyCode, 'USD');
+                                const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate(currencyCode, 'USD');
                                 const glExchangeRateSourceToCompany = fdmUtils.getExchangeRate(currencyCode, item.glCurrencyCode);
                                 if (!glExchangeRateSourceToCompany) {
                                     throw ({ message: `Unable to approve Batch ID:${batchToApprove}. Exchange Rate does not exist for ${currencyCode} to ${item.glCurrencyCode}` });
@@ -372,7 +388,7 @@ class PayrollService extends cds.ApplicationService {
                                     batchID_batchID: batchToApprove,
                                     batchLineNumber: lineCounter += 1,
                                     postingBatchID: `${postingBatches}.1`,
-                                    postingBatchIDCBLedger: ['01', '02', '04'].includes(transactionType) ? `${postingBatches}.2` : null,
+                                    postingBatchIDCBLedger: utils.validatePostingIncludesCBLedger() ? `${postingBatches}.2` : null,
                                     fcat: item.fcat,
                                     fmno: item.fmno,
                                     paymentID: item.paymentId,

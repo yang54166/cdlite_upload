@@ -66,10 +66,10 @@
           }
         }
       },
-      "cpi":{
+      "cpi": {
         "kind": "rest",
-        "credentials":{
-          "destination":"cpi",
+        "credentials": {
+          "destination": "cpi",
           "path": "/http"
         }
       },

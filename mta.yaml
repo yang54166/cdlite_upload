@@ -3,176 +3,176 @@ ID: cd_cdlitepayrollupload_fs
 description: CD/LAAS Payroll Upload Compensation Details
 version: 1.0.0
 modules:
-- name: cd_cdlitepayrollupload_fs-srv
-  type: nodejs
-  path: gen/srv
-  requires:
-  - name: cd_cdlitepayrollupload_fs-db
-  - name: cd_cdlitepayrollupload_fs-dest
-  - name: cd_cdlitepayrollupload_fs-auth
-  - name: cd_cdlitepayrollupload_fs-logs
-  provides:
-  - name: srv-api
-    properties:
-      srv-url: ${default-url}
-  parameters:
-    buildpack: nodejs_buildpack
-    memory: 4096M
-  build-parameters:
-    builder: npm-ci
-
-- name: cd_cdlitepayrollupload_fs-db-deployer
-  type: hdb
-  path: db
-  requires:
-  - name: cd_cdlitepayrollupload_fs-db
-  - name: cd_cdlitepayrollupload_fs-logs
-  parameters:
-    buildpack: nodejs_buildpack
-  build-parameters:
-    ignore:
-    - src/.DS_Store
-
-- name: cd_cdlitepayrollupload_f
-  type: html5
-  path: app/cd_cdlitepayrollupload_f
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-
-- name: cd_cdlitepayrollupload_fs-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: cd_cdlitepayrollupload_fs-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
+  - name: cd_cdlitepayrollupload_fs-srv
+    type: nodejs
+    path: gen/srv
     requires:
-    - artifacts:
-      - cd_cdlitepayrollupload_f.zip
-      name: cd_cdlitepayrollupload_f
-      target-path: resources
-      
-- name: cd_cdlitepayrollupload_fs-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: cd_cdlitepayrollupload_fs-dest
+      - name: cd_cdlitepayrollupload_fs-db
+      - name: cd_cdlitepayrollupload_fs-dest
+      - name: cd_cdlitepayrollupload_fs-auth
+      - name: cd_cdlitepayrollupload_fs-logs
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
     parameters:
-      content-target: true
-  - name: cd_cdlitepayrollupload_fs-repo-host
+      buildpack: nodejs_buildpack
+      memory: 4096M
+    build-parameters:
+      builder: npm-ci
+
+  - name: cd_cdlitepayrollupload_fs-db-deployer
+    type: hdb
+    path: db
+    requires:
+      - name: cd_cdlitepayrollupload_fs-db
+      - name: cd_cdlitepayrollupload_fs-logs
     parameters:
-      service-key:
-        name: cd_cdlitepayrollupload_fs-repo-host-key
-  - name: cd_cdlitepayrollupload_fs-auth
+      buildpack: nodejs_buildpack
+    build-parameters:
+      ignore:
+        - src/.DS_Store
+
+  - name: cd_cdlitepayrollupload_f
+    type: html5
+    path: app/cd_cdlitepayrollupload_f
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+  - name: cd_cdlitepayrollupload_fs-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: cd_cdlitepayrollupload_fs-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - cd_cdlitepayrollupload_f.zip
+          name: cd_cdlitepayrollupload_f
+          target-path: resources
+
+  - name: cd_cdlitepayrollupload_fs-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: cd_cdlitepayrollupload_fs-dest
+        parameters:
+          content-target: true
+      - name: cd_cdlitepayrollupload_fs-repo-host
+        parameters:
+          service-key:
+            name: cd_cdlitepayrollupload_fs-repo-host-key
+      - name: cd_cdlitepayrollupload_fs-auth
+        parameters:
+          service-key:
+            name: cd_cdlitepayrollupload_fs-auth-key
     parameters:
-      service-key:
-        name: cd_cdlitepayrollupload_fs-auth-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: cd_cdlitepayrollupload_f_cd_cdlitepayrollupload_fs_repo_host
-          ServiceInstanceName: cd_cdlitepayrollupload_fs-html5-srv
-          ServiceKeyName: cd_cdlitepayrollupload_fs-repo-host-key
-          sap.cloud.service: cd_cdlitepayrollupload_f
-        - Authentication: OAuth2UserTokenExchange
-          Name: cd_cdlitepayrollupload_f_cd_cdlitepayrollupload_fs_auth
-          ServiceInstanceName: cd_cdlitepayrollupload_fs-auth
-          ServiceKeyName: cd_cdlitepayrollupload_fs-auth-key
-          sap.cloud.service: cd_cdlitepayrollupload_f
-        existing_destinations_policy: ignore
-  build-parameters:
-    no-source: true
-
-resources:
-- name: cd_cdlitepayrollupload_fs-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    service: hana
-    service-plan: hdi-shared
-
-- name: cd_cdlitepayrollupload_fs-auth
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      tenant-mode: dedicated
-      xsappname: cd_cdlitepayrollupload_fs-${org}-${space}
-    path: ./xs-security.json
-    service: xsuaa
-    service-keys:
-    - config:
-        permissions: read-write
-      name: cpi_key
-    service-plan: application
-
-- name: cd_cdlitepayrollupload_fs-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: cd_cdlitepayrollupload_fs-html5-srv
-    service-plan: app-host
-
-- name: cd_cdlitepayrollupload_fs-repo-runtime
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-plan: app-runtime
-
-- name: cd_cdlitepayrollupload_fs-logs
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: application-logs
-    service-plan: lite
-
-- name: cd_cdlitepayrollupload_fs-dest
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
+      content:
         instance:
           destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          - Authentication: NoAuthentication
-            Name: cd_cdlitepayrollupload_f-api
-            ProxyType: Internet
-            Type: HTTP
-            URL: ~{srv-api/srv-url}
-            HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
-            HTML5.Timeout: 120000
-            HTML5.SocketReadTimeoutInSeconds: 120
-            timeout: 120000
-          - Authentication: OAuth2ClientCredentials
-            Name: cpi
-            ProxyType: Internet
-            Type: HTTP
-            clientId: sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912
-            clientSecret: 07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=
-            tokenServiceURL: https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token
-            URL: https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-plan: lite
-  requires:
-    - name: srv-api
-    
+            - Name: cd_cdlitepayrollupload_f_cd_cdlitepayrollupload_fs_repo_host
+              ServiceInstanceName: cd_cdlitepayrollupload_fs-html5-srv
+              ServiceKeyName: cd_cdlitepayrollupload_fs-repo-host-key
+              sap.cloud.service: cd_cdlitepayrollupload_f
+            - Authentication: OAuth2UserTokenExchange
+              Name: cd_cdlitepayrollupload_f_cd_cdlitepayrollupload_fs_auth
+              ServiceInstanceName: cd_cdlitepayrollupload_fs-auth
+              ServiceKeyName: cd_cdlitepayrollupload_fs-auth-key
+              sap.cloud.service: cd_cdlitepayrollupload_f
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+
+resources:
+  - name: cd_cdlitepayrollupload_fs-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+  - name: cd_cdlitepayrollupload_fs-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        tenant-mode: dedicated
+        xsappname: cd_cdlitepayrollupload_fs-${org}-${space}
+      path: ./xs-security.json
+      service: xsuaa
+      service-keys:
+        - config:
+            permissions: read-write
+          name: cpi_key
+      service-plan: application
+
+  - name: cd_cdlitepayrollupload_fs-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: cd_cdlitepayrollupload_fs-html5-srv
+      service-plan: app-host
+
+  - name: cd_cdlitepayrollupload_fs-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+  - name: cd_cdlitepayrollupload_fs-logs
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: application-logs
+      service-plan: lite
+
+  - name: cd_cdlitepayrollupload_fs-dest
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+              - Authentication: NoAuthentication
+                Name: cd_cdlitepayrollupload_f-api
+                ProxyType: Internet
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+                HTML5.Timeout: 120000
+                HTML5.SocketReadTimeoutInSeconds: 120
+                timeout: 120000
+              - Authentication: OAuth2ClientCredentials
+                Name: cpi
+                ProxyType: Internet
+                Type: HTTP
+                clientId: sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912
+                clientSecret: 07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=
+                tokenServiceURL: https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token
+                URL: https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com
+            existing_destinations_policy: update
+        version: 1.0.0
+      service: destination
+      service-plan: lite
+    requires:
+      - name: srv-api
+
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npx -p @sap/cds-dk cds build --production
+    - builder: custom
+      commands:
+        - npx -p @sap/cds-dk cds build --production

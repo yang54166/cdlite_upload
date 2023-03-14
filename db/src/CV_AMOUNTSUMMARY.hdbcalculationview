@@ -29,6 +29,7 @@
       <viewAttribute id="EFFECTIVEPERIOD"/>
       <viewAttribute id="PAYROLLDATE"/>
       <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="STAGING_UPLOADHEADER">
@@ -39,6 +40,7 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="GLPERIOD" source="GLPERIOD"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEPERIOD" source="EFFECTIVEPERIOD"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLPERIOD" source="PAYROLLPERIOD"/>
     </input>
     <input node="MAPPING_LEGALENTITYGROUPING">
       <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
@@ -62,6 +64,7 @@
       <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
       <viewAttribute id="LEGALENTITYGROUPCODE"/>
       <viewAttribute id="STATUS"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
       <viewAttribute hidden="true" id="JOIN$PARENT_ID$ID"/>
     </viewAttributes>
     <calculatedViewAttributes/>
@@ -83,6 +86,7 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEPERIOD" source="EFFECTIVEPERIOD"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLPERIOD" source="PAYROLLPERIOD"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$PARENT_ID$ID" source="ID"/>
     </input>
     <filter>&quot;STATUS&quot;='VALID' or &quot;STATUS&quot;='APPROVED'</filter>
@@ -105,6 +109,7 @@
       <viewAttribute id="PAYROLLCODETYPE"/>
       <viewAttribute id="LEGALENTITYGROUPCODE"/>
       <viewAttribute id="DESCRIPTION"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Join_StagingData_2">
@@ -121,6 +126,8 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLPERIOD" source="PAYROLLPERIOD"/>
     </input>
     <input node="MAPPING_PAYCODEGLMAPPING">
       <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODETYPE" source="PAYROLLCODETYPE"/>
@@ -168,30 +175,38 @@
       <descriptions defaultDescription="PAYROLLDATE"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLDATE"/>
     </attribute>
-    <attribute id="PAYROLLCODE" order="8" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="PAYROLLPERIOD" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLPERIOD"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLPERIOD"/>
+    </attribute>
+    <attribute id="PAYROLLCODETYPE" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODETYPE"/>
+      <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLCODETYPE"/>
+    </attribute>
+    <attribute id="PAYROLLCODE" order="10" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLCODE"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLCODE"/>
     </attribute>
-    <attribute id="PAYROLLCODESEQUENCE" order="9" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="PAYROLLCODESEQUENCE" order="11" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLCODESEQUENCE"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="PAYROLLCODESEQUENCE"/>
     </attribute>
-    <attribute id="PAYROLLCODE_DESCRIPTION" order="10" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="PAYROLLCODE_DESCRIPTION" order="12" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLCODE_DESCRIPTION"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="DESCRIPTION"/>
     </attribute>
-    <attribute id="GLCOSTCENTER" order="11" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="GLCOSTCENTER" order="13" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLCOSTCENTER"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="GLCOSTCENTER"/>
     </attribute>
-    <attribute id="GLACCOUNT" order="12" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="GLACCOUNT" order="14" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLACCOUNT"/>
       <keyMapping columnObjectName="Join_Mapping" columnName="GLACCOUNT"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>
   <baseMeasures>
-    <measure id="AMOUNT" order="13" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+    <measure id="AMOUNT" order="15" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="AMOUNT"/>
       <measureMapping columnObjectName="Join_Mapping" columnName="AMOUNT"/>
     </measure>
@@ -222,7 +237,7 @@
     <shape modelObjectName="Join_StagingData_2" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="20" y="30"/>
       <rectangleSize width="250"/>
-    </shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape>
+    </shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape>
   
     <shape modelObjectName="MAPPING_PAYCODEGLMAPPING" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="343" y="30"/>

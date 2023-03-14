@@ -12,6 +12,7 @@ entity UploadHeader: managed {
     currencyCode : String(3);
     payrollDate: Date;
     glPeriod: String(6);  //YYYYMM
+    payrollPeriod: String(10);  //MMM-YY-CC cycle is 01-24 per year
     effectivePeriod: String(6); //YYYYMM
     batchDescription: String;
     fileName: String;
