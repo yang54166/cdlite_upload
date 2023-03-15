@@ -114,7 +114,7 @@
         </headerContent>
 
         <sections>
-            <ObjectPageSection titleUppercase="false" id="personalSection" title="Posting Batch/Status">
+            <ObjectPageSection titleUppercase="false" id="personalSection" title="Posting Batch Status">
                 <subSections>
                     <ObjectPageSubSection id="personalSectionSS1" titleUppercase="false">
                         <blocks>

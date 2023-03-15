@@ -298,21 +298,38 @@ sap.ui.define([
 
                 sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
 
-                if (that._sHeaderStatus.toUpperCase() === 'VALIDATED') {
-                    oViewModel.setProperty("/enableDeleteButton", true);
-                    oViewModel.setProperty("/enableRevalButton", true);
-                    oViewModel.setProperty("/enableApproveButton", true);
+                switch (that._sHeaderStatus.toUpperCase()) {
+                    case "VALIDATED":
+                        oViewModel.setProperty("/enableDeleteButton", true);
+                        oViewModel.setProperty("/enableRevalButton", true);
+                        oViewModel.setProperty("/enableApproveButton", true);
+                        break;
+                    case "STAGED":
+                        oViewModel.setProperty("/enableDeleteButton", true);
+                        oViewModel.setProperty("/enableRevalButton", true);
+                        oViewModel.setProperty("/enableApproveButton", false);
+                        break;
+                    case "APPROVED":
+                        oViewModel.setProperty("/enableDeleteButton", false);
+                        oViewModel.setProperty("/enableRevalButton", false);
+                        oViewModel.setProperty("/enableApproveButton", false);
+                        break;
+                    case "POSTED":
+                        oViewModel.setProperty("/enableDeleteButton", false);
+                        oViewModel.setProperty("/enableRevalButton", false);
+                        oViewModel.setProperty("/enableApproveButton", false);
+                        break;
+                    case "ERROR":
+                        oViewModel.setProperty("/enableDeleteButton", false);
+                        oViewModel.setProperty("/enableRevalButton", false);
+                        oViewModel.setProperty("/enableApproveButton", false);
+                        break;
+                    default:
+                        oViewModel.setProperty("/enableDeleteButton", false);
+                        oViewModel.setProperty("/enableRevalButton", false);
+                        oViewModel.setProperty("/enableApproveButton", false);
                 }
-                if (that._sHeaderStatus.toUpperCase() === 'STAGED') {
-                    oViewModel.setProperty("/enableDeleteButton", true);
-                    oViewModel.setProperty("/enableRevalButton", true);
-                    oViewModel.setProperty("/enableApproveButton", false);
-                }
-                if (that._sHeaderStatus.toUpperCase() === 'APPROVED') {
-                    oViewModel.setProperty("/enableDeleteButton", false);
-                    oViewModel.setProperty("/enableRevalButton", false);
-                    oViewModel.setProperty("/enableApproveButton", false);
-                }
+
 
                 if (sFilter === undefined) {
                     oViewModel.setProperty("/countAll", iTotalItems);
@@ -521,7 +538,7 @@ sap.ui.define([
             var sApproveFilter = new Filter('BATCH_ID', FilterOperator.EQ, parseInt(sID));
             var oApprovalList = oModel.bindList('/ApprovalSummary', undefined, undefined, sApproveFilter, undefined);
             var oApprovalData = new JSONModel();
-           
+
             oApprovalList.requestContexts().then(function (aContexts) {
                 var sTransType = oView.byId("detailTransTypeTxt").getText();
                 var objArr = aContexts.map(oContext => oContext.getObject());
@@ -747,7 +764,7 @@ sap.ui.define([
 
         doExport: function (oTable) {
             var aColumns = this.getColumns(oTable);
-         
+
         },
 
         handleExport: function (oEvent) {
@@ -781,7 +798,7 @@ sap.ui.define([
 
         handlePopoverPress: function (oEvent) {
             var oCtx = oEvent.getSource().getBindingContext(),
-               
+
                 sPath = oEvent.getSource().getParent().getBindingContextPath(),
                 oControl = oEvent.getSource(),
                 oView = this.getView();
@@ -794,7 +811,7 @@ sap.ui.define([
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);
-                 
+
                     oPopover.attachAfterOpen(function () {
                         this.disablePointerEvents();
                     }, this);
