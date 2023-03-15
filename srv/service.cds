@@ -64,6 +64,8 @@ service PayrollService  @(requires: 'authenticated-user') {
     @readonly entity PayrollCodeSequences as SELECT DISTINCT(payrollCodeSequence) from mapping.PaycodeGLMapping order by payrollCodeSequence;
 }
 // Separate endpoint for PAS consumption only 
+@cds.query.limit.default: 1000
+@cds.query.limit.max: 100000
 service CdPasService  @(requires: 'authenticated-user') {
     @readonly entity PartnerCompData(IP_PERIOD : String(13)) as select from CV_PARTNER_COMP_DATA(
         IP_PERIOD : : IP_PERIOD
