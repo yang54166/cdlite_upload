@@ -51,7 +51,7 @@ Content-Type: application/json
 {}
 
 ### Enrich
-POST http://localhost:4004/payroll/StagingUploads({{batchResponse.response.body.ID}})/enrich
+POST http://localhost:4004/payroll/StagingUploads(391)/enrich
 Authorization: Bearer {{auth.response.body.access_token}}
 Content-Type: application/json
 

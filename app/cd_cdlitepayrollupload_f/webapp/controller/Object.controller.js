@@ -16,8 +16,9 @@ sap.ui.define([
     "sap/m/Text",
     "sap/m/Column",
     "sap/m/ColumnListItem",
-    "sap/m/Label"
-], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label) {
+    "sap/m/Label",
+    "sap/ui/core/format/DateFormat"
+], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat) {
     "use strict";
 
     var EdmType = exportLibrary.EdmType;
@@ -281,12 +282,13 @@ sap.ui.define([
             var oAllCurrentContexts = oItemsBinding.getAllCurrentContexts();
             this._oAllCurrentObjs = oAllCurrentContexts.map(oContext => oContext.getObject());
             var that = this;
-            if (that._sHeaderStatus.toUpperCase() === 'APPROVED') {
+            if (that._sHeaderStatus.toUpperCase() === 'APPROVED' || that._sHeaderStatus.toUpperCase() === 'POSTED' || that._sHeaderStatus.toUpperCase() === 'ERROR' ) {
                 var oApproveList = that._oModel.bindContext("/PayrollHeader(" + that._ID + ")");
                 oApproveList.requestObject().then(function (sObject) {
                     //  console.log(sObject);
                     that.getView().byId("approvedByTxt").setText(sObject.approvedBy);
-                    that.getView().byId("approvedAtTxt").setText(sObject.approvedAt);
+                    var oDateFormatter = DateFormat.getDateTimeInstance();
+                    that.getView().byId("approvedAtTxt").setText(oDateFormatter.format(new Date(sObject.approvedAt)));
                 });
             } else {
                 that.getView().byId("approvedByTxt").setText("");
@@ -503,7 +505,7 @@ sap.ui.define([
             var sHTML = "";
             if (sTransType === '02') {
                 sHTML = "Transaction Type is Taxes";
-                disableFlag = false;
+                disableFlag = true;
             } else {
                 if (validLst.length > 0) {
                     if (totalLst.length > 0) {

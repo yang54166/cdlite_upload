@@ -180,7 +180,7 @@ class PayrollService extends cds.ApplicationService {
                     // GL Accounts
                     const glAccountObj = fdmUtils.getGLAccount(mappedAccount?.glAccount);
                     const glAccountCBObj = fdmUtils.getGLAccount(mappedAccount?.glAccountCB);
-                    if (item.PAYROLLCODETYPE != "NOTIONAL") {
+                    if (mappedAccount.payrollCodeType != "NOTIONAL") {
                         if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
                             errorsForRow.push(`Invalid GL account ${mappedAccount?.glAccount}.`);
                         }
