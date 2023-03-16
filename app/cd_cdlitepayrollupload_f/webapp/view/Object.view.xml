@@ -1,4 +1,4 @@
-<mvc:View controllerName="mck.cdlite.payrollupload.controller.Object" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns="sap.uxap" xmlns:m="sap.m" xmlns:core="sap.ui.core" height="100%">
+<mvc:View controllerName="mck.cdlite.payrollupload.controller.Object" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns="sap.uxap" xmlns:m="sap.m" xmlns:core="sap.ui.core" height="100%">
     <ObjectPageLayout id="ObjectPageLayout" showTitleInHeaderContent="true" upperCaseAnchorBar="false">
         <headerTitle>
             <ObjectPageDynamicHeaderTitle id="objPageHeaderTitle">
@@ -38,7 +38,6 @@
 
         <headerContent>
             <m:HeaderContainer id="headerContainer" scrollStep="200" showDividers="false">
-                
                 <m:VBox id="uploadHeaderSec1" class="sapUiSmallMarginBottom">
                     <m:HBox id="uploadHeaderSec1V1" class="sapUiTinyMarginBottom" renderType="Bare">
                         <m:Label id="companyCodeLbl" text="{i18n>detailCompanyCode}" class="sapUiTinyMarginEnd" />
@@ -87,29 +86,25 @@
                         <m:Label id="createdByLbl" text="{i18n>createdBy}" class="sapUiSmallMarginEnd" />
                         <m:Text id="createdByTxt" text="{createdBy}" />
                     </m:HBox>
-
-                    <m:HBox id="uploadHeaderSec4V2" class="sapUiTinyMarginBottom" renderType="Bare">
-                        <m:Label id="createdAtLbl" text="{i18n>createdAt}" class="sapUiSmallMarginEnd" />
-                        <m:Text id="createAtTxt" text=" {createdAt}" />
+                    <m:HBox id="uploadHeaderSec5V1" class="sapUiTinyMarginBottom">
+                        <m:Label id="modifiedByLbl" text="{i18n>modifiedBy}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="modifiedByTxt" text=" {modifiedBy}" />
+                    </m:HBox>
+                    <m:HBox id="uploadHeaderSec6V1" class="sapUiTinyMarginBottom">
+                        <m:Label id="approvedByLbl" text="{i18n>approvedBy}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="approvedByTxt" text="" />
                     </m:HBox>
                 </m:VBox>
                 <m:VBox id="uploadHeaderSec5" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
-                    <m:HBox id="uploadHeaderSec5V1" class="sapUiTinyMarginBottom">
-                        <m:Label id="modifiedByLbl" text="{i18n>modifiedBy}" class="sapUiSmallMarginEnd" />
-                        <m:Text id="modifiedByTxt" text="{modifiedBy}" />
+                    <m:HBox id="uploadHeaderSec4V2" class="sapUiTinyMarginBottom" renderType="Bare">
+                        <m:Label id="createdAtLbl" text="{i18n>createdAt}" class="sapUiSmallMarginEnd" />
+                        <m:Text id="createAtTxt" text=" {createdAt}" />
                     </m:HBox>
 
                     <m:HBox id="uploadHeaderSec5V2" class="sapUiTinyMarginBottom">
                         <m:Label id="modifiedAtLbl" text="{i18n>modifiedAt}" class="sapUiSmallMarginEnd" />
                         <m:Text id="modifiedAtTxt" text=" {modifiedAt}" />
                     </m:HBox>
-                </m:VBox>
-                <m:VBox id="uploadHeaderSec6" class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
-                    <m:HBox id="uploadHeaderSec6V1" class="sapUiTinyMarginBottom">
-                        <m:Label id="approvedByLbl" text="{i18n>approvedBy}" class="sapUiSmallMarginEnd" />
-                        <m:Text id="approvedByTxt" text="" />
-                    </m:HBox>
-
                     <m:HBox id="uploadHeaderSec6V2" class="sapUiTinyMarginBottom">
                         <m:Label id="approvedAtLbl" text="{i18n>approvedAt}" class="sapUiSmallMarginEnd" />
                         <m:Text id="approvedAtTxt" text="" />
@@ -119,7 +114,7 @@
         </headerContent>
 
         <sections>
-            <ObjectPageSection titleUppercase="false" id="personalSection" title="Posting Batch/Status">
+            <ObjectPageSection titleUppercase="false" id="personalSection" title="Posting Batch Status">
                 <subSections>
                     <ObjectPageSubSection id="personalSectionSS1" titleUppercase="false">
                         <blocks>
