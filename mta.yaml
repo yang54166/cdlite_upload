@@ -20,6 +20,8 @@ modules:
       memory: 4096M
     build-parameters:
       builder: npm-ci
+    properties:
+      SAP_CLIENT: 200
 
   - name: cd_cdlitepayrollupload_fs-db-deployer
     type: hdb

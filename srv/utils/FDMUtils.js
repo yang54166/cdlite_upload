@@ -11,7 +11,7 @@ class FDMUtils {
 
     constructor(remoteService) {
         this.apiService = remoteService;
-        this.sapClient = remoteService.options.credentials.queries["sap-client"];
+        this.sapClient = process.env.SAP_CLIENT.toString();
     };
 
     async getEmployeeData(companyCode) {
@@ -90,7 +90,11 @@ class FDMUtils {
         return this.wbsElements.find((proj) => proj.wbsCode == wbsElementCode);
     };
 
-    async getExchangeRates(currencyCode) {
+    async getExchangeRates(currencyCode, payrollDate) {
+        const getRatePeriod = (payrollDate)=> {
+            const d = new Date(payrollDate);
+            return `${d.getFullYear().toString()}${(d.getMonth() + 1).toString().padStart(2,0)}`
+        };
         let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API").where({
             period: '202212',
             and: {
