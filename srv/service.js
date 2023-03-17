@@ -127,7 +127,6 @@ class PayrollService extends cds.ApplicationService {
                 await fdmUtils.getGLAccounts();
                 await fdmUtils.getCompanyCodes();
                 await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
-                //await fdmUtils.getExchangeRates();
 
                 // Get Mapping Data
                 const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
@@ -315,7 +314,7 @@ class PayrollService extends cds.ApplicationService {
 
                         // Get FDM Data
                         const fdmUtils = new FDMUtils(fdm);
-                        await fdmUtils.getExchangeRates(dataHeader.currencyCode);
+                        await fdmUtils.getExchangeRates(dataHeader.currencyCode, dataHeader.payrollDate);
 
                         // Get Mapping Data
                         const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: dataHeader.glCompanyCode });
