@@ -96,7 +96,7 @@ class FDMUtils {
             return `${d.getFullYear().toString()}${(d.getMonth() + 1).toString().padStart(2,0)}`
         };
         let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API").where({
-            period: '202212',
+            period: getRatePeriod(payrollDate),
             and: {
                 fromCurrency: currencyCode,
                 or: {
