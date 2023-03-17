@@ -16,7 +16,7 @@
   <DataSource id="Total_Fmno_Status$$$$CV_FMNOSUMMARY$$">
     <resourceUri>CV_FMNOSUMMARY</resourceUri>
   </DataSource>
-  <DataSource id="Total_Amount$$$$CV_STAGINGDETAILS_MAPPED$$">
+  <DataSource id="Proj_Details$$$$CV_STAGINGDETAILS_MAPPED$$">
     <resourceUri>CV_STAGINGDETAILS_MAPPED</resourceUri>
   </DataSource>
 </dataSources>
@@ -80,14 +80,16 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="BATCH_ID" source="PARENT_ID"/>
     </input>
   </calculationView>
-  <calculationView xsi:type="Calculation:AggregationView" id="Total_Amount">
+  <calculationView xsi:type="Calculation:ProjectionView" id="Proj_Details" filterExpressionLanguage="SQL">
     <viewAttributes>
       <viewAttribute id="BATCH_ID"/>
-      <viewAttribute id="AMOUNT" aggregationType="sum"/>
+      <viewAttribute id="AMOUNT"/>
+      <viewAttribute id="PAYROLLCODETYPE"/>
     </viewAttributes>
     <calculatedViewAttributes/>
-    <restrictedViewAttributes/>
-    <input node="Total_Amount$$$$CV_STAGINGDETAILS_MAPPED$$"/>
+    <input node="Proj_Details$$$$CV_STAGINGDETAILS_MAPPED$$"/>
+  
+    <filter>&quot;PAYROLLCODETYPE&quot;!='NOTIONAL'</filter>
   </calculationView>
   <calculationView xsi:type="Calculation:UnionView" id="Lines">
     <viewAttributes>
@@ -124,6 +126,15 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="FMNO_COUNT" source="STATUS_COUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
     </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:AggregationView" id="Total_Amount">
+    <viewAttributes>
+      <viewAttribute id="BATCH_ID"/>
+      <viewAttribute id="AMOUNT" aggregationType="sum"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="Proj_Details"/>
   </calculationView>
   <calculationView xsi:type="Calculation:JoinView" id="Join_1_1" cardinality="CN_N" joinType="inner" multiJoinNode="Join_1" multiJoinCentralTable="Lines" multiJoinOrder="Outside In">
     <viewAttributes>
@@ -232,6 +243,11 @@
       <upperLeftCorner x="-127" y="338"/>
       <rectangleSize height="30" width="160"/>
     </shape>
+    <shape expanded="true" modelObjectName="Proj_Details" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-190" y="446"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+  
   
   
   

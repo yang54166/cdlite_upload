@@ -89,7 +89,7 @@
     </input>
     <joinAttribute name="JOIN$PARENT_ID$ID"/>
   </calculationView>
-  <calculationView xsi:type="Calculation:JoinView" id="Join_Mapping" cardinality="CN_N" joinType="inner">
+  <calculationView xsi:type="Calculation:JoinView" id="Join_Mapping" cardinality="CN_N" joinType="leftOuter">
     <viewAttributes>
       <viewAttribute id="ID"/>
       <viewAttribute id="GLCOMPANYCODE"/>
@@ -135,16 +135,14 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODESEQUENCE" source="PAYROLLCODESEQUENCE"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
     </input>
     <joinAttribute name="LEGALENTITYGROUPCODE"/>
     <joinAttribute name="PAYROLLCODE"/>
     <joinAttribute name="PAYROLLCODESEQUENCE"/>
-    <joinAttribute name="GLACCOUNT"/>
   </calculationView>
 </calculationViews>
 
-<logicalModel id="Join_Mapping" filterExpressionLanguage="SQL">
+<logicalModel id="Join_Mapping">
   <attributes>
     <attribute id="BATCH_ID" order="1" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCH_ID"/>
@@ -211,7 +209,9 @@
   
     <attribute id="ROW" order="15" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="ROW"/>
+  
       <keyMapping columnObjectName="Join_Mapping" columnName="ROW"/>
+  
     </attribute>
     <attribute id="STATUS" order="16" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="STATUS"/>
@@ -229,11 +229,7 @@
 
     <sortAttribute id="GLACCOUNT" direction="ASC"/>
 
-  </sortAttributes>
-
-  <filter>&quot;PAYROLLCODETYPE&quot;!='NOTIONAL'</filter>
-
-</logicalModel>
+  </sortAttributes></logicalModel>
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
@@ -248,7 +244,7 @@
     <shape modelObjectName="Join_StagingData_2" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="20" y="30"/>
       <rectangleSize width="250"/>
-    </shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape>
+    </shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape><shape><upperLeftCorner/><rectangleSize/></shape>
   
     <shape modelObjectName="MAPPING_PAYCODEGLMAPPING" modelObjectNameSpace="Join_Mapping" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="343" y="30"/>
