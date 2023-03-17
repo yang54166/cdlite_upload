@@ -114,7 +114,9 @@ class FDMUtils {
     };
 
     getExchangeRate(sourceCurrency, targetCurrency) {
-        if (sourceCurrency == targetCurrency) { return { exchangeRate: 1.00 } }
+        if (sourceCurrency == targetCurrency) { 
+            return { exchangeRate: 1.00, period: this.exchangeRates[0].period } 
+        }
         else {
             return this.exchangeRates.find((rate) => ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
         }
