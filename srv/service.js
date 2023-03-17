@@ -387,7 +387,7 @@ class PayrollService extends cds.ApplicationService {
                                     batchID_batchID: batchToApprove,
                                     batchLineNumber: lineCounter += 1,
                                     postingBatchID: `${postingBatches}.1`,
-                                    postingBatchIDCBLedger: utils.validatePostingIncludesCBLedger() ? `${postingBatches}.2` : null,
+                                    postingBatchIDCBLedger: utils.validatePostingIncludesCBLedger(transactionType) ? `${postingBatches}.2` : null,
                                     fcat: item.fcat,
                                     fmno: item.fmno,
                                     paymentID: item.paymentId,
