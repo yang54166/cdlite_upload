@@ -96,6 +96,8 @@ resources:
     parameters:
       service: hana
       service-plan: hdi-shared
+      config:
+        schema: CDLite_PayrollUpload_HDI
 
   - name: cd_cdlitepayrollupload_fs-auth
     type: org.cloudfoundry.managed-service
