@@ -640,7 +640,8 @@ sap.ui.define([
                 error: function (e) {
                     that.closeApprovalDialog();
                     oApprovalDialog.setBusy(false);
-                    MessageBox.error("Service is not available, please try later!");
+                    var sMsg = `${e?.responseJSON?.error?.message || JSON.stringify(e,null,2)}`;
+                    MessageBox.error(sMsg);
                 }
             })
             console.log("test");
