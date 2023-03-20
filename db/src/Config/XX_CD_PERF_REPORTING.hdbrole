@@ -1,5 +1,14 @@
 {
   "role": {
-    "name": "XX_CD_PERF_REPORTING"
+    "name": "XX_CD_PERF_REPORTING",
+    "object_privileges": [
+      {
+        "name": "CVC_R_PERF_PAYROLL",
+        "type": "VIEW",
+        "privileges": [
+          "SELECT"
+        ]
+      }
+    ]
   }
 }
