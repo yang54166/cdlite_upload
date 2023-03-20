@@ -127,7 +127,6 @@ class PayrollService extends cds.ApplicationService {
                 await fdmUtils.getGLAccounts();
                 await fdmUtils.getCompanyCodes();
                 await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
-                //await fdmUtils.getExchangeRates();
 
                 // Get Mapping Data
                 const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
@@ -180,7 +179,7 @@ class PayrollService extends cds.ApplicationService {
                     // GL Accounts
                     const glAccountObj = fdmUtils.getGLAccount(mappedAccount?.glAccount);
                     const glAccountCBObj = fdmUtils.getGLAccount(mappedAccount?.glAccountCB);
-                    if (item.PAYROLLCODETYPE != "NOTIONAL") {
+                    if (mappedAccount.payrollCodeType != "NOTIONAL") {
                         if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
                             errorsForRow.push(`Invalid GL account ${mappedAccount?.glAccount}.`);
                         }
@@ -315,7 +314,7 @@ class PayrollService extends cds.ApplicationService {
 
                         // Get FDM Data
                         const fdmUtils = new FDMUtils(fdm);
-                        await fdmUtils.getExchangeRates(dataHeader.currencyCode);
+                        await fdmUtils.getExchangeRates(dataHeader.currencyCode, dataHeader.payrollDate);
 
                         // Get Mapping Data
                         const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: dataHeader.glCompanyCode });
@@ -388,7 +387,7 @@ class PayrollService extends cds.ApplicationService {
                                     batchID_batchID: batchToApprove,
                                     batchLineNumber: lineCounter += 1,
                                     postingBatchID: `${postingBatches}.1`,
-                                    postingBatchIDCBLedger: utils.validatePostingIncludesCBLedger() ? `${postingBatches}.2` : null,
+                                    postingBatchIDCBLedger: utils.validatePostingIncludesCBLedger(transactionType) ? `${postingBatches}.2` : null,
                                     fcat: item.fcat,
                                     fmno: item.fmno,
                                     paymentID: item.paymentId,
@@ -407,8 +406,8 @@ class PayrollService extends cds.ApplicationService {
                                     qualifiedCompensation: mapObj.qualifiedCompensation,
                                     cashAmount: item.amount,
                                     chargeAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
-                                    chargeCompany: item.glCompanyCode,
-                                    //chargeConversionDate: glExchangeRateSourceToCompany.updateDate,
+                                    chargeCompany: glCompanyCode,
+                                    chargeConversionDate: utils.convertPeriodToDate(glExchangeRateSourceToCompany.period),
                                     chargeConversionRate: glExchangeRateSourceToCompany.exchangeRate,
                                     chargeConversionType: "M",
                                     chargeCostCenter: item.glCostCenter,
@@ -482,7 +481,7 @@ class PayrollService extends cds.ApplicationService {
         this.on("trigger", async req => {
             const batchId = req.data.batchToApprove || req.params[0];
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
-            const resultTrigger = await cpi.send({ path: `cd_lass_payroll_trigger1?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
+            const resultTrigger = await cpi.send({ path: `/cd_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
             console.log(`CPI Response: ${resultTrigger}`);
             return true;
         });

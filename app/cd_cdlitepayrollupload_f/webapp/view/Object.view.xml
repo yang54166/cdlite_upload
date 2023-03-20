@@ -159,7 +159,7 @@
                 <subSections>
                     <ObjectPageSubSection id="summaryByCostCenterSS1" titleUppercase="false">
                         <blocks>
-                            <m:Table id="costCenterSummary" sticky="HeaderToolbar,ColumnHeaders" items="{costCenterView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" growing="true" growingScrollToLoad="true" updateFinished="">
+                            <m:Table id="costCenterSummary" sticky="HeaderToolbar,ColumnHeaders" items="{costCenterView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" growing="false" updateFinished="">
                                 <m:columns>
                                     <m:Column width="8%" demandPopin="false" minScreenWidth="Tablet">
                                         <m:Text text="{i18n>colPayrollPeriod}" />
