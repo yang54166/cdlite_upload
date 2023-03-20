@@ -25,19 +25,7 @@ sap.ui.define([
         onInit: function () {
             var oViewModel;
             this._oModel = this.getOwnerComponent().getModel();
-            // var currentUser = this._oModel.bindContext("/user-api/currentUser");
-            var url = "/user-api/currentUser";
-            $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "json",
-                sucess: function (result) {
-                    console.log(result);
-                },
-                error: function (e) {
-                    console.log(e.message);
-                }
-            });
+        
             // keeps the search state
             this._aTableSearchState = [];
             var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
