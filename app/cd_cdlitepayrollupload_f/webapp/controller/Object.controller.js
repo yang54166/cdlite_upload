@@ -39,6 +39,7 @@ sap.ui.define([
             // Model used to manipulate control states. The chosen values make sure,
             // detail page shows busy indication immediately so there is no break in
             // between the busy indication for loading the view's meta data
+            this._oUserScopeModel = this.getModel("userScope");
             var oViewModel = new JSONModel({
                 busy: true,
                 delay: 0,
@@ -49,8 +50,8 @@ sap.ui.define([
                 inError: 0,
                 success: 0,
                 countAll: 0,
-                enableApproveButton: false,
-                enableDeleteButton: false,
+                enableApproveButton: this._oUserScopeModel.getProperty("userApprove"),
+                enableDeleteButton: this._oUserScopeModel.getProperty("userDelete"),
                 enableReValButton: false
             });
             this._oModel = this.getOwnerComponent().getModel();
@@ -282,7 +283,7 @@ sap.ui.define([
             var oAllCurrentContexts = oItemsBinding.getAllCurrentContexts();
             this._oAllCurrentObjs = oAllCurrentContexts.map(oContext => oContext.getObject());
             var that = this;
-            if (that._sHeaderStatus.toUpperCase() === 'APPROVED' || that._sHeaderStatus.toUpperCase() === 'POSTED' || that._sHeaderStatus.toUpperCase() === 'ERROR' ) {
+            if (that._sHeaderStatus.toUpperCase() === 'APPROVED' || that._sHeaderStatus.toUpperCase() === 'POSTED' || that._sHeaderStatus.toUpperCase() === 'ERROR') {
                 var oApproveList = that._oModel.bindContext("/PayrollHeader(" + that._ID + ")");
                 oApproveList.requestObject().then(function (sObject) {
                     //  console.log(sObject);
@@ -302,34 +303,50 @@ sap.ui.define([
 
                 switch (that._sHeaderStatus.toUpperCase()) {
                     case "VALIDATED":
-                        oViewModel.setProperty("/enableDeleteButton", true);
+                        if (this._oUserScopeModel.getProperty("userDelete"))
+                            oViewModel.setProperty("/enableDeleteButton", true);
+
                         oViewModel.setProperty("/enableRevalButton", true);
-                        oViewModel.setProperty("/enableApproveButton", true);
+
+                        if (this._oUserScopeModel.getProperty("userApprove"))
+                            oViewModel.setProperty("/enableApproveButton", true);
+
                         break;
                     case "STAGED":
-                        oViewModel.setProperty("/enableDeleteButton", true);
+                        if (this._oUserScopeModel.getProperty("userDelete"))
+                            oViewModel.setProperty("/enableDeleteButton", true);
                         oViewModel.setProperty("/enableRevalButton", true);
-                        oViewModel.setProperty("/enableApproveButton", false);
+                        if (this._oUserScopeModel.getProperty("userApprove"))
+                            oViewModel.setProperty("/enableApproveButton", false);
                         break;
                     case "APPROVED":
-                        oViewModel.setProperty("/enableDeleteButton", false);
+
+                        if (this._oUserScopeModel.getProperty("userDelete"))
+                            oViewModel.setProperty("/enableDeleteButton", false);
                         oViewModel.setProperty("/enableRevalButton", false);
-                        oViewModel.setProperty("/enableApproveButton", false);
+                        if (this._oUserScopeModel.getProperty("userApprove"))
+                            oViewModel.setProperty("/enableApproveButton", false);
                         break;
                     case "POSTED":
-                        oViewModel.setProperty("/enableDeleteButton", false);
+
+                        if (this._oUserScopeModel.getProperty("userDelete"))
+                            oViewModel.setProperty("/enableDeleteButton", false);
                         oViewModel.setProperty("/enableRevalButton", false);
-                        oViewModel.setProperty("/enableApproveButton", false);
+                        if (this._oUserScopeModel.getProperty("userApprove"))
+                            oViewModel.setProperty("/enableApproveButton", false);
                         break;
                     case "ERROR":
-                        oViewModel.setProperty("/enableDeleteButton", false);
+
+                        if (this._oUserScopeModel.getProperty("userDelete"))
+                            oViewModel.setProperty("/enableDeleteButton", false);
                         oViewModel.setProperty("/enableRevalButton", false);
-                        oViewModel.setProperty("/enableApproveButton", false);
+                        if (this._oUserScopeModel.getProperty("userApprove"))
+                            oViewModel.setProperty("/enableApproveButton", false);
                         break;
                     default:
-                        oViewModel.setProperty("/enableDeleteButton", false);
+                        oViewModel.setProperty("/enableDeleteButton", this._oUserScopeModel.getProperty("userDelete"));
                         oViewModel.setProperty("/enableRevalButton", false);
-                        oViewModel.setProperty("/enableApproveButton", false);
+                        oViewModel.setProperty("/enableApproveButton", this._oUserScopeModel.getProperty("userApprove"));
                 }
 
 
@@ -640,7 +657,7 @@ sap.ui.define([
                 error: function (e) {
                     that.closeApprovalDialog();
                     oApprovalDialog.setBusy(false);
-                    var sMsg = `${e?.responseJSON?.error?.message || JSON.stringify(e,null,2)}`;
+                    var sMsg = `${e?.responseJSON?.error?.message || JSON.stringify(e, null, 2)}`;
                     MessageBox.error(sMsg);
                 }
             })

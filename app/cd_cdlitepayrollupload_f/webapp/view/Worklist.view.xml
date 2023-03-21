@@ -128,7 +128,7 @@
             </Table>
         </semantic:content>
         <semantic:titleMainAction>
-            <semantic:TitleMainAction id="uploadAction" text="{i18n>btnUpload}" press="onUpload" />
+            <semantic:TitleMainAction id="uploadAction" text="{i18n>btnUpload}" enabled="{userScope>/userUpload}" press="onUpload" />
         </semantic:titleMainAction>
     </semantic:SemanticPage>
 </mvc:View>
