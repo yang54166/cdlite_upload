@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CVD_MD_PAYROLL_POSTINGBATCH" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="CVD_MD_PAYROLL_POSTINGBATCH.hdbcalculationview"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="PAYROLL_POSTINGBATCH">
+    <resourceUri>PAYROLL_POSTINGBATCH</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews/>
+<logicalModel id="PAYROLL_POSTINGBATCH">
+  <attributes>
+    <attribute id="CREATEDAT" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDAT"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="CREATEDAT"/>
+    </attribute>
+    <attribute id="CREATEDBY" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CREATEDBY"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="CREATEDBY"/>
+    </attribute>
+    <attribute id="MODIFIEDAT" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDAT"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="MODIFIEDAT"/>
+    </attribute>
+    <attribute id="MODIFIEDBY" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MODIFIEDBY"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="MODIFIEDBY"/>
+    </attribute>
+    <attribute id="BATCHID" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHID"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="BATCHID"/>
+    </attribute>
+    <attribute id="POSTINGBATCHID" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGBATCHID"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="POSTINGBATCHID"/>
+    </attribute>
+    <attribute id="POSTINGSTATUS" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGSTATUS"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="POSTINGSTATUS"/>
+    </attribute>
+    <attribute id="POSTINGSTATUSMESSAGE" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGSTATUSMESSAGE"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="POSTINGSTATUSMESSAGE"/>
+    </attribute>
+    <attribute id="POSTINGDOCUMENT" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGDOCUMENT"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="POSTINGDOCUMENT"/>
+    </attribute>
+    <attribute id="POSTINGTYPE" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTINGTYPE"/>
+      <keyMapping columnObjectName="PAYROLL_POSTINGBATCH" columnName="POSTINGTYPE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures/>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>
