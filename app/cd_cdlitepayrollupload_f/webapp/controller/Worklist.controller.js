@@ -33,27 +33,29 @@ sap.ui.define([
             var uploadRangesModel = this.getOwnerComponent().getModel("uploadRangesData");
 
             var oUserModel = new JSONModel({
-                userApprove: false,
-                userDelete: false,
-                userUpload: false
+                userApprove: true,
+                userDelete: true,
+                userUpload: true
 
             });
 
             var oUserAttributes = this.getOwnerComponent().getModel("userAttributes");
 
             var aScopes = oUserAttributes.getProperty("/scopes");
-            var aUploadScope = aScopes.filter(x => x.lastIndexOf(".upload") > 0);
-            var aApproveScope = aScopes.filter(x => x.lastIndexOf(".approve") > 0);
-            var aDeleteScope = aScopes.filter(x => x.lastIndexOf(".delete") > 0);
+            if (aScopes !== undefined) {
+                var aUploadScope = aScopes.filter(x => x.lastIndexOf(".upload") > 0);
+                var aApproveScope = aScopes.filter(x => x.lastIndexOf(".approve") > 0);
+                var aDeleteScope = aScopes.filter(x => x.lastIndexOf(".delete") > 0);
 
-            if (aUploadScope.length > 0)
-                oUserModel.setProperty("/userUpload", true);
+                if (aUploadScope.length > 0)
+                    oUserModel.setProperty("/userUpload", true);
 
-            if (aApproveScope.length > 0)
-                oUserModel.setProperty("/userApprove", true);
+                if (aApproveScope.length > 0)
+                    oUserModel.setProperty("/userApprove", true);
 
-            if (aDeleteScope.length > 0)
-                oUserModel.setProperty("/userDelete", true);
+                if (aDeleteScope.length > 0)
+                    oUserModel.setProperty("/userDelete", true);
+            }
 
             // Model used to manipulate control states
             oViewModel = new JSONModel({
