@@ -322,6 +322,7 @@ sap.ui.define([
                 sMessage = "Error occurred while processing. If batch is not yet VALIDATED, please open and click 'Revalidate'.";
                 MessageBox.error(sMessage);
             } else {
+                console.log(oEvent.getParameter("responseRaw"));
                 var errorMsg = JSON.parse(oEvent.getParameter("responseRaw"))?.error?.message;
 
                 oContext.delete().then(function () {

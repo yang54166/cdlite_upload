@@ -21,35 +21,39 @@ class PayrollService extends cds.ApplicationService {
 
         this.on("PUT", "PayrollUploadFile", async (req) => {
             if (req.data.content) {
-                const contentType = req._.req.headers['content-type'];
-                const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
-                    return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
-                }));
-                const batchID = contentPropertyMap.get("batchID");
-                const fileName = contentPropertyMap.get("filename");
+                try {
+                    const contentType = req._.req.headers['content-type'];
+                    const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
+                        return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
+                    }));
+                    const batchID = contentPropertyMap.get("batchID");
+                    const fileName = contentPropertyMap.get("filename");
 
-                console.log(`DEBUG: Upload started for batch ${batchID}.`);
-                let content = await utils.readUploadStream(req.data.content);
-                console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
+                    console.log(`DEBUG: Upload started for batch ${batchID}.`);
+                    let content = await utils.readUploadStream(req.data.content);
+                    console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
 
-                const dataToImport = utils.parseCDUpload(content, batchID);
-                const validationResult = utils.validateEntities(dataToImport, UploadItems);
-                if (validationResult.isValid) {
-                    const result = await HANAUtils.callStoredProc(
-                        db.options.credentials,
-                        db.options.credentials.schema,
-                        "SP_UPLOADINSERT",
-                        dataToImport
-                    );
-                    console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                    const dataToImport = utils.parseCDUpload(content, batchID);
+                    const validationResult = utils.validateEntities(dataToImport, UploadItems);
+                    if (validationResult.isValid) {
+                        const result = await HANAUtils.callStoredProc(
+                            db.options.credentials,
+                            db.options.credentials.schema,
+                            "SP_UPLOADINSERT",
+                            dataToImport
+                        );
+                        console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
-                    //await this.emit("enrich", { batchID });
-                    await enrichBatch(req, batchID);
+                        //await this.emit("enrich", { batchID });
+                        await enrichBatch(req, batchID);
 
-                    // Update filename
-                    return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
-                } else {
-                    return req.error({ code: 1, status: 400, message: validationResult.errorMessage, target: 'PayrollUploadFile' });
+                        // Update filename
+                        return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
+                    } else {
+                        return req.error({ code: 1, status: 400, message: validationResult.errorMessage, target: 'PayrollUploadFile' });
+                    }
+                } catch (ex) {
+                    req.error({ code: 1, status: 400, message: `Error while uploading file: ${ex.message}` });
                 }
             }
         });
