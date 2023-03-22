@@ -357,10 +357,8 @@ class PayrollService extends cds.ApplicationService {
                             let lineCounter = 0;
                             let fmnoList = [];
                             const payloadItems = dataItems.map((item) => {
-                                if (fmnoList.length >= postingConfig.maxFMNO_perPostingBatch) {
-                                    postingBatches += 1;
-                                    fmnoList = [];
-                                }
+                                postingBatches = Math.ceil(fmnoList.length / postingConfig.maxFMNO_perPostingBatch) || 1;
+                                    
                                 if (fmnoList.indexOf(item.fmno) == -1) { fmnoList.push(item.fmno) };
 
                                 const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
