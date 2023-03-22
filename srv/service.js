@@ -19,6 +19,19 @@ class PayrollService extends cds.ApplicationService {
         const { UploadHeader, UploadItems } = db.entities('staging');
         const { LegalEntityGrouping, PaycodeGLMapping, PayrollLedgerControl } = db.entities('mapping');
 
+        this.on("READ", "CurrentUser", async (req) => {
+            let currentUser = new cds.User(req.user);
+            let scopes = [];
+            if (currentUser.is("admin")) { scopes.push("admin") };
+            if (currentUser.is("upload")) { scopes.push("upload") };
+            if (currentUser.is("delete")) { scopes.push("delete") };
+            if (currentUser.is("approve")) { scopes.push("approve") };
+            return {
+                companycode: currentUser.attr.companycode,
+                scopes: scopes
+            };
+        });
+
         this.on("PUT", "PayrollUploadFile", async (req) => {
             if (req.data.content) {
                 try {
@@ -358,7 +371,7 @@ class PayrollService extends cds.ApplicationService {
                             let fmnoList = [];
                             const payloadItems = dataItems.map((item) => {
                                 postingBatches = Math.ceil(fmnoList.length / postingConfig.maxFMNO_perPostingBatch) || 1;
-                                    
+
                                 if (fmnoList.indexOf(item.fmno) == -1) { fmnoList.push(item.fmno) };
 
                                 const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
