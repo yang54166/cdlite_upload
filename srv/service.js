@@ -19,37 +19,54 @@ class PayrollService extends cds.ApplicationService {
         const { UploadHeader, UploadItems } = db.entities('staging');
         const { LegalEntityGrouping, PaycodeGLMapping, PayrollLedgerControl } = db.entities('mapping');
 
+        this.on("READ", "CurrentUser", async (req) => {
+            let currentUser = new cds.User(req.user);
+            let scopes = [];
+            if (currentUser.is("admin")) { scopes.push("admin") };
+            if (currentUser.is("upload")) { scopes.push("upload") };
+            if (currentUser.is("delete")) { scopes.push("delete") };
+            if (currentUser.is("approve")) { scopes.push("approve") };
+            return {
+                companycode: currentUser.attr.companycode,
+                scopes: scopes
+            };
+        });
+
         this.on("PUT", "PayrollUploadFile", async (req) => {
             if (req.data.content) {
-                const contentType = req._.req.headers['content-type'];
-                const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
-                    return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
-                }));
-                const batchID = contentPropertyMap.get("batchID");
-                const fileName = contentPropertyMap.get("filename");
+                try {
+                    const contentType = req._.req.headers['content-type'];
+                    const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
+                        return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
+                    }));
+                    const batchID = contentPropertyMap.get("batchID");
+                    const fileName = contentPropertyMap.get("filename");
 
-                console.log(`DEBUG: Upload started for batch ${batchID}.`);
-                let content = await utils.readUploadStream(req.data.content);
-                console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
+                    console.log(`DEBUG: Upload started for batch ${batchID}.`);
+                    let content = await utils.readUploadStream(req.data.content);
+                    console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
 
-                const dataToImport = utils.parseCDUpload(content, batchID);
-                const validationResult = utils.validateEntities(dataToImport, UploadItems);
-                if (validationResult.isValid) {
-                    const result = await HANAUtils.callStoredProc(
-                        db.options.credentials,
-                        db.options.credentials.schema,
-                        "SP_UPLOADINSERT",
-                        dataToImport
-                    );
-                    console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                    const dataToImport = utils.parseCDUpload(content, batchID);
+                    const validationResult = utils.validateEntities(dataToImport, UploadItems);
+                    if (validationResult.isValid) {
+                        const result = await HANAUtils.callStoredProc(
+                            db.options.credentials,
+                            db.options.credentials.schema,
+                            "SP_UPLOADINSERT",
+                            dataToImport
+                        );
+                        console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
-                    //await this.emit("enrich", { batchID });
-                    await enrichBatch(req, batchID);
+                        //await this.emit("enrich", { batchID });
+                        await enrichBatch(req, batchID);
 
-                    // Update filename
-                    return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
-                } else {
-                    return req.error({ code: 1, status: 400, message: validationResult.errorMessage, target: 'PayrollUploadFile' });
+                        // Update filename
+                        return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
+                    } else {
+                        return req.error({ code: 1, status: 400, message: validationResult.errorMessage, target: 'PayrollUploadFile' });
+                    }
+                } catch (ex) {
+                    req.error({ code: 1, status: 400, message: `Error while uploading file: ${ex.message}` });
                 }
             }
         });
@@ -353,10 +370,8 @@ class PayrollService extends cds.ApplicationService {
                             let lineCounter = 0;
                             let fmnoList = [];
                             const payloadItems = dataItems.map((item) => {
-                                if (fmnoList.length >= postingConfig.maxFMNO_perPostingBatch) {
-                                    postingBatches += 1;
-                                    fmnoList = [];
-                                }
+                                postingBatches = Math.ceil(fmnoList.length / postingConfig.maxFMNO_perPostingBatch) || 1;
+
                                 if (fmnoList.indexOf(item.fmno) == -1) { fmnoList.push(item.fmno) };
 
                                 const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));

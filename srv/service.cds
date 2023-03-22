@@ -62,7 +62,16 @@ service PayrollService  @(requires: 'authenticated-user') {
     @readonly entity LegalEntityGroups as SELECT DISTINCT(legalEntityGroupCode) from mapping.LegalEntityGrouping order by legalEntityGroupCode;
     @readonly entity PayrollCodes as SELECT DISTINCT(payrollCode) from mapping.PaycodeGLMapping order by payrollCode;
     @readonly entity PayrollCodeSequences as SELECT DISTINCT(payrollCodeSequence) from mapping.PaycodeGLMapping order by payrollCodeSequence;
+
+    @readonly
+    @cds.persistence.skip
+    @odata.singleton
+    entity CurrentUser {
+        scopes: array of String;
+        companycode: array of String;
+    };
 }
+
 // Separate endpoint for PAS consumption only 
 @cds.query.limit.default: 1000
 @cds.query.limit.max: 100000
