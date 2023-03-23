@@ -27,6 +27,7 @@ class PayrollService extends cds.ApplicationService {
             if (currentUser.is("delete")) { scopes.push("delete") };
             if (currentUser.is("approve")) { scopes.push("approve") };
             return {
+                id: currentUser.id,
                 companycode: currentUser.attr.companycode,
                 scopes: scopes
             };

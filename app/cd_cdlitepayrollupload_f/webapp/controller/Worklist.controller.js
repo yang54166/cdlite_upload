@@ -26,7 +26,7 @@ sap.ui.define([
             var oViewModel;
             this._oModel = this.getOwnerComponent().getModel();
             // var currentUser = this._oModel.bindContext("/user-api/currentUser");
-            var url = "/user-api/currentUser";
+            var url = "payroll/CurrentUser";
             $.ajax({
                 url: url,
                 type: "GET",
