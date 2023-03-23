@@ -321,12 +321,12 @@ class PayrollService extends cds.ApplicationService {
 
                         // Get Data to Copy
                         const dataHeader = await SELECT.one.from(UploadHeader).where({ ID: batchToApprove, STATUS: 'APPROVED' });
-                        const dataItems = (await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' }))
-                            .sort((a, b) => {
-                                if (a.FMNO < b.FMNO) { return -1 }
-                                if (a.FMNO > b.FMNO) { return 1 }
-                                return 0
-                            });
+                        const dataItems = (await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' }).orderBy(`FMNO asc`));
+                            // .sort((a, b) => {
+                            //     if (a.FMNO < b.FMNO) { return -1 }
+                            //     if (a.FMNO > b.FMNO) { return 1 }
+                            //     return 0
+                            // });
 
 
                         // Get FDM Data
@@ -366,13 +366,17 @@ class PayrollService extends cds.ApplicationService {
                             console.log(`Header added to results table: ${resultCopyHeader.results.length}`);
 
                             // ITEMS
-                            let postingBatches = 1;
                             let lineCounter = 0;
                             let fmnoList = [];
+                            let postingBatches = 1;
                             const payloadItems = dataItems.map((item) => {
-                                postingBatches = Math.ceil(fmnoList.length / postingConfig.maxFMNO_perPostingBatch) || 1;
-
-                                if (fmnoList.indexOf(item.fmno) == -1) { fmnoList.push(item.fmno) };
+                                const fmnoActiveInBatch = (fmnoList.indexOf(item.fmno) > -1);
+                                if (!fmnoActiveInBatch) {
+                                    if (fmnoList.length > postingConfig.maxFMNO_perPostingBatch) {
+                                        postingBatches = Math.ceil(fmnoList.length / postingConfig.maxFMNO_perPostingBatch) || 1;
+                                    }
+                                    fmnoList.push(item.fmno);
+                                };
 
                                 const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
                                 if (!mapObj) { console.log(`Unable to find mapping for ${item.payrollCode} : ${item.payrollCodeSequence}`) };

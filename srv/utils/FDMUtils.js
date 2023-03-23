@@ -91,16 +91,19 @@ class FDMUtils {
     };
 
     async getExchangeRates(currencyCode, payrollDate) {
-        const getRatePeriod = (payrollDate)=> {
+        const getRatePeriod = (payrollDate) => {
             const d = new Date(payrollDate);
-            return `${d.getFullYear().toString()}${(d.getMonth() + 1).toString().padStart(2,0)}`
+            return `${d.getFullYear().toString()}${(d.getMonth() + 1).toString().padStart(2, 0)}`
         };
         let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API").where({
-            period: getRatePeriod(payrollDate),
+            client: this.sapClient,
             and: {
-                fromCurrency: currencyCode,
-                or: {
-                    toCurrency: currencyCode
+                period: getRatePeriod(payrollDate),
+                and: {
+                    fromCurrency: currencyCode,
+                    or: {
+                        toCurrency: currencyCode
+                    }
                 }
             }
         });
@@ -114,8 +117,8 @@ class FDMUtils {
     };
 
     getExchangeRate(sourceCurrency, targetCurrency) {
-        if (sourceCurrency == targetCurrency) { 
-            return { exchangeRate: 1.00, period: this.exchangeRates[0].period } 
+        if (sourceCurrency == targetCurrency) {
+            return { exchangeRate: 1.00, period: this.exchangeRates[0].period }
         }
         else {
             return this.exchangeRates.find((rate) => ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
