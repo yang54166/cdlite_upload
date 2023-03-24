@@ -102,6 +102,8 @@
       <viewAttribute id="POSTINGBATCHIDCBLEDGER"/>
       <viewAttribute id="GLACCOUNTCBLEDGER"/>
       <viewAttribute id="GLPOSTDEPARTMENT"/>
+    
+      <viewAttribute id="CC_FMNO"/>
     </viewAttributes>
     <calculatedViewAttributes>
       <calculatedViewAttribute id="CC_PERIOD" datatype="NVARCHAR" length="6" expressionLanguage="SQL">
@@ -218,6 +220,7 @@
       <viewAttribute id="FMNO_COST_CENTER"/>
       <viewAttribute id="INDEX"/>
       <viewAttribute id="PATH"/>
+      <viewAttribute id="CC_FMNO"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="P_PAYROLL_DETAIL">
@@ -289,15 +292,16 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNTCBLEDGER" source="GLACCOUNTCBLEDGER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTDEPARTMENT" source="GLPOSTDEPARTMENT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="CC_PERIOD" source="CC_PERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_FMNO" source="CC_FMNO"/>
     </input>
     <input node="P_PERSON_PERIOD">
       <mapping xsi:type="Calculation:AttributeMapping" target="BAND" source="BAND"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="FMNO_COST_CENTER" source="FMNO_COST_CENTER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="INDEX" source="INDEX"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PATH" source="PATH"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_FMNO" source="FMNO"/>
     </input>
-    <joinAttribute name="FMNO"/>
+    <joinAttribute name="CC_FMNO"/>
   </calculationView>
   <calculationView xsi:type="Calculation:JoinView" id="Join_1_2" cardinality="CN_1" joinType="leftOuter" optimizeJoinColumns="true" multiJoinNode="Join_1" multiJoinCentralTable="P_PAYROLL_DETAIL" multiJoinOrder="Outside In">
     <viewAttributes>
@@ -386,6 +390,7 @@
       <viewAttribute id="TENURE_IN_POSITION_MONTHS" aggregationType="sum"/>
       <viewAttribute id="ADJUSTED_ROUNDEDYEARS" aggregationType="sum"/>
       <viewAttribute id="TENURE_IN_FULL_YEARS" aggregationType="sum"/>
+      <viewAttribute hidden="true" id="JOIN$CC_FMNO$FMNO"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Join_1_1">
@@ -461,6 +466,7 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="FMNO_COST_CENTER" source="FMNO_COST_CENTER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="INDEX" source="INDEX"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PATH" source="PATH"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CC_FMNO$FMNO" source="CC_FMNO"/>
     </input>
     <input node="P_TENURE">
       <mapping xsi:type="Calculation:AttributeMapping" target="TENURE_IN_POSITION" source="TENURE_IN_POSITION"/>
@@ -476,9 +482,9 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="TENURE_IN_POSITION_MONTHS" source="TENURE_IN_POSITION_MONTHS"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="ADJUSTED_ROUNDEDYEARS" source="ADJUSTED_ROUNDEDYEARS"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="TENURE_IN_FULL_YEARS" source="TENURE_IN_FULL_YEARS"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CC_FMNO$FMNO" source="FMNO"/>
     </input>
-    <joinAttribute name="FMNO"/>
+    <joinAttribute name="JOIN$CC_FMNO$FMNO"/>
   </calculationView>
 </calculationViews>
 <logicalModel id="Join_1_2">

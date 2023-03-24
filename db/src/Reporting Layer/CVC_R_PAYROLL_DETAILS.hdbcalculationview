@@ -85,6 +85,12 @@
       <viewAttribute id="POSTINGBATCHIDCBLEDGER"/>
       <viewAttribute id="GLACCOUNTCBLEDGER"/>
       <viewAttribute id="GLPOSTDEPARTMENT"/>
+    
+      <viewAttribute id="FIRST_NAME"/>
+      <viewAttribute id="LAST_NAME"/>
+      <viewAttribute id="MIDDLE_NAME"/>
+      <viewAttribute id="PREFERRED_NAME"/>
+      <viewAttribute id="EMAIL_ADDRESS"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="CVS_I_PAYROLL_DETAILS"/>
@@ -355,6 +361,27 @@
     <attribute id="GLPOSTDEPARTMENT" order="73" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLPOSTDEPARTMENT"/>
       <keyMapping columnObjectName="Projection_1" columnName="GLPOSTDEPARTMENT"/>
+    </attribute>
+  
+    <attribute id="FIRST_NAME" order="74" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FIRST_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="FIRST_NAME"/>
+    </attribute>
+    <attribute id="LAST_NAME" order="75" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LAST_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="LAST_NAME"/>
+    </attribute>
+    <attribute id="MIDDLE_NAME" order="76" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MIDDLE_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="MIDDLE_NAME"/>
+    </attribute>
+    <attribute id="PREFERRED_NAME" order="77" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PREFERRED_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PREFERRED_NAME"/>
+    </attribute>
+    <attribute id="EMAIL_ADDRESS" order="78" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="EMAIL_ADDRESS"/>
+      <keyMapping columnObjectName="Projection_1" columnName="EMAIL_ADDRESS"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>
