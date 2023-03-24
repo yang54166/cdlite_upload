@@ -420,7 +420,7 @@
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="91.99999999999997" y="112"/>
+      <upperLeftCorner x="91" y="112"/>
     
       <rectangleSize width="387"/>
     </shape>
@@ -439,7 +439,7 @@
     </shape>
     <shape modelObjectName="CVD_MD_PAYROLL_POSTINGBATCH" modelObjectNameSpace="StarJoinViewNodeSharedCV" modelObjectType="repository">
       <upperLeftCorner x="1220" y="30"/>
-      <rectangleSize width="278.470703125"/>
+      <rectangleSize width="278"/>
     </shape>
   </shapes>
 </layout>
