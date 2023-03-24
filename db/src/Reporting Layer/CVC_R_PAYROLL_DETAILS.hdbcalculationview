@@ -91,6 +91,14 @@
       <viewAttribute id="MIDDLE_NAME"/>
       <viewAttribute id="PREFERRED_NAME"/>
       <viewAttribute id="EMAIL_ADDRESS"/>
+    
+      <viewAttribute id="GTEXT"/>
+      <viewAttribute id="TXT20"/>
+      <viewAttribute id="TXT50"/>
+      <viewAttribute id="BUTXT"/>
+      <viewAttribute id="LAND1"/>
+      <viewAttribute id="COUNTRY"/>
+      <viewAttribute id="REGION"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="CVS_I_PAYROLL_DETAILS"/>
@@ -365,7 +373,9 @@
   
     <attribute id="FIRST_NAME" order="74" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="FIRST_NAME"/>
+  
       <keyMapping columnObjectName="Projection_1" columnName="FIRST_NAME"/>
+  
     </attribute>
     <attribute id="LAST_NAME" order="75" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="LAST_NAME"/>
@@ -382,6 +392,35 @@
     <attribute id="EMAIL_ADDRESS" order="78" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="EMAIL_ADDRESS"/>
       <keyMapping columnObjectName="Projection_1" columnName="EMAIL_ADDRESS"/>
+    </attribute>
+  
+    <attribute id="GTEXT" order="79" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Business area description"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GTEXT"/>
+    </attribute>
+    <attribute id="TXT20" order="80" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="G/L Account Short Text"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TXT20"/>
+    </attribute>
+    <attribute id="TXT50" order="81" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="G/L Account Long Text"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TXT50"/>
+    </attribute>
+    <attribute id="BUTXT" order="82" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Name of Company Code or Company"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BUTXT"/>
+    </attribute>
+    <attribute id="LAND1" order="83" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Country/Region Key"/>
+      <keyMapping columnObjectName="Projection_1" columnName="LAND1"/>
+    </attribute>
+    <attribute id="COUNTRY" order="84" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="COUNTRY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="COUNTRY"/>
+    </attribute>
+    <attribute id="REGION" order="85" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="REGION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="REGION"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>
