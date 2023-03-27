@@ -23,7 +23,7 @@ sap.ui.define([
 
     var EdmType = exportLibrary.EdmType;
 
-    return BaseController.extend("mck.cdlite.payrollupload.controller.Object", {
+    return BaseController.extend("cd_cdlitepayrollupload_f.controller.Object", {
 
         formatter: formatter,
 
@@ -571,7 +571,7 @@ sap.ui.define([
                     // load asynchronous XML fragment
                     Fragment.load({
                         id: oView.getId(),
-                        name: "mck.cdlite.payrollupload.fragments.Approve",
+                        name: "cd_cdlitepayrollupload_f.fragments.Approve",
                         controller: that
                     }).then(function (oDialog) {
                         oView.addDependent(oDialog);
@@ -830,7 +830,7 @@ sap.ui.define([
             if (!this._pPopover) {
                 this._pPopover = Fragment.load({
                     id: oView.getId(),
-                    name: "mck.cdlite.payrollupload.fragments.Popover",
+                    name: "cd_cdlitepayrollupload_f.fragments.Popover",
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);

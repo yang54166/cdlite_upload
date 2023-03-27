@@ -491,7 +491,13 @@
       <keyMapping columnObjectName="Join_1" columnName="GLPOSTDEPARTMENT"/>
     </attribute>
   </attributes>
-  <calculatedAttributes/>
+  <calculatedAttributes>
+    <calculatedAttribute id="CC_FMNO" order="68" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="8">
+        <formula>lpad(&quot;FMNO&quot;,8,'0')</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+  </calculatedAttributes>
   <baseMeasures>
     <measure id="CASHAMOUNT" order="12" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="CASHAMOUNT"/>

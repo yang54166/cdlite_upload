@@ -7,6 +7,18 @@
   <DataSource id="CVC_P2_PAYROLL_DETAILS">
     <resourceUri>CVC_P2_PAYROLL_DETAILS</resourceUri>
   </DataSource>
+  <DataSource id="CVC_R_MD_PERSON">
+    <resourceUri>CVC_R_MD_PERSON</resourceUri>
+  </DataSource>
+  <DataSource id="CVC_R_MD_COMPANY_CODE">
+    <resourceUri>CVC_R_MD_COMPANY_CODE</resourceUri>
+  </DataSource>
+  <DataSource id="CVC_R_MD_BUSINESS_AREA">
+    <resourceUri>CVC_R_MD_BUSINESS_AREA</resourceUri>
+  </DataSource>
+  <DataSource id="CVC_R_MD_GL_ACCOUNT">
+    <resourceUri>CVC_R_MD_GL_ACCOUNT</resourceUri>
+  </DataSource>
 </dataSources>
 <snapshotProcedures/>
 <calculationViews>
@@ -78,294 +90,1108 @@
       <viewAttribute id="POSTINGBATCHIDCBLEDGER"/>
       <viewAttribute id="GLACCOUNTCBLEDGER"/>
       <viewAttribute id="GLPOSTDEPARTMENT"/>
+    
+      <viewAttribute id="CC_FMNO"/>
     </viewAttributes>
-    <calculatedViewAttributes/>
+    <calculatedViewAttributes>
+      <calculatedViewAttribute id="CC_GL_ACCOUNT" datatype="NVARCHAR" length="13" expressionLanguage="SQL">
+        <formula>CONCAT('00',&quot;GLACCOUNT&quot;)</formula>
+      </calculatedViewAttribute>
+    </calculatedViewAttributes>
     <input node="CVC_P2_PAYROLL_DETAILS"/>
   </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="P_PERSON_D">
+    <viewAttributes>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="FIRST_NAME"/>
+      <viewAttribute id="LAST_NAME"/>
+      <viewAttribute id="MIDDLE_NAME"/>
+      <viewAttribute id="PREFERRED_NAME"/>
+      <viewAttribute id="EMAIL_ADDRESS"/>
+      <viewAttribute id="COST_CENTER"/>
+      <viewAttribute id="FMNO_STATUS"/>
+      <viewAttribute id="PARTNER_AND_NON_PARTNER"/>
+      <viewAttribute id="GENDER"/>
+      <viewAttribute id="TERMINATION_DATE"/>
+      <viewAttribute id="BAND"/>
+      <viewAttribute id="SUB_BAND"/>
+      <viewAttribute id="POSITION"/>
+      <viewAttribute id="POSITION_DESC"/>
+      <viewAttribute id="ROLE_SUB_CATEGORY"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="CVC_R_MD_PERSON"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="P_COMPANY_CODE">
+    <viewAttributes>
+      <viewAttribute id="BUKRS"/>
+      <viewAttribute id="BUTXT"/>
+      <viewAttribute id="LAND1"/>
+      <viewAttribute id="COUNTRY"/>
+      <viewAttribute id="REGION"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="CVC_R_MD_COMPANY_CODE"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="P_FCAT">
+    <viewAttributes>
+      <viewAttribute id="GSBER"/>
+      <viewAttribute id="GTEXT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="CVC_R_MD_BUSINESS_AREA"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="P_GL_ACCOUNT">
+    <viewAttributes>
+      <viewAttribute id="SAKNR"/>
+      <viewAttribute id="TXT20"/>
+      <viewAttribute id="TXT50"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="CVC_R_MD_GL_ACCOUNT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_1" cardinality="CN_1" joinType="leftOuter" optimizeJoinColumns="true" multiJoinNode="Join_1" multiJoinCentralTable="P_PAYROLL_DETAIL" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="CREATEDAT" aggregationType="min"/>
+      <viewAttribute id="CREATEDBY"/>
+      <viewAttribute id="MODIFIEDAT" aggregationType="min"/>
+      <viewAttribute id="MODIFIEDBY"/>
+      <viewAttribute id="BATCHID_BATCHID" aggregationType="sum"/>
+      <viewAttribute id="BATCHLINENUMBER" aggregationType="sum"/>
+      <viewAttribute id="POSTINGAGGREGATION"/>
+      <viewAttribute id="POSTINGBATCHLINENUMBER" aggregationType="sum"/>
+      <viewAttribute id="ADVANCENUMBER"/>
+      <viewAttribute id="APARID"/>
+      <viewAttribute id="CASHAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CHARGEAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CHARGECOMPANY"/>
+      <viewAttribute id="CHARGECONVERSIONDATE"/>
+      <viewAttribute id="CHARGECONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="CHARGECONVERSIONTYPE"/>
+      <viewAttribute id="CHARGECOSTCENTER"/>
+      <viewAttribute id="CHARGECURRENCYCODE"/>
+      <viewAttribute id="CHARGEDEPARTMENT"/>
+      <viewAttribute id="CHARGEGOC"/>
+      <viewAttribute id="FCAT"/>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="GLCONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTCOMPANY"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="GLPOSTGOC"/>
+      <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute id="LOANNUMBER"/>
+      <viewAttribute id="LOCATIONCODE"/>
+      <viewAttribute id="PAYMENTID"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE" aggregationType="sum"/>
+      <viewAttribute id="PAYROLLCODECLASS"/>
+      <viewAttribute id="PAYROLLCODETYPE"/>
+      <viewAttribute id="PERNR"/>
+      <viewAttribute id="PROJECTCODE"/>
+      <viewAttribute id="QUALIFIEDCOMPENSATION"/>
+      <viewAttribute id="SHADOWPROCESS"/>
+      <viewAttribute id="SKILLCODE"/>
+      <viewAttribute id="SOURCEAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="SOURCECOMPANY"/>
+      <viewAttribute id="SOURCECURRENCYCODE"/>
+      <viewAttribute id="USDAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="USDCONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="USDCONVERSIONTYPE"/>
+      <viewAttribute id="USPSRPREPORTINGCODE"/>
+      <viewAttribute id="BATCHID" aggregationType="sum"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
+      <viewAttribute id="BATCHSTATUS"/>
+      <viewAttribute id="APPROVEDAT" aggregationType="min"/>
+      <viewAttribute id="APPROVEDBY"/>
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="CONTROLAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CONTROLCOUNT" aggregationType="sum"/>
+      <viewAttribute id="EFFECTIVEDATE"/>
+      <viewAttribute id="GLDATE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
+      <viewAttribute id="SOURCESYSTEM"/>
+      <viewAttribute id="COMPANYCODE"/>
+      <viewAttribute id="POSTINGBATCHIDCBLEDGER"/>
+      <viewAttribute id="GLACCOUNTCBLEDGER" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTDEPARTMENT"/>
+      <viewAttribute id="CC_FMNO"/>
+      <viewAttribute id="CC_GL_ACCOUNT"/>
+      <viewAttribute id="BUTXT"/>
+      <viewAttribute id="LAND1"/>
+      <viewAttribute id="COUNTRY"/>
+      <viewAttribute id="REGION"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="P_PAYROLL_DETAIL">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDAT" source="CREATEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDBY" source="CREATEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDAT" source="MODIFIEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDBY" source="MODIFIEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHLINENUMBER" source="BATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHLINENUMBER" source="POSTINGBATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APARID" source="APARID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CASHAMOUNT" source="CASHAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEAMOUNT" source="CHARGEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOMPANY" source="CHARGECOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONDATE" source="CHARGECONVERSIONDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONRATE" source="CHARGECONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONTYPE" source="CHARGECONVERSIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOSTCENTER" source="CHARGECOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECURRENCYCODE" source="CHARGECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEDEPARTMENT" source="CHARGEDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEGOC" source="CHARGEGOC"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCONVERSIONRATE" source="GLCONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTAMOUNT" source="GLPOSTAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOMPANY" source="GLPOSTCOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTGOC" source="GLPOSTGOC"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOCATIONCODE" source="LOCATIONCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYMENTID" source="PAYMENTID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODESEQUENCE" source="PAYROLLCODESEQUENCE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODECLASS" source="PAYROLLCODECLASS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODETYPE" source="PAYROLLCODETYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="QUALIFIEDCOMPENSATION" source="QUALIFIEDCOMPENSATION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SHADOWPROCESS" source="SHADOWPROCESS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SKILLCODE" source="SKILLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCECOMPANY" source="SOURCECOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCECURRENCYCODE" source="SOURCECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDAMOUNT" source="USDAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONRATE" source="USDCONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONTYPE" source="USDCONVERSIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USPSRPREPORTINGCODE" source="USPSRPREPORTINGCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHDESCRIPTION" source="BATCHDESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHSTATUS" source="BATCHSTATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDAT" source="APPROVEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDBY" source="APPROVEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CDTRANSACTIONTYPE" source="CDTRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLAMOUNT" source="CONTROLAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLCOUNT" source="CONTROLCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEDATE" source="EFFECTIVEDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLDATE" source="GLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLPERIOD" source="PAYROLLPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCESYSTEM" source="SOURCESYSTEM"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANYCODE" source="COMPANYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHIDCBLEDGER" source="POSTINGBATCHIDCBLEDGER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNTCBLEDGER" source="GLACCOUNTCBLEDGER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTDEPARTMENT" source="GLPOSTDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_FMNO" source="CC_FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_GL_ACCOUNT" source="CC_GL_ACCOUNT"/>
+    </input>
+    <input node="P_COMPANY_CODE">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BUTXT" source="BUTXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAND1" source="LAND1"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COUNTRY" source="COUNTRY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REGION" source="REGION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANYCODE" source="BUKRS"/>
+    </input>
+    <joinAttribute name="COMPANYCODE"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_2" cardinality="CN_1" joinType="leftOuter" optimizeJoinColumns="true" multiJoinNode="Join_1" multiJoinCentralTable="P_PAYROLL_DETAIL" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="CREATEDAT" aggregationType="min"/>
+      <viewAttribute id="CREATEDBY"/>
+      <viewAttribute id="MODIFIEDAT" aggregationType="min"/>
+      <viewAttribute id="MODIFIEDBY"/>
+      <viewAttribute id="BATCHID_BATCHID" aggregationType="sum"/>
+      <viewAttribute id="BATCHLINENUMBER" aggregationType="sum"/>
+      <viewAttribute id="POSTINGAGGREGATION"/>
+      <viewAttribute id="POSTINGBATCHLINENUMBER" aggregationType="sum"/>
+      <viewAttribute id="ADVANCENUMBER"/>
+      <viewAttribute id="APARID"/>
+      <viewAttribute id="CASHAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CHARGEAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CHARGECOMPANY"/>
+      <viewAttribute id="CHARGECONVERSIONDATE"/>
+      <viewAttribute id="CHARGECONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="CHARGECONVERSIONTYPE"/>
+      <viewAttribute id="CHARGECOSTCENTER"/>
+      <viewAttribute id="CHARGECURRENCYCODE"/>
+      <viewAttribute id="CHARGEDEPARTMENT"/>
+      <viewAttribute id="CHARGEGOC"/>
+      <viewAttribute id="FCAT"/>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="GLCONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTCOMPANY"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="GLPOSTGOC"/>
+      <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute id="LOANNUMBER"/>
+      <viewAttribute id="LOCATIONCODE"/>
+      <viewAttribute id="PAYMENTID"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE" aggregationType="sum"/>
+      <viewAttribute id="PAYROLLCODECLASS"/>
+      <viewAttribute id="PAYROLLCODETYPE"/>
+      <viewAttribute id="PERNR"/>
+      <viewAttribute id="PROJECTCODE"/>
+      <viewAttribute id="QUALIFIEDCOMPENSATION"/>
+      <viewAttribute id="SHADOWPROCESS"/>
+      <viewAttribute id="SKILLCODE"/>
+      <viewAttribute id="SOURCEAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="SOURCECOMPANY"/>
+      <viewAttribute id="SOURCECURRENCYCODE"/>
+      <viewAttribute id="USDAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="USDCONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="USDCONVERSIONTYPE"/>
+      <viewAttribute id="USPSRPREPORTINGCODE"/>
+      <viewAttribute id="BATCHID" aggregationType="sum"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
+      <viewAttribute id="BATCHSTATUS"/>
+      <viewAttribute id="APPROVEDAT" aggregationType="min"/>
+      <viewAttribute id="APPROVEDBY"/>
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="CONTROLAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CONTROLCOUNT" aggregationType="sum"/>
+      <viewAttribute id="EFFECTIVEDATE"/>
+      <viewAttribute id="GLDATE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
+      <viewAttribute id="SOURCESYSTEM"/>
+      <viewAttribute id="COMPANYCODE"/>
+      <viewAttribute id="POSTINGBATCHIDCBLEDGER"/>
+      <viewAttribute id="GLACCOUNTCBLEDGER" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTDEPARTMENT"/>
+      <viewAttribute id="CC_FMNO"/>
+      <viewAttribute id="CC_GL_ACCOUNT"/>
+      <viewAttribute id="TXT20"/>
+      <viewAttribute id="TXT50"/>
+      <viewAttribute id="BUTXT"/>
+      <viewAttribute id="LAND1"/>
+      <viewAttribute id="COUNTRY"/>
+      <viewAttribute id="REGION"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Join_1_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDAT" source="CREATEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDBY" source="CREATEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDAT" source="MODIFIEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDBY" source="MODIFIEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHLINENUMBER" source="BATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHLINENUMBER" source="POSTINGBATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APARID" source="APARID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CASHAMOUNT" source="CASHAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEAMOUNT" source="CHARGEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOMPANY" source="CHARGECOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONDATE" source="CHARGECONVERSIONDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONRATE" source="CHARGECONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONTYPE" source="CHARGECONVERSIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOSTCENTER" source="CHARGECOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECURRENCYCODE" source="CHARGECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEDEPARTMENT" source="CHARGEDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEGOC" source="CHARGEGOC"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCONVERSIONRATE" source="GLCONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTAMOUNT" source="GLPOSTAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOMPANY" source="GLPOSTCOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTGOC" source="GLPOSTGOC"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOCATIONCODE" source="LOCATIONCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYMENTID" source="PAYMENTID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODESEQUENCE" source="PAYROLLCODESEQUENCE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODECLASS" source="PAYROLLCODECLASS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODETYPE" source="PAYROLLCODETYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="QUALIFIEDCOMPENSATION" source="QUALIFIEDCOMPENSATION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SHADOWPROCESS" source="SHADOWPROCESS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SKILLCODE" source="SKILLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCECOMPANY" source="SOURCECOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCECURRENCYCODE" source="SOURCECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDAMOUNT" source="USDAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONRATE" source="USDCONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONTYPE" source="USDCONVERSIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USPSRPREPORTINGCODE" source="USPSRPREPORTINGCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHDESCRIPTION" source="BATCHDESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHSTATUS" source="BATCHSTATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDAT" source="APPROVEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDBY" source="APPROVEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CDTRANSACTIONTYPE" source="CDTRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLAMOUNT" source="CONTROLAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLCOUNT" source="CONTROLCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEDATE" source="EFFECTIVEDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLDATE" source="GLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLPERIOD" source="PAYROLLPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCESYSTEM" source="SOURCESYSTEM"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANYCODE" source="COMPANYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHIDCBLEDGER" source="POSTINGBATCHIDCBLEDGER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNTCBLEDGER" source="GLACCOUNTCBLEDGER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTDEPARTMENT" source="GLPOSTDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_FMNO" source="CC_FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_GL_ACCOUNT" source="CC_GL_ACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BUTXT" source="BUTXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAND1" source="LAND1"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COUNTRY" source="COUNTRY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REGION" source="REGION"/>
+    </input>
+    <input node="P_GL_ACCOUNT">
+      <mapping xsi:type="Calculation:AttributeMapping" target="TXT20" source="TXT20"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TXT50" source="TXT50"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_GL_ACCOUNT" source="SAKNR"/>
+    </input>
+    <joinAttribute name="CC_GL_ACCOUNT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_3" cardinality="CN_1" joinType="leftOuter" optimizeJoinColumns="true" multiJoinNode="Join_1" multiJoinCentralTable="P_PAYROLL_DETAIL" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="CREATEDAT" aggregationType="min"/>
+      <viewAttribute id="CREATEDBY"/>
+      <viewAttribute id="MODIFIEDAT" aggregationType="min"/>
+      <viewAttribute id="MODIFIEDBY"/>
+      <viewAttribute id="BATCHID_BATCHID" aggregationType="sum"/>
+      <viewAttribute id="BATCHLINENUMBER" aggregationType="sum"/>
+      <viewAttribute id="POSTINGAGGREGATION"/>
+      <viewAttribute id="POSTINGBATCHLINENUMBER" aggregationType="sum"/>
+      <viewAttribute id="ADVANCENUMBER"/>
+      <viewAttribute id="APARID"/>
+      <viewAttribute id="CASHAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CHARGEAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CHARGECOMPANY"/>
+      <viewAttribute id="CHARGECONVERSIONDATE"/>
+      <viewAttribute id="CHARGECONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="CHARGECONVERSIONTYPE"/>
+      <viewAttribute id="CHARGECOSTCENTER"/>
+      <viewAttribute id="CHARGECURRENCYCODE"/>
+      <viewAttribute id="CHARGEDEPARTMENT"/>
+      <viewAttribute id="CHARGEGOC"/>
+      <viewAttribute id="FCAT"/>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="GLCONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTCOMPANY"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="GLPOSTGOC"/>
+      <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute id="LOANNUMBER"/>
+      <viewAttribute id="LOCATIONCODE"/>
+      <viewAttribute id="PAYMENTID"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE" aggregationType="sum"/>
+      <viewAttribute id="PAYROLLCODECLASS"/>
+      <viewAttribute id="PAYROLLCODETYPE"/>
+      <viewAttribute id="PERNR"/>
+      <viewAttribute id="PROJECTCODE"/>
+      <viewAttribute id="QUALIFIEDCOMPENSATION"/>
+      <viewAttribute id="SHADOWPROCESS"/>
+      <viewAttribute id="SKILLCODE"/>
+      <viewAttribute id="SOURCEAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="SOURCECOMPANY"/>
+      <viewAttribute id="SOURCECURRENCYCODE"/>
+      <viewAttribute id="USDAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="USDCONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="USDCONVERSIONTYPE"/>
+      <viewAttribute id="USPSRPREPORTINGCODE"/>
+      <viewAttribute id="BATCHID" aggregationType="sum"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
+      <viewAttribute id="BATCHSTATUS"/>
+      <viewAttribute id="APPROVEDAT" aggregationType="min"/>
+      <viewAttribute id="APPROVEDBY"/>
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="CONTROLAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CONTROLCOUNT" aggregationType="sum"/>
+      <viewAttribute id="EFFECTIVEDATE"/>
+      <viewAttribute id="GLDATE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
+      <viewAttribute id="SOURCESYSTEM"/>
+      <viewAttribute id="COMPANYCODE"/>
+      <viewAttribute id="POSTINGBATCHIDCBLEDGER"/>
+      <viewAttribute id="GLACCOUNTCBLEDGER" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTDEPARTMENT"/>
+      <viewAttribute id="CC_FMNO"/>
+      <viewAttribute id="GTEXT"/>
+      <viewAttribute id="CC_GL_ACCOUNT"/>
+      <viewAttribute id="TXT20"/>
+      <viewAttribute id="TXT50"/>
+      <viewAttribute id="BUTXT"/>
+      <viewAttribute id="LAND1"/>
+      <viewAttribute id="COUNTRY"/>
+      <viewAttribute id="REGION"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Join_1_2">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDAT" source="CREATEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDBY" source="CREATEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDAT" source="MODIFIEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDBY" source="MODIFIEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHLINENUMBER" source="BATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHLINENUMBER" source="POSTINGBATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APARID" source="APARID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CASHAMOUNT" source="CASHAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEAMOUNT" source="CHARGEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOMPANY" source="CHARGECOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONDATE" source="CHARGECONVERSIONDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONRATE" source="CHARGECONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONTYPE" source="CHARGECONVERSIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOSTCENTER" source="CHARGECOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECURRENCYCODE" source="CHARGECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEDEPARTMENT" source="CHARGEDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEGOC" source="CHARGEGOC"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCONVERSIONRATE" source="GLCONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTAMOUNT" source="GLPOSTAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOMPANY" source="GLPOSTCOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTGOC" source="GLPOSTGOC"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOCATIONCODE" source="LOCATIONCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYMENTID" source="PAYMENTID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODESEQUENCE" source="PAYROLLCODESEQUENCE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODECLASS" source="PAYROLLCODECLASS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODETYPE" source="PAYROLLCODETYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="QUALIFIEDCOMPENSATION" source="QUALIFIEDCOMPENSATION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SHADOWPROCESS" source="SHADOWPROCESS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SKILLCODE" source="SKILLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCECOMPANY" source="SOURCECOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCECURRENCYCODE" source="SOURCECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDAMOUNT" source="USDAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONRATE" source="USDCONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONTYPE" source="USDCONVERSIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USPSRPREPORTINGCODE" source="USPSRPREPORTINGCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHDESCRIPTION" source="BATCHDESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHSTATUS" source="BATCHSTATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDAT" source="APPROVEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDBY" source="APPROVEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CDTRANSACTIONTYPE" source="CDTRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLAMOUNT" source="CONTROLAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLCOUNT" source="CONTROLCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEDATE" source="EFFECTIVEDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLDATE" source="GLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLPERIOD" source="PAYROLLPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCESYSTEM" source="SOURCESYSTEM"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANYCODE" source="COMPANYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHIDCBLEDGER" source="POSTINGBATCHIDCBLEDGER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNTCBLEDGER" source="GLACCOUNTCBLEDGER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTDEPARTMENT" source="GLPOSTDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_FMNO" source="CC_FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_GL_ACCOUNT" source="CC_GL_ACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TXT20" source="TXT20"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TXT50" source="TXT50"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BUTXT" source="BUTXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAND1" source="LAND1"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COUNTRY" source="COUNTRY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REGION" source="REGION"/>
+    </input>
+    <input node="P_FCAT">
+      <mapping xsi:type="Calculation:AttributeMapping" target="GTEXT" source="GTEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="GSBER"/>
+    </input>
+    <joinAttribute name="FCAT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_4" cardinality="CN_1" joinType="leftOuter" optimizeJoinColumns="true" multiJoinNode="Join_1" multiJoinCentralTable="P_PAYROLL_DETAIL" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="CREATEDAT" aggregationType="min"/>
+      <viewAttribute id="CREATEDBY"/>
+      <viewAttribute id="MODIFIEDAT" aggregationType="min"/>
+      <viewAttribute id="MODIFIEDBY"/>
+      <viewAttribute id="BATCHID_BATCHID" aggregationType="sum"/>
+      <viewAttribute id="BATCHLINENUMBER" aggregationType="sum"/>
+      <viewAttribute id="POSTINGAGGREGATION"/>
+      <viewAttribute id="POSTINGBATCHLINENUMBER" aggregationType="sum"/>
+      <viewAttribute id="ADVANCENUMBER"/>
+      <viewAttribute id="APARID"/>
+      <viewAttribute id="CASHAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CHARGEAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CHARGECOMPANY"/>
+      <viewAttribute id="CHARGECONVERSIONDATE"/>
+      <viewAttribute id="CHARGECONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="CHARGECONVERSIONTYPE"/>
+      <viewAttribute id="CHARGECOSTCENTER"/>
+      <viewAttribute id="CHARGECURRENCYCODE"/>
+      <viewAttribute id="CHARGEDEPARTMENT"/>
+      <viewAttribute id="CHARGEGOC"/>
+      <viewAttribute id="FCAT"/>
+      <viewAttribute id="FMNO"/>
+      <viewAttribute id="GLACCOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="GLCONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTCOMPANY"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="GLPOSTGOC"/>
+      <viewAttribute id="LEGALENTITYGROUPCODE"/>
+      <viewAttribute id="LOANNUMBER"/>
+      <viewAttribute id="LOCATIONCODE"/>
+      <viewAttribute id="PAYMENTID"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE" aggregationType="sum"/>
+      <viewAttribute id="PAYROLLCODECLASS"/>
+      <viewAttribute id="PAYROLLCODETYPE"/>
+      <viewAttribute id="PERNR"/>
+      <viewAttribute id="PROJECTCODE"/>
+      <viewAttribute id="QUALIFIEDCOMPENSATION"/>
+      <viewAttribute id="SHADOWPROCESS"/>
+      <viewAttribute id="SKILLCODE"/>
+      <viewAttribute id="SOURCEAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="SOURCECOMPANY"/>
+      <viewAttribute id="SOURCECURRENCYCODE"/>
+      <viewAttribute id="USDAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="USDCONVERSIONRATE" aggregationType="sum"/>
+      <viewAttribute id="USDCONVERSIONTYPE"/>
+      <viewAttribute id="USPSRPREPORTINGCODE"/>
+      <viewAttribute id="BATCHID" aggregationType="sum"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
+      <viewAttribute id="BATCHSTATUS"/>
+      <viewAttribute id="APPROVEDAT" aggregationType="min"/>
+      <viewAttribute id="APPROVEDBY"/>
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="CONTROLAMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CONTROLCOUNT" aggregationType="sum"/>
+      <viewAttribute id="EFFECTIVEDATE"/>
+      <viewAttribute id="GLDATE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
+      <viewAttribute id="SOURCESYSTEM"/>
+      <viewAttribute id="COMPANYCODE"/>
+      <viewAttribute id="POSTINGBATCHIDCBLEDGER"/>
+      <viewAttribute id="GLACCOUNTCBLEDGER" aggregationType="sum"/>
+      <viewAttribute id="GLPOSTDEPARTMENT"/>
+      <viewAttribute id="CC_FMNO"/>
+      <viewAttribute id="FIRST_NAME"/>
+      <viewAttribute id="LAST_NAME"/>
+      <viewAttribute id="MIDDLE_NAME"/>
+      <viewAttribute id="PREFERRED_NAME"/>
+      <viewAttribute id="EMAIL_ADDRESS"/>
+      <viewAttribute id="COST_CENTER"/>
+      <viewAttribute id="FMNO_STATUS"/>
+      <viewAttribute id="PARTNER_AND_NON_PARTNER"/>
+      <viewAttribute id="GENDER"/>
+      <viewAttribute id="TERMINATION_DATE"/>
+      <viewAttribute id="BAND"/>
+      <viewAttribute id="SUB_BAND"/>
+      <viewAttribute id="POSITION"/>
+      <viewAttribute id="POSITION_DESC"/>
+      <viewAttribute id="ROLE_SUB_CATEGORY"/>
+      <viewAttribute id="GTEXT"/>
+      <viewAttribute id="CC_GL_ACCOUNT"/>
+      <viewAttribute id="TXT20"/>
+      <viewAttribute id="TXT50"/>
+      <viewAttribute id="BUTXT"/>
+      <viewAttribute id="LAND1"/>
+      <viewAttribute id="COUNTRY"/>
+      <viewAttribute id="REGION"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Join_1_3">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDAT" source="CREATEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CREATEDBY" source="CREATEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDAT" source="MODIFIEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MODIFIEDBY" source="MODIFIEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHLINENUMBER" source="BATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHLINENUMBER" source="POSTINGBATCHLINENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ADVANCENUMBER" source="ADVANCENUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APARID" source="APARID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CASHAMOUNT" source="CASHAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEAMOUNT" source="CHARGEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOMPANY" source="CHARGECOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONDATE" source="CHARGECONVERSIONDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONRATE" source="CHARGECONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECONVERSIONTYPE" source="CHARGECONVERSIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECOSTCENTER" source="CHARGECOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGECURRENCYCODE" source="CHARGECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEDEPARTMENT" source="CHARGEDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CHARGEGOC" source="CHARGEGOC"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLCONVERSIONRATE" source="GLCONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTAMOUNT" source="GLPOSTAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOMPANY" source="GLPOSTCOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTGOC" source="GLPOSTGOC"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LEGALENTITYGROUPCODE" source="LEGALENTITYGROUPCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOANNUMBER" source="LOANNUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LOCATIONCODE" source="LOCATIONCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYMENTID" source="PAYMENTID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODE" source="PAYROLLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODESEQUENCE" source="PAYROLLCODESEQUENCE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODECLASS" source="PAYROLLCODECLASS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLCODETYPE" source="PAYROLLCODETYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROJECTCODE" source="PROJECTCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="QUALIFIEDCOMPENSATION" source="QUALIFIEDCOMPENSATION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SHADOWPROCESS" source="SHADOWPROCESS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SKILLCODE" source="SKILLCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCECOMPANY" source="SOURCECOMPANY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCECURRENCYCODE" source="SOURCECURRENCYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDAMOUNT" source="USDAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONRATE" source="USDCONVERSIONRATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USDCONVERSIONTYPE" source="USDCONVERSIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USPSRPREPORTINGCODE" source="USPSRPREPORTINGCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID" source="BATCHID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHDESCRIPTION" source="BATCHDESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCHSTATUS" source="BATCHSTATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDAT" source="APPROVEDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="APPROVEDBY" source="APPROVEDBY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CDTRANSACTIONTYPE" source="CDTRANSACTIONTYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLAMOUNT" source="CONTROLAMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTROLCOUNT" source="CONTROLCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EFFECTIVEDATE" source="EFFECTIVEDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLDATE" source="GLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLDATE" source="PAYROLLDATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PAYROLLPERIOD" source="PAYROLLPERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOURCESYSTEM" source="SOURCESYSTEM"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANYCODE" source="COMPANYCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHIDCBLEDGER" source="POSTINGBATCHIDCBLEDGER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNTCBLEDGER" source="GLACCOUNTCBLEDGER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTDEPARTMENT" source="GLPOSTDEPARTMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_FMNO" source="CC_FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GTEXT" source="GTEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_GL_ACCOUNT" source="CC_GL_ACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TXT20" source="TXT20"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TXT50" source="TXT50"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BUTXT" source="BUTXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAND1" source="LAND1"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COUNTRY" source="COUNTRY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REGION" source="REGION"/>
+    </input>
+    <input node="P_PERSON_D">
+      <mapping xsi:type="Calculation:AttributeMapping" target="FIRST_NAME" source="FIRST_NAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_NAME" source="LAST_NAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MIDDLE_NAME" source="MIDDLE_NAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PREFERRED_NAME" source="PREFERRED_NAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EMAIL_ADDRESS" source="EMAIL_ADDRESS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COST_CENTER" source="COST_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FMNO_STATUS" source="FMNO_STATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PARTNER_AND_NON_PARTNER" source="PARTNER_AND_NON_PARTNER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GENDER" source="GENDER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TERMINATION_DATE" source="TERMINATION_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BAND" source="BAND"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SUB_BAND" source="SUB_BAND"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSITION" source="POSITION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSITION_DESC" source="POSITION_DESC"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ROLE_SUB_CATEGORY" source="ROLE_SUB_CATEGORY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_FMNO" source="FMNO"/>
+    </input>
+    <joinAttribute name="CC_FMNO"/>
+  </calculationView>
 </calculationViews>
-<logicalModel id="P_PAYROLL_DETAIL">
+<logicalModel id="Join_1_4">
   <attributes>
     <attribute id="CREATEDAT" order="1" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CREATEDAT"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CREATEDAT"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CREATEDAT"/>
     </attribute>
     <attribute id="CREATEDBY" order="2" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CREATEDBY"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CREATEDBY"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CREATEDBY"/>
     </attribute>
     <attribute id="MODIFIEDAT" order="3" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="MODIFIEDAT"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="MODIFIEDAT"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="MODIFIEDAT"/>
     </attribute>
     <attribute id="MODIFIEDBY" order="4" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="MODIFIEDBY"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="MODIFIEDBY"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="MODIFIEDBY"/>
     </attribute>
     <attribute id="BATCHID_BATCHID" order="5" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHID_BATCHID"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="BATCHID_BATCHID"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="BATCHID_BATCHID"/>
     </attribute>
     <attribute id="BATCHLINENUMBER" order="6" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHLINENUMBER"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="BATCHLINENUMBER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="BATCHLINENUMBER"/>
     </attribute>
     <attribute id="POSTINGAGGREGATION" order="7" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="POSTINGAGGREGATION"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="POSTINGAGGREGATION"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="POSTINGAGGREGATION"/>
     </attribute>
     <attribute id="POSTINGBATCHLINENUMBER" order="8" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="POSTINGBATCHLINENUMBER"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="POSTINGBATCHLINENUMBER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="POSTINGBATCHLINENUMBER"/>
     </attribute>
     <attribute id="ADVANCENUMBER" order="9" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="ADVANCENUMBER"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="ADVANCENUMBER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="ADVANCENUMBER"/>
     </attribute>
     <attribute id="APARID" order="10" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="APARID"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="APARID"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="APARID"/>
     </attribute>
     <attribute id="CHARGECOMPANY" order="13" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CHARGECOMPANY"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CHARGECOMPANY"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CHARGECOMPANY"/>
     </attribute>
     <attribute id="CHARGECONVERSIONDATE" order="14" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CHARGECONVERSIONDATE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CHARGECONVERSIONDATE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CHARGECONVERSIONDATE"/>
     </attribute>
     <attribute id="CHARGECONVERSIONRATE" order="15" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CHARGECONVERSIONRATE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CHARGECONVERSIONRATE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CHARGECONVERSIONRATE"/>
     </attribute>
     <attribute id="CHARGECONVERSIONTYPE" order="16" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CHARGECONVERSIONTYPE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CHARGECONVERSIONTYPE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CHARGECONVERSIONTYPE"/>
     </attribute>
     <attribute id="CHARGECOSTCENTER" order="17" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CHARGECOSTCENTER"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CHARGECOSTCENTER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CHARGECOSTCENTER"/>
     </attribute>
     <attribute id="CHARGECURRENCYCODE" order="18" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CHARGECURRENCYCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CHARGECURRENCYCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CHARGECURRENCYCODE"/>
     </attribute>
     <attribute id="CHARGEDEPARTMENT" order="19" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CHARGEDEPARTMENT"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CHARGEDEPARTMENT"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CHARGEDEPARTMENT"/>
     </attribute>
     <attribute id="CHARGEGOC" order="20" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CHARGEGOC"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CHARGEGOC"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CHARGEGOC"/>
     </attribute>
     <attribute id="FCAT" order="21" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="FCAT"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="FCAT"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="FCAT"/>
     </attribute>
     <attribute id="FMNO" order="22" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="FMNO"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="FMNO"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="FMNO"/>
     </attribute>
     <attribute id="GLACCOUNT" order="23" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLACCOUNT"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLACCOUNT"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GLACCOUNT"/>
     </attribute>
     <attribute id="GLCURRENCYCODE" order="24" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLCURRENCYCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLCURRENCYCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GLCURRENCYCODE"/>
     </attribute>
     <attribute id="GLCONVERSIONRATE" order="25" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLCONVERSIONRATE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLCONVERSIONRATE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GLCONVERSIONRATE"/>
     </attribute>
     <attribute id="GLPOSTCOMPANY" order="27" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLPOSTCOMPANY"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLPOSTCOMPANY"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GLPOSTCOMPANY"/>
     </attribute>
     <attribute id="GLPOSTCOSTCENTER" order="28" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLPOSTCOSTCENTER"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLPOSTCOSTCENTER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GLPOSTCOSTCENTER"/>
     </attribute>
     <attribute id="GLPOSTGOC" order="29" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLPOSTGOC"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLPOSTGOC"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GLPOSTGOC"/>
     </attribute>
     <attribute id="LEGALENTITYGROUPCODE" order="30" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="LEGALENTITYGROUPCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="LEGALENTITYGROUPCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="LEGALENTITYGROUPCODE"/>
     </attribute>
     <attribute id="LOANNUMBER" order="31" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="LOANNUMBER"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="LOANNUMBER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="LOANNUMBER"/>
     </attribute>
     <attribute id="LOCATIONCODE" order="32" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="LOCATIONCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="LOCATIONCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="LOCATIONCODE"/>
     </attribute>
     <attribute id="PAYMENTID" order="33" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYMENTID"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PAYMENTID"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PAYMENTID"/>
     </attribute>
     <attribute id="PAYROLLCODE" order="34" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PAYROLLCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PAYROLLCODE"/>
     </attribute>
     <attribute id="PAYROLLCODECLASS" order="36" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLCODECLASS"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PAYROLLCODECLASS"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PAYROLLCODECLASS"/>
     </attribute>
     <attribute id="PAYROLLCODETYPE" order="37" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLCODETYPE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PAYROLLCODETYPE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PAYROLLCODETYPE"/>
     </attribute>
     <attribute id="PERNR" order="38" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PERNR"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PERNR"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PERNR"/>
     </attribute>
     <attribute id="PROJECTCODE" order="39" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PROJECTCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PROJECTCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PROJECTCODE"/>
     </attribute>
     <attribute id="QUALIFIEDCOMPENSATION" order="40" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="QUALIFIEDCOMPENSATION"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="QUALIFIEDCOMPENSATION"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="QUALIFIEDCOMPENSATION"/>
     </attribute>
     <attribute id="SHADOWPROCESS" order="41" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="SHADOWPROCESS"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="SHADOWPROCESS"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="SHADOWPROCESS"/>
     </attribute>
     <attribute id="SKILLCODE" order="42" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="SKILLCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="SKILLCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="SKILLCODE"/>
     </attribute>
     <attribute id="SOURCECOMPANY" order="44" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="SOURCECOMPANY"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="SOURCECOMPANY"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="SOURCECOMPANY"/>
     </attribute>
     <attribute id="SOURCECURRENCYCODE" order="45" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="SOURCECURRENCYCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="SOURCECURRENCYCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="SOURCECURRENCYCODE"/>
     </attribute>
     <attribute id="USDCONVERSIONRATE" order="47" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="USDCONVERSIONRATE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="USDCONVERSIONRATE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="USDCONVERSIONRATE"/>
     </attribute>
     <attribute id="USDCONVERSIONTYPE" order="48" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="USDCONVERSIONTYPE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="USDCONVERSIONTYPE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="USDCONVERSIONTYPE"/>
     </attribute>
     <attribute id="USPSRPREPORTINGCODE" order="49" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="USPSRPREPORTINGCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="USPSRPREPORTINGCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="USPSRPREPORTINGCODE"/>
     </attribute>
     <attribute id="BATCHID" order="50" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHID"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="BATCHID"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="BATCHID"/>
     </attribute>
     <attribute id="BATCHDESCRIPTION" order="51" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHDESCRIPTION"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="BATCHDESCRIPTION"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="BATCHDESCRIPTION"/>
     </attribute>
     <attribute id="BATCHSTATUS" order="52" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="BATCHSTATUS"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="BATCHSTATUS"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="BATCHSTATUS"/>
     </attribute>
     <attribute id="APPROVEDAT" order="53" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="APPROVEDAT"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="APPROVEDAT"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="APPROVEDAT"/>
     </attribute>
     <attribute id="APPROVEDBY" order="54" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="APPROVEDBY"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="APPROVEDBY"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="APPROVEDBY"/>
     </attribute>
     <attribute id="CDTRANSACTIONTYPE" order="55" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="CDTRANSACTIONTYPE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CDTRANSACTIONTYPE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CDTRANSACTIONTYPE"/>
     </attribute>
     <attribute id="EFFECTIVEDATE" order="58" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="EFFECTIVEDATE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="EFFECTIVEDATE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="EFFECTIVEDATE"/>
     </attribute>
     <attribute id="GLDATE" order="59" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLDATE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLDATE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GLDATE"/>
     </attribute>
     <attribute id="PAYROLLDATE" order="60" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLDATE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PAYROLLDATE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PAYROLLDATE"/>
     </attribute>
     <attribute id="PAYROLLPERIOD" order="61" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="PAYROLLPERIOD"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PAYROLLPERIOD"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PAYROLLPERIOD"/>
     </attribute>
     <attribute id="SOURCESYSTEM" order="62" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="SOURCESYSTEM"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="SOURCESYSTEM"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="SOURCESYSTEM"/>
     </attribute>
     <attribute id="COMPANYCODE" order="63" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="COMPANYCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="COMPANYCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="COMPANYCODE"/>
     </attribute>
     <attribute id="POSTINGBATCHIDCBLEDGER" order="64" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="POSTINGBATCHIDCBLEDGER"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="POSTINGBATCHIDCBLEDGER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="POSTINGBATCHIDCBLEDGER"/>
     </attribute>
     <attribute id="GLACCOUNTCBLEDGER" order="65" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLACCOUNTCBLEDGER"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLACCOUNTCBLEDGER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GLACCOUNTCBLEDGER"/>
     </attribute>
     <attribute id="GLPOSTDEPARTMENT" order="66" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLPOSTDEPARTMENT"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLPOSTDEPARTMENT"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GLPOSTDEPARTMENT"/>
+    </attribute>
+    <attribute id="CC_FMNO" order="67" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CC_FMNO"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="CC_FMNO"/>
+    </attribute>
+    <attribute id="FIRST_NAME" order="68" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FIRST_NAME"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="FIRST_NAME"/>
+    </attribute>
+    <attribute id="LAST_NAME" order="69" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LAST_NAME"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="LAST_NAME"/>
+    </attribute>
+    <attribute id="MIDDLE_NAME" order="70" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MIDDLE_NAME"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="MIDDLE_NAME"/>
+    </attribute>
+    <attribute id="PREFERRED_NAME" order="71" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="KNOWN_AS"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PREFERRED_NAME"/>
+    </attribute>
+    <attribute id="EMAIL_ADDRESS" order="72" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="EMAIL_ADDRESS"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="EMAIL_ADDRESS"/>
+    </attribute>
+    <attribute id="COST_CENTER" order="73" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="COST_CENTER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="COST_CENTER"/>
+    </attribute>
+    <attribute id="FMNO_STATUS" order="74" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FMNO_STATUS"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="FMNO_STATUS"/>
+    </attribute>
+    <attribute id="PARTNER_AND_NON_PARTNER" order="75" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PARTNER_AND_NON_PARTNER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PARTNER_AND_NON_PARTNER"/>
+    </attribute>
+    <attribute id="GENDER" order="76" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GENDER"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GENDER"/>
+    </attribute>
+    <attribute id="TERMINATION_DATE" order="77" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TERMINATION_DATE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="TERMINATION_DATE"/>
+    </attribute>
+    <attribute id="BAND" order="78" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BAND"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="BAND"/>
+    </attribute>
+    <attribute id="SUB_BAND" order="79" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SUB_BAND"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="SUB_BAND"/>
+    </attribute>
+    <attribute id="POSITION" order="80" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSITION"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="POSITION"/>
+    </attribute>
+    <attribute id="POSITION_DESC" order="81" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSITION_DESC"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="POSITION_DESC"/>
+    </attribute>
+    <attribute id="ROLE_SUB_CATEGORY" order="82" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ROLE_SUB_CATEGORY"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="ROLE_SUB_CATEGORY"/>
+    </attribute>
+    <attribute id="GTEXT" order="83" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Business area description"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="GTEXT"/>
+    </attribute>
+    <attribute id="TXT20" order="84" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="G/L Account Short Text"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="TXT20"/>
+    </attribute>
+    <attribute id="TXT50" order="85" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="G/L Account Long Text"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="TXT50"/>
+    </attribute>
+    <attribute id="BUTXT" order="86" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Name of Company Code or Company"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="BUTXT"/>
+    </attribute>
+    <attribute id="LAND1" order="87" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Country/Region Key"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="LAND1"/>
+    </attribute>
+    <attribute id="COUNTRY" order="88" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="COUNTRY"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="COUNTRY"/>
+    </attribute>
+    <attribute id="REGION" order="89" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="REGION"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="REGION"/>
     </attribute>
     <attribute id="PAYROLLCODE$local">
       <descriptions defaultDescription="PAYROLLCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PAYROLLCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PAYROLLCODE"/>
     </attribute>
     <attribute id="PAYROLLCODESEQUENCE$local">
       <descriptions defaultDescription="PAYROLLCODESEQUENCE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PAYROLLCODESEQUENCE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="PAYROLLCODESEQUENCE"/>
     </attribute>
     <attribute id="LEGALENTITYGROUPCODE$local">
       <descriptions defaultDescription="LEGALENTITYGROUPCODE"/>
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="LEGALENTITYGROUPCODE"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="LEGALENTITYGROUPCODE"/>
     </attribute>
     <attribute id="BATCHID_BATCHID$local">
-      <keyMapping columnObjectName="P_PAYROLL_DETAIL" columnName="BATCHID_BATCHID"/>
+      <keyMapping columnObjectName="Join_1_4" columnName="BATCHID_BATCHID"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>
   <baseMeasures>
     <measure id="CASHAMOUNT" order="11" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="CASHAMOUNT"/>
-      <measureMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CASHAMOUNT"/>
+      <measureMapping columnObjectName="Join_1_4" columnName="CASHAMOUNT"/>
     </measure>
     <measure id="CHARGEAMOUNT" order="12" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="CHARGEAMOUNT"/>
-      <measureMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CHARGEAMOUNT"/>
+      <measureMapping columnObjectName="Join_1_4" columnName="CHARGEAMOUNT"/>
     </measure>
     <measure id="GLPOSTAMOUNT" order="26" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="GLPOSTAMOUNT"/>
-      <measureMapping columnObjectName="P_PAYROLL_DETAIL" columnName="GLPOSTAMOUNT"/>
+      <measureMapping columnObjectName="Join_1_4" columnName="GLPOSTAMOUNT"/>
     </measure>
     <measure id="PAYROLLCODESEQUENCE" order="35" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="PAYROLLCODESEQUENCE"/>
-      <measureMapping columnObjectName="P_PAYROLL_DETAIL" columnName="PAYROLLCODESEQUENCE"/>
+      <measureMapping columnObjectName="Join_1_4" columnName="PAYROLLCODESEQUENCE"/>
     </measure>
     <measure id="SOURCEAMOUNT" order="43" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="SOURCEAMOUNT"/>
-      <measureMapping columnObjectName="P_PAYROLL_DETAIL" columnName="SOURCEAMOUNT"/>
+      <measureMapping columnObjectName="Join_1_4" columnName="SOURCEAMOUNT"/>
     </measure>
     <measure id="USDAMOUNT" order="46" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="USDAMOUNT"/>
-      <measureMapping columnObjectName="P_PAYROLL_DETAIL" columnName="USDAMOUNT"/>
+      <measureMapping columnObjectName="Join_1_4" columnName="USDAMOUNT"/>
     </measure>
     <measure id="CONTROLAMOUNT" order="56" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="CONTROLAMOUNT"/>
-      <measureMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CONTROLAMOUNT"/>
+      <measureMapping columnObjectName="Join_1_4" columnName="CONTROLAMOUNT"/>
     </measure>
     <measure id="CONTROLCOUNT" order="57" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="CONTROLCOUNT"/>
-      <measureMapping columnObjectName="P_PAYROLL_DETAIL" columnName="CONTROLCOUNT"/>
+      <measureMapping columnObjectName="Join_1_4" columnName="CONTROLCOUNT"/>
     </measure>
   </baseMeasures>
   <calculatedMeasures/>
@@ -420,16 +1246,56 @@
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="91.99999999999997" y="112"/>
+      <upperLeftCorner x="587.5657067327413" y="112"/>
     
       <rectangleSize width="387"/>
     </shape>
   
     <shape expanded="true" modelObjectName="P_PAYROLL_DETAIL" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="153" y="247"/>
+      <upperLeftCorner x="302" y="471.9999976158142"/>
       <rectangleSize height="30" width="265"/>
     </shape>
-    <shape modelObjectName="P_PAYROLL_DETAIL" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
+    <shape expanded="true" modelObjectName="P_PERSON_D" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="827" y="471.9999976158142"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="617" y="267"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="P_PAYROLL_DETAIL" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape modelObjectName="P_PERSON_D" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="255"/>
+    </shape>
+    <shape modelObjectName="P_COMPANY_CODE" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="620" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape modelObjectName="P_FCAT" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="920" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape modelObjectName="P_GL_ACCOUNT" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="1220" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape expanded="true" modelObjectName="P_COMPANY_CODE" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="617" y="471.9999976158142"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="P_FCAT" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="471.9999976158142"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="P_GL_ACCOUNT" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="1037" y="471.9999976158142"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="Join_1_4" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
       <upperLeftCorner x="20" y="30"/>
       <rectangleSize width="250"/>
     </shape>
@@ -439,7 +1305,7 @@
     </shape>
     <shape modelObjectName="CVD_MD_PAYROLL_POSTINGBATCH" modelObjectNameSpace="StarJoinViewNodeSharedCV" modelObjectType="repository">
       <upperLeftCorner x="1220" y="30"/>
-      <rectangleSize width="278.470703125"/>
+      <rectangleSize width="278"/>
     </shape>
   </shapes>
 </layout>

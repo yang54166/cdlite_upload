@@ -67,6 +67,7 @@ service PayrollService  @(requires: 'authenticated-user') {
     @cds.persistence.skip
     @odata.singleton
     entity CurrentUser {
+        id: String;
         scopes: array of String;
         companycode: array of String;
     };
