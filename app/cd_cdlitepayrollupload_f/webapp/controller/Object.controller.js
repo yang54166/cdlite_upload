@@ -603,11 +603,13 @@ sap.ui.define([
                     sap.ui.core.BusyIndicator.hide();
                     var sMsg = "BATCH " + that._ID + " was revalidated successfully!";
                     MessageBox.success(sMsg);
+                    that.getView().getBindingContext().refresh();
                 },
                 error: function (e) {
                     sap.ui.core.BusyIndicator.hide();
                     var sMsg = "Error while performing revalidation";
                     MessageBox.error(sMsg);
+                    that.getView().getBindingContext().refresh();
                 }
             })
 

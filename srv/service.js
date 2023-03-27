@@ -327,13 +327,14 @@ class PayrollService extends cds.ApplicationService {
                         // Get FDM Data
                         const fdmUtils = new FDMUtils(fdm);
                         await fdmUtils.getExchangeRates(dataHeader.currencyCode, dataHeader.payrollDate);
-                        if (fdmUtils.exchangeRates.length == 0){
+                        if (fdmUtils.exchangeRates.length == 0) {
                             throw ({ message: `Exchange Rates not found for ${dataHeader.currencyCode} and payrollDate ${dataHeader.payrollDate}` });
                         }
 
                         // Get Mapping Data
                         const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: dataHeader.glCompanyCode });
                         const dataMapping = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
+                        const ledgerControl = await SELECT.one.from(PayrollLedgerControl).where({ TRANSACTIONTYPE: dataHeader.transactionType});
 
                         if (dataHeader) {
                             // COPY DATA TO PERSISTENT TABLES
@@ -403,8 +404,8 @@ class PayrollService extends cds.ApplicationService {
                                 return {
                                     batchID_batchID: batchToApprove,
                                     batchLineNumber: lineCounter += 1,
-                                    postingBatchID: `${postingBatches}.1`,
-                                    postingBatchIDCBLedger: utils.validatePostingIncludesCBLedger(transactionType) ? `${postingBatches}.2` : null,
+                                    postingBatchID: ledgerControl ? `${postingBatches}.1` : null,
+                                    postingBatchIDCBLedger: ledgerControl?.ledgerGroupCB ? `${postingBatches}.2` : null,
                                     fcat: item.fcat,
                                     fmno: item.fmno,
                                     paymentID: item.paymentId,
@@ -462,7 +463,7 @@ class PayrollService extends cds.ApplicationService {
                                     postingType: "STANDARD"
                                 });
 
-                                if (['01', '02', '04'].includes(transactionType)) {
+                                if ( ledgerControl?.ledgerGroupCB ) {
                                     const resultCreatePostingBatchCB = await INSERT.into(PostingBatch).entries({
                                         batchId: dataHeader.ID,
                                         postingBatchId: `${postingBatchID}.2`,
@@ -500,7 +501,7 @@ class PayrollService extends cds.ApplicationService {
             const batchId = req.data.batchToApprove || req.params[0];
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
             const resultTrigger = await cpi.send({ path: `/cd_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
-            console.log(`CPI Response: ${resultTrigger.substring(0,200)}`);
+            console.log(`CPI Response: ${resultTrigger.substring(0, 200)}`);
             return true;
         });
 
@@ -558,16 +559,23 @@ class PayrollService extends cds.ApplicationService {
             return true;
         });
 
-        this.after('UPDATE', "PostingBatch", async (req) => {
-            const batchId = req.batchId;
+        this.after('UPDATE', "PostingBatch", async (postingBatch) => {
+            const batchId = postingBatch.batchId;
+            const postingBatchId = postingBatch.postingBatchID;
 
-            const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId });
-            const isPostingFinal = postingResults.every((res) => (res.POSTINGSTATUS != "PENDING"));
+            const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId })
+
+            const isPostingFinal = postingResults.every((res) => {
+                let resToCheck;
+                 // Use data just updated, but not yet committed.
+                if (res.POSTINGBATCHID == postingBatchId) { resToCheck = postingBatch } else { resToCheck = res };
+                return (resToCheck.POSTINGSTATUS != "PENDING");
+            });
             console.log(`PostingBatch ${batchId} updated.`);
+
             if (isPostingFinal) {
-               
                 const isPostingError = postingResults.every((res) => (res.POSTINGSTATUS == "ERROR"));
-                console.log(`PostingBatch ${batchId} final with ${isPostingError? 'ERROR' : 'POSTED'}`);
+                console.log(`PostingBatch ${batchId} final with ${isPostingError ? 'ERROR' : 'POSTED'}`);
                 const resultStagingStatus = await UPDATE(`Staging_UploadHeader`, { ID: batchId }).with({ STATUS: isPostingError ? 'ERROR' : 'POSTED' });
                 console.log(resultStagingStatus);
                 return resultStagingStatus;
