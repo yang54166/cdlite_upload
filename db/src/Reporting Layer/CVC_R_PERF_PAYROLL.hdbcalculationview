@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" id="CVC_R_PERF_PAYROLL" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="CVC_R_PERF_PAYROLL.hdbcalculationview"/>
+<localVariables>
+  <variable id="IP_PERIOD" parameter="true">
+    <descriptions defaultDescription=" "/>
+    <variableProperties datatype="NVARCHAR" length="20" mandatory="true">
+      <valueDomain type="empty"/>
+      <selection multiLine="false" type="SingleValue"/>
+    </variableProperties>
+  </variable>
+</localVariables>
+<variableMappings>
+  <mapping xsi:type="Variable:VariableMapping" dataSource="CVS_I_PERF_PAYROLL">
+    <targetVariable name="IP_PERIOD" resourceUri="CVS_I_PERF_PAYROLL"/>
+    <localVariable>IP_PERIOD</localVariable>
+  </mapping>
+</variableMappings>
+<dataSources>
+  <DataSource id="CVS_I_PERF_PAYROLL">
+    <resourceUri>CVS_I_PERF_PAYROLL</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="TENURE_IN_POSITION"/>
+      <viewAttribute id="TENURE_IN_FULL_ROUNDEDYEARS"/>
+      <viewAttribute id="TENURE_IN_FULL_MONTHS"/>
+      <viewAttribute id="TENURE_IN_FULL"/>
+      <viewAttribute id="TENURE_ADJUSTED"/>
+      <viewAttribute id="TENURE_IN_POSITION_MONTHS"/>
+      <viewAttribute id="TENURE_IN_FULL_YEARS"/>
+      <viewAttribute id="PATH"/>
+      <viewAttribute id="BAND"/>
+      <viewAttribute id="GLACCOUNT"/>
+      <viewAttribute id="CC_PERIOD"/>
+      <viewAttribute id="INDEX"/>
+      <viewAttribute id="FMNO_COST_CENTER"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="GLPOSTAMOUNT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="CVS_I_PERF_PAYROLL"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Projection_1">
+  <attributes>
+    <attribute id="TENURE_IN_POSITION" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TENURE_IN_POSITION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TENURE_IN_POSITION"/>
+    </attribute>
+    <attribute id="TENURE_IN_FULL_ROUNDEDYEARS" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TENURE_IN_FULL_ROUNDEDYEARS"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TENURE_IN_FULL_ROUNDEDYEARS"/>
+    </attribute>
+    <attribute id="TENURE_IN_FULL_MONTHS" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TENURE_IN_FULL_MONTHS"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TENURE_IN_FULL_MONTHS"/>
+    </attribute>
+    <attribute id="TENURE_IN_FULL" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TENURE_IN_FULL"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TENURE_IN_FULL"/>
+    </attribute>
+    <attribute id="TENURE_ADJUSTED" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TENURE_ADJUSTED"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TENURE_ADJUSTED"/>
+    </attribute>
+    <attribute id="TENURE_IN_POSITION_MONTHS" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TENURE_IN_POSITION_MONTHS"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TENURE_IN_POSITION_MONTHS"/>
+    </attribute>
+    <attribute id="TENURE_IN_FULL_YEARS" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TENURE_IN_FULL_YEARS"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TENURE_IN_FULL_YEARS"/>
+    </attribute>
+    <attribute id="PATH" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PATH"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PATH"/>
+    </attribute>
+    <attribute id="BAND" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BAND"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BAND"/>
+    </attribute>
+    <attribute id="GLACCOUNT" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLACCOUNT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLACCOUNT"/>
+    </attribute>
+    <attribute id="CC_PERIOD" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CC_PERIOD"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CC_PERIOD"/>
+    </attribute>
+    <attribute id="INDEX" order="12" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="INDEX"/>
+      <keyMapping columnObjectName="Projection_1" columnName="INDEX"/>
+    </attribute>
+    <attribute id="FMNO_COST_CENTER" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="COST_CENTER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="FMNO_COST_CENTER"/>
+    </attribute>
+    <attribute id="GLCURRENCYCODE" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLCURRENCYCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLCURRENCYCODE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes>
+    <calculatedAttribute id="CC_SOURCE" order="16" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="10">
+        <formula>'Comp Mart'</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+  
+    <calculatedAttribute id="CC_GL_ACCOUNT" order="17" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+  
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="10">
+  
+        <formula>CONCAT('00',&quot;GLACCOUNT&quot;)</formula>
+  
+      </keyCalculation>
+  
+    </calculatedAttribute>
+  </calculatedAttributes>
+  <baseMeasures>
+    <measure id="GLPOSTAMOUNT" order="15" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="GLPOSTAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="GLPOSTAMOUNT"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="92" y="112"/>
+    
+      <rectangleSize width="160"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="217"/>
+      <rectangleSize height="30" width="194"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

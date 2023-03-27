@@ -11,17 +11,17 @@ class FDMUtils {
 
     constructor(remoteService) {
         this.apiService = remoteService;
-        this.sapClient = remoteService.options.credentials.queries["sap-client"];
+        this.sapClient = process.env.SAP_CLIENT.toString();
     };
 
-    async getEmployeeData() {
-        let result = await this.apiService.get("S4_FMNO_MASTER_API").where({ client: this.sapClient });
+    async getEmployeeData(companyCode) {
+        let result = await this.apiService.get("S4_FMNO_MASTER_API").where({ client: this.sapClient, branchId: companyCode });
         this.employeeData.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);
             this.employeeData.push(...result);
         }
-        console.log(`Found ${this.employeeData.length} FMNOs for client ${this.sapClient}`);
+        console.log(`Found ${this.employeeData.length} FMNOs for client ${this.sapClient} and companyCode ${companyCode}`);
         return this.employeeData;
     };
 
@@ -90,9 +90,23 @@ class FDMUtils {
         return this.wbsElements.find((proj) => proj.wbsCode == wbsElementCode);
     };
 
-
-    async getExchangeRates() {
-        let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API");//.where({ mandt: this.sapClient });
+    async getExchangeRates(currencyCode, payrollDate) {
+        const getRatePeriod = (payrollDate) => {
+            const d = new Date(payrollDate);
+            return `${d.getFullYear().toString()}${(d.getMonth() + 1).toString().padStart(2, 0)}`
+        };
+        let result = await this.apiService.get("MNTHLY_EXCHG_RATE_API").where({
+            client: this.sapClient,
+            and: {
+                period: getRatePeriod(payrollDate),
+                and: {
+                    fromCurrency: currencyCode,
+                    or: {
+                        toCurrency: currencyCode
+                    }
+                }
+            }
+        });
         this.exchangeRates.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);
@@ -103,7 +117,12 @@ class FDMUtils {
     };
 
     getExchangeRate(sourceCurrency, targetCurrency) {
-        return this.exchangeRates.find((rate) => ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
+        if (sourceCurrency == targetCurrency) {
+            return { exchangeRate: 1.00, period: this.exchangeRates[0].period }
+        }
+        else {
+            return this.exchangeRates.find((rate) => ((rate.fromCurrency == sourceCurrency) && (rate.toCurrency == targetCurrency)));
+        }
     };
 
     async getCurrency() {

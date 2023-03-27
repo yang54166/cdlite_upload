@@ -9,7 +9,7 @@ sap.ui.define([
 ], function (BaseController, Fragment, JSONModel, formatter, MessageBox, Filter, FilterOperator) {
     "use strict";
 
-    return BaseController.extend("mck.cdlite.payrollupload.controller.Worklist", {
+    return BaseController.extend("cd_cdlitepayrollupload_f.controller.Worklist", {
 
         formatter: formatter,
         _oDialog: null,
@@ -25,8 +25,8 @@ sap.ui.define([
         onInit: function () {
             var oViewModel;
             this._oModel = this.getOwnerComponent().getModel();
-           // var currentUser = this._oModel.bindContext("/user-api/currentUser");
-            var url = "/user-api/currentUser";
+            // var currentUser = this._oModel.bindContext("/user-api/currentUser");
+            var url = "payroll/CurrentUser";
             $.ajax({
                 url: url,
                 type: "GET",
@@ -136,11 +136,11 @@ sap.ui.define([
             if (oCompanyCodeList.getSelectedKey().length > 0) {
                 filters.push(new Filter('glCompanyCode', FilterOperator.EQ, oCompanyCodeList.getSelectedKey()));
             }
-            if (oMonthYearList.getSelectedKey() !== "00"){
+            if (oMonthYearList.getSelectedKey() !== "00") {
                 const OldestDate = new Date();
                 OldestDate.setDate(OldestDate.getDate() - parseInt(oMonthYearList.getSelectedKey()));
                 filters.push(new Filter('createdAt', FilterOperator.GT, OldestDate.toISOString()));
-            } 
+            }
             oBinding.filter(filters);
 
         },
@@ -190,16 +190,25 @@ sap.ui.define([
 
                 var filters = [];
 
-                var oFilter = new Filter({
+                var oFilterDesc = new Filter({
                     path: 'batchDescription',
                     operator: FilterOperator.Contains,
                     value1: sQuery,
                     caseSensitive: false
                 });
+                filters.push(oFilterDesc);
+
+                if (Number.isInteger(parseInt(sQuery))) {
+                    var oFilterBatchId = new Filter({
+                        path: 'ID',
+                        operator: FilterOperator.EQ,
+                        value1: sQuery
+                    });
+                    filters.push(oFilterBatchId);
+                }
                 //filters.push(new Filter("batchDescription", FilterOperator.Contains, sQuery.toLowerCase()));
                 //   filters.push(new Filter("ID", FilterOperator.EQ, sQuery));
 
-                filters.push(oFilter);
                 var orFilters = new Filter(filters, false);
                 if (sQuery && sQuery.length > 0) {
                     aTableSearchState = orFilters;
@@ -233,7 +242,7 @@ sap.ui.define([
             this.getRouter().navTo("object", {
                 objectId: oItem.getBindingContext().getPath().substring("/StagingUploads".length)
             });
-           
+
             sap.ui.core.BusyIndicator.show();
         },
 
@@ -252,43 +261,6 @@ sap.ui.define([
             }
         },
 
-        onPressApprove: function (oEvent) {
-
-            // var sMsg = "BATCH " + oEvent.getSource().getBindingContext().getProperty("BATCHNUMBER") + " got approved successfully!";
-            // MessageBox.success(sMsg);
-
-            var sID = oEvent.getSource().getParent().getBindingContext().getProperty("ID");
-            var sBatchDesc = oEvent.getSource().getParent().getBindingContext().getProperty("batchDescription");
-            var sGLCompanyCode = oEvent.getSource().getParent().getBindingContext().getProperty("glCompanyCode");
-            var sCurrencyCode = oEvent.getSource().getParent().getBindingContext().getProperty("currencyCode");
-            var sPayrollDate = oEvent.getSource().getParent().getBindingContext().getProperty("payrollDate");
-            var sEffectivePeriod = oEvent.getSource().getParent().getBindingContext().getProperty("effectivePeriod");
-
-            var oView = this.getView();
-            var that = this;
-
-            // create dialog lazily
-            if (!that._oDialog) {
-                // load asynchronous XML fragment
-                Fragment.load({
-                    id: oView.getId(),
-                    name: "mck.cdlite.payrollupload.fragments.Approve",
-                    controller: that
-                }).then(function (oDialog) {
-                    that._oDialog = oDialog;
-                    oView.addDependent(oDialog);
-                    oView.byId("approvePageTitle").setText("Upload Batch " + sID);
-                    oView.byId("approveDesc").setText(sBatchDesc);
-                    oView.byId("aprroveCurrency").setText(sCurrencyCode);
-                    oView.byId("approveCompanyCode").setText(sGLCompanyCode);
-                    oView.byId("approvePayrollDate").setText(sPayrollDate);
-                    oView.byId("approveEffectivePeriod").setText(sEffectivePeriod);
-                    oDialog.open();
-                });
-            } else {
-                that._oDialog.open();
-            }
-        },
 
         closeApprovalDialog: function () {
             if (this._oDialog) {
@@ -314,7 +286,7 @@ sap.ui.define([
                 // load asynchronous XML fragment
                 Fragment.load({
                     id: oView.getId(),
-                    name: "mck.cdlite.payrollupload.fragments.Upload",
+                    name: "cd_cdlitepayrollupload_f.fragments.Upload",
                     controller: this
                 }).then(function (oDialog) {
                     // connect dialog to the root view 
@@ -346,9 +318,13 @@ sap.ui.define([
                 this.onRefresh();
                 sMessage = "BATCH " + that._newBatchId + " uploaded successfully!";
                 MessageBox.success(sMessage);
-
+            } else if (status === 504 || status === 502 || status === 503) {
+                sMessage = "Error occurred while processing. If batch is not yet VALIDATED, please open and click 'Revalidate'.";
+                MessageBox.error(sMessage);
             } else {
+                console.log(oEvent.getParameter("responseRaw"));
                 var errorMsg = JSON.parse(oEvent.getParameter("responseRaw"))?.error?.message;
+
                 oContext.delete().then(function () {
                     if (status === 400)
                         errorMsg = JSON.parse(errorMsg).join('\n');
@@ -566,7 +542,7 @@ sap.ui.define([
             if (!this._pPopover) {
                 this._pPopover = Fragment.load({
                     id: oView.getId(),
-                    name: "mck.cdlite.payrollupload.fragments.Settings",
+                    name: "cd_cdlitepayrollupload_f.fragments.Settings",
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);

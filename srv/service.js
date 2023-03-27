@@ -17,38 +17,57 @@ class PayrollService extends cds.ApplicationService {
         const { PostingBatch: PostingBatchConfig } = db.entities('config');
         const { PayrollHeader, PayrollDetails, PostingBatch } = db.entities('payroll');
         const { UploadHeader, UploadItems } = db.entities('staging');
-        const { LegalEntityGrouping, PaycodeGLMapping } = db.entities('mapping');
+        const { LegalEntityGrouping, PaycodeGLMapping, PayrollLedgerControl } = db.entities('mapping');
+
+        this.on("READ", "CurrentUser", async (req) => {
+            let currentUser = new cds.User(req.user);
+            let scopes = [];
+            if (currentUser.is("admin")) { scopes.push("admin") };
+            if (currentUser.is("upload")) { scopes.push("upload") };
+            if (currentUser.is("delete")) { scopes.push("delete") };
+            if (currentUser.is("approve")) { scopes.push("approve") };
+            return {
+                id: currentUser.id,
+                companycode: currentUser.attr.companycode,
+                scopes: scopes
+            };
+        });
 
         this.on("PUT", "PayrollUploadFile", async (req) => {
             if (req.data.content) {
-                const contentType = req._.req.headers['content-type'];
-                const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
-                    return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
-                }));
-                const batchID = contentPropertyMap.get("batchID");
-                const fileName = contentPropertyMap.get("filename");
+                try {
+                    const contentType = req._.req.headers['content-type'];
+                    const contentPropertyMap = new Map(req.headers['content-disposition'].split(";").map((row) => {
+                        return row.split("=").map((item) => item.replace(/["]+/g, '').trim());
+                    }));
+                    const batchID = contentPropertyMap.get("batchID");
+                    const fileName = contentPropertyMap.get("filename");
 
-                console.log(`DEBUG: Upload started for batch ${batchID}.`);
-                let content = await utils.readUploadStream(req.data.content);
-                console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
+                    console.log(`DEBUG: Upload started for batch ${batchID}.`);
+                    let content = await utils.readUploadStream(req.data.content);
+                    console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
 
-                const dataToImport = utils.parseCDUpload(content, batchID);
-                const validationResult = utils.validateEntities(dataToImport, UploadItems);
-                if (validationResult.isValid) {
-                    const result = await HANAUtils.callStoredProc(
-                        db.options.credentials,
-                        db.options.credentials.schema,
-                        "SP_UPLOADINSERT",
-                        dataToImport
-                    );
-                    console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                    const dataToImport = utils.parseCDUpload(content, batchID);
+                    const validationResult = utils.validateEntities(dataToImport, UploadItems);
+                    if (validationResult.isValid) {
+                        const result = await HANAUtils.callStoredProc(
+                            db.options.credentials,
+                            db.options.credentials.schema,
+                            "SP_UPLOADINSERT",
+                            dataToImport
+                        );
+                        console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
 
-                    await this.emit("enrich", { batchID });
+                        //await this.emit("enrich", { batchID });
+                        await enrichBatch(req, batchID);
 
-                    // Update filename
-                    return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
-                } else {
-                    return req.error({ code: 1, status: 400, message: validationResult.errorMessage, target: 'PayrollUploadFile' });
+                        // Update filename
+                        return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
+                    } else {
+                        return req.error({ code: 1, status: 400, message: validationResult.errorMessage, target: 'PayrollUploadFile' });
+                    }
+                } catch (ex) {
+                    req.error({ code: 1, status: 400, message: `Error while uploading file: ${ex.message}` });
                 }
             }
         });
@@ -67,23 +86,37 @@ class PayrollService extends cds.ApplicationService {
                     let content = await utils.readUploadStream(req.data.content);
                     console.log(`DEBUG: Upload complete for mappingTable ${mappingTable}.  Starting to parse file content.`);
 
+                    const entityType = (() => {
+                        switch (mappingTable.toUpperCase()) {
+                            case "LEGALENTITYGROUPING":
+                                return LegalEntityGrouping
+                            case "PAYCODEGLMAPPING":
+                                return PaycodeGLMapping;
+                            case "PAYROLLLEDGERCONTROL":
+                                return PayrollLedgerControl;
+                        }
+                    })();
                     const mappingDBTable = utils.getMappingDBTable(mappingTable);
                     if (mappingDBTable) {
                         const dataToImport = utils.parseMappingUpload(content, mappingDBTable);
-                        dataToImport.filter((row) => row == null);
-                        const result = await HANAUtils.callStoredProc(
-                            db.options.credentials,
-                            db.options.credentials.schema,
-                            `SP_UPSERT_${mappingDBTable}`,
-                            dataToImport
-                        );
-                        console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
-                        return;
+                        const validationResult = utils.validateEntities(dataToImport, entityType);
+                        if (validationResult.isValid) {
+                            const result = await HANAUtils.callStoredProc(
+                                db.options.credentials,
+                                db.options.credentials.schema,
+                                `SP_UPSERT_${mappingDBTable}`,
+                                dataToImport
+                            );
+                            console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                            return;
+                        } else {
+                            return req.error({ code: 3, status: 400, message: validationResult.errorMessage, target: 'MappingUploadFile' });
+                        }
                     } else {
-                        req.error({ code: 400, message: `Invalid mappingTable : ${mappingTable}.` });
+                        req.error({ code: 2, status: 400, message: `Invalid mappingTable : ${mappingTable}.` });
                     }
                 } catch (ex) {
-                    req.error({ code: 400, message: `Error while uploading file: ${ex.message}` });
+                    req.error({ code: 1, status: 400, message: `Error while uploading file: ${ex.message}` });
                 }
             }
         });
@@ -93,154 +126,182 @@ class PayrollService extends cds.ApplicationService {
             context.data.ID = batchId;
         });
 
+        const enrichBatch = async (req, batchID) => {
+            try {
+                // Get Staging Data
+                const stagingHeader = await SELECT.one.from(UploadHeader).where({ ID: batchID });
+                const stagingDataItems = await SELECT.from(UploadItems)
+                    .columns("PARENT_ID", "ROW", "STATUS", "STATUSMESSAGE", "FMNO", "PAYROLLCODE", "PAYROLLCODESEQUENCE",
+                        "NAME", "AMOUNT", "PAYMENTNUMBER", "PAYMENTID", "PAYMENTFORM", "USERFIELD1", "USERFIELD2", "REMARKS",
+                        "LOANADVANCEREFERENCENUMBER", "PROJECTCODE", "PROJECTTASK", "GLACCOUNT", "GLCOSTCENTER", "FCAT")
+                    .where({ PARENT_ID: batchID });
+
+                // Update Header with Payroll Period
+                const resultsHeaderUpdate = await UPDATE(UploadHeader).set({ payrollPeriod: utils.convertDateToPayPeriod(new Date(stagingHeader.payrollDate)) }).where({ ID: batchID });
+
+                // Get Info from FDM
+                const fdmUtils = new FDMUtils(fdm);
+                await fdmUtils.getEmployeeData(stagingHeader.glCompanyCode);
+                await fdmUtils.getGLAccounts();
+                await fdmUtils.getCompanyCodes();
+                await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
+
+                // Get Mapping Data
+                const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
+                const mappingData = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
+
+                let fmnoErrorList = [];
+                let fmnoTotals = new Map();
+
+                // Update Staging Data
+                let updatedItems = stagingDataItems.map((item) => {
+                    let errorsForRow = [];
+                    const employeeObj = fdmUtils.findEmployeeByFMNO(item.FMNO, stagingHeader.payrollDate);
+                    let userFCAT = employeeObj?.fcat ?
+                        employeeObj?.fcat?.split(" ")[0].toString().substring(0, 3) :
+                        null;
+
+                    // Validations
+                    if (!employeeObj) {
+                        errorsForRow.push(`FMNO ${item.FMNO} not found in ${stagingHeader.glCompanyCode}, or invalid.`);
+                    } else {
+                        if (!employeeObj.costCenter || employeeObj.costCenter == "") {
+                            errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
+                        } else if (!userFCAT || userFCAT == "" || userFCAT == "000") {
+                            errorsForRow.push(`FMNO ${item.FMNO} does not have a valid FCAT (${userFCAT})`);
+                        } else if (new Date(employeeObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
+                            errorsForRow.push(`FMNO ${item.FMNO} was not active for payroll date.`);
+                        }
+                    }
+
+                    // Get Mapping
+                    const mappedAccount = mappingData.find((mappingRow) =>
+                        (mappingRow.payrollCode == item.PAYROLLCODE)
+                        && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE))
+                    );
+                    if (!mappedAccount) {
+                        errorsForRow.push(`Unable to find GL account mapping for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
+                    } else {
+                        if (mappedAccount.payrollCodeClass == "ADVANCE" || mappedAccount.payrollCodeClass == "LOAN") {
+                            if (!item.LOANADVANCEREFERENCENUMBER) {
+                                errorsForRow.push(`PayrollCodeClass ${mappedAccount.payrollCodeClass} requires a reference number, which is not present.`);
+                            }
+                        }
+                        if (mappedAccount.payrollCodeClass == "PROJECT") {
+                            if (!item.PROJECTCODE) {
+                                errorsForRow.push(`PayrollCodeClass ${mappedAccount.payrollCodeClass} requires a project code, which is not present.`);
+                            }
+                        }
+                    }
+
+                    // GL Accounts
+                    const glAccountObj = fdmUtils.getGLAccount(mappedAccount?.glAccount);
+                    const glAccountCBObj = fdmUtils.getGLAccount(mappedAccount?.glAccountCB);
+                    if (mappedAccount?.payrollCodeType != "NOTIONAL") {
+                        if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
+                            errorsForRow.push(`Invalid GL account ${mappedAccount?.glAccount}.`);
+                        }
+                        if (!glAccountCBObj || glAccountCBObj.accountMarkedForDeletion == 'X' || glAccountCBObj.accountBlockedForPosting == 'X') {
+                            errorsForRow.push(`Invalid GL CB account ${mappedAccount?.glAccountCB}.`);
+                        }
+                    }
+
+                    // Company Info
+                    const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
+                    if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()) {
+                        errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
+                    }
+                    //const companyCodeForEmployee = fdmUtils.getCompanyCode(employeeObj?.branchId || stagingHeader.glCompanyCode);
+
+                    // Validate Project Code / WBS 
+                    if (item.PROJECTCODE) {
+                        const projectCode = fdmUtils.getWbsElement(item.PROJECTCODE);
+                        if (!projectCode) {
+                            errorsForRow.push(`WBS Element (Project) ${item.PROJECTCODE} is not valid.`);
+                        }
+                    }
+
+                    // Default to INVALID, and only mark valid if confirmed no errors.
+                    let rowStatus = { STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
+                    if (!errorsForRow.length) {
+                        // VALID
+                        rowStatus.STATUS = 'VALID';
+                        rowStatus.STATUSMESSAGE = ''
+                    } else {
+                        // Keep list of fmnos with errors
+                        if (fmnoErrorList.indexOf(item.FMNO) < 0) {
+                            fmnoErrorList.push(item.FMNO);
+                        }
+                    }
+
+                    // Update fmno totals for NET ZERO
+                    if (item.PAYROLLCODETYPE != "NOTIONAL") {
+                        const newTotal = ((parseFloat(fmnoTotals.get(item.FMNO)) || 0) + parseFloat(item.AMOUNT)).toFixed(2);
+                        fmnoTotals.set(item.FMNO, newTotal);
+                    }
+
+                    return {
+                        ...item,
+                        STATUS: rowStatus.STATUS,
+                        STATUSMESSAGE: rowStatus.STATUSMESSAGE,
+                        GLCOSTCENTER: employeeObj?.costCenter,
+                        GLACCOUNT: glAccountObj?.glAccount || null,
+                        GLACCOUNTCB: glAccountCBObj?.glAccount || null,
+                        GLACCOUNTTYPE: glAccountObj?.glAccountType || null,
+                        GLCURRENCYCODE: companyCode?.currencyCode,
+                        FCAT: userFCAT,
+                        PERNR: employeeObj?.personidExt,
+                        LOCATIONCODE: employeeObj?.userLocation,
+                        SKILLCODE: employeeObj?.skillCode,
+                        CHARGECOMPANY: companyCode?.companyCode
+                    }
+                });
+
+                // Mark rows invalid if any errors for that FMNO
+                updatedItems = updatedItems.map((item) => {
+                    let errorMessage = undefined;
+                    if (fmnoErrorList.indexOf(item.FMNO) > -1) {
+                        errorMessage = 'FMNO skipped due to errors in other rows.';
+                    }
+
+                    // NET ZERO validation for FMNO
+                    if (utils.validateTransactionTypeShouldNetZero()) {
+                        const fmnoTotal = parseFloat(fmnoTotals.get(item.FMNO));
+                        if (fmnoTotal !== 0) {
+                            errorMessage = `FMNO skipped due to non-zero balance for sum of all rows. ${fmnoTotal}`;
+                        }
+                    }
+
+                    return {
+                        ...item,
+                        STATUS: errorMessage ? 'INVALID' : item.STATUS,
+                        STATUSMESSAGE: errorMessage ? (item.STATUSMESSAGE || errorMessage) : item.STATUSMESSAGE
+                    }
+                });
+
+                // Save back to DB
+                const resultSave = await HANAUtils.callStoredProc(
+                    db.options.credentials,
+                    db.options.credentials.schema,
+                    "SP_UPLOADINSERT",
+                    updatedItems
+                );
+
+                // Update Header Status
+                const resultValidatedHeader = await UPDATE(UploadHeader).set({ STATUS: 'VALIDATED' }).where({ ID: batchID });
+
+                console.log("DEBUG: enrichment complete. Set batch to VALIDATED.");
+                return resultSave;
+            } catch (ex) {
+                req.error({ code: 400, message: `Error while enriching batch ID:${batchID}: ${ex.message}` });
+            }
+        };
+
         this.on('enrich', async req => {
             const batchID = req.data.batchID || req.params[0];
             console.log("enriching batchId: " + batchID);
 
-            // Get Staging Data
-            const stagingHeader = await SELECT.one.from(UploadHeader).where({ ID: batchID });
-            const stagingDataItems = await SELECT.from(UploadItems)
-                .columns("PARENT_ID", "ROW", "STATUS", "STATUSMESSAGE", "FMNO", "PAYROLLCODE", "PAYROLLCODESEQUENCE",
-                    "NAME", "AMOUNT", "PAYMENTNUMBER", "PAYMENTID", "PAYMENTFORM", "USERFIELD1", "USERFIELD2", "REMARKS",
-                    "LOANADVANCEREFERENCENUMBER", "PROJECTCODE", "PROJECTTASK", "GLACCOUNT", "GLCOSTCENTER", "FCAT")
-                .where({ PARENT_ID: batchID });
-
-
-            // Get Info from FDM
-            const fdmUtils = new FDMUtils(fdm);
-            await fdmUtils.getEmployeeData(stagingHeader.glCompanyCode);
-            await fdmUtils.getGLAccounts();
-            await fdmUtils.getCompanyCodes();
-            await fdmUtils.getWbsElements(stagingHeader.glCompanyCode);
-            //await fdmUtils.getExchangeRates();
-
-            // Get Mapping Data
-            const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: stagingHeader.glCompanyCode });
-            const mappingData = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
-
-            let fmnoErrorList = [];
-            let fmnoTotals = new Map();
-
-            // Update Staging Data
-            let updatedItems = stagingDataItems.map((item) => {
-                let errorsForRow = [];
-                const employeeObj = fdmUtils.findEmployeeByFMNO(item.FMNO, stagingHeader.payrollDate);
-                let userFCAT = employeeObj?.fcat ?
-                    employeeObj?.fcat?.split(" ")[0].toString().substring(0, 3) :
-                    null;
-
-                // Validations
-                if (!employeeObj) {
-                    errorsForRow.push(`FMNO ${item.FMNO} not found or invalid.`);
-                } else {
-                    if (!employeeObj.costCenter || employeeObj.costCenter == "") {
-                        errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
-                    } else if (!userFCAT || userFCAT == "" || userFCAT == "000") {
-                        errorsForRow.push(`FMNO ${item.FMNO} does not have a valid FCAT (${userFCAT})`);
-                    } else if (new Date(employeeObj.effectiveStartDate) > new Date(stagingHeader.payrollDate)) {
-                        errorsForRow.push(`FMNO ${item.FMNO} was not active for payroll date.`);
-                    }
-                }
-
-                const mappedAccounts = mappingData.filter((mappingRow) =>
-                    (mappingRow.payrollCode == item.PAYROLLCODE)
-                    && (mappingRow.payrollCodeSequence == (item.PAYROLLCODESEQUENCE || 1))
-                    && (new Date(mappingRow.effectiveDate) < new Date()));
-                // Get newest by EffectiveDate
-                const newestEfectiveDate = new Date(Math.max(...mappedAccounts.map(a => new Date(a.effectiveDate))));
-                const mappedAccount = mappedAccounts.find(a => new Date(a.effectiveDate).valueOf() == newestEfectiveDate.valueOf());
-                if (!mappedAccount) {
-                    errorsForRow.push(`Unable to find GL account mapping for PayrollCode ${item.PAYROLLCODE} and Sequence ${item.PAYROLLCODESEQUENCE}.`);
-                } else {
-                    if (mappedAccount.payrollCodeClass == "ADVANCE" || mappedAccount.payrollCodeClass == "LOAN") {
-                        if (!item.LOANADVANCEREFERENCENUMBER) {
-                            errorsForRow.push(`PayrollCodeClass ${mappedAccount.payrollCodeClass} requires a reference number, which is not present.`);
-                        }
-                    }
-                }
-
-                const glAccountObj = fdmUtils.getGLAccount(mappedAccount.glAccount);
-                if (!glAccountObj || glAccountObj.accountMarkedForDeletion == 'X' || glAccountObj.accountBlockedForPosting == 'X') {
-                    errorsForRow.push(`Invalid GL account ${glAccountObj.glAccount}.`);
-                }
-
-                const companyCode = fdmUtils.getCompanyCode(stagingHeader.glCompanyCode);
-                if (new Date(companyCode.validFrom) > new Date() || new Date(companyCode.validTo) < new Date()) {
-                    errorsForRow.push(`Company Code ${companyCode.companyCode} is not valid.`);
-                }
-                const companyCodeForEmployee = fdmUtils.getCompanyCode(employeeObj?.branchId || stagingHeader.glCompanyCode);
-
-                if (item.projectCode) {
-                    const projectCode = fdmUtils.getWbsElement(item.projectCode);
-                    // TODO: More Checks for validity?
-                    if (!projectCode) {
-                        errorsForRow.push(`WBS Element (Project) ${item.projectCode} is not valid.`);
-                    }
-                }
-
-                // Default to INVALID, and only mark valid if confirmed no errors.
-                let rowStatus = { STATUS: 'INVALID', STATUSMESSAGE: `${errorsForRow.join(',')}` }
-                if (!errorsForRow.length) {
-                    // VALID
-                    rowStatus.STATUS = 'VALID';
-                    rowStatus.STATUSMESSAGE = ''
-                } else {
-                    // Keep list of fmnos with errors
-                    if (fmnoErrorList.indexOf(item.FMNO) < 0) {
-                        fmnoErrorList.push(item.FMNO);
-                    }
-                }
-
-                // Update fmno totals
-                const newTotal = ((parseFloat(fmnoTotals.get(item.FMNO)) || 0) + parseFloat(item.AMOUNT)).toFixed(2);
-                fmnoTotals.set(item.FMNO, newTotal);
-
-                return {
-                    ...item,
-                    STATUS: rowStatus.STATUS,
-                    STATUSMESSAGE: rowStatus.STATUSMESSAGE,
-                    GLCOSTCENTER: employeeObj?.costCenter,
-                    GLACCOUNT: glAccountObj?.glAccount || null,
-                    GLACCOUNTTYPE: glAccountObj?.glAccountType || null,
-                    GLCURRENCYCODE: companyCodeForEmployee?.currencyCode,
-                    FCAT: userFCAT,
-                    PERNR: employeeObj?.personidExt,
-                    LOCATIONCODE: employeeObj?.userLocation,
-                    SKILLCODE: employeeObj?.skillCode,
-                    CHARGECOMPANY: companyCodeForEmployee?.companyCode
-                }
-            });
-
-            // Mark rows invalid if any errors for that FMNO
-            updatedItems = updatedItems.map((item) => {
-                let errorMessage = undefined;
-                const fmnoTotal = parseFloat(fmnoTotals.get(item.FMNO));
-                if (fmnoErrorList.indexOf(item.FMNO) > -1) {
-                    errorMessage = 'FMNO skipped due to errors in other rows.';
-                }
-                if (fmnoTotal !== 0) {
-                    errorMessage = `FMNO skipped due to non-zero balance for sum of all rows. ${fmnoTotal}`;
-                }
-                return {
-                    ...item,
-                    STATUS: errorMessage ? 'INVALID' : item.STATUS,
-                    STATUSMESSAGE: errorMessage ? (item.STATUSMESSAGE || errorMessage) : item.STATUSMESSAGE
-                }
-            });
-
-            // Save back to DB
-            const resultSave = await HANAUtils.callStoredProc(
-                db.options.credentials,
-                db.options.credentials.schema,
-                "SP_UPLOADINSERT",
-                updatedItems
-            );
-
-            // Update Header Status
-            const resultValidatedHeader = await UPDATE(UploadHeader).set({ STATUS: 'VALIDATED' }).where({ ID: batchID });
-
-            console.log("DEBUG: enrichment complete. Set batch to VALIDATED.");
-            return resultSave;
+            return enrichBatch(req, batchID);
         });
 
         this.on('approve', async req => {
@@ -259,22 +320,21 @@ class PayrollService extends cds.ApplicationService {
                         // Get Posting Config
                         const postingConfig = await SELECT.one.from(PostingBatchConfig);
 
-                        // Get FDM Data
-                        const fdmUtils = new FDMUtils(fdm);
-                        await fdmUtils.getExchangeRates();
-
                         // Get Data to Copy
                         const dataHeader = await SELECT.one.from(UploadHeader).where({ ID: batchToApprove, STATUS: 'APPROVED' });
-                        const dataItems = (await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' }))
-                            .sort((a, b) => {
-                                if (a.FMNO < b.FMNO) { return -1 }
-                                if (a.FMNO > b.FMNO) { return 1 }
-                                return 0
-                            });
+                        const dataItems = (await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' }).orderBy(`FMNO asc`));
+
+                        // Get FDM Data
+                        const fdmUtils = new FDMUtils(fdm);
+                        await fdmUtils.getExchangeRates(dataHeader.currencyCode, dataHeader.payrollDate);
+                        if (fdmUtils.exchangeRates.length == 0) {
+                            throw ({ message: `Exchange Rates not found for ${dataHeader.currencyCode} and payrollDate ${dataHeader.payrollDate}` });
+                        }
 
                         // Get Mapping Data
                         const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: dataHeader.glCompanyCode });
                         const dataMapping = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
+                        const ledgerControl = await SELECT.one.from(PayrollLedgerControl).where({ TRANSACTIONTYPE: dataHeader.transactionType});
 
                         if (dataHeader) {
                             // COPY DATA TO PERSISTENT TABLES
@@ -305,23 +365,25 @@ class PayrollService extends cds.ApplicationService {
                             console.log(`Header added to results table: ${resultCopyHeader.results.length}`);
 
                             // ITEMS
-                            let postingBatches = 1;
                             let lineCounter = 0;
                             let fmnoList = [];
+                            let postingBatches = 1;
                             const payloadItems = dataItems.map((item) => {
-                                if (fmnoList.length >= postingConfig.maxFMNO_perPostingBatch) {
-                                    postingBatches += 1;
-                                    fmnoList = [];
-                                }
-                                if (fmnoList.indexOf(item.fmno) == -1) { fmnoList.push(item.fmno) };
+                                const fmnoActiveInBatch = (fmnoList.indexOf(item.fmno) > -1);
+                                if (!fmnoActiveInBatch) {
+                                    if (fmnoList.length > postingConfig.maxFMNO_perPostingBatch) {
+                                        postingBatches = Math.ceil(fmnoList.length / postingConfig.maxFMNO_perPostingBatch) || 1;
+                                    }
+                                    fmnoList.push(item.fmno);
+                                };
 
                                 const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
                                 if (!mapObj) { console.log(`Unable to find mapping for ${item.payrollCode} : ${item.payrollCodeSequence}`) };
 
-                                const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate('USD', currencyCode);
-                                const glExchangeRateSourceToCompany = fdmUtils.getExchangeRate(currencyCode, currencyCode);
+                                const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate(currencyCode, 'USD');
+                                const glExchangeRateSourceToCompany = fdmUtils.getExchangeRate(currencyCode, item.glCurrencyCode);
                                 if (!glExchangeRateSourceToCompany) {
-                                    throw ({ message: `Unable to approve Batch ID:${batchToApprove}. Exchange Rate does not exist for ${currencyCode} to ${currencyCode}` });
+                                    throw ({ message: `Unable to approve Batch ID:${batchToApprove}. Exchange Rate does not exist for ${currencyCode} to ${item.glCurrencyCode}` });
                                 }
                                 //const glExchangeRateSourceToChargeCompany = fdmUtils.getExchangeRate(item.glCurrencyCode, currencyCode);
 
@@ -342,8 +404,8 @@ class PayrollService extends cds.ApplicationService {
                                 return {
                                     batchID_batchID: batchToApprove,
                                     batchLineNumber: lineCounter += 1,
-                                    postingBatchID: `${postingBatches}.1`,
-                                    postingBatchIDCBLedger: ['01', '02', '04'].includes(transactionType) ? `${postingBatches}.2` : null,
+                                    postingBatchID: ledgerControl ? `${postingBatches}.1` : null,
+                                    postingBatchIDCBLedger: ledgerControl?.ledgerGroupCB ? `${postingBatches}.2` : null,
                                     fcat: item.fcat,
                                     fmno: item.fmno,
                                     paymentID: item.paymentId,
@@ -362,8 +424,8 @@ class PayrollService extends cds.ApplicationService {
                                     qualifiedCompensation: mapObj.qualifiedCompensation,
                                     cashAmount: item.amount,
                                     chargeAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
-                                    chargeCompany: item.glCompanyCode,
-                                    chargeConversionDate: glExchangeRateSourceToCompany.updateDate,
+                                    chargeCompany: glCompanyCode,
+                                    chargeConversionDate: utils.convertPeriodToDate(glExchangeRateSourceToCompany.period),
                                     chargeConversionRate: glExchangeRateSourceToCompany.exchangeRate,
                                     chargeConversionType: "M",
                                     chargeCostCenter: item.glCostCenter,
@@ -371,13 +433,14 @@ class PayrollService extends cds.ApplicationService {
                                     chargeDepartment: item.glCostCenter.slice(-5),
                                     chargeGoc: item.glCostCenter.substring(0, 3),
                                     glAccount: item.glAccount,
+                                    glAccountCBLedger: item.glAccountCB,
                                     glPostAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
                                     glPostCompany: glCompanyCode,
                                     glPostCostCenter: glPostCostCenter,
                                     glPostDepartment: glPostCostCenter.slice(-5),
                                     glPostGoc: glPostCostCenter.substring(0, 3),
                                     glConversionRate: glExchangeRateSourceToCompany.exchangeRate,
-                                    glCurrencyCode: currencyCode,
+                                    glCurrencyCode: item.glCurrencyCode,
                                     postingAggregation: aggregationType,
                                     advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.loanAdvanceReferenceNumber : null,
                                     loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.loanAdvanceReferenceNumber : null,
@@ -399,7 +462,8 @@ class PayrollService extends cds.ApplicationService {
                                     postingStatusMessage: "Posting to S/4HANA pending.",
                                     postingType: "STANDARD"
                                 });
-                                if (['01', '02', '04'].includes(transactionType)) {
+
+                                if ( ledgerControl?.ledgerGroupCB ) {
                                     const resultCreatePostingBatchCB = await INSERT.into(PostingBatch).entries({
                                         batchId: dataHeader.ID,
                                         postingBatchId: `${postingBatchID}.2`,
@@ -411,12 +475,11 @@ class PayrollService extends cds.ApplicationService {
                             }
 
                             // Commit before trigger
-                            const tx = cds.tx()
-                            await tx.commit();
+                            await db.commit();
 
-                            this.emit("trigger", { batchToApprove });
+                            await this.emit("trigger", { batchToApprove });
 
-                            return batchToApprove;
+                            //return batchToApprove;
                         } else {
                             req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
                         }
@@ -437,27 +500,9 @@ class PayrollService extends cds.ApplicationService {
         this.on("trigger", async req => {
             const batchId = req.data.batchToApprove || req.params[0];
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
-            const responseCPI = await cpi.send({ path: `cd_lass_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
-            //console.log(`CPI Trigger - Response: ${responseCPI}`);
-            // const cpiTrigger = () => {
-            //     return new Promise(async (resolve, reject) => {
-            //         setTimeout(async () => {
-            //             console.log(`CPI Trigger - Starting for batch ${batchId}`);
-            //             const cpiToken = await SecurityUtils.getOauthTokenClientCredentials('https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token', 'sb-e73d3295-550c-4a6a-b1ff-523a54304a70!b126539|it-rt-erpdevsd!b117912', '07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=');
-            //             try {
-            //                 axios.defaults.baseURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http`;
-            //                 axios.defaults.headers.common = { 'Authorization': `Bearer ${cpiToken}` };
-            //                 const cpiURL = `https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/http/cd_lass_payroll_trigger?BatchID=${batchId}`;
-            //                 const responseCPI = await axios.get(cpiURL);
-            //                 console.log(`CPI Trigger - Result: ${cpiURL}:${responseCPI.status}:${responseCPI.statusText}`);
-            //                 resolve(responseCPI);
-            //             } catch (ex) {
-            //                 console.log("CPI Trigger - Error:: " + ex.message);
-            //             };
-            //         }, 3000);
-            //     })
-            // };
-            // await cpiTrigger();
+            const resultTrigger = await cpi.send({ path: `/cd_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
+            console.log(`CPI Response: ${resultTrigger.substring(0, 200)}`);
+            return true;
         });
 
         this.after("READ", "StagingUploads", async (result) => {
@@ -520,14 +565,25 @@ class PayrollService extends cds.ApplicationService {
             return true;
         });
 
-        this.after('UPDATE', "PostingBatch", async (req) => {
-            const batchId = req.batchId;
+        this.after('UPDATE', "PostingBatch", async (postingBatch) => {
+            const batchId = postingBatch.batchId;
+            const postingBatchId = postingBatch.postingBatchID;
 
-            const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId });
-            const isPostingFinal = postingResults.every((res) => (res.POSTINGSTATUS != "PENDING"));
+            const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId })
+
+            const isPostingFinal = postingResults.every((res) => {
+                let resToCheck;
+                 // Use data just updated, but not yet committed.
+                if (res.POSTINGBATCHID == postingBatchId) { resToCheck = postingBatch } else { resToCheck = res };
+                return (resToCheck.POSTINGSTATUS != "PENDING");
+            });
+            console.log(`PostingBatch ${batchId} updated.`);
+
             if (isPostingFinal) {
                 const isPostingError = postingResults.every((res) => (res.POSTINGSTATUS == "ERROR"));
+                console.log(`PostingBatch ${batchId} final with ${isPostingError ? 'ERROR' : 'POSTED'}`);
                 const resultStagingStatus = await UPDATE(`Staging_UploadHeader`, { ID: batchId }).with({ STATUS: isPostingError ? 'ERROR' : 'POSTED' });
+                console.log(resultStagingStatus);
                 return resultStagingStatus;
             }
         });

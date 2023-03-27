@@ -60,16 +60,13 @@
         "model": "srv/external/fdm_masterdata",
         "credentials": {
           "destination": "FDM_BTP",
-          "path": "/masterdata",
-          "queries": {
-            "sap-client": "200"
-          }
+          "path": "/masterdata"
         }
       },
-      "cpi":{
+      "cpi": {
         "kind": "rest",
-        "credentials":{
-          "destination":"cpi",
+        "credentials": {
+          "destination": "cpi",
           "path": "/http"
         }
       },

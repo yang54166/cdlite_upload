@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (BaseController) {
     "use strict";
 
-    return BaseController.extend("mck.cdlite.payrollupload.controller.App", {
+    return BaseController.extend("cd_cdlitepayrollupload_f.controller.App", {
 
         onInit : function () {
             // apply content density mode to root view

@@ -26,6 +26,11 @@ sap.ui.define([], function () {
                 default:
                     return "None";
             }
+        },
+
+        getLocalAmount: function (sAmount) {
+            var locale = navigator.language;
+            return Intl.NumberFormat(locale).format(sAmount);
         }
 
     };
