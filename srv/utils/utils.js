@@ -108,10 +108,6 @@ const utils = {
         });
     },
 
-    validatePostingIncludesCBLedger: (transactionType)=> {
-        return ['01', '02', '04'].includes(transactionType)
-    },
-
     validateTransactionTypeShouldNetZero: (transactionType)=> {
         return ['01', '03', '04'].includes(transactionType)
     },

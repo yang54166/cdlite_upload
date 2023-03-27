@@ -223,7 +223,7 @@ sap.ui.define([
                 sKey = oEvent.getParameter("selectedKey");
             var sHeaderStatus = this._sHeaderStatus;
 
-            if (sHeaderStatus.toUpperCase() === 'APPROVED')
+            if (['APPROVED','POSTED','ERROR'].includes(sHeaderStatus.toUpperCase()))
                 this._mFilters = {
                     "success": [new Filter('status', FilterOperator.EQ, 'APPROVED')],
                     "inError": [new Filter('status', FilterOperator.EQ, 'SKIPPED')],
@@ -293,7 +293,7 @@ sap.ui.define([
             var oAllCurrentContexts = oItemsBinding.getAllCurrentContexts();
             this._oAllCurrentObjs = oAllCurrentContexts.map(oContext => oContext.getObject());
             var that = this;
-            if (that._sHeaderStatus.toUpperCase() === 'APPROVED' || that._sHeaderStatus.toUpperCase() === 'POSTED' || that._sHeaderStatus.toUpperCase() === 'ERROR') {
+            if (['APPROVED','POSTED','ERROR'].includes(that._sHeaderStatus.toUpperCase())) {
                 var oApproveList = that._oModel.bindContext("/PayrollHeader(" + that._ID + ")");
                 oApproveList.requestObject().then(function (sObject) {
                     //  console.log(sObject);
@@ -355,7 +355,7 @@ sap.ui.define([
                     oViewModel.setProperty("/countAll", iTotalItems);
                     var succCnt = 0, errorCnt = 0;
 
-                    if (that._sHeaderStatus.toUpperCase() === 'APPROVED') {
+                    if (['APPROVED','POSTED','ERROR'].includes(that._sHeaderStatus.toUpperCase())) {
                         var succCnt = that.getFilteredCnt(that._oAllCurrentObjs, "APPROVED");
                         var errorCnt = that.getFilteredCnt(that._oAllCurrentObjs, "SKIPPED");
 
@@ -621,11 +621,13 @@ sap.ui.define([
                     that.getView().getModel().refresh();
                     var sMsg = "BATCH " + that._ID + " was revalidated successfully!";
                     MessageBox.success(sMsg);
+                    that.getView().getBindingContext().refresh();
                 },
                 error: function (e) {
                     sap.ui.core.BusyIndicator.hide();
                     var sMsg = "Error while performing revalidation";
                     MessageBox.error(sMsg);
+                    that.getView().getBindingContext().refresh();
                 }
             })
 
