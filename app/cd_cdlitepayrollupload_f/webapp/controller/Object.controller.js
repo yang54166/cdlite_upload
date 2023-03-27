@@ -39,7 +39,17 @@ sap.ui.define([
             // Model used to manipulate control states. The chosen values make sure,
             // detail page shows busy indication immediately so there is no break in
             // between the busy indication for loading the view's meta data
-       //     this._oUserScopeModel = this.getOwnerComponent().getModel("userScope");
+            this._userDelete = false;
+            this._userApprove = false;
+            var currentUserModel = this.getOwnerComponent().getModel("userAttributes");
+            var userScope = currentUserModel.getData().scopes;
+            var aDeleteScope = userScope.findIndex(x => x === 'delete');
+            var aApproveScope = userScope.findIndex(x => x === 'approve');
+            if (aDeleteScope >= 1)
+                this._userDelete = true;
+            if (aApproveScope >= 1)
+                this._userApprove = true;    
+
             var oViewModel = new JSONModel({
                 busy: true,
                 delay: 0,
@@ -50,8 +60,6 @@ sap.ui.define([
                 inError: 0,
                 success: 0,
                 countAll: 0,
-            //    enableApproveButton: this._oUserScopeModel.getProperty("userApprove"),
-           //     enableDeleteButton: this._oUserScopeModel.getProperty("userDelete"),
                 enableApproveButton: false,
                 enableDeleteButton: false,
                 enableReValButton: false
@@ -305,45 +313,36 @@ sap.ui.define([
 
                 switch (that._sHeaderStatus.toUpperCase()) {
                     case "VALIDATED":
-                  //      if (this._oUserScopeModel.getProperty("userDelete"))
+                        if (this._userDelete)
                             oViewModel.setProperty("/enableDeleteButton", true);
 
                         oViewModel.setProperty("/enableRevalButton", true);
 
-                   //     if (this._oUserScopeModel.getProperty("userApprove"))
+                        if (this._userApprove)
                             oViewModel.setProperty("/enableApproveButton", true);
 
                         break;
                     case "STAGED":
-                  //      if (this._oUserScopeModel.getProperty("userDelete"))
+                        if (this._userDelete)
                             oViewModel.setProperty("/enableDeleteButton", true);
                         oViewModel.setProperty("/enableRevalButton", true);
-                 //       if (this._oUserScopeModel.getProperty("userApprove"))
-                            oViewModel.setProperty("/enableApproveButton", false);
+                    
+                        oViewModel.setProperty("/enableApproveButton", false);
                         break;
                     case "APPROVED":
-
-                 //       if (this._oUserScopeModel.getProperty("userDelete"))
-                            oViewModel.setProperty("/enableDeleteButton", false);
+                        oViewModel.setProperty("/enableDeleteButton", false);
                         oViewModel.setProperty("/enableRevalButton", false);
-                 //       if (this._oUserScopeModel.getProperty("userApprove"))
-                            oViewModel.setProperty("/enableApproveButton", false);
+                        oViewModel.setProperty("/enableApproveButton", false);
                         break;
                     case "POSTED":
-
-              //          if (this._oUserScopeModel.getProperty("userDelete"))
-                            oViewModel.setProperty("/enableDeleteButton", false);
+                        oViewModel.setProperty("/enableDeleteButton", false);
                         oViewModel.setProperty("/enableRevalButton", false);
-             //           if (this._oUserScopeModel.getProperty("userApprove"))
-                            oViewModel.setProperty("/enableApproveButton", false);
+                        oViewModel.setProperty("/enableApproveButton", false);
                         break;
                     case "ERROR":
-
-             //           if (this._oUserScopeModel.getProperty("userDelete"))
-                            oViewModel.setProperty("/enableDeleteButton", false);
+                        oViewModel.setProperty("/enableDeleteButton", false);
                         oViewModel.setProperty("/enableRevalButton", false);
-            //            if (this._oUserScopeModel.getProperty("userApprove"))
-                            oViewModel.setProperty("/enableApproveButton", false);
+                        oViewModel.setProperty("/enableApproveButton", false);
                         break;
                     default:
                         oViewModel.setProperty("/enableDeleteButton", false);
@@ -366,7 +365,6 @@ sap.ui.define([
                         var errorCnt = that.getFilteredCnt(that._oAllCurrentObjs, "INVALID");
 
                     }
-
 
                     oViewModel.setProperty("/success", succCnt);
                     oViewModel.setProperty("/inError", errorCnt);

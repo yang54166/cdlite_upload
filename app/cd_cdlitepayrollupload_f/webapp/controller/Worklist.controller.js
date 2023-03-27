@@ -26,49 +26,25 @@ sap.ui.define([
             var oViewModel;
             this._oModel = this.getOwnerComponent().getModel();
 
-            // var currentUser = this._oModel.bindContext("/user-api/currentUser");
-            var url = "payroll/CurrentUser";
-            $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "json",
-                sucess: function (result) {
-                    console.log(result);
-                },
-                error: function (e) {
-                    console.log(e.message);
-                }
-            });
             // keeps the search state
             this._aTableSearchState = [];
+
+            var currentUserModel = this.getOwnerComponent().getModel("userAttributes");
             var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
 
             var uploadRangesModel = this.getOwnerComponent().getModel("uploadRangesData");
 
             var oUserModel = new JSONModel({
-                userApprove: true,
-                userDelete: true,
-                userUpload: true
-
+                userUpload: false
             });
 
-            var oUserAttributes = this.getOwnerComponent().getModel("userAttributes");
 
-            var aScopes = oUserAttributes.getProperty("/scopes");
-            if (aScopes !== undefined) {
-                var aUploadScope = aScopes.filter(x => x.lastIndexOf(".upload") > 0);
-                var aApproveScope = aScopes.filter(x => x.lastIndexOf(".approve") > 0);
-                var aDeleteScope = aScopes.filter(x => x.lastIndexOf(".delete") > 0);
+            var userScope = currentUserModel.getData().scopes;
+            var aUploadScope = userScope.findIndex(x => x === 'upload');
+      
+            if (aUploadScope >= 1)
+                oUserModel.setProperty("/userUpload", true);
 
-                if (aUploadScope.length > 0)
-                    oUserModel.setProperty("/userUpload", true);
-
-                if (aApproveScope.length > 0)
-                    oUserModel.setProperty("/userApprove", true);
-
-                if (aDeleteScope.length > 0)
-                    oUserModel.setProperty("/userDelete", true);
-            }
 
             // Model used to manipulate control states
             oViewModel = new JSONModel({
