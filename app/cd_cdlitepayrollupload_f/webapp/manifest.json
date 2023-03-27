@@ -25,6 +25,10 @@
           "odataVersion": "4.0"
         }
       },
+      "userApi": {
+        "uri": "/payroll/CurrentUser",
+        "type": "JSON"
+      },
       "transTypesData": {
         "uri": "model/trans_types.json",
         "type": "JSON"
@@ -104,6 +108,11 @@
           "earlyRequests": true,
           "groupId": "$auto"
         }
+      },
+      "userAttributes": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "userApi",
+        "preload": true
       },
       "transTypesData": {
         "type": "sap.ui.model.json.JSONModel",

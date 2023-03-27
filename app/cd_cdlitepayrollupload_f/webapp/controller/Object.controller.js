@@ -39,6 +39,17 @@ sap.ui.define([
             // Model used to manipulate control states. The chosen values make sure,
             // detail page shows busy indication immediately so there is no break in
             // between the busy indication for loading the view's meta data
+            this._userDelete = false;
+            this._userApprove = false;
+            var currentUserModel = this.getOwnerComponent().getModel("userAttributes");
+            var userScope = currentUserModel.getData().scopes;
+            var aDeleteScope = userScope.findIndex(x => x === 'delete');
+            var aApproveScope = userScope.findIndex(x => x === 'approve');
+            if (aDeleteScope >= 1)
+                this._userDelete = true;
+            if (aApproveScope >= 1)
+                this._userApprove = true;    
+
             var oViewModel = new JSONModel({
                 busy: true,
                 delay: 0,
@@ -302,13 +313,20 @@ sap.ui.define([
 
                 switch (that._sHeaderStatus.toUpperCase()) {
                     case "VALIDATED":
-                        oViewModel.setProperty("/enableDeleteButton", true);
+                        if (this._userDelete)
+                            oViewModel.setProperty("/enableDeleteButton", true);
+
                         oViewModel.setProperty("/enableRevalButton", true);
-                        oViewModel.setProperty("/enableApproveButton", true);
+
+                        if (this._userApprove)
+                            oViewModel.setProperty("/enableApproveButton", true);
+
                         break;
                     case "STAGED":
-                        oViewModel.setProperty("/enableDeleteButton", true);
+                        if (this._userDelete)
+                            oViewModel.setProperty("/enableDeleteButton", true);
                         oViewModel.setProperty("/enableRevalButton", true);
+                    
                         oViewModel.setProperty("/enableApproveButton", false);
                         break;
                     case "APPROVED":
@@ -347,7 +365,6 @@ sap.ui.define([
                         var errorCnt = that.getFilteredCnt(that._oAllCurrentObjs, "INVALID");
 
                     }
-
 
                     oViewModel.setProperty("/success", succCnt);
                     oViewModel.setProperty("/inError", errorCnt);
@@ -601,6 +618,7 @@ sap.ui.define([
                 headers: sHeaders,
                 success: function (result) {
                     sap.ui.core.BusyIndicator.hide();
+                    that.getView().getModel().refresh();
                     var sMsg = "BATCH " + that._ID + " was revalidated successfully!";
                     MessageBox.success(sMsg);
                     that.getView().getBindingContext().refresh();
@@ -642,7 +660,7 @@ sap.ui.define([
                 error: function (e) {
                     that.closeApprovalDialog();
                     oApprovalDialog.setBusy(false);
-                    var sMsg = `${e?.responseJSON?.error?.message || JSON.stringify(e,null,2)}`;
+                    var sMsg = `${e?.responseJSON?.error?.message || JSON.stringify(e, null, 2)}`;
                     MessageBox.error(sMsg);
                 }
             })

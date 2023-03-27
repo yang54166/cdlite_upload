@@ -9,7 +9,7 @@ sap.ui.define([
 ], function (BaseController, Fragment, JSONModel, formatter, MessageBox, Filter, FilterOperator) {
     "use strict";
 
-    return BaseController.extend("cd_cdlitepayrollupload_f.controller.Worklist", {
+    return BaseController.extend("mck.cdlite.payrollupload.controller.Worklist", {
 
         formatter: formatter,
         _oDialog: null,
@@ -25,24 +25,25 @@ sap.ui.define([
         onInit: function () {
             var oViewModel;
             this._oModel = this.getOwnerComponent().getModel();
-            // var currentUser = this._oModel.bindContext("/user-api/currentUser");
-            var url = "payroll/CurrentUser";
-            $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "json",
-                sucess: function (result) {
-                    console.log(result);
-                },
-                error: function (e) {
-                    console.log(e.message);
-                }
-            });
+
             // keeps the search state
             this._aTableSearchState = [];
+
+            var currentUserModel = this.getOwnerComponent().getModel("userAttributes");
             var transTypesModel = this.getOwnerComponent().getModel("transTypesData");
 
             var uploadRangesModel = this.getOwnerComponent().getModel("uploadRangesData");
+
+            var oUserModel = new JSONModel({
+                userUpload: false
+            });
+
+
+            var userScope = currentUserModel.getData().scopes;
+            var aUploadScope = userScope.findIndex(x => x === 'upload');
+      
+            if (aUploadScope >= 1)
+                oUserModel.setProperty("/userUpload", true);
 
 
             // Model used to manipulate control states
@@ -54,7 +55,7 @@ sap.ui.define([
             });
             this.setModel(oViewModel, "worklistView");
             this.setModel(transTypesModel, "transTypes");
-
+            this.setModel(oUserModel, "userScope");
             this.setModel(uploadRangesModel, "uploadRangesList");
 
             var that = this;
@@ -286,7 +287,7 @@ sap.ui.define([
                 // load asynchronous XML fragment
                 Fragment.load({
                     id: oView.getId(),
-                    name: "cd_cdlitepayrollupload_f.fragments.Upload",
+                    name: "mck.cdlite.payrollupload.fragments.Upload",
                     controller: this
                 }).then(function (oDialog) {
                     // connect dialog to the root view 
@@ -542,7 +543,7 @@ sap.ui.define([
             if (!this._pPopover) {
                 this._pPopover = Fragment.load({
                     id: oView.getId(),
-                    name: "cd_cdlitepayrollupload_f.fragments.Settings",
+                    name: "mck.cdlite.payrollupload.fragments.Settings",
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);

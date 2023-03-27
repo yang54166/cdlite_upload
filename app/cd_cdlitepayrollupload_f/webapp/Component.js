@@ -28,6 +28,19 @@ sap.ui.define([
             // set the device model
             this.setModel(models.createDeviceModel(), "device");
 
+  /*          var url = "/user-api/currentUser";
+            $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                sucess: function (result) {
+                    console.log(result);
+                },
+                error: function (e) {
+                    console.log(e.message);
+                }
+            }); */
+
             // create the views based on the url/hash
             this.getRouter().initialize();
         },
