@@ -12,41 +12,66 @@ using {
 } from '../db/virtual';
 using {fdm_masterdata} from './external/fdm_masterdata';
 
-service PayrollService  @(requires: 'authenticated-user') {
+service PayrollService @(requires : 'authenticated-user') {
     // For Upload Only, not persisted to db as binary
+    @Capabilities : {
+        InsertRestrictions.Insertable : false,
+        UpdateRestrictions.Updatable  : true,
+        DeleteRestrictions.Deletable  : false
+    }
     @cds.persistence.skip
     @odata.singleton
-    entity PayrollUploadFile {
-        @Core.MediaType : mediaType content : LargeBinary;
-        @Core.IsMediaType: true mediaType: String;
+    entity PayrollUploadFile @(restrict : [{
+        grant : 'WRITE',
+        to    : 'upload'
+    }]) {
+        @Core.MediaType   : mediaType content : LargeBinary;
+        @Core.IsMediaType : true mediaType    : String;
     };
 
+    @Capabilities : {
+        InsertRestrictions.Insertable : false,
+        UpdateRestrictions.Updatable  : true,
+        DeleteRestrictions.Deletable  : false
+    }
     @cds.persistence.skip
     @odata.singleton
-    entity MappingUploadFile {
-        @Core.MediaType : mediaType content : LargeBinary;
-        @Core.IsMediaType: true mediaType: String;
+    entity MappingUploadFile @(restrict : [{
+        grant : 'WRITE',
+        to    : 'upload'
+    }]) {
+        @Core.MediaType   : mediaType content : LargeBinary;
+        @Core.IsMediaType : true mediaType    : String;
     };
 
     // Staging
-    entity StagingUploads      as projection on staging.UploadHeader actions {
+    entity StagingUploads @(restrict : [{
+        grant : 'DELETE',
+        to    : 'delete'
+    }])                                            as projection on staging.UploadHeader actions {
+        @(requires: 'approve')
         action approve();
         action enrich();
         action trigger();
     };
-    entity StagingUploadItems  as projection on staging.UploadItems;
+    entity StagingUploadItems                      as projection on staging.UploadItems;
 
     // Payroll (Persistent)
+
     entity PayrollHeader       as projection on payroll.PayrollHeader;
     entity PayrollDetails      as projection on payroll.PayrollDetails;
     entity PostingBatch        as projection on payroll.PostingBatch
-        excluding {postingType, createdAt, createdBy, modifiedAt, modifiedBy};
+    excluding {postingType, createdAt, createdBy, modifiedAt, modifiedBy};
 
     // Mapping
-    entity LegalEntityGrouping as projection on mapping.LegalEntityGrouping ;
-    entity PaycodeGLMapping    as projection on mapping.PaycodeGLMapping;
-    entity TransactionTypes as projection on mapping.PayrollLedgerControl;
-    action deleteAllMapping(mappingTable: String);
+    @(requires: 'admin')
+    entity LegalEntityGrouping                     as projection on mapping.LegalEntityGrouping;
+    @(requires: 'admin')
+    entity PaycodeGLMapping                        as projection on mapping.PaycodeGLMapping;
+    @(requires: 'admin')
+    entity TransactionTypes                        as projection on mapping.PayrollLedgerControl;
+    @(requires: 'delete')
+    action deleteAllMapping(mappingTable : String);
 
     // JournalEntries for Posting
     @readonly entity JournalEntry        as projection on CV_JOURNALENTRY;
@@ -80,4 +105,5 @@ service CdPasService  @(requires: 'authenticated-user') {
     @readonly entity PartnerCompData(IP_PERIOD : String(13)) as select from CV_PARTNER_COMP_DATA(
         IP_PERIOD : : IP_PERIOD
     ) {*};
+
 }
