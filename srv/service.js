@@ -323,16 +323,13 @@ class PayrollService extends cds.ApplicationService {
                         // Get Data to Copy
                         const dataHeader = await SELECT.one.from(UploadHeader).where({ ID: batchToApprove, STATUS: 'APPROVED' });
                         const dataItems = (await SELECT.from(UploadItems).where({ PARENT_ID: batchToApprove, STATUS: 'APPROVED' }).orderBy(`FMNO asc`));
-                            // .sort((a, b) => {
-                            //     if (a.FMNO < b.FMNO) { return -1 }
-                            //     if (a.FMNO > b.FMNO) { return 1 }
-                            //     return 0
-                            // });
-
 
                         // Get FDM Data
                         const fdmUtils = new FDMUtils(fdm);
                         await fdmUtils.getExchangeRates(dataHeader.currencyCode, dataHeader.payrollDate);
+                        if (fdmUtils.exchangeRates.length == 0){
+                            throw ({ message: `Exchange Rates not found for ${dataHeader.currencyCode} and payrollDate ${dataHeader.payrollDate}` });
+                        }
 
                         // Get Mapping Data
                         const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: dataHeader.glCompanyCode });
@@ -464,6 +461,7 @@ class PayrollService extends cds.ApplicationService {
                                     postingStatusMessage: "Posting to S/4HANA pending.",
                                     postingType: "STANDARD"
                                 });
+
                                 if (['01', '02', '04'].includes(transactionType)) {
                                     const resultCreatePostingBatchCB = await INSERT.into(PostingBatch).entries({
                                         batchId: dataHeader.ID,
@@ -502,7 +500,7 @@ class PayrollService extends cds.ApplicationService {
             const batchId = req.data.batchToApprove || req.params[0];
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
             const resultTrigger = await cpi.send({ path: `/cd_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
-            console.log(`CPI Response: ${resultTrigger}`);
+            console.log(`CPI Response: ${resultTrigger.substring(0,200)}`);
             return true;
         });
 
@@ -565,9 +563,13 @@ class PayrollService extends cds.ApplicationService {
 
             const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId });
             const isPostingFinal = postingResults.every((res) => (res.POSTINGSTATUS != "PENDING"));
+            console.log(`PostingBatch ${batchId} updated.`);
             if (isPostingFinal) {
+               
                 const isPostingError = postingResults.every((res) => (res.POSTINGSTATUS == "ERROR"));
+                console.log(`PostingBatch ${batchId} final with ${isPostingError? 'ERROR' : 'POSTED'}`);
                 const resultStagingStatus = await UPDATE(`Staging_UploadHeader`, { ID: batchId }).with({ STATUS: isPostingError ? 'ERROR' : 'POSTED' });
+                console.log(resultStagingStatus);
                 return resultStagingStatus;
             }
         });
