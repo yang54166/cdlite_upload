@@ -478,8 +478,6 @@ sap.ui.define([
             var listPostingSummary = this.getView().byId("postingSummaryList");
             listPostingSummary.setBusy(true);
 
-            oView.getBindingContext().refresh();
-            
             window.setTimeout(() => {
                 var batchId = this.getView().getBindingContext().getObject().ID
                 var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(batchId));
@@ -491,6 +489,9 @@ sap.ui.define([
 
                     listPostingSummary.setBusy(false);
                 });
+                
+                oView.getBindingContext().refresh();
+            
             }, 1000);
 
         },
