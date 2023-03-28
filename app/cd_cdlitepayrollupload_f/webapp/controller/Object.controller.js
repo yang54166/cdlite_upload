@@ -39,16 +39,10 @@ sap.ui.define([
             // Model used to manipulate control states. The chosen values make sure,
             // detail page shows busy indication immediately so there is no break in
             // between the busy indication for loading the view's meta data
-            this._userDelete = false;
-            this._userApprove = false;
             var currentUserModel = this.getOwnerComponent().getModel("userAttributes");
             var userScope = currentUserModel.getData().scopes;
-            var aDeleteScope = userScope.findIndex(x => x === 'delete');
-            var aApproveScope = userScope.findIndex(x => x === 'approve');
-            if (aDeleteScope >= 1)
-                this._userDelete = true;
-            if (aApproveScope >= 1)
-                this._userApprove = true;    
+            this._userDelete =  userScope?.includes('delete') || false;
+            this._userApprove = userScope?.includes('approve') || false;
 
             var oViewModel = new JSONModel({
                 busy: true,
@@ -484,6 +478,8 @@ sap.ui.define([
             var listPostingSummary = this.getView().byId("postingSummaryList");
             listPostingSummary.setBusy(true);
 
+            oView.getBindingContext().refresh();
+            
             window.setTimeout(() => {
                 var batchId = this.getView().getBindingContext().getObject().ID
                 var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(batchId));
@@ -609,8 +605,10 @@ sap.ui.define([
             var sHeaders = { "content-type": "application/json", "x-csrf-token": `${csrfToken}` };
             sap.ui.core.BusyIndicator.show();
             var that = this;
+            const enrichUrl =  `${that.getBaseUrl("payroll")}${sPath}/enrich`
+            console.log(enrichUrl);
             jQuery.ajax({
-                url: "payroll" + sPath + "/enrich",
+                url: enrichUrl,
                 type: "POST",
                 async: true,
                 data: {},
@@ -640,8 +638,10 @@ sap.ui.define([
             var oApprovalDialog = this.byId("approveDialog");
             oApprovalDialog.setBusy(true);
             var that = this;
+            const approveUrl =  `${that.getBaseUrl("payroll")}${sPath}/approve`
+            console.log(approveUrl);
             jQuery.ajax({
-                url: "payroll" + sPath + "/approve",
+                url: approveUrl,
                 type: "POST",
                 async: true,
                 data: {},

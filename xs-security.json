@@ -164,57 +164,6 @@
       "description": "admin role"
     }
   ],
-  "role-collections": [
-    {
-      "name": "ZBC:APP_PAB:UPLD_US",
-      "description": "US accounting user role",
-      "role-template-references": [
-        "$XSAPPNAME.Accounting_US"
-      ]
-    },
-    {
-      "name": "ZBC:APP_PAB:UPLD_CA",
-      "description": "CA accounting user role",
-      "role-template-references": [
-        "$XSAPPNAME.Accounting_CA"
-      ]
-    },
-    {
-      "name": "ZBC:APP_PAB:UPLD_DE",
-      "description": "DE accounting user role",
-      "role-template-references": [
-        "$XSAPPNAME.Accounting_DE"
-      ]
-    },
-    {
-      "name": "ZBC:APP_PAB:UPLD_GB",
-      "description": "GB accounting user role",
-      "role-template-references": [
-        "$XSAPPNAME.Accounting_GB"
-      ]
-    },
-    {
-      "name": "ZBC:APP_PAB:APR_NA",
-      "description": "NA approver role",
-      "role-template-references": [
-        "$XSAPPNAME.Approver_NA"
-      ]
-    },
-    {
-      "name": "ZBC:APP_PAB:APR_EU",
-      "description": "EU approver role",
-      "role-template-references": [
-        "$XSAPPNAME.Approver_EU"
-      ]
-    },
-    {
-      "name": "ZBC:APP_PAB:ADM",
-      "description": "Global admin role",
-      "role-template-references": [
-        "$XSAPPNAME.Admin"
-      ]
-    }
-  ],
   "oauth2-configuration": {
     "redirect-uris": [
       "https://**.cfapps.eu10.hana.ondemand.com/login/callback",

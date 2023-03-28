@@ -570,7 +570,8 @@ class PayrollService extends cds.ApplicationService {
             const postingBatchId = postingBatch.postingBatchID;
 
             const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId })
-
+            console.log(postingResults);
+            
             const isPostingFinal = postingResults.every((res) => {
                 let resToCheck;
                  // Use data just updated, but not yet committed.

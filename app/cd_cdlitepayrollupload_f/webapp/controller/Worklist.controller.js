@@ -9,7 +9,7 @@ sap.ui.define([
 ], function (BaseController, Fragment, JSONModel, formatter, MessageBox, Filter, FilterOperator) {
     "use strict";
 
-    return BaseController.extend("mck.cdlite.payrollupload.controller.Worklist", {
+    return BaseController.extend("cd_cdlitepayrollupload_f.controller.Worklist", {
 
         formatter: formatter,
         _oDialog: null,
@@ -40,7 +40,7 @@ sap.ui.define([
 
 
             var userScope = currentUserModel.getData().scopes;
-            var aUploadScope = userScope.findIndex(x => x === 'upload');
+            var aUploadScope = userScope?.findIndex(x => x === 'upload');
       
             if (aUploadScope >= 1)
                 oUserModel.setProperty("/userUpload", true);
@@ -287,7 +287,7 @@ sap.ui.define([
                 // load asynchronous XML fragment
                 Fragment.load({
                     id: oView.getId(),
-                    name: "mck.cdlite.payrollupload.fragments.Upload",
+                    name: "cd_cdlitepayrollupload_f.fragments.Upload",
                     controller: this
                 }).then(function (oDialog) {
                     // connect dialog to the root view 
@@ -383,8 +383,9 @@ sap.ui.define([
                 oFileUploader.removeHeaderParameter('x-csrf-token');
                 oFileUploader.addHeaderParameter(headPar);
                 oFileUploader.addHeaderParameter(tokenParameter);
-                const currentPath = location.href.substring(0, location.href.lastIndexOf('/'));
-                oFileUploader.setUploadUrl(`${currentPath}/payroll/PayrollUploadFile/content`);
+                const currentPath = that.getBaseUrl("payroll");
+                console.log(currentPath);
+                oFileUploader.setUploadUrl(`${currentPath}/PayrollUploadFile/content`);
                 oFileUploader
                     .checkFileReadable()
                     .then(function () {
@@ -543,7 +544,7 @@ sap.ui.define([
             if (!this._pPopover) {
                 this._pPopover = Fragment.load({
                     id: oView.getId(),
-                    name: "mck.cdlite.payrollupload.fragments.Settings",
+                    name: "cd_cdlitepayrollupload_f.fragments.Settings",
                     controller: this
                 }).then(function (oPopover) {
                     oView.addDependent(oPopover);
