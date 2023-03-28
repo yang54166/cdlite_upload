@@ -31,7 +31,7 @@
 												path: 'uploadRangesList>/',
 												templateShareable: true
 											}">
-                        <core:Item id="monthYear" key="{uploadRangesList>dateRange}" text="{uploadRangesList>longDesc}" />
+                        <core:Item key="{uploadRangesList>dateRange}" text="{uploadRangesList>longDesc}" />
                     </ComboBox>
                 </l:VerticalLayout>
             </l:HorizontalLayout>
