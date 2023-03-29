@@ -18,7 +18,7 @@ sap.ui.define([
     "sap/m/ColumnListItem",
     "sap/m/Label",
     "sap/ui/core/format/DateFormat",
-    "../utils/ExportUtil"
+    "cd_cdlitepayrollupload_f/utils/ExportUtil"
 ], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat, ExportUtil) {
     "use strict";
 

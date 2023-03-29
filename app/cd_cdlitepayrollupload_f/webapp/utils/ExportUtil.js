@@ -1,4 +1,6 @@
-sap.ui.require(["sap/ui/base/Object", "sap/ui/core/util/Export", "sap/ui/core/util/ExportTypeCSV", "sap/ui/core/util/File"], function (BaseObject, Export, ExportTypeCSV, File) {
+sap.ui.define([
+    "sap/ui/base/Object", "sap/ui/core/util/Export", "sap/ui/core/util/ExportTypeCSV", "sap/ui/core/util/File"], 
+function (BaseObject, Export, ExportTypeCSV, File) {
     "use strict";
 
     return BaseObject.extend("cd_cdlitepayrollupload_f.utils.ExportUtil", {
@@ -16,7 +18,7 @@ sap.ui.require(["sap/ui/base/Object", "sap/ui/core/util/Export", "sap/ui/core/ut
                 let oOutput = [];
                 oColumns.forEach((col)=>{
                     let rowData = row[Object.keys(row).find(key => key.toUpperCase() === col.toUpperCase())];
-                    if ((rowData) && (rowData.toString().indexOf(",") > -1)){
+                    if ((rowData) && (rowData.toString().indexOf(",") > -1) && (rowData.toString().substring(0,1) !== "\"")){
                         rowData = `"${rowData}"`;
                     }
                     oOutput.push(rowData);
