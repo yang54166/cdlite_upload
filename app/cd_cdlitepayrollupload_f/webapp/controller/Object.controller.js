@@ -244,18 +244,7 @@ sap.ui.define([
             oTable.removeSelections(true);
         },
 
-        getSuccCnt: function (oCurrntObjs) {
-            var filteredData = oCurrntObjs.filter(data => (data.status === 'APPROVED' || data.status === 'VALID'));
-            this._succCnt = filteredData.length;
-
-        },
-
-        getErrorCnt: function (oCurrntObjs) {
-            var filteredData = oCurrntObjs.filter(data => (data.status === 'SKIPPED' || data.status === 'INVALID'));
-            this._errorCnt = filteredData.length;
-
-        },
-
+     
         getFilteredCnt: function (oCurrntObjs, status) {
             var filteredData = oCurrntObjs.filter(data => (data.status === status));
             if (status === 'SKIPPED' || status === 'INVALID')
