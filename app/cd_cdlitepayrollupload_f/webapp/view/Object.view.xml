@@ -160,6 +160,14 @@
                     <ObjectPageSubSection id="summaryByCostCenterSS1" titleUppercase="false">
                         <blocks>
                             <m:Table id="costCenterSummary" sticky="HeaderToolbar,ColumnHeaders" items="{costCenterView>/}" class="sapUiSmallMarginTop" mode="None" width="auto" growing="false" updateFinished="">
+                                <m:headerToolbar>
+                                    <m:OverflowToolbar>
+                                        <m:content>
+                                            <m:ToolbarSpacer />
+                                            <m:Button icon="sap-icon://download" press="onDownloadSummary"/>
+                                        </m:content>
+                                    </m:OverflowToolbar>
+                                </m:headerToolbar>
                                 <m:columns>
                                     <m:Column width="8%" demandPopin="false" minScreenWidth="Tablet">
                                         <m:Text text="{i18n>colPayrollPeriod}" />

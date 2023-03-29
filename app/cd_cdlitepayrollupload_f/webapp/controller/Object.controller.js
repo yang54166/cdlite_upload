@@ -17,14 +17,14 @@ sap.ui.define([
     "sap/m/Column",
     "sap/m/ColumnListItem",
     "sap/m/Label",
-    "sap/ui/core/format/DateFormat"
-], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat) {
+    "sap/ui/core/format/DateFormat",
+    "../utils/ExportUtil"
+], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat, ExportUtil) {
     "use strict";
 
     var EdmType = exportLibrary.EdmType;
 
     return BaseController.extend("cd_cdlitepayrollupload_f.controller.Object", {
-
         formatter: formatter,
 
         /* =========================================================== */
@@ -76,28 +76,7 @@ sap.ui.define([
 
 
         },
-        /* =========================================================== */
-        /* event handlers                                              */
-        /* =========================================================== */
-
-
-        /**
-         * Event handler  for navigating back.
-         * It there is a history entry we go one step back in the browser history
-         * If not, it will replace the current entry of the browser history with the worklist route.
-         * @public
-         */
-        onNavBack: function () {
-            var sPreviousHash = History.getInstance().getPreviousHash();
-            if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line sap-no-history-manipulation
-                history.go(-1);
-            } else {
-                this.getRouter().navTo("worklist", {}, true);
-
-            }
-
-        },
+       
 
         /* =========================================================== */
         /* internal methods                                            */
@@ -122,7 +101,6 @@ sap.ui.define([
             //   var sPostingURL = 'payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
             var oPostingData = new JSONModel();
             var that = this;
-            //   that.getPostingData(parseInt(this._ID));
 
             var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(this._ID));
             var sCostCenterFilter = new Filter('BATCH_ID', FilterOperator.EQ, parseInt(this._ID));
@@ -135,30 +113,12 @@ sap.ui.define([
 
                 oSummaryData.setData(aContexts.map(oContext => oContext.getObject()));
                 that.setModel(oSummaryData, "costCenterView");
-
             });
 
             oPostingList.requestContexts().then(function (aContexts) {
 
                 oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
                 that.setModel(oPostingData, "postingView");
-
-            });
-
-
-        },
-
-        getPostingData: function (batchId) {
-            var sFilter = new Filter('batchId', FilterOperator.EQ, batchId);
-            var oList = this._oModel.bindList('/PostingBatch', undefined, undefined, sFilter, undefined);
-            var oPostingData = new JSONModel();
-            var arr = [];
-            oList.requestContexts().then(function (aContexts) {
-
-
-                oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
-                that.getView().setModel(oPostingData, "postingView");
-
             });
         },
 
@@ -205,6 +165,36 @@ sap.ui.define([
 
         },
 
+        /* =========================================================== */
+        /* event handlers                                              */
+        /* =========================================================== */
+
+        /**
+         * Event handler  for navigating back.
+         * It there is a history entry we go one step back in the browser history
+         * If not, it will replace the current entry of the browser history with the worklist route.
+         * @public
+         */
+        onNavBack: function () {
+            var sPreviousHash = History.getInstance().getPreviousHash();
+            if (sPreviousHash !== undefined) {
+                // eslint-disable-next-line sap-no-history-manipulation
+                history.go(-1);
+            } else {
+                this.getRouter().navTo("worklist", {}, true);
+
+            }
+
+        },
+
+        onDownloadSummary: function(oEvent){
+            const oBoundObject = this.getView().getBindingContext().getObject()
+            const dataExport = this.getView().getModel("costCenterView").getData();
+            const oExportUtil = new ExportUtil();
+            oExportUtil.exportToCSV(dataExport, `Summary-Batch-${oBoundObject?.ID}`,[
+                "PAYROLLPERIOD","PAYROLLCODETYPE","PAYROLLCODE","PAYROLLCODESEQUENCE","PAYROLLCODE_DESCRIPTION","GLACCOUNT","GLCOSTCENTER","AMOUNT"
+            ]);
+        },
 
         onQuickFilter: function (oEvent) {
 
@@ -380,62 +370,69 @@ sap.ui.define([
         },
 
         onDownload: function () {
+            const oBoundObject = this.getView().getBindingContext().getObject()
+            const oExportUtil = new ExportUtil();
+            oExportUtil.exportToCSV(this._allErrorObjs, `Errors-Batch-${oBoundObject?.ID}`,[
+                "FMNO","PAYROLLCODE","PAYROLLCODESEQUENCE","NAME","AMOUNT","PAYMENTNUMBER","PAYMENTID","PAYMENTFORM",
+                "USERFIELD1","USERFIELD2","REMARKS","LOANADVANCEREFERENCENUMBER","PROJECTVODE","PROJECTTASK","STATUSMESSAGE"
+            ]);
+
             // var oBinding = this.byId("lineItemsList").getBinding("items");
             // var that = this;
             //  console.log(this._allErrorObjs);
             //  oBinding.requestContexts(0, Infinity).then(function (aContexts) {
-            var arr = [];
-            for (var i = 0; i < this._allErrorObjs.length; i++) {
-                var obj = {
-                    "FMNO": this._allErrorObjs[i].fmno,
-                    "PAYROLLCODE": this._allErrorObjs[i].payrollCode,
-                    "PAYROLLCODESEQUENCE": this._allErrorObjs[i].payrollCodeSequence,
-                    "NAME": "",
-                    "AMOUNT": parseFloat(this._allErrorObjs[i].amount),
-                    "PAYMENTNUMBER": this._allErrorObjs[i].paymentNumber,
-                    "PAYMENTID": this._allErrorObjs[i].pyamentId,
-                    "PAYMENTFORM": this._allErrorObjs[i].paymentForm,
-                    "USERFIELD1": "",
-                    "USERFIELD2": "",
-                    "REMARKS": "",
-                    "LOANADVANCEREFERENCENUMBER": this._allErrorObjs[i].loadAdvanceReferenceNumber,
-                    "PROJECTCODE": this._allErrorObjs[i].projectCode,
-                    "PROJECTTASK": this._allErrorObjs[i].projectTask,
-                    "STATUSMESSAGE": this._allErrorObjs[i].statusMessage
-                };
-                arr.push(obj);
-            }
-            var sCSV = this.convertToCSV(arr);
-            this.writeToCSV(sCSV);
+            // var arr = [];
+            // for (var i = 0; i < this._allErrorObjs.length; i++) {
+            //     var obj = {
+            //         "FMNO": this._allErrorObjs[i].fmno,
+            //         "PAYROLLCODE": this._allErrorObjs[i].payrollCode,
+            //         "PAYROLLCODESEQUENCE": this._allErrorObjs[i].payrollCodeSequence,
+            //         "NAME": "",
+            //         "AMOUNT": parseFloat(this._allErrorObjs[i].amount),
+            //         "PAYMENTNUMBER": this._allErrorObjs[i].paymentNumber,
+            //         "PAYMENTID": this._allErrorObjs[i].pyamentId,
+            //         "PAYMENTFORM": this._allErrorObjs[i].paymentForm,
+            //         "USERFIELD1": "",
+            //         "USERFIELD2": "",
+            //         "REMARKS": "",
+            //         "LOANADVANCEREFERENCENUMBER": this._allErrorObjs[i].loadAdvanceReferenceNumber,
+            //         "PROJECTCODE": this._allErrorObjs[i].projectCode,
+            //         "PROJECTTASK": this._allErrorObjs[i].projectTask,
+            //         "STATUSMESSAGE": this._allErrorObjs[i].statusMessage
+            //     };
+            //     arr.push(obj);
+            // }
+            // var sCSV = this.convertToCSV(arr);
+            // this.writeToCSV(sCSV);
             //   });
         },
 
-        writeToCSV: function (sCSV) {
-            var blob = new Blob([sCSV], { type: 'text/csv;charset=utf-8;' });
-            if (navigator.msSaveBlob) { // IE 10+
-                navigator.msSaveBlob(blob, exportedFilenmae);
-            } else {
-                var link = document.createElement("a");
-                if (link.download !== undefined) { // feature detection
-                    // Browsers that support HTML5 download attribute
-                    var url = URL.createObjectURL(blob);
-                    link.setAttribute("href", url);
-                    link.setAttribute("download", 'data.csv');
-                    link.style.visibility = 'hidden';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }
-            }
-        },
+        // writeToCSV: function (sCSV) {
+        //     var blob = new Blob([sCSV], { type: 'text/csv;charset=utf-8;' });
+        //     if (navigator.msSaveBlob) { // IE 10+
+        //         navigator.msSaveBlob(blob, exportedFilenmae);
+        //     } else {
+        //         var link = document.createElement("a");
+        //         if (link.download !== undefined) { // feature detection
+        //             // Browsers that support HTML5 download attribute
+        //             var url = URL.createObjectURL(blob);
+        //             link.setAttribute("href", url);
+        //             link.setAttribute("download", 'data.csv');
+        //             link.style.visibility = 'hidden';
+        //             document.body.appendChild(link);
+        //             link.click();
+        //             document.body.removeChild(link);
+        //         }
+        //     }
+        // },
 
-        convertToCSV(arr) {
-            const array = [Object.keys(arr[0])].concat(arr)
+        // convertToCSV(arr) {
+        //     const array = [Object.keys(arr[0])].concat(arr)
 
-            return array.map(it => {
-                return Object.values(it).join(',').toString()
-            }).join('\n')
-        },
+        //     return array.map(it => {
+        //         return Object.values(it).join(',').toString()
+        //     }).join('\n')
+        // },
 
         onSearch: function (oEvent) {
             if (oEvent.getParameters().refreshButtonPressed) {
@@ -676,149 +673,149 @@ sap.ui.define([
             }
         },
 
-        createColumnConfig: function () {
-            var aCols = [];
+        // createColumnConfig: function () {
+        //     var aCols = [];
 
-            aCols.push({
-                property: 'FMNO',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         property: 'FMNO',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Payroll Code',
-                property: 'payrollCode',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Payroll Code',
+        //         property: 'payrollCode',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Payroll Code Sequence',
-                property: 'payrollCodeSequence',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Payroll Code Sequence',
+        //         property: 'payrollCodeSequence',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Amount',
-                property: 'amount',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Amount',
+        //         property: 'amount',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Cost Center',
-                property: 'glCostCenter',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Cost Center',
+        //         property: 'glCostCenter',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Payment No',
-                property: 'paymentNumber',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Payment No',
+        //         property: 'paymentNumber',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Payment Id',
-                property: 'paymentId',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Payment Id',
+        //         property: 'paymentId',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Payment Form',
-                property: 'paymentForm',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Payment Form',
+        //         property: 'paymentForm',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Load Advance Reference Number',
-                property: 'loanAdvanceReferenceNumber',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Load Advance Reference Number',
+        //         property: 'loanAdvanceReferenceNumber',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Project Code',
-                property: 'projectCode',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Project Code',
+        //         property: 'projectCode',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Project Task',
-                property: 'projectTask',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Project Task',
+        //         property: 'projectTask',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Status',
-                property: 'status',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Status',
+        //         property: 'status',
+        //         type: EdmType.String
+        //     });
 
-            aCols.push({
-                label: 'Status Message',
-                property: 'statusMessage',
-                type: EdmType.String
-            });
+        //     aCols.push({
+        //         label: 'Status Message',
+        //         property: 'statusMessage',
+        //         type: EdmType.String
+        //     });
 
 
-            return aCols;
-        },
+        //     return aCols;
+        // },
 
-        onExport: function () {
-            var aCols, oSettings, oSheet, oTable;
+        // onExport: function () {
+        //     var aCols, oSettings, oSheet, oTable;
 
-            if (!this._oTable) {
-                this._oTable = this.byId('lineItemsList');
-            }
+        //     if (!this._oTable) {
+        //         this._oTable = this.byId('lineItemsList');
+        //     }
 
-            oTable = this._oTable;
-            aCols = this.createColumnConfig();
+        //     oTable = this._oTable;
+        //     aCols = this.createColumnConfig();
 
-            oSettings = {
-                workbook: {
-                    columns: aCols,
-                    hierarchyLevel: 'Level'
-                },
-                dataSource: oTable.getBinding("items"),
-                fileName: 'Table export sample.xlsx',
-                worker: false // We need to disable worker because we are using a MockServer as OData Service
-            };
+        //     oSettings = {
+        //         workbook: {
+        //             columns: aCols,
+        //             hierarchyLevel: 'Level'
+        //         },
+        //         dataSource: oTable.getBinding("items"),
+        //         fileName: 'Table export sample.xlsx',
+        //         worker: false // We need to disable worker because we are using a MockServer as OData Service
+        //     };
 
-            oSheet = new Spreadsheet(oSettings);
-            oSheet.build().finally(function () {
-                oSheet.destroy();
-            });
-        },
+        //     oSheet = new Spreadsheet(oSettings);
+        //     oSheet.build().finally(function () {
+        //         oSheet.destroy();
+        //     });
+        // },
 
-        doExport: function (oTable) {
-            var aColumns = this.getColumns(oTable);
+        // doExport: function (oTable) {
+        //     var aColumns = this.getColumns(oTable);
 
-        },
+        // },
 
-        handleExport: function (oEvent) {
-            var oTable = this.getView().byId("lineItemsList");
+        // handleExport: function (oEvent) {
+        //     var oTable = this.getView().byId("lineItemsList");
 
-            this.doExport(oTable);
-        },
+        //     this.doExport(oTable);
+        // },
 
-        getColumns: function (oTable) {
-            console.log(this._errorData);
-            var aColumns = oTable.getColumns();
-            var aItems = oTable.getItems();
-            var aTemplate = [];
+        // getColumns: function (oTable) {
+        //     console.log(this._errorData);
+        //     var aColumns = oTable.getColumns();
+        //     var aItems = oTable.getItems();
+        //     var aTemplate = [];
 
-            for (var i = 0; i < aColumns.length; i++) {
-                var oColumn = {
-                    name: aColumns[i].getHeader().getText(),
-                    template: {
-                        content: {
-                            path: null
-                        }
-                    }
-                };
-                if (aItems.length > 0) {
-                    oColumn.template.content.path = aItems[0].getCells()[i].getBinding("text").getPath();
-                }
-                aTemplate.push(oColumn);
-            }
-            return aTemplate;
-        },
+        //     for (var i = 0; i < aColumns.length; i++) {
+        //         var oColumn = {
+        //             name: aColumns[i].getHeader().getText(),
+        //             template: {
+        //                 content: {
+        //                     path: null
+        //                 }
+        //             }
+        //         };
+        //         if (aItems.length > 0) {
+        //             oColumn.template.content.path = aItems[0].getCells()[i].getBinding("text").getPath();
+        //         }
+        //         aTemplate.push(oColumn);
+        //     }
+        //     return aTemplate;
+        // },
 
         handlePopoverPress: function (oEvent) {
             var oCtx = oEvent.getSource().getBindingContext(),
@@ -874,109 +871,109 @@ sap.ui.define([
 
         },
 
-        onDataExport: function (oEvent) {
-            var oTable = this.getView().byId("lineItemsList");
-            var oExport = new Export({
+        // onDataExport: function (oEvent) {
+        //     var oTable = this.getView().byId("lineItemsList");
+        //     var oExport = new Export({
 
-                // Type that will be used to generate the content. Own ExportType's can be created to support other formats
-                exportType: new ExportTypeCSV({
-                    fileExtension: "csv",
-                    separatorChar: ";"
-                }),
+        //         // Type that will be used to generate the content. Own ExportType's can be created to support other formats
+        //         exportType: new ExportTypeCSV({
+        //             fileExtension: "csv",
+        //             separatorChar: ";"
+        //         }),
 
-                // Pass in the model created above
-                models: this.getView().getModel(),
+        //         // Pass in the model created above
+        //         models: this.getView().getModel(),
 
-                // binding information for the rows aggregation
-                rows: {
-                    path: oTable.getBinding("items").getPath(),
-                },
+        //         // binding information for the rows aggregation
+        //         rows: {
+        //             path: oTable.getBinding("items").getPath(),
+        //         },
 
-                columns: [
-                    {
-                        name: "FMNO",
-                        template: {
-                            content: "{fmno}"
-                        }
-                    }
-                ]
+        //         columns: [
+        //             {
+        //                 name: "FMNO",
+        //                 template: {
+        //                     content: "{fmno}"
+        //                 }
+        //             }
+        //         ]
 
-                // column definitions with column name and binding info for the content
+        //         // column definitions with column name and binding info for the content
 
-                /*            columns: [{
-                                name: "FMNO",
-                                template: {
-                                    content: "{fmno}"
-                                }
-                            }, {
-                                name: "Payroll Code",
-                                template: {
-                                    content: "{payrollCode}"
-                                }
-                            }, {
-                                name: "Payroll Code Sequence",
-                                template: {
-                                    content: "{payrollCodeSequence}"
-                                }
-                            }, {
-                                name: "Amount",
-                                template: {
-                                    content: "{amount}"
-                                }
-                            }, {
-                                name: "Cost Center",
-                                template: {
-                                    content: "{glCostCenter}"
-                                }
-                            }, {
-                                name: "Payment No",
-                                template: {
-                                    content: "{paymentNumber}"
-                                }
-                            }, {
-                                name: "Payment ID",
-                                template: {
-                                    content: "{paymentId}"
-                                }
-                            }, {
-                                name: "Payment Form",
-                                template: {
-                                    content: "{paymentForm}"
-                                }
-                            }, {
-                                name: "Load Advance Reference Number",
-                                template: {
-                                    content: "{loanAdvanceReferenceNumber}"
-                                }
-                            }, {
-                                name: "Project Code",
-                                template: {
-                                    content: "{projectCode}"
-                                }
-                            }, {
-                                name: "Project Task",
-                                template: {
-                                    content: "{projectTask}"
-                                }
-                            }, {
-                                name: "Status",
-                                template: {
-                                    content: "{status}"
-                                }
-                            }, {
-                                name: "Status Message",
-                                template: {
-                                    content: "{statusMessage}"
-                                }
-                            }] */
-            });
+        //         /*            columns: [{
+        //                         name: "FMNO",
+        //                         template: {
+        //                             content: "{fmno}"
+        //                         }
+        //                     }, {
+        //                         name: "Payroll Code",
+        //                         template: {
+        //                             content: "{payrollCode}"
+        //                         }
+        //                     }, {
+        //                         name: "Payroll Code Sequence",
+        //                         template: {
+        //                             content: "{payrollCodeSequence}"
+        //                         }
+        //                     }, {
+        //                         name: "Amount",
+        //                         template: {
+        //                             content: "{amount}"
+        //                         }
+        //                     }, {
+        //                         name: "Cost Center",
+        //                         template: {
+        //                             content: "{glCostCenter}"
+        //                         }
+        //                     }, {
+        //                         name: "Payment No",
+        //                         template: {
+        //                             content: "{paymentNumber}"
+        //                         }
+        //                     }, {
+        //                         name: "Payment ID",
+        //                         template: {
+        //                             content: "{paymentId}"
+        //                         }
+        //                     }, {
+        //                         name: "Payment Form",
+        //                         template: {
+        //                             content: "{paymentForm}"
+        //                         }
+        //                     }, {
+        //                         name: "Load Advance Reference Number",
+        //                         template: {
+        //                             content: "{loanAdvanceReferenceNumber}"
+        //                         }
+        //                     }, {
+        //                         name: "Project Code",
+        //                         template: {
+        //                             content: "{projectCode}"
+        //                         }
+        //                     }, {
+        //                         name: "Project Task",
+        //                         template: {
+        //                             content: "{projectTask}"
+        //                         }
+        //                     }, {
+        //                         name: "Status",
+        //                         template: {
+        //                             content: "{status}"
+        //                         }
+        //                     }, {
+        //                         name: "Status Message",
+        //                         template: {
+        //                             content: "{statusMessage}"
+        //                         }
+        //                     }] */
+        //     });
 
-            oExport.saveFile().catch(function (oError) {
-                MessageBox.error("Error when downloading data. Browser might not be supported!\n\n" + oError);
-            }).then(function () {
-                oExport.destroy();
-            });
-        },
+        //     oExport.saveFile().catch(function (oError) {
+        //         MessageBox.error("Error when downloading data. Browser might not be supported!\n\n" + oError);
+        //     }).then(function () {
+        //         oExport.destroy();
+        //     });
+        // },
 
 
     });
