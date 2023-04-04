@@ -265,7 +265,7 @@ class PayrollService extends cds.ApplicationService {
                     }
 
                     // NET ZERO validation for FMNO
-                    if (utils.validateTransactionTypeShouldNetZero()) {
+                    if (utils.validateTransactionTypeShouldNetZero(stagingHeader.transactionType)) {
                         const fmnoTotal = parseFloat(fmnoTotals.get(item.FMNO));
                         if (fmnoTotal !== 0) {
                             errorMessage = `FMNO skipped due to non-zero balance for sum of all rows. ${fmnoTotal}`;

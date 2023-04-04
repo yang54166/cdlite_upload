@@ -95,10 +95,16 @@
       <viewAttribute id="GTEXT"/>
       <viewAttribute id="TXT20"/>
       <viewAttribute id="TXT50"/>
-      <viewAttribute id="BUTXT"/>
-      <viewAttribute id="LAND1"/>
-      <viewAttribute id="COUNTRY"/>
-      <viewAttribute id="REGION"/>
+      <viewAttribute id="CHARGECOMPANY_BUTXT"/>
+      <viewAttribute id="CHARGECOMPANY_COUNTRY"/>
+      <viewAttribute id="SOURCECOMPANY_BUTXT"/>
+      <viewAttribute id="SOURCECOMPANY_COUNTRY"/>
+      <viewAttribute id="GLPOSTCOMPANY_BUTXT"/>
+      <viewAttribute id="GLPOSTCOMPANY_COUNTRY"/>
+      <viewAttribute id="GLPOST_NAME1"/>
+      <viewAttribute id="GLPOST_LTEXT"/>
+      <viewAttribute id="CHARGE_NAME1"/>
+      <viewAttribute id="CHARGE_LTEXT"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="CVS_I_PAYROLL_DETAILS"/>
@@ -396,7 +402,9 @@
   
     <attribute id="GTEXT" order="79" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Business area description"/>
+  
       <keyMapping columnObjectName="Projection_1" columnName="GTEXT"/>
+  
     </attribute>
     <attribute id="TXT20" order="80" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="G/L Account Short Text"/>
@@ -406,21 +414,45 @@
       <descriptions defaultDescription="G/L Account Long Text"/>
       <keyMapping columnObjectName="Projection_1" columnName="TXT50"/>
     </attribute>
-    <attribute id="BUTXT" order="82" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="Name of Company Code or Company"/>
-      <keyMapping columnObjectName="Projection_1" columnName="BUTXT"/>
+    <attribute id="CHARGECOMPANY_BUTXT" order="82" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECOMPANY_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECOMPANY_BUTXT"/>
     </attribute>
-    <attribute id="LAND1" order="83" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="Country/Region Key"/>
-      <keyMapping columnObjectName="Projection_1" columnName="LAND1"/>
+    <attribute id="CHARGECOMPANY_COUNTRY" order="83" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECOMPANY_COUNTRY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECOMPANY_COUNTRY"/>
     </attribute>
-    <attribute id="COUNTRY" order="84" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="COUNTRY"/>
-      <keyMapping columnObjectName="Projection_1" columnName="COUNTRY"/>
+    <attribute id="SOURCECOMPANY_BUTXT" order="84" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCECOMPANY_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCECOMPANY_BUTXT"/>
     </attribute>
-    <attribute id="REGION" order="85" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="REGION"/>
-      <keyMapping columnObjectName="Projection_1" columnName="REGION"/>
+    <attribute id="SOURCECOMPANY_COUNTRY" order="85" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCECOMPANY_COUNTRY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCECOMPANY_COUNTRY"/>
+    </attribute>
+    <attribute id="GLPOSTCOMPANY_BUTXT" order="86" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOMPANY_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTCOMPANY_BUTXT"/>
+    </attribute>
+    <attribute id="GLPOSTCOMPANY_COUNTRY" order="87" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOMPANY_COUNTRY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTCOMPANY_COUNTRY"/>
+    </attribute>
+    <attribute id="GLPOST_NAME1" order="88" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOST_GOC_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOST_NAME1"/>
+    </attribute>
+    <attribute id="GLPOST_LTEXT" order="89" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOST_DEPT_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOST_LTEXT"/>
+    </attribute>
+    <attribute id="CHARGE_NAME1" order="90" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGE_GOC_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGE_NAME1"/>
+    </attribute>
+    <attribute id="CHARGE_LTEXT" order="91" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGE_DEPT_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGE_LTEXT"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>
