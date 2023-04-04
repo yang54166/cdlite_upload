@@ -121,10 +121,6 @@ sap.ui.define([
             history.go(-1);
         },
 
-        handleLoadItems: function (oControlEvent) {
-            oControlEvent.getSource().getBinding("items").resume();
-        },
-
         onFiltersChange: function (oEvent) {
 
             var oBinding = this.byId("table").getBinding("items"),
@@ -437,123 +433,13 @@ sap.ui.define([
             this._uploadFileName = e.getParameter("files") && e.getParameter("files")[0];
         },
 
-        old_onChangeFUP: function (e) {
-
-            var file = e.getParameter("files") && e.getParameter("files")[0];
-            this._newID = parseInt(this._nHeaderCnt) + 1;
-            var itemsData = this.getOwnerComponent().getModel("uploadJsonData");
-            var oModelData = itemsData.getProperty("/");
-            if (file && window.FileReader) {
-                var reader = new FileReader();
-
-                var that = this;
-                reader.onload = function (e) {
-                    var strCSV = e.target.result; //string in CSV
-                    var allRows = strCSV.split('\n');
-                    that._dataset = [];
-                    for (let i = 1; i < allRows.length; i++) {
-
-                        var currentLine = allRows[i].split("\t");
-                        var oUploadItem = {
-                            "CREATEDAT": "",
-                            "CREATEDBY": "",
-                            "MODIFIEDAT": "",
-                            "MODIFIEDBY": "",
-                            "PARENT_ID": that._newID,
-                            "STATUS": "STAGED",
-                            "STATUSMESSAGE": "",
-                            "DELETED": "",
-                            "FMNO": currentLine[0],
-                            "PAYROLLCODE": currentLine[1],
-                            "PAYROLLCODESEQUENCE": "",
-                            "NAME": "",
-                            "AMOUNT": currentLine[4],
-                            "PAYMENTNUMBER": "",
-                            "PAYMENTID": currentLine[6],
-                            "PAYMENTFORM": "",
-                            "USERFIELD1": "",
-                            "USERFIELD2": "",
-                            "REMARKS": "",
-                            "LOANADVANCEREFERENCENUMBER": currentLine[11],
-                            "PROJECTCODE": currentLine[12],
-                            "PROJECTTASK": "",
-                            "GLACCOUNT": "",
-                            "GLCOSTCENTER": ""
-                        };
-
-                        oModelData.push(oUploadItem);
-                        itemsData.setProperty("/", oModelData);
-
-                    }
-                };
-
-                reader.readAsText(file);
-                //  console.log(reader.result);
-            }
-        },
-
-        old_submitUploads: function () {
-            var sCompanyCode = this.getView().byId("companyCode").getValue();
-            var sTransType = this.getView().byId("transType").getSelectedItem().getText();
-            //     var sCurrency = this.getView().byId("currency").getValue();
-            var sPayrollDate = this.getView().byId("payrollDate").getValue();
-            var sGLPeriod = this.getView().byId("glPeriod").getValue();
-            var sEffectivePeriod = this.getView().byId("effectivePeriod").getValue();
-            //    var sBatchNo = this.getView().byId("batchNo").getValue();
-            var sBatchDesc = this.getView().byId("batchDesc").getValue();
-            //        var sRemarks = this.getView().byId("uploadRemarks").getValue();
-
-            var oUploadData = {
-                "batchDescription": sBatchDesc,
-                "BATCHNUMBER": this._newID,
-                //          "CURRENCYCODE": sCurrency,
-                "effectiveDate": sEffectivePeriod,
-                "companyCode": sCompanyCode,
-                "glDate": sGLPeriod,
-                "ID": this._newID.toString(),
-                "payrollDate": sPayrollDate,
-                //         "REMARKS": sRemarks,
-                "batchStatus": "STAGED",
-                //      "STATUSMESSAGE": "Uploaded",
-                //      "TRANSACTIONTYPE": sTransType
-            };
-
-            var oModel = this.getView().getModel();
-            var oModelData = oModel.getProperty("/");
-            oModelData.push(oUploadData);
-            oModel.setProperty("/", oModelData);
-
-            if (this.byId("uploadDialog")) {
-                this.byId("uploadDialog").close();
-                this.byId("uploadDialog").destroy();
-            }
-        },
 
         closeDialog: function () {
             if (this.byId("uploadDialog")) {
                 this.byId("uploadDialog").close();
                 this.byId("uploadDialog").destroy();
             }
-        },
-
-        handleSettingsPress: function (oEvent) {
-            var oButton = oEvent.getSource(),
-                oView = this.getView();
-
-            // create popover
-            if (!this._pPopover) {
-                this._pPopover = Fragment.load({
-                    id: oView.getId(),
-                    name: "cd_cdlitepayrollupload_f.fragments.Settings",
-                    controller: this
-                }).then(function (oPopover) {
-                    oView.addDependent(oPopover);
-                    return oPopover;
-                });
-            }
-            this._pPopover.then(function (oPopover) {
-                oPopover.openBy(oButton);
-            });
         }
+     
     });
 });

@@ -50,9 +50,6 @@
                      items="{transTypes>/}" change="onTransTypeChange">
                     <core:ListItem id="transItems" key="{transTypes>Type}" text="{transTypes>Name}" additionalText="{transTypes>Type}" />
                 </Select>
-                <!--    <Input id="transType" /> -->
-                <!--      <Label id="sourceOfficeLbl" text="Source Office" labelFor="sourceOffice" design="Bold" />
-                <Input id="sourceOffice" /> -->
                 <Label id="currencyLbl" text="{i18n>lblPayrollCurrency}" labelFor="currency" design="Bold" />
                 <ComboBox
                     id="uploadCurrency"

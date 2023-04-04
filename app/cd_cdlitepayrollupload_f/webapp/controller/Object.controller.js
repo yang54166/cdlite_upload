@@ -71,11 +71,6 @@ sap.ui.define([
             this.setModel(oViewModel, "objectView");
 
         },
-
-        onBeforeRendering: function () {
-
-
-        },
        
 
         /* =========================================================== */
@@ -366,62 +361,7 @@ sap.ui.define([
                 "USERFIELD1","USERFIELD2","REMARKS","LOANADVANCEREFERENCENUMBER","PROJECTVODE","PROJECTTASK","STATUSMESSAGE"
             ]);
 
-            // var oBinding = this.byId("lineItemsList").getBinding("items");
-            // var that = this;
-            //  console.log(this._allErrorObjs);
-            //  oBinding.requestContexts(0, Infinity).then(function (aContexts) {
-            // var arr = [];
-            // for (var i = 0; i < this._allErrorObjs.length; i++) {
-            //     var obj = {
-            //         "FMNO": this._allErrorObjs[i].fmno,
-            //         "PAYROLLCODE": this._allErrorObjs[i].payrollCode,
-            //         "PAYROLLCODESEQUENCE": this._allErrorObjs[i].payrollCodeSequence,
-            //         "NAME": "",
-            //         "AMOUNT": parseFloat(this._allErrorObjs[i].amount),
-            //         "PAYMENTNUMBER": this._allErrorObjs[i].paymentNumber,
-            //         "PAYMENTID": this._allErrorObjs[i].pyamentId,
-            //         "PAYMENTFORM": this._allErrorObjs[i].paymentForm,
-            //         "USERFIELD1": "",
-            //         "USERFIELD2": "",
-            //         "REMARKS": "",
-            //         "LOANADVANCEREFERENCENUMBER": this._allErrorObjs[i].loadAdvanceReferenceNumber,
-            //         "PROJECTCODE": this._allErrorObjs[i].projectCode,
-            //         "PROJECTTASK": this._allErrorObjs[i].projectTask,
-            //         "STATUSMESSAGE": this._allErrorObjs[i].statusMessage
-            //     };
-            //     arr.push(obj);
-            // }
-            // var sCSV = this.convertToCSV(arr);
-            // this.writeToCSV(sCSV);
-            //   });
         },
-
-        // writeToCSV: function (sCSV) {
-        //     var blob = new Blob([sCSV], { type: 'text/csv;charset=utf-8;' });
-        //     if (navigator.msSaveBlob) { // IE 10+
-        //         navigator.msSaveBlob(blob, exportedFilenmae);
-        //     } else {
-        //         var link = document.createElement("a");
-        //         if (link.download !== undefined) { // feature detection
-        //             // Browsers that support HTML5 download attribute
-        //             var url = URL.createObjectURL(blob);
-        //             link.setAttribute("href", url);
-        //             link.setAttribute("download", 'data.csv');
-        //             link.style.visibility = 'hidden';
-        //             document.body.appendChild(link);
-        //             link.click();
-        //             document.body.removeChild(link);
-        //         }
-        //     }
-        // },
-
-        // convertToCSV(arr) {
-        //     const array = [Object.keys(arr[0])].concat(arr)
-
-        //     return array.map(it => {
-        //         return Object.values(it).join(',').toString()
-        //     }).join('\n')
-        // },
 
         onSearch: function (oEvent) {
             if (oEvent.getParameters().refreshButtonPressed) {
@@ -480,22 +420,6 @@ sap.ui.define([
             
             }, 1000);
 
-        },
-
-        getValidTotalAmt: function (arr) {
-            var validLst = arr.filter(x => x.STATUS === 'VALID');
-            var invalidLst = arr.filter(x => x.STATUS === 'INVALID');
-            var validTotalAmt = 0;
-            this._enableApprove = true;
-            if (validLst.length > 0) {
-                for (var i = 0; i < validLst.length; i++) {
-                    validTotalAmt += parseFloat(validLst[i].AMOUNT);
-                }
-            } else {
-                this._enableApprove = false;
-            }
-
-            return validTotalAmt;
         },
 
         approveViewModel: function (objArr, sTransType) {
@@ -662,150 +586,6 @@ sap.ui.define([
             }
         },
 
-        // createColumnConfig: function () {
-        //     var aCols = [];
-
-        //     aCols.push({
-        //         property: 'FMNO',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Payroll Code',
-        //         property: 'payrollCode',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Payroll Code Sequence',
-        //         property: 'payrollCodeSequence',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Amount',
-        //         property: 'amount',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Cost Center',
-        //         property: 'glCostCenter',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Payment No',
-        //         property: 'paymentNumber',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Payment Id',
-        //         property: 'paymentId',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Payment Form',
-        //         property: 'paymentForm',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Load Advance Reference Number',
-        //         property: 'loanAdvanceReferenceNumber',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Project Code',
-        //         property: 'projectCode',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Project Task',
-        //         property: 'projectTask',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Status',
-        //         property: 'status',
-        //         type: EdmType.String
-        //     });
-
-        //     aCols.push({
-        //         label: 'Status Message',
-        //         property: 'statusMessage',
-        //         type: EdmType.String
-        //     });
-
-
-        //     return aCols;
-        // },
-
-        // onExport: function () {
-        //     var aCols, oSettings, oSheet, oTable;
-
-        //     if (!this._oTable) {
-        //         this._oTable = this.byId('lineItemsList');
-        //     }
-
-        //     oTable = this._oTable;
-        //     aCols = this.createColumnConfig();
-
-        //     oSettings = {
-        //         workbook: {
-        //             columns: aCols,
-        //             hierarchyLevel: 'Level'
-        //         },
-        //         dataSource: oTable.getBinding("items"),
-        //         fileName: 'Table export sample.xlsx',
-        //         worker: false // We need to disable worker because we are using a MockServer as OData Service
-        //     };
-
-        //     oSheet = new Spreadsheet(oSettings);
-        //     oSheet.build().finally(function () {
-        //         oSheet.destroy();
-        //     });
-        // },
-
-        // doExport: function (oTable) {
-        //     var aColumns = this.getColumns(oTable);
-
-        // },
-
-        // handleExport: function (oEvent) {
-        //     var oTable = this.getView().byId("lineItemsList");
-
-        //     this.doExport(oTable);
-        // },
-
-        // getColumns: function (oTable) {
-        //     console.log(this._errorData);
-        //     var aColumns = oTable.getColumns();
-        //     var aItems = oTable.getItems();
-        //     var aTemplate = [];
-
-        //     for (var i = 0; i < aColumns.length; i++) {
-        //         var oColumn = {
-        //             name: aColumns[i].getHeader().getText(),
-        //             template: {
-        //                 content: {
-        //                     path: null
-        //                 }
-        //             }
-        //         };
-        //         if (aItems.length > 0) {
-        //             oColumn.template.content.path = aItems[0].getCells()[i].getBinding("text").getPath();
-        //         }
-        //         aTemplate.push(oColumn);
-        //     }
-        //     return aTemplate;
-        // },
-
         handlePopoverPress: function (oEvent) {
             var oCtx = oEvent.getSource().getBindingContext(),
 
@@ -859,110 +639,6 @@ sap.ui.define([
             this.byId("myPopover").close();
 
         },
-
-        // onDataExport: function (oEvent) {
-        //     var oTable = this.getView().byId("lineItemsList");
-        //     var oExport = new Export({
-
-        //         // Type that will be used to generate the content. Own ExportType's can be created to support other formats
-        //         exportType: new ExportTypeCSV({
-        //             fileExtension: "csv",
-        //             separatorChar: ";"
-        //         }),
-
-        //         // Pass in the model created above
-        //         models: this.getView().getModel(),
-
-        //         // binding information for the rows aggregation
-        //         rows: {
-        //             path: oTable.getBinding("items").getPath(),
-        //         },
-
-        //         columns: [
-        //             {
-        //                 name: "FMNO",
-        //                 template: {
-        //                     content: "{fmno}"
-        //                 }
-        //             }
-        //         ]
-
-        //         // column definitions with column name and binding info for the content
-
-        //         /*            columns: [{
-        //                         name: "FMNO",
-        //                         template: {
-        //                             content: "{fmno}"
-        //                         }
-        //                     }, {
-        //                         name: "Payroll Code",
-        //                         template: {
-        //                             content: "{payrollCode}"
-        //                         }
-        //                     }, {
-        //                         name: "Payroll Code Sequence",
-        //                         template: {
-        //                             content: "{payrollCodeSequence}"
-        //                         }
-        //                     }, {
-        //                         name: "Amount",
-        //                         template: {
-        //                             content: "{amount}"
-        //                         }
-        //                     }, {
-        //                         name: "Cost Center",
-        //                         template: {
-        //                             content: "{glCostCenter}"
-        //                         }
-        //                     }, {
-        //                         name: "Payment No",
-        //                         template: {
-        //                             content: "{paymentNumber}"
-        //                         }
-        //                     }, {
-        //                         name: "Payment ID",
-        //                         template: {
-        //                             content: "{paymentId}"
-        //                         }
-        //                     }, {
-        //                         name: "Payment Form",
-        //                         template: {
-        //                             content: "{paymentForm}"
-        //                         }
-        //                     }, {
-        //                         name: "Load Advance Reference Number",
-        //                         template: {
-        //                             content: "{loanAdvanceReferenceNumber}"
-        //                         }
-        //                     }, {
-        //                         name: "Project Code",
-        //                         template: {
-        //                             content: "{projectCode}"
-        //                         }
-        //                     }, {
-        //                         name: "Project Task",
-        //                         template: {
-        //                             content: "{projectTask}"
-        //                         }
-        //                     }, {
-        //                         name: "Status",
-        //                         template: {
-        //                             content: "{status}"
-        //                         }
-        //                     }, {
-        //                         name: "Status Message",
-        //                         template: {
-        //                             content: "{statusMessage}"
-        //                         }
-        //                     }] */
-        //     });
-
-        //     oExport.saveFile().catch(function (oError) {
-        //         MessageBox.error("Error when downloading data. Browser might not be supported!\n\n" + oError);
-        //     }).then(function () {
-        //         oExport.destroy();
-        //     });
-        // },
 
 
     });
