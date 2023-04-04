@@ -33,10 +33,6 @@
         "uri": "model/trans_types.json",
         "type": "JSON"
       },
-      "summaryData": {
-        "uri": "model/summary_data.json",
-        "type": "JSON"
-      },
       "uploadRangesData": {
         "uri": "model/upload_ranges.json",
         "type": "JSON"
@@ -117,10 +113,6 @@
       "transTypesData": {
         "type": "sap.ui.model.json.JSONModel",
         "dataSource": "transTypesData"
-      },
-      "summaryData": {
-        "type": "sap.ui.model.json.JSONModel",
-        "dataSource": "summaryData"
       },
       "uploadRangesData": {
         "type": "sap.ui.model.json.JSONModel",

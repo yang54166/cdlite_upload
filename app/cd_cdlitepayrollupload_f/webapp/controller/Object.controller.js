@@ -59,8 +59,6 @@ sap.ui.define([
                 enableReValButton: false
             });
             this._oModel = this.getOwnerComponent().getModel();
-            var summaryDataModel = this.getOwnerComponent().getModel("summaryData");
-            this.setModel(summaryDataModel, "summaryView");
             var oTable = this.getView().byId("lineItemsList");
             this._succCnt = 0;
             this._allCnt = 0;
