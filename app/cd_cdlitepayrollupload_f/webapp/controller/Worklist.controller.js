@@ -40,9 +40,9 @@ sap.ui.define([
 
 
             var userScope = currentUserModel.getData().scopes;
-            var aUploadScope = userScope?.findIndex(x => x === 'upload');
+            var aUploadScope = userScope.find(x => x === 'upload');
       
-            if (aUploadScope >= 1)
+            if (aUploadScope || aUploadScope !== undefined)
                 oUserModel.setProperty("/userUpload", true);
 
 
