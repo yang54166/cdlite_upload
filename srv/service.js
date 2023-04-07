@@ -584,7 +584,7 @@ class PayrollService extends cds.ApplicationService {
                 const isPostingError = postingResults.every((res) => (res.POSTINGSTATUS == "ERROR"));
                 console.log(`PostingBatch ${batchId} final with ${isPostingError ? 'ERROR' : 'POSTED'}`);
                 const resultStagingStatus = await UPDATE(`Staging_UploadHeader`, { ID: batchId }).with({ STATUS: isPostingError ? 'ERROR' : 'POSTED' });
-                console.log(resultStagingStatus);
+                console.log(`New Status: ${resultStagingStatus.POSTINGSTATUS}`);
                 return resultStagingStatus;
             }
         });
