@@ -334,148 +334,148 @@ class PayrollService extends cds.ApplicationService {
                         // Get Mapping Data
                         const le = await SELECT.one.from(LegalEntityGrouping).columns('LEGALENTITYGROUPCODE').where({ COMPANYCODE: dataHeader.glCompanyCode });
                         const dataMapping = await SELECT.from(PaycodeGLMapping).where({ LEGALENTITYGROUPCODE: le.LEGALENTITYGROUPCODE });
-                        const ledgerControl = await SELECT.one.from(PayrollLedgerControl).where({ TRANSACTIONTYPE: dataHeader.transactionType});
+                        const ledgerControl = await SELECT.one.from(PayrollLedgerControl).where({ TRANSACTIONTYPE: dataHeader.transactionType });
 
                         if (dataHeader) {
                             // COPY DATA TO PERSISTENT TABLES
-
-                            // HEADER
-                            const { createdAt, createdBy, modifiedAt, modifiedBy, glCompanyCode, batchDescription, transactionType, currencyCode, payrollDate, glPeriod, effectivePeriod, filename, remarks } = dataHeader;
-                            const payloadHeader = {
-                                batchID: dataHeader.ID,
-                                createdAt,
-                                createdBy,
-                                modifiedAt,
-                                modifiedBy,
-                                batchDescription,
-                                batchStatus: 'APPROVED',
-                                approvedAt: new Date(),
-                                approvedBy: req.user.id,
-                                cdTransactionType: transactionType,
-                                controlAmount: dataItems.reduce((prev, curr) => (parseFloat(prev) + parseFloat(curr.amount)).toFixed(2), 0),
-                                controlCount: dataItems.length || 0,
-                                effectiveDate: utils.convertPeriodToDate(effectivePeriod),
-                                glDate: utils.convertPeriodToDate(glPeriod),
-                                payrollDate,
-                                payrollPeriod: utils.convertDateToPayPeriod(new Date(payrollDate)),
-                                sourceSystem: 'PAYROLL',
-                                companyCode: glCompanyCode
-                            };
-                            const resultCopyHeader = await INSERT.into(PayrollHeader).entries(payloadHeader);
-                            console.log(`Header added to results table: ${resultCopyHeader.results.length}`);
-
-                            // ITEMS
-                            let lineCounter = 0;
-                            let fmnoList = [];
-                            let postingBatches = 1;
-                            const payloadItems = dataItems.map((item) => {
-                                const fmnoActiveInBatch = (fmnoList.indexOf(item.fmno) > -1);
-                                if (!fmnoActiveInBatch) {
-                                    if (fmnoList.length > postingConfig.maxFMNO_perPostingBatch) {
-                                        postingBatches = Math.ceil(fmnoList.length / postingConfig.maxFMNO_perPostingBatch) || 1;
-                                    }
-                                    fmnoList.push(item.fmno);
+                            await cds.tx(async () => {
+                                // HEADER
+                                const { createdAt, createdBy, modifiedAt, modifiedBy, glCompanyCode, batchDescription, transactionType, currencyCode, payrollDate, glPeriod, effectivePeriod, filename, remarks } = dataHeader;
+                                const payloadHeader = {
+                                    batchID: dataHeader.ID,
+                                    createdAt,
+                                    createdBy,
+                                    modifiedAt,
+                                    modifiedBy,
+                                    batchDescription,
+                                    batchStatus: 'APPROVED',
+                                    approvedAt: new Date(),
+                                    approvedBy: req.user.id,
+                                    cdTransactionType: transactionType,
+                                    controlAmount: dataItems.reduce((prev, curr) => (parseFloat(prev) + parseFloat(curr.amount)).toFixed(2), 0),
+                                    controlCount: dataItems.length || 0,
+                                    effectiveDate: utils.convertPeriodToDate(effectivePeriod),
+                                    glDate: utils.convertPeriodToDate(glPeriod),
+                                    payrollDate,
+                                    payrollPeriod: utils.convertDateToPayPeriod(new Date(payrollDate)),
+                                    sourceSystem: 'PAYROLL',
+                                    companyCode: glCompanyCode
                                 };
+                                const resultCopyHeader = await INSERT.into(PayrollHeader).entries(payloadHeader);
+                                console.log(`Header added to results table: ${resultCopyHeader.results.length}`);
 
-                                const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
-                                if (!mapObj) { console.log(`Unable to find mapping for ${item.payrollCode} : ${item.payrollCodeSequence}`) };
+                                // ITEMS
+                                let lineCounter = 0;
+                                let fmnoList = [];
+                                let postingBatches = 1;
+                                const payloadItems = dataItems.map((item) => {
+                                    const fmnoActiveInBatch = (fmnoList.indexOf(item.fmno) > -1);
+                                    if (!fmnoActiveInBatch) {
+                                        if (fmnoList.length > postingConfig.maxFMNO_perPostingBatch) {
+                                            postingBatches = Math.ceil(fmnoList.length / postingConfig.maxFMNO_perPostingBatch) || 1;
+                                        }
+                                        fmnoList.push(item.fmno);
+                                    };
 
-                                const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate(currencyCode, 'USD');
-                                const glExchangeRateSourceToCompany = fdmUtils.getExchangeRate(currencyCode, item.glCurrencyCode);
-                                if (!glExchangeRateSourceToCompany) {
-                                    throw ({ message: `Unable to approve Batch ID:${batchToApprove}. Exchange Rate does not exist for ${currencyCode} to ${item.glCurrencyCode}` });
-                                }
-                                //const glExchangeRateSourceToChargeCompany = fdmUtils.getExchangeRate(item.glCurrencyCode, currencyCode);
+                                    const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
+                                    if (!mapObj) { console.log(`Unable to find mapping for ${item.payrollCode} : ${item.payrollCodeSequence}`) };
 
-                                const aggregationType = (() => {
-                                    if (mapObj.payrollCodeClass == 'ADVANCE' || mapObj.payrollCodeClass == 'LOAN') {
-                                        return "NONE";
-                                    } else if (item.glAccountType == 'Balance Sheet Account') {
-                                        return "GLACCOUNT";
-                                    } else if (mapObj.payrollCodeType == 'NOTIONAL') {
-                                        return "SKIP"
-                                    } else {
-                                        return "BUSINESSAREA";
+                                    const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate(currencyCode, 'USD');
+                                    const glExchangeRateSourceToCompany = fdmUtils.getExchangeRate(currencyCode, item.glCurrencyCode);
+                                    if (!glExchangeRateSourceToCompany) {
+                                        throw ({ message: `Unable to approve Batch ID:${batchToApprove}. Exchange Rate does not exist for ${currencyCode} to ${item.glCurrencyCode}` });
                                     }
-                                })();
+                                    //const glExchangeRateSourceToChargeCompany = fdmUtils.getExchangeRate(item.glCurrencyCode, currencyCode);
 
-                                const glPostCostCenter = mapObj.defaultDepartment ? (`${employeeObj.costCenter.substring(0, 3)}${mapObj.defaultDepartment}`) : item.glCostCenter;
+                                    const aggregationType = (() => {
+                                        if (mapObj.payrollCodeClass == 'ADVANCE' || mapObj.payrollCodeClass == 'LOAN') {
+                                            return "NONE";
+                                        } else if (item.glAccountType == 'Balance Sheet Account') {
+                                            return "GLACCOUNT";
+                                        } else if (mapObj.payrollCodeType == 'NOTIONAL') {
+                                            return "SKIP"
+                                        } else {
+                                            return "BUSINESSAREA";
+                                        }
+                                    })();
 
-                                return {
-                                    batchID_batchID: batchToApprove,
-                                    batchLineNumber: lineCounter += 1,
-                                    postingBatchID: ledgerControl ? `${postingBatches}.1` : null,
-                                    postingBatchIDCBLedger: ledgerControl?.ledgerGroupCB ? `${postingBatches}.2` : null,
-                                    fcat: item.fcat,
-                                    fmno: item.fmno,
-                                    paymentID: item.paymentId,
-                                    payrollCode: item.payrollCode,
-                                    payrollCodeSequence: item.payrollCodeSequence,
-                                    payrollCodeClass: mapObj.payrollCodeClass,
-                                    payrollCodeType: mapObj.payrollCodeType,
-                                    sourceAmount: item.amount,
-                                    sourceCurrencyCode: currencyCode,
-                                    sourceCompany: glCompanyCode,
-                                    pernr: item.pernr,
-                                    legalEntityGroupCode: le.LEGALENTITYGROUPCODE,
-                                    locationCode: item.locationCode,
-                                    skillCode: item.skillCode,
-                                    projectCode: item.projectCode,
-                                    qualifiedCompensation: mapObj.qualifiedCompensation,
-                                    cashAmount: item.amount,
-                                    chargeAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
-                                    chargeCompany: glCompanyCode,
-                                    chargeConversionDate: utils.convertPeriodToDate(glExchangeRateSourceToCompany.period),
-                                    chargeConversionRate: glExchangeRateSourceToCompany.exchangeRate,
-                                    chargeConversionType: "M",
-                                    chargeCostCenter: item.glCostCenter,
-                                    chargeCurrencyCode: item.glCurrencyCode,
-                                    chargeDepartment: item.glCostCenter.slice(-5),
-                                    chargeGoc: item.glCostCenter.substring(0, 3),
-                                    glAccount: item.glAccount,
-                                    glAccountCBLedger: item.glAccountCB,
-                                    glPostAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
-                                    glPostCompany: glCompanyCode,
-                                    glPostCostCenter: glPostCostCenter,
-                                    glPostDepartment: glPostCostCenter.slice(-5),
-                                    glPostGoc: glPostCostCenter.substring(0, 3),
-                                    glConversionRate: glExchangeRateSourceToCompany.exchangeRate,
-                                    glCurrencyCode: item.glCurrencyCode,
-                                    postingAggregation: aggregationType,
-                                    advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.loanAdvanceReferenceNumber : null,
-                                    loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.loanAdvanceReferenceNumber : null,
-                                    usdAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToUSD.exchangeRate),
-                                    usdConversionRate: glExchangeRateSourceToUSD.exchangeRate,
-                                    usdConversionType: "M",
-                                    usPsrpReportingCode: mapObj.usPsrpCategory
-                                }
-                            });
+                                    const glPostCostCenter = mapObj.defaultDepartment ? (`${employeeObj.costCenter.substring(0, 3)}${mapObj.defaultDepartment}`) : item.glCostCenter;
 
-                            const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
-                            console.log(`Details added to results table: ${resultCopyItems.results.length}`);
-
-                            for (var postingBatchID = 1; postingBatchID <= postingBatches; postingBatchID += 1) {
-                                const resultCreatePostingBatch = await INSERT.into(PostingBatch).entries({
-                                    batchId: dataHeader.ID,
-                                    postingBatchId: `${postingBatchID}.1`,
-                                    postingStatus: "PENDING",
-                                    postingStatusMessage: "Posting to S/4HANA pending.",
-                                    postingType: "STANDARD"
+                                    return {
+                                        batchID_batchID: batchToApprove,
+                                        batchLineNumber: lineCounter += 1,
+                                        postingBatchID: ledgerControl ? `${postingBatches}.1` : null,
+                                        postingBatchIDCBLedger: ledgerControl?.ledgerGroupCB ? `${postingBatches}.2` : null,
+                                        fcat: item.fcat,
+                                        fmno: item.fmno,
+                                        paymentID: item.paymentId,
+                                        payrollCode: item.payrollCode,
+                                        payrollCodeSequence: item.payrollCodeSequence,
+                                        payrollCodeClass: mapObj.payrollCodeClass,
+                                        payrollCodeType: mapObj.payrollCodeType,
+                                        sourceAmount: item.amount,
+                                        sourceCurrencyCode: currencyCode,
+                                        sourceCompany: glCompanyCode,
+                                        pernr: item.pernr,
+                                        legalEntityGroupCode: le.LEGALENTITYGROUPCODE,
+                                        locationCode: item.locationCode,
+                                        skillCode: item.skillCode,
+                                        projectCode: item.projectCode,
+                                        qualifiedCompensation: mapObj.qualifiedCompensation,
+                                        cashAmount: item.amount,
+                                        chargeAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
+                                        chargeCompany: glCompanyCode,
+                                        chargeConversionDate: utils.convertPeriodToDate(glExchangeRateSourceToCompany.period),
+                                        chargeConversionRate: glExchangeRateSourceToCompany.exchangeRate,
+                                        chargeConversionType: "M",
+                                        chargeCostCenter: item.glCostCenter,
+                                        chargeCurrencyCode: item.glCurrencyCode,
+                                        chargeDepartment: item.glCostCenter.slice(-5),
+                                        chargeGoc: item.glCostCenter.substring(0, 3),
+                                        glAccount: item.glAccount,
+                                        glAccountCBLedger: item.glAccountCB,
+                                        glPostAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToCompany.exchangeRate),
+                                        glPostCompany: glCompanyCode,
+                                        glPostCostCenter: glPostCostCenter,
+                                        glPostDepartment: glPostCostCenter.slice(-5),
+                                        glPostGoc: glPostCostCenter.substring(0, 3),
+                                        glConversionRate: glExchangeRateSourceToCompany.exchangeRate,
+                                        glCurrencyCode: item.glCurrencyCode,
+                                        postingAggregation: aggregationType,
+                                        advanceNumber: mapObj.payrollCodeClass == 'ADVANCE' ? item.loanAdvanceReferenceNumber : null,
+                                        loanNumber: mapObj.payrollCodeClass == 'LOAN' ? item.loanAdvanceReferenceNumber : null,
+                                        usdAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToUSD.exchangeRate),
+                                        usdConversionRate: glExchangeRateSourceToUSD.exchangeRate,
+                                        usdConversionType: "M",
+                                        usPsrpReportingCode: mapObj.usPsrpCategory
+                                    }
                                 });
 
-                                if ( ledgerControl?.ledgerGroupCB ) {
-                                    const resultCreatePostingBatchCB = await INSERT.into(PostingBatch).entries({
-                                        batchId: dataHeader.ID,
-                                        postingBatchId: `${postingBatchID}.2`,
-                                        postingStatus: "PENDING",
-                                        postingStatusMessage: "Posting to S/4HANA CB Ledger pending.",
-                                        postingType: "CBLEDGER"
-                                    });
-                                }
-                            }
+                                const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
+                                console.log(`Details added to results table: ${resultCopyItems.results.length}`);
 
+                                for (var postingBatchID = 1; postingBatchID <= postingBatches; postingBatchID += 1) {
+                                    const resultCreatePostingBatch = await INSERT.into(PostingBatch).entries({
+                                        batchId: dataHeader.ID,
+                                        postingBatchId: `${postingBatchID}.1`,
+                                        postingStatus: "PENDING",
+                                        postingStatusMessage: "Posting to S/4HANA pending.",
+                                        postingType: "STANDARD"
+                                    });
+
+                                    if (ledgerControl?.ledgerGroupCB) {
+                                        const resultCreatePostingBatchCB = await INSERT.into(PostingBatch).entries({
+                                            batchId: dataHeader.ID,
+                                            postingBatchId: `${postingBatchID}.2`,
+                                            postingStatus: "PENDING",
+                                            postingStatusMessage: "Posting to S/4HANA CB Ledger pending.",
+                                            postingType: "CBLEDGER"
+                                        });
+                                    }
+                                }
+                            });
                             // Commit before trigger
-                            await db.commit();
+                            //await db.commit();
 
                             await this.emit("trigger", { batchToApprove });
 
@@ -501,7 +501,7 @@ class PayrollService extends cds.ApplicationService {
             const batchId = req.data.batchToApprove || req.params[0];
             console.log(`CPI Trigger - Starting for batch ${batchId}`);
             const resultTrigger = await cpi.send({ path: `/cd_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
-            console.log(`CPI Response: ${resultTrigger.substring(0, 200)}`);
+            console.log(`CPI Response: ${resultTrigger.substring(0, 500)}`);
             return true;
         });
 
@@ -532,8 +532,8 @@ class PayrollService extends cds.ApplicationService {
             const allCompanyCodes = await fdmUtils.getCompanyCodes();
 
             // Return all for admin, filter for everyone else.
-            return allCompanyCodes.filter((cc)=> {
-                return (permittedCompanyCodes == "*") || (permittedCompanyCodes.indexOf(cc.companyCode) > -1 );
+            return allCompanyCodes.filter((cc) => {
+                return (permittedCompanyCodes == "*") || (permittedCompanyCodes.indexOf(cc.companyCode) > -1);
             })
         });
 
@@ -571,10 +571,10 @@ class PayrollService extends cds.ApplicationService {
 
             const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId })
             console.log(postingResults);
-            
+
             const isPostingFinal = postingResults.every((res) => {
                 let resToCheck;
-                 // Use data just updated, but not yet committed.
+                // Use data just updated, but not yet committed.
                 if (res.POSTINGBATCHID == postingBatchId) { resToCheck = postingBatch } else { resToCheck = res };
                 return (resToCheck.POSTINGSTATUS != "PENDING");
             });
