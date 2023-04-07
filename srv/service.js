@@ -565,26 +565,27 @@ class PayrollService extends cds.ApplicationService {
             return true;
         });
 
-        this.after('UPDATE', "PostingBatch", async (postingBatch) => {
-            const batchId = postingBatch.batchId;
-            const postingBatchId = postingBatch.postingBatchID;
+        db.after('UPDATE', PostingBatch, async (postingBatch, req) => {
+            const batchId = req.data.batchId;
+            const postingBatchId = req.data.postingBatchID;
 
             const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId })
-            console.log(postingResults);
+            const stringPostingResults = postingResults.map((r)=>r.POSTINGSTATUS).join(",");
+            console.log(`Existing Statuses: ${stringPostingResults}`);
 
             const isPostingFinal = postingResults.every((res) => {
-                let resToCheck;
+                //let resToCheck;
                 // Use data just updated, but not yet committed.
-                if (res.POSTINGBATCHID == postingBatchId) { resToCheck = postingBatch } else { resToCheck = res };
-                return (resToCheck.POSTINGSTATUS != "PENDING");
+                //if (res.POSTINGBATCHID == postingBatchId) { resToCheck = req.data } else { resToCheck = res };
+                return (res.POSTINGSTATUS != "PENDING");
             });
-            console.log(`PostingBatch ${batchId} updated.`);
+            console.log(`PostingBatch ${postingBatchId} updated.`);
 
             if (isPostingFinal) {
                 const isPostingError = postingResults.every((res) => (res.POSTINGSTATUS == "ERROR"));
                 console.log(`PostingBatch ${batchId} final with ${isPostingError ? 'ERROR' : 'POSTED'}`);
                 const resultStagingStatus = await UPDATE(`Staging_UploadHeader`, { ID: batchId }).with({ STATUS: isPostingError ? 'ERROR' : 'POSTED' });
-                console.log(`New Status: ${resultStagingStatus.POSTINGSTATUS}`);
+                //console.log(`New Status: ${resultStagingStatus.STATUS}`);
                 return resultStagingStatus;
             }
         });
