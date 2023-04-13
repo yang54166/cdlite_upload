@@ -30,8 +30,10 @@ class FDMUtils {
             .filter((employee) => employee.fmno === fmno);
         if (matchingEmployees.length > 1) {
             return matchingEmployees.reduce((final, current) => {
-                const currentStartDate = new Date(current.effectiveStartDate.substring(0, 4) + "-" + current.effectiveStartDate.substring(4, 6) + "-" + current.effectiveStartDate.substring(6, 8));
-                const finalStartDate = final ? new Date(final.effectiveStartDate.substring(0, 4) + "-" + final.effectiveStartDate.substring(4, 6) + "-" + final.effectiveStartDate.substring(6, 8)) : null;
+                const currentStartDate = new Date(current.effectiveStartDate.substring(0, 4) + "-" + current.effectiveStartDate.substring(4, 6) + 
+                    "-" + current.effectiveStartDate.substring(6, 8));
+                const finalStartDate = final ? new Date(final.effectiveStartDate.substring(0, 4) + "-" + final.effectiveStartDate.substring(4, 6) + 
+                    "-" + final.effectiveStartDate.substring(6, 8)) : null;
                 if (currentStartDate < new Date(payrollDate)) {
                     if (!final || (currentStartDate > finalStartDate)) {
                         return current;

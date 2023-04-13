@@ -1,6 +1,7 @@
 const { PassThrough } = require('node:stream');
 const cds = require('@sap/cds');
 const axios = require("axios");
+const LOG = cds.log('api');
 
 const utils = require('./utils/utils');
 const { HANAUtils } = require('./utils/HANAUtils');

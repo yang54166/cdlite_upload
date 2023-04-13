@@ -167,7 +167,7 @@ resources:
                 clientSecret: 07754849-2615-4a5e-9486-dc0517b2f7dd$k1-FSYAD72_lVn2kIF2QaW_dUDag1KqjSRhHdXsNrlc=
                 tokenServiceURL: https://erpdevsd.authentication.eu10.hana.ondemand.com/oauth/token
                 URL: https://erpdevsd.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com
-            existing_destinations_policy: update
+            existing_destinations_policy: ignore
         version: 1.0.0
       service: destination
       service-plan: lite
