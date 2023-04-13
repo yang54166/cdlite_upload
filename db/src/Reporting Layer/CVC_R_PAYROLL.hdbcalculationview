@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" id="CVC_R_PAYROLL" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="CVC_R_PAYROLL.hdbcalculationview"/>
+<localVariables>
+  <variable id="CLIENT" parameter="true">
+    <descriptions defaultDescription="Client Number"/>
+    <variableProperties datatype="NVARCHAR" length="13" mandatory="true" defaultValue="100">
+      <valueDomain type="empty"/>
+      <selection multiLine="false" type="SingleValue"/>
+    </variableProperties>
+  </variable>
+</localVariables>
+<variableMappings>
+  <mapping xsi:type="Variable:VariableMapping" dataSource="CVS_I_PAYROLL_DETAILS">
+    <targetVariable name="Client" resourceUri="CVS_I_PAYROLL_DETAILS"/>
+    <localVariable>CLIENT</localVariable>
+  </mapping>
+</variableMappings>
+<dataSources>
+  <DataSource id="CVS_I_PAYROLL_DETAILS">
+    <resourceUri>CVS_I_PAYROLL_DETAILS</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="CHARGEAMOUNT"/>
+      <viewAttribute id="CHARGECOMPANY"/>
+      <viewAttribute id="CHARGECOSTCENTER"/>
+      <viewAttribute id="CHARGECURRENCYCODE"/>
+      <viewAttribute id="CHARGEGOC"/>
+      <viewAttribute id="POSTING_FCAT"/>
+      <viewAttribute id="GLACCOUNT"/>
+      <viewAttribute id="GLCURRENCYCODE"/>
+      <viewAttribute id="GLPOSTAMOUNT"/>
+      <viewAttribute id="GLPOSTCOMPANY"/>
+      <viewAttribute id="GLPOSTCOSTCENTER"/>
+      <viewAttribute id="PAYROLLCODE"/>
+      <viewAttribute id="PAYROLLCODESEQUENCE"/>
+      <viewAttribute id="PAYROLLCODETYPE"/>
+      <viewAttribute id="PROJECTCODE"/>
+      <viewAttribute id="SOURCEAMOUNT"/>
+      <viewAttribute id="SOURCECOMPANY"/>
+      <viewAttribute id="SOURCECURRENCYCODE"/>
+      <viewAttribute id="USDAMOUNT"/>
+      <viewAttribute id="CDTRANSACTIONTYPE"/>
+      <viewAttribute id="GLDATE"/>
+      <viewAttribute id="PAYROLLDATE"/>
+      <viewAttribute id="PAYROLLPERIOD"/>
+    
+      <viewAttribute id="GTEXT"/>
+      <viewAttribute id="TXT20"/>
+      <viewAttribute id="TXT50"/>
+      <viewAttribute id="CHARGECOMPANY_BUTXT"/>
+      <viewAttribute id="CHARGECOMPANY_COUNTRY"/>
+      <viewAttribute id="SOURCECOMPANY_BUTXT"/>
+      <viewAttribute id="SOURCECOMPANY_COUNTRY"/>
+      <viewAttribute id="GLPOSTCOMPANY_BUTXT"/>
+      <viewAttribute id="GLPOSTCOMPANY_COUNTRY"/>
+      <viewAttribute id="GLPOST_NAME1"/>
+      <viewAttribute id="GLPOST_LTEXT"/>
+      <viewAttribute id="CHARGE_NAME1"/>
+      <viewAttribute id="CHARGE_LTEXT"/>
+    
+      <viewAttribute id="CURRENT_FCAT"/>
+    
+      <viewAttribute id="BATCHID"/>
+      <viewAttribute id="BATCHDESCRIPTION"/>
+    
+      <viewAttribute id="EFFECTIVEDATE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="CVS_I_PAYROLL_DETAILS">
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTING_FCAT" source="FCAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_FCAT" source="FCAT_CURRENT"/>
+    </input>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Projection_1">
+  <attributes>
+    <attribute id="CHARGECOMPANY" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECOMPANY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECOMPANY"/>
+    </attribute>
+    <attribute id="CHARGECOSTCENTER" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECOSTCENTER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECOSTCENTER"/>
+    </attribute>
+    <attribute id="CHARGECURRENCYCODE" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECURRENCYCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECURRENCYCODE"/>
+    </attribute>
+    <attribute id="CHARGEGOC" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGEGOC"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGEGOC"/>
+    </attribute>
+    <attribute id="GLACCOUNT" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLACCOUNT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLACCOUNT"/>
+    </attribute>
+    <attribute id="GLCURRENCYCODE" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLCURRENCYCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLCURRENCYCODE"/>
+    </attribute>
+    <attribute id="GLPOSTCOMPANY" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOMPANY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTCOMPANY"/>
+    </attribute>
+    <attribute id="GLPOSTCOSTCENTER" order="10" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOSTCENTER"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTCOSTCENTER"/>
+    </attribute>
+    <attribute id="PAYROLLCODE" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLCODE"/>
+    </attribute>
+    <attribute id="PAYROLLCODESEQUENCE" order="12" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODESEQUENCE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLCODESEQUENCE"/>
+    </attribute>
+    <attribute id="PAYROLLCODETYPE" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLCODETYPE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLCODETYPE"/>
+    </attribute>
+    <attribute id="PROJECTCODE" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PROJECTCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PROJECTCODE"/>
+    </attribute>
+    <attribute id="SOURCECOMPANY" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCECOMPANY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCECOMPANY"/>
+    </attribute>
+    <attribute id="SOURCECURRENCYCODE" order="17" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCECURRENCYCODE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCECURRENCYCODE"/>
+    </attribute>
+    <attribute id="CDTRANSACTIONTYPE" order="19" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CDTRANSACTIONTYPE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CDTRANSACTIONTYPE"/>
+    </attribute>
+    <attribute id="GLDATE" order="20" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLDATE" order="21" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLDATE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLDATE"/>
+    </attribute>
+    <attribute id="PAYROLLPERIOD" order="22" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PAYROLLPERIOD"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PAYROLLPERIOD"/>
+    </attribute>
+  
+    <attribute id="GTEXT" order="23" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Posted Business Area Description"/>
+  
+      <keyMapping columnObjectName="Projection_1" columnName="GTEXT"/>
+  
+    </attribute>
+    <attribute id="TXT20" order="24" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="G/L Account Short Text"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TXT20"/>
+    </attribute>
+    <attribute id="TXT50" order="25" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="G/L Account Long Text"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TXT50"/>
+    </attribute>
+    <attribute id="CHARGECOMPANY_BUTXT" order="26" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECOMPANY_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECOMPANY_BUTXT"/>
+    </attribute>
+    <attribute id="CHARGECOMPANY_COUNTRY" order="27" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGECOMPANY_COUNTRY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGECOMPANY_COUNTRY"/>
+    </attribute>
+    <attribute id="SOURCECOMPANY_BUTXT" order="28" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCECOMPANY_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCECOMPANY_BUTXT"/>
+    </attribute>
+    <attribute id="SOURCECOMPANY_COUNTRY" order="29" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOURCECOMPANY_COUNTRY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SOURCECOMPANY_COUNTRY"/>
+    </attribute>
+    <attribute id="GLPOSTCOMPANY_BUTXT" order="30" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOMPANY_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTCOMPANY_BUTXT"/>
+    </attribute>
+    <attribute id="GLPOSTCOMPANY_COUNTRY" order="31" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOSTCOMPANY_COUNTRY"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOSTCOMPANY_COUNTRY"/>
+    </attribute>
+    <attribute id="GLPOST_NAME1" order="32" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOST_GOC_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOST_NAME1"/>
+    </attribute>
+    <attribute id="GLPOST_LTEXT" order="33" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GLPOST_DEPT_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="GLPOST_LTEXT"/>
+    </attribute>
+    <attribute id="CHARGE_NAME1" order="34" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGE_GOC_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGE_NAME1"/>
+    </attribute>
+    <attribute id="CHARGE_LTEXT" order="35" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CHARGE_DEPT_NAME"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CHARGE_LTEXT"/>
+    </attribute>
+  
+    <attribute id="POSTING_FCAT" order="36" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTING_FCAT"/>
+  
+      <keyMapping columnObjectName="Projection_1" columnName="POSTING_FCAT"/>
+  
+    </attribute>
+    <attribute id="CURRENT_FCAT" order="37" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FCAT_CURRENT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CURRENT_FCAT"/>
+    </attribute>
+  
+    <attribute id="BATCHID" order="38" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHID"/>
+  
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHID"/>
+  
+    </attribute>
+    <attribute id="BATCHDESCRIPTION" order="39" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BATCHDESCRIPTION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="BATCHDESCRIPTION"/>
+    </attribute>
+  
+    <attribute id="EFFECTIVEDATE" order="40" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="EFFECTIVEDATE"/>
+  
+      <keyMapping columnObjectName="Projection_1" columnName="EFFECTIVEDATE"/>
+  
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="CHARGEAMOUNT" order="1" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="CHARGEAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CHARGEAMOUNT"/>
+    </measure>
+    <measure id="GLPOSTAMOUNT" order="8" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="GLPOSTAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="GLPOSTAMOUNT"/>
+    </measure>
+    <measure id="SOURCEAMOUNT" order="15" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="SOURCEAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="SOURCEAMOUNT"/>
+    </measure>
+    <measure id="USDAMOUNT" order="18" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="USDAMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="USDAMOUNT"/>
+    </measure></baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="92" y="112"/>
+    
+      <rectangleSize width="160"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="217"/>
+      <rectangleSize height="30" width="204"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

@@ -1,0 +1,21 @@
+{
+  "role": {
+    "name": "XX_DEVELOPERS",
+    "object_privileges": [
+      {
+        "name": "CVC_R_PAYROLL_DETAILS",
+        "type": "VIEW",
+        "privileges": [
+          "SELECT"
+        ]
+      },
+      {
+        "name": "CVC_R_PAYROLL",
+        "type": "VIEW",
+        "privileges": [
+          "SELECT"
+        ]
+      }
+    ]
+  }
+}

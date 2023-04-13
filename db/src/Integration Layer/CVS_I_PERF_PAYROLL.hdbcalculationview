@@ -377,6 +377,7 @@
       <viewAttribute id="FMNO_COST_CENTER"/>
       <viewAttribute id="INDEX"/>
       <viewAttribute id="PATH"/>
+      <viewAttribute id="CC_FMNO"/>
       <viewAttribute id="TENURE_IN_POSITION"/>
       <viewAttribute id="TENURE_IN_FULL_ROUNDEDYEARS" aggregationType="sum"/>
       <viewAttribute id="TENURE_IN_FULL_MONTHS"/>
@@ -390,7 +391,6 @@
       <viewAttribute id="TENURE_IN_POSITION_MONTHS" aggregationType="sum"/>
       <viewAttribute id="ADJUSTED_ROUNDEDYEARS" aggregationType="sum"/>
       <viewAttribute id="TENURE_IN_FULL_YEARS" aggregationType="sum"/>
-      <viewAttribute hidden="true" id="JOIN$CC_FMNO$FMNO"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Join_1_1">
@@ -466,7 +466,7 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="FMNO_COST_CENTER" source="FMNO_COST_CENTER"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="INDEX" source="INDEX"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="PATH" source="PATH"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CC_FMNO$FMNO" source="CC_FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_FMNO" source="CC_FMNO"/>
     </input>
     <input node="P_TENURE">
       <mapping xsi:type="Calculation:AttributeMapping" target="TENURE_IN_POSITION" source="TENURE_IN_POSITION"/>
@@ -482,9 +482,9 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="TENURE_IN_POSITION_MONTHS" source="TENURE_IN_POSITION_MONTHS"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="ADJUSTED_ROUNDEDYEARS" source="ADJUSTED_ROUNDEDYEARS"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="TENURE_IN_FULL_YEARS" source="TENURE_IN_FULL_YEARS"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CC_FMNO$FMNO" source="FMNO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_FMNO" source="FMNO"/>
     </input>
-    <joinAttribute name="JOIN$CC_FMNO$FMNO"/>
+    <joinAttribute name="CC_FMNO"/>
   </calculationView>
 </calculationViews>
 <logicalModel id="Join_1_2">
