@@ -447,7 +447,8 @@ class PayrollService extends cds.ApplicationService {
                                         usdAmount: utils.convertAmountByExchangeRate(item.amount, glExchangeRateSourceToUSD.exchangeRate),
                                         usdConversionRate: glExchangeRateSourceToUSD.exchangeRate,
                                         usdConversionType: "M",
-                                        usPsrpReportingCode: mapObj.usPsrpCategory
+                                        usPsrpReportingCode: mapObj.usPsrpCategory,
+                                        vendorReference: mapObj.vendorReference
                                     }
                                 });
 
@@ -474,12 +475,9 @@ class PayrollService extends cds.ApplicationService {
                                     }
                                 }
                             });
-                            // Commit before trigger
-                            //await db.commit();
-
+                            // previous tx logic ensures commit before trigger
                             await this.emit("trigger", { batchToApprove });
 
-                            //return batchToApprove;
                         } else {
                             req.error({ code: 404, message: `Batch ID:${batchToApprove} does not exist` });
                         }
@@ -487,11 +485,7 @@ class PayrollService extends cds.ApplicationService {
                         req.error({ code: 400, message: `Unable to approve batch ID:${batchToApprove}.` });
                     }
                 }
-                // } else {
-                //     console.log("Already approved, just triggering CPI again.");
-                //     this.emit("trigger", { batchToApprove });
-                //     return batchToApprove;
-                // }
+            
             } catch (ex) {
                 req.error({ code: 400, message: `Error while approving batch ID:${batchToApprove}: ${ex.message}` });
             }

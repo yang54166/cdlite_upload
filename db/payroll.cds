@@ -71,6 +71,7 @@ entity PayrollDetails: managed {
     usdConversionRate:  Decimal(9,5);
     usdConversionType: String(20);
     usPsrpReportingCode: String(10);
+    vendorReference: String(10);
 };
 
 entity PostingBatch : managed {

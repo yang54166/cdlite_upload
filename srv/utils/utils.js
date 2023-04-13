@@ -210,7 +210,8 @@ const utils = {
                             PAYROLLCODETYPE: arrCols[10],
                             QUALIFIEDCOMPENSATION: arrCols[11],
                             TRANSACTIONDESCRIPTION: arrCols[12],
-                            USPSRPCATEGORY: arrCols[13]
+                            USPSRPCATEGORY: arrCols[13],
+                            VENDORREFERENCE: arrCols[14]
                         };
                     } else {
                         throw({message: `Unable to parse file. Check for empty rows or invalid number of columns. LINE: ${line}`});
