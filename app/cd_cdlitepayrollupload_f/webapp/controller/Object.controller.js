@@ -335,20 +335,22 @@ sap.ui.define([
         },
 
         onListUpdateFinished: function (oEvent) {
-            
-            var sTitle,
+
+            var sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [0]),
                 iTotalItems = oEvent.getParameter("total"),
                 oViewModel = this.getModel("objectView"),
                 oItemsBinding = oEvent.getSource().getBinding("items");
-
+              
             var that = this;
 
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
                 sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
                 oViewModel.setProperty("/countAll", iTotalItems);
                 oViewModel.setProperty("/lineItemListTitle", sTitle);
+            } else {
+                oViewModel.setProperty("/countAll", iTotalItems);
+                oViewModel.setProperty("/lineItemListTitle", sTitle);
             }
-            //          oViewModel.setProperty("/lineItemListTitle", sTitle);
             BusyIndicator.hide();
 
         },
