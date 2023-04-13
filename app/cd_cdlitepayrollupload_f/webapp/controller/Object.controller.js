@@ -41,7 +41,7 @@ sap.ui.define([
             // between the busy indication for loading the view's meta data
             var currentUserModel = this.getOwnerComponent().getModel("userAttributes");
             var userScope = currentUserModel.getData().scopes;
-            this._userDelete =  userScope?.includes('delete') || false;
+            this._userDelete = userScope?.includes('delete') || false;
             this._userApprove = userScope?.includes('approve') || false;
 
             var oViewModel = new JSONModel({
@@ -69,7 +69,19 @@ sap.ui.define([
             this.setModel(oViewModel, "objectView");
 
         },
-       
+
+        getItemCount: async function (sURL, status) {
+            sURL = sURL + " and status eq '" + status + "'";
+            let response = await fetch(sURL);
+            let result = await response.json();
+            if (result.value) {
+                return result["@odata.count"];
+            }
+            if (response.status !== 200) {
+                return 0;
+            }
+        },
+
 
         /* =========================================================== */
         /* internal methods                                            */
@@ -84,14 +96,17 @@ sap.ui.define([
         _onObjectMatched: function (oEvent) {
 
             var sObjectId = oEvent.getParameter("arguments").objectId;
+            this._sHeaderStatus = oEvent.getParameter("arguments").headerStatus;
+
             this._ID = sObjectId.replace(/[{()}]/g, '');
             this._bindView("/StagingUploads" + sObjectId);
-            /*    var allContexts = this._oModel.bindList("/StagingUploads" + sObjectId, undefined, undefined, undefined, undefined);
-                allContexts.requestContexts().then(function (aContexts) {
-                    this._allObjects = aContexts.map(oContext => oContext.getObject());
-    
-                }); */
-            //   var sPostingURL = 'payroll/PostingBatch' + "?$filter=batchId eq " + parseInt(this._ID);
+
+            var oLineItemsList = this.getView().byId("lineItemsList");
+            var oFilter = new Filter("parent_ID", FilterOperator.EQ, this._ID);
+            oLineItemsList.bindAggregation("items", { path: '/StagingUploadItems', template: this.getView().byId("colBatchItems"), filters: [oFilter], parameters: { $count: true } });
+            this.setUserScope();
+            this.setApproveHeader();
+
             var oPostingData = new JSONModel();
             var that = this;
 
@@ -150,10 +165,6 @@ sap.ui.define([
                 return;
             }
 
-            var oResourceBundle = this.getResourceBundle(),
-                oObject = oView.getBindingContext().getObject();
-
-
             oViewModel.setProperty("/busy", false);
 
         },
@@ -180,27 +191,99 @@ sap.ui.define([
 
         },
 
-        onDownloadSummary: function(oEvent){
+        setApproveHeader: function () {
+            if (['APPROVED', 'POSTED', 'ERROR'].includes(this._sHeaderStatus.toUpperCase())) {
+                var oApproveList = this._oModel.bindContext("/PayrollHeader(" + this._ID + ")");
+                var that = this;
+                oApproveList.requestObject().then(function (sObject) {
+                    //  console.log(sObject);
+                    that.getView().byId("approvedByTxt").setText(sObject.approvedBy);
+                    var oDateFormatter = DateFormat.getDateTimeInstance();
+                    that.getView().byId("approvedAtTxt").setText(oDateFormatter.format(new Date(sObject.approvedAt)));
+                });
+            } else {
+                this.getView().byId("approvedByTxt").setText("");
+                this.getView().byId("approvedAtTxt").setText("");
+            }
+        },
+
+        setUserScope: function () {
+            var oViewModel = this.getModel("objectView");
+            var sURL = "payroll/StagingUploadItems?$count=true&$filter=parent_ID eq " + this._ID;
+            switch (this._sHeaderStatus.toUpperCase()) {
+                case "VALIDATED":
+                    this._succCnt = this.getItemCount(sURL, "VALID");
+                    this._errorCnt = this.getItemCount(sURL, "INVALID");
+                    if (this._userDelete)
+                        oViewModel.setProperty("/enableDeleteButton", true);
+                    oViewModel.setProperty("/enableRevalButton", true);
+                    if (this._userApprove)
+                        oViewModel.setProperty("/enableApproveButton", true);
+                    break;
+                case "STAGED":
+                    this._succCnt = this.getItemCount(sURL, "VALID");
+                    this._errorCnt = this.getItemCount(sURL, "INVALID");
+                    if (this._userDelete)
+                        oViewModel.setProperty("/enableDeleteButton", true);
+                    oViewModel.setProperty("/enableRevalButton", true);
+                    oViewModel.setProperty("/enableApproveButton", false);
+                    break;
+                case "APPROVED":
+                    this._succCnt = this.getItemCount(sURL, "APPROVED");
+                    this._errorCnt = this.getItemCount(sURL, "SKIPPED");
+                    oViewModel.setProperty("/enableDeleteButton", false);
+                    oViewModel.setProperty("/enableRevalButton", false);
+                    oViewModel.setProperty("/enableApproveButton", false);
+                    break;
+                case "POSTED":
+                    this._succCnt = this.getItemCount(sURL, "APPROVED");
+                    this._errorCnt = this.getItemCount(sURL, "SKIPPED");
+                    oViewModel.setProperty("/enableDeleteButton", false);
+                    oViewModel.setProperty("/enableRevalButton", false);
+                    oViewModel.setProperty("/enableApproveButton", false);
+                    break;
+                case "ERROR":
+                    this._succCnt = this.getItemCount(sURL, "APPROVED");
+                    this._errorCnt = this.getItemCount(sURL, "SKIPPED");
+                    oViewModel.setProperty("/enableDeleteButton", false);
+                    oViewModel.setProperty("/enableRevalButton", false);
+                    oViewModel.setProperty("/enableApproveButton", false);
+                    break;
+                default:
+                    this._succCnt = this.getItemCount(sURL, "VALID");
+                    this._errorCnt = this.getItemCount(sURL, "INVALID");
+                    oViewModel.setProperty("/enableDeleteButton", false);
+                    oViewModel.setProperty("/enableRevalButton", false);
+                    oViewModel.setProperty("/enableApproveButton", false);
+            }
+            this._succCnt.then((value) => {
+                oViewModel.setProperty("/success", value);
+            });
+
+            this._errorCnt.then((value) => {
+                oViewModel.setProperty("/inError", value);
+            });
+
+        },
+
+        onDownloadSummary: function (oEvent) {
             const oBoundObject = this.getView().getBindingContext().getObject()
             const dataExport = this.getView().getModel("costCenterView").getData();
             const oExportUtil = new ExportUtil();
-            oExportUtil.exportToCSV(dataExport, `Summary-Batch-${oBoundObject?.ID}`,[
-                "PAYROLLPERIOD","PAYROLLCODETYPE","PAYROLLCODE","PAYROLLCODESEQUENCE","PAYROLLCODE_DESCRIPTION","GLACCOUNT","GLCOSTCENTER","AMOUNT"
+            oExportUtil.exportToCSV(dataExport, `Summary-Batch-${oBoundObject?.ID}`, [
+                "PAYROLLPERIOD", "PAYROLLCODETYPE", "PAYROLLCODE", "PAYROLLCODESEQUENCE", "PAYROLLCODE_DESCRIPTION", "GLACCOUNT", "GLCOSTCENTER", "AMOUNT"
             ]);
         },
 
         onQuickFilter: function (oEvent) {
 
             var oViewModel = this.getModel("objectView");
-            var nErrorCnt = oViewModel.getProperty("/inError");
-            var nSuccessCnt = oViewModel.getProperty("/success");
-
             var oBinding = this.getView().byId("lineItemsList").getBinding("items"),
                 sTitle,
                 sKey = oEvent.getParameter("selectedKey");
             var sHeaderStatus = this._sHeaderStatus;
 
-            if (['APPROVED','POSTED','ERROR'].includes(sHeaderStatus.toUpperCase()))
+            if (['APPROVED', 'POSTED', 'ERROR'].includes(sHeaderStatus.toUpperCase()))
                 this._mFilters = {
                     "success": [new Filter('status', FilterOperator.EQ, 'APPROVED')],
                     "inError": [new Filter('status', FilterOperator.EQ, 'SKIPPED')],
@@ -213,22 +296,36 @@ sap.ui.define([
                     "all": []
                 };
 
-            if (sKey === "inError" && parseInt(nErrorCnt) > 0) {
+            if (sKey === "inError" && parseInt(this._errorCnt) > 0) {
                 oViewModel.setProperty("/showExport", true);
             } else {
                 oViewModel.setProperty("/showExport", false);
 
             }
-            oBinding.filter(this._mFilters[sKey]);
-            if (sKey === 'success')
-                sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [nSuccessCnt]);
-            else if (sKey === 'inError')
-                sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [nErrorCnt]);
+
+            var oFilter = new Filter("parent_ID", FilterOperator.EQ, this._ID);
+
+            var andFilter = new Filter([oFilter, this._mFilters[sKey][0]], true);
+
+            if (sKey === 'all')
+                oBinding.filter(oFilter);
             else
+                oBinding.filter(andFilter);
+
+            if (sKey === 'success') {
+                this._succCnt.then((value) => {
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [value]);
+                    oViewModel.setProperty("/lineItemListTitle", sTitle);
+                })
+            } else if (sKey === 'inError') {
+                this._errorCnt.then((value) => {
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [value]);
+                    oViewModel.setProperty("/lineItemListTitle", sTitle);
+                })
+            } else {
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
-
-            oViewModel.setProperty("/lineItemListTitle", sTitle);
-
+                oViewModel.setProperty("/lineItemListTitle", sTitle);
+            }
 
         },
 
@@ -237,126 +334,31 @@ sap.ui.define([
             oTable.removeSelections(true);
         },
 
-     
-        getFilteredCnt: function (oCurrntObjs, status) {
-            var filteredData = oCurrntObjs.filter(data => (data.status === status));
-            if (status === 'SKIPPED' || status === 'INVALID')
-                this._allErrorObjs = filteredData;
-            return filteredData.length;
-        },
-
         onListUpdateFinished: function (oEvent) {
-
+            
             var sTitle,
                 iTotalItems = oEvent.getParameter("total"),
                 oViewModel = this.getModel("objectView"),
-                oItemsBinding = oEvent.getSource().getBinding("items"),
-                oIconFilter = this.byId("iconTabBar");
+                oItemsBinding = oEvent.getSource().getBinding("items");
 
-            this._sHeaderStatus = this.byId("detailStatusTxt").getText();
-            var sKey = oIconFilter.getSelectedKey();
-            var sFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
-            var oAllCurrentContexts = oItemsBinding.getAllCurrentContexts();
-            this._oAllCurrentObjs = oAllCurrentContexts.map(oContext => oContext.getObject());
             var that = this;
-            if (['APPROVED','POSTED','ERROR'].includes(that._sHeaderStatus.toUpperCase())) {
-                var oApproveList = that._oModel.bindContext("/PayrollHeader(" + that._ID + ")");
-                oApproveList.requestObject().then(function (sObject) {
-                    //  console.log(sObject);
-                    that.getView().byId("approvedByTxt").setText(sObject.approvedBy);
-                    var oDateFormatter = DateFormat.getDateTimeInstance();
-                    that.getView().byId("approvedAtTxt").setText(oDateFormatter.format(new Date(sObject.approvedAt)));
-                });
-            } else {
-                that.getView().byId("approvedByTxt").setText("");
-                that.getView().byId("approvedAtTxt").setText("");
-            }
 
-            // only update the counter if the length is final
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
-
                 sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
-
-                switch (that._sHeaderStatus.toUpperCase()) {
-                    case "VALIDATED":
-                        if (this._userDelete)
-                            oViewModel.setProperty("/enableDeleteButton", true);
-
-                        oViewModel.setProperty("/enableRevalButton", true);
-
-                        if (this._userApprove)
-                            oViewModel.setProperty("/enableApproveButton", true);
-
-                        break;
-                    case "STAGED":
-                        if (this._userDelete)
-                            oViewModel.setProperty("/enableDeleteButton", true);
-                        oViewModel.setProperty("/enableRevalButton", true);
-                    
-                        oViewModel.setProperty("/enableApproveButton", false);
-                        break;
-                    case "APPROVED":
-                        oViewModel.setProperty("/enableDeleteButton", false);
-                        oViewModel.setProperty("/enableRevalButton", false);
-                        oViewModel.setProperty("/enableApproveButton", false);
-                        break;
-                    case "POSTED":
-                        oViewModel.setProperty("/enableDeleteButton", false);
-                        oViewModel.setProperty("/enableRevalButton", false);
-                        oViewModel.setProperty("/enableApproveButton", false);
-                        break;
-                    case "ERROR":
-                        oViewModel.setProperty("/enableDeleteButton", false);
-                        oViewModel.setProperty("/enableRevalButton", false);
-                        oViewModel.setProperty("/enableApproveButton", false);
-                        break;
-                    default:
-                        oViewModel.setProperty("/enableDeleteButton", false);
-                        oViewModel.setProperty("/enableRevalButton", false);
-                        oViewModel.setProperty("/enableApproveButton", false);
-                }
-
-
-                if (sFilter === undefined) {
-                    oViewModel.setProperty("/countAll", iTotalItems);
-                    var succCnt = 0, errorCnt = 0;
-
-                    if (['APPROVED','POSTED','ERROR'].includes(that._sHeaderStatus.toUpperCase())) {
-                        var succCnt = that.getFilteredCnt(that._oAllCurrentObjs, "APPROVED");
-                        var errorCnt = that.getFilteredCnt(that._oAllCurrentObjs, "SKIPPED");
-
-
-                    } else {
-                        var succCnt = that.getFilteredCnt(that._oAllCurrentObjs, "VALID");
-                        var errorCnt = that.getFilteredCnt(that._oAllCurrentObjs, "INVALID");
-
-                    }
-
-                    oViewModel.setProperty("/success", succCnt);
-                    oViewModel.setProperty("/inError", errorCnt);
-                }
-
-
-            } else {
-                //Display 'Line Items' instead of 'Line items (0)'
-                if (sKey === 'success')
-                    sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/success")]);
-                else if (sKey === 'inError')
-                    sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [oViewModel.getProperty("/inError")]);
-                else
-                    sTitle = that.getResourceBundle().getText("detailLineItemTableHeading");
+                oViewModel.setProperty("/countAll", iTotalItems);
+                oViewModel.setProperty("/lineItemListTitle", sTitle);
             }
-            oViewModel.setProperty("/lineItemListTitle", sTitle);
-
+            //          oViewModel.setProperty("/lineItemListTitle", sTitle);
             BusyIndicator.hide();
+
         },
 
         onDownload: function () {
             const oBoundObject = this.getView().getBindingContext().getObject()
             const oExportUtil = new ExportUtil();
-            oExportUtil.exportToCSV(this._allErrorObjs, `Errors-Batch-${oBoundObject?.ID}`,[
-                "FMNO","PAYROLLCODE","PAYROLLCODESEQUENCE","NAME","AMOUNT","PAYMENTNUMBER","PAYMENTID","PAYMENTFORM",
-                "USERFIELD1","USERFIELD2","REMARKS","LOANADVANCEREFERENCENUMBER","PROJECTVODE","PROJECTTASK","STATUSMESSAGE"
+            oExportUtil.exportToCSV(this._allErrorObjs, `Errors-Batch-${oBoundObject?.ID}`, [
+                "FMNO", "PAYROLLCODE", "PAYROLLCODESEQUENCE", "NAME", "AMOUNT", "PAYMENTNUMBER", "PAYMENTID", "PAYMENTFORM",
+                "USERFIELD1", "USERFIELD2", "REMARKS", "LOANADVANCEREFERENCENUMBER", "PROJECTVODE", "PROJECTTASK", "STATUSMESSAGE"
             ]);
 
         },
@@ -413,9 +415,9 @@ sap.ui.define([
 
                     listPostingSummary.setBusy(false);
                 });
-                
+
                 oView.getBindingContext().refresh();
-            
+
             }, 1000);
 
         },
@@ -514,7 +516,7 @@ sap.ui.define([
             var sHeaders = { "content-type": "application/json", "x-csrf-token": `${csrfToken}` };
             sap.ui.core.BusyIndicator.show();
             var that = this;
-            const enrichUrl =  `${that.getBaseUrl("payroll")}${sPath}/enrich`
+            const enrichUrl = `${that.getBaseUrl("payroll")}${sPath}/enrich`
             console.log(enrichUrl);
             jQuery.ajax({
                 url: enrichUrl,
@@ -547,7 +549,7 @@ sap.ui.define([
             var oApprovalDialog = this.byId("approveDialog");
             oApprovalDialog.setBusy(true);
             var that = this;
-            const approveUrl =  `${that.getBaseUrl("payroll")}${sPath}/approve`
+            const approveUrl = `${that.getBaseUrl("payroll")}${sPath}/approve`
             console.log(approveUrl);
             jQuery.ajax({
                 url: approveUrl,

@@ -237,7 +237,8 @@ sap.ui.define([
          */
         _showObject: function (oItem) {
             this.getRouter().navTo("object", {
-                objectId: oItem.getBindingContext().getPath().substring("/StagingUploads".length)
+                objectId: oItem.getBindingContext().getPath().substring("/StagingUploads".length),
+                headerStatus: oItem.getBindingContext().getObject().status
             });
 
             sap.ui.core.BusyIndicator.show();

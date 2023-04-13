@@ -148,7 +148,7 @@
           "target": "worklist"
         },
         {
-          "pattern": "StagingUploads/{objectId}",
+          "pattern": "StagingUploads/{objectId},{headerStatus}",
           "name": "object",
           "target": "object"
         }
