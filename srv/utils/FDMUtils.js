@@ -1,3 +1,4 @@
+const logger = require("./Logger");
 
 class FDMUtils {
     apiService;
@@ -12,6 +13,7 @@ class FDMUtils {
     constructor(remoteService) {
         this.apiService = remoteService;
         this.sapClient = process.env.SAP_CLIENT.toString();
+        logger.log("fdm","info",`SAP_CLIENT=${this.sapClient}`);
     };
 
     async getEmployeeData(companyCode) {
@@ -21,7 +23,7 @@ class FDMUtils {
             result = await this.apiService.get(`/${result.$nextLink}`);
             this.employeeData.push(...result);
         }
-        console.log(`Found ${this.employeeData.length} FMNOs for client ${this.sapClient} and companyCode ${companyCode}`);
+        logger.log("fdm","info",`Found ${this.employeeData.length} FMNOs for client ${this.sapClient} and companyCode ${companyCode}`);
         return this.employeeData;
     };
 
@@ -54,7 +56,7 @@ class FDMUtils {
             result = await this.apiService.get(`/${result.$nextLink}`);
             this.glAccounts.push(...result);
         }
-        console.log(`Found ${this.glAccounts.length} gLAccounts for client ${this.sapClient}`);
+        logger.log("fdm","info",`Found ${this.glAccounts.length} gLAccounts for client ${this.sapClient}`);
         return this.glAccounts;
     };
 
@@ -69,7 +71,7 @@ class FDMUtils {
             result = await this.apiService.get(`/${result.$nextLink}`);
             this.companyCodes.push(...result);
         }
-        console.log(`Found ${this.companyCodes.length} companyCodes.`);
+        logger.log("fdm","info",`Found ${this.companyCodes.length} companyCodes for client ${this.sapClient}`);
         return this.companyCodes;
     };
 
@@ -84,7 +86,7 @@ class FDMUtils {
             result = await this.apiService.get(`/${result.$nextLink}`);
             this.wbsElements.push(...result);
         }
-        console.log(`Found ${this.wbsElements.length} wbsElements for companyCode ${companyCode}.`);
+        logger.log("fdm","info",`Found ${this.wbsElements.length} wbsElements for companyCode ${companyCode} and client ${this.sapClient}`);
         return this.wbsElements;
     };
 
@@ -114,7 +116,7 @@ class FDMUtils {
             result = await this.apiService.get(`/${result.$nextLink}`);
             this.exchangeRates.push(...result);
         }
-        console.log(`Found ${this.exchangeRates.length} exchangeRates.`);
+        logger.log("fdm","info",`Found ${this.exchangeRates.length} exchangeRates for client ${this.sapClient}`);
         return this.exchangeRates;
     };
 
@@ -134,7 +136,7 @@ class FDMUtils {
             result = await this.apiService.get(`/${result.$nextLink}`);
             this.currencyCodes.push(...result);
         }
-        console.log(`Found ${this.currencyCodes.length} currencyCodes.`);
+        logger.log("fdm","info",`Found ${this.currencyCodes.length} currencyCodes.`);
         return this.currencyCodes;
     };
 };

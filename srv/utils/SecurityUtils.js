@@ -3,6 +3,7 @@ const xsenv = require("@sap/xsenv");
 const util = require("util");
 const createSecurityContext = util.promisify(xssec.createSecurityContext);
 const axios = require("axios");
+const logger = require("Logger");
 
 class SecurityUtils {
   static async getOauthTokenClientCredentials(tokenUrl, clientId, clientSecret){
@@ -29,16 +30,16 @@ class SecurityUtils {
 
       const securityContext = await createSecurityContext(token, config);
       const jwtScopes = securityContext.getTokenInfo().getPayload().scope;
-      console.log("Scopes:" + jwtScopes);
+      logger.log("sec","debug","Scopes:" + jwtScopes);
 
       const hasScope = securityContext.checkScope(
         `${xsappname}.${requiredScope}`
       );
-      console.log(`hasScope ${xsappname}.${requiredScope} == ${hasScope}`);
+      logger.log("sec","debug",`hasScope ${xsappname}.${requiredScope} == ${hasScope}`);
 
       return hasScope;
     } catch (ex) {
-      console.log(ex);
+      logger.log("sec","error", ex);
       return false;
     }
   }

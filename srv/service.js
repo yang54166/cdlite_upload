@@ -1,13 +1,8 @@
-const { PassThrough } = require('node:stream');
 const cds = require('@sap/cds');
-const axios = require("axios");
-const LOG = cds.log('api');
-
+const logger = require("./utils/Logger");
 const utils = require('./utils/utils');
 const { HANAUtils } = require('./utils/HANAUtils');
-const { SecurityUtils } = require('./utils/SecurityUtils');
 const { FDMUtils } = require('./utils/FDMUtils');
-const { data } = require('hdb/lib/protocol');
 
 class PayrollService extends cds.ApplicationService {
     async init() {
@@ -44,9 +39,9 @@ class PayrollService extends cds.ApplicationService {
                     const batchID = contentPropertyMap.get("batchID");
                     const fileName = contentPropertyMap.get("filename");
 
-                    console.log(`DEBUG: Upload started for batch ${batchID}.`);
+                    logger.log("cds","debug",`Upload started for batch ${batchID}.`);
                     let content = await utils.readUploadStream(req.data.content);
-                    console.log(`DEBUG: Upload complete for batch ${batchID}.  Starting to parse file content.`);
+                    logger.log("cds","debug",`Upload complete for batch ${batchID}.  Starting to parse file content.`);
 
                     const dataToImport = utils.parseCDUpload(content, batchID);
                     const validationResult = utils.validateEntities(dataToImport, UploadItems);
@@ -57,7 +52,7 @@ class PayrollService extends cds.ApplicationService {
                             "SP_UPLOADINSERT",
                             dataToImport
                         );
-                        console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                        logger.log("cds","debug",`data posted to db with result: ${JSON.stringify(result)} `);
 
                         //await this.emit("enrich", { batchID });
                         await enrichBatch(req, batchID);
@@ -65,9 +60,11 @@ class PayrollService extends cds.ApplicationService {
                         // Update filename
                         return UPDATE(UploadHeader).set({ FILENAME: fileName }).where({ ID: batchID });
                     } else {
+                        logger.log("cds","error", validationResult.errorMessage);
                         return req.error({ code: 1, status: 400, message: validationResult.errorMessage, target: 'PayrollUploadFile' });
                     }
                 } catch (ex) {
+                    logger.log("cds","error", `Error while uploading file: ${ex.message}`);
                     req.error({ code: 1, status: 400, message: `Error while uploading file: ${ex.message}` });
                 }
             }
@@ -83,9 +80,9 @@ class PayrollService extends cds.ApplicationService {
                     const mappingTable = contentPropertyMap.get("mappingTable");
                     const fileName = contentPropertyMap.get("filename");
 
-                    console.log(`DEBUG: Upload started for mappingTable ${mappingTable}.`);
+                    logger.log("cds","debug",`DEBUG: Upload started for mappingTable ${mappingTable}.`);
                     let content = await utils.readUploadStream(req.data.content);
-                    console.log(`DEBUG: Upload complete for mappingTable ${mappingTable}.  Starting to parse file content.`);
+                    logger.log("cds","debug",`DEBUG: Upload complete for mappingTable ${mappingTable}.  Starting to parse file content.`);
 
                     const entityType = (() => {
                         switch (mappingTable.toUpperCase()) {
@@ -108,15 +105,18 @@ class PayrollService extends cds.ApplicationService {
                                 `SP_UPSERT_${mappingDBTable}`,
                                 dataToImport
                             );
-                            console.log(`DEBUG: data posted to db with result: ${JSON.stringify(result)} `);
+                            logger.log("cds","debug", `Data posted to db with result: ${JSON.stringify(result)} `);
                             return;
                         } else {
+                            logger.log("cds","error", validationResult.errorMessage);
                             return req.error({ code: 3, status: 400, message: validationResult.errorMessage, target: 'MappingUploadFile' });
                         }
                     } else {
+                        logger.log("cds","error", `Invalid mappingTable : ${mappingTable}.`);
                         req.error({ code: 2, status: 400, message: `Invalid mappingTable : ${mappingTable}.` });
                     }
                 } catch (ex) {
+                    logger.log("cds","error", `Error while uploading file: ${ex.message}`);
                     req.error({ code: 1, status: 400, message: `Error while uploading file: ${ex.message}` });
                 }
             }
@@ -290,17 +290,18 @@ class PayrollService extends cds.ApplicationService {
 
                 // Update Header Status
                 const resultValidatedHeader = await UPDATE(UploadHeader).set({ STATUS: 'VALIDATED' }).where({ ID: batchID });
+                logger.log("cds","info","Enrichment complete. Set batch to VALIDATED.");
 
-                console.log("DEBUG: enrichment complete. Set batch to VALIDATED.");
                 return resultSave;
             } catch (ex) {
+                logger.log("cds","error", `Error while enriching batch ID:${batchID}: ${ex.message}`);
                 req.error({ code: 400, message: `Error while enriching batch ID:${batchID}: ${ex.message}` });
             }
         };
 
         this.on('enrich', async req => {
             const batchID = req.data.batchID || req.params[0];
-            console.log("enriching batchId: " + batchID);
+            logger.log("cds","info","Enriching batchId: " + batchID);
 
             return enrichBatch(req, batchID);
         });
@@ -363,7 +364,7 @@ class PayrollService extends cds.ApplicationService {
                                     companyCode: glCompanyCode
                                 };
                                 const resultCopyHeader = await INSERT.into(PayrollHeader).entries(payloadHeader);
-                                console.log(`Header added to results table: ${resultCopyHeader.results.length}`);
+                                logger.log("cds","debug",`Header added to results table: ${resultCopyHeader.results.length}`);
 
                                 // ITEMS
                                 let lineCounter = 0;
@@ -379,7 +380,7 @@ class PayrollService extends cds.ApplicationService {
                                     };
 
                                     const mapObj = dataMapping.find((mapItem) => (mapItem.payrollCode == item.payrollCode) && (mapItem.payrollCodeSequence == item.payrollCodeSequence));
-                                    if (!mapObj) { console.log(`Unable to find mapping for ${item.payrollCode} : ${item.payrollCodeSequence}`) };
+                                    if (!mapObj) { logger.log("cds","error",`Unable to find mapping for ${item.payrollCode} : ${item.payrollCodeSequence}`) };
 
                                     const glExchangeRateSourceToUSD = fdmUtils.getExchangeRate(currencyCode, 'USD');
                                     const glExchangeRateSourceToCompany = fdmUtils.getExchangeRate(currencyCode, item.glCurrencyCode);
@@ -454,7 +455,7 @@ class PayrollService extends cds.ApplicationService {
                                 });
 
                                 const resultCopyItems = await INSERT.into(PayrollDetails).entries(payloadItems);
-                                console.log(`Details added to results table: ${resultCopyItems.results.length}`);
+                                logger.log("cds","debug",`Details added to results table: ${resultCopyItems.results.length}`);
 
                                 for (var postingBatchID = 1; postingBatchID <= postingBatches; postingBatchID += 1) {
                                     const resultCreatePostingBatch = await INSERT.into(PostingBatch).entries({
@@ -494,9 +495,9 @@ class PayrollService extends cds.ApplicationService {
 
         this.on("trigger", async req => {
             const batchId = req.data.batchToApprove || req.params[0];
-            console.log(`CPI Trigger - Starting for batch ${batchId}`);
+            logger.log("cpi","info",`CPI Trigger - Starting for batch ${batchId}`);
             const resultTrigger = await cpi.send({ path: `/cd_payroll_trigger?BatchID=${batchId}&$format=json`, headers: { Accept: "application/json" } });
-            console.log(`CPI Response: ${resultTrigger.substring(0, 500)}`);
+            logger.log("cpi","info",`CPI Response: ${resultTrigger.substring(0, 500)}`);
             return true;
         });
 
@@ -539,7 +540,7 @@ class PayrollService extends cds.ApplicationService {
 
         this.on('deleteAllMapping', async req => {
             const mappingTableToDelete = req.data.mappingTable;
-            console.log(`deleteAllMapping for ${JSON.stringify(req.data)}`);
+            logger.log("cds","info",`deleteAllMapping for ${JSON.stringify(req.data)}`);
             let realTable = "";
             switch (mappingTableToDelete) {
                 case "LegalEntityGrouping":
@@ -559,30 +560,6 @@ class PayrollService extends cds.ApplicationService {
             const deleteResult = await HANAUtils.execQuery(db.options.credentials, `DELETE FROM "${realTable}"`);
             return true;
         });
-
-        // db.after('UPDATE', PostingBatch, async (postingBatch, req) => {
-        //     const batchId = req.data.batchId;
-        //     const postingBatchId = req.data.postingBatchId;
-
-        //     const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId })
-        //     const stringPostingResults = postingResults.map((r)=>`${r.POSTINGBATCHID}=${r.POSTINGSTATUS}`).join(",");
-        //     console.log(`Existing Statuses: ${stringPostingResults}`);
-
-        //     const isPostingFinal = postingResults.every((res) => {
-        //         let resToCheck;
-        //         // Use data just updated, but not yet committed.
-        //         if (res.POSTINGBATCHID == postingBatchId) { resToCheck = req.data } else { resToCheck = res };
-        //         return (res.POSTINGSTATUS != "PENDING");
-        //     });
-        //     console.log(`PostingBatch ${postingBatchId} updated.`);
-
-        //     if (isPostingFinal) {
-        //         const isPostingError = postingResults.every((res) => (res.POSTINGSTATUS == "ERROR"));
-        //         console.log(`PostingBatch ${batchId} final with ${isPostingError ? 'ERROR' : 'POSTED'}`);
-        //         const resultStagingStatus = await UPDATE(`Staging_UploadHeader`, { ID: batchId }).with({ STATUS: isPostingError ? 'ERROR' : 'POSTED' });
-        //         return resultStagingStatus;
-        //     }
-        // });
 
         // required
         await super.init()
