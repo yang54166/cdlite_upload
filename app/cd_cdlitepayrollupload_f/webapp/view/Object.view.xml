@@ -234,12 +234,11 @@
                                     mode="None"
                                     width="auto"
                                     items="{
-                                        path: 'items',
-                                     
+                                        path: '',
                                         sorter: {
                                             path: 'fmno',
                                             descending: false
-                                        }
+                                        }                                 
                                     }"
                                     growing="true"
                                     growingScrollToLoad="true"
