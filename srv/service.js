@@ -560,29 +560,29 @@ class PayrollService extends cds.ApplicationService {
             return true;
         });
 
-        db.after('UPDATE', PostingBatch, async (postingBatch, req) => {
-            const batchId = req.data.batchId;
-            const postingBatchId = req.data.postingBatchId;
+        // db.after('UPDATE', PostingBatch, async (postingBatch, req) => {
+        //     const batchId = req.data.batchId;
+        //     const postingBatchId = req.data.postingBatchId;
 
-            const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId })
-            const stringPostingResults = postingResults.map((r)=>`${r.POSTINGBATCHID}=${r.POSTINGSTATUS}`).join(",");
-            console.log(`Existing Statuses: ${stringPostingResults}`);
+        //     const postingResults = await SELECT.from`Payroll_PostingBatch`.where({ batchId: batchId })
+        //     const stringPostingResults = postingResults.map((r)=>`${r.POSTINGBATCHID}=${r.POSTINGSTATUS}`).join(",");
+        //     console.log(`Existing Statuses: ${stringPostingResults}`);
 
-            const isPostingFinal = postingResults.every((res) => {
-                let resToCheck;
-                // Use data just updated, but not yet committed.
-                if (res.POSTINGBATCHID == postingBatchId) { resToCheck = req.data } else { resToCheck = res };
-                return (res.POSTINGSTATUS != "PENDING");
-            });
-            console.log(`PostingBatch ${postingBatchId} updated.`);
+        //     const isPostingFinal = postingResults.every((res) => {
+        //         let resToCheck;
+        //         // Use data just updated, but not yet committed.
+        //         if (res.POSTINGBATCHID == postingBatchId) { resToCheck = req.data } else { resToCheck = res };
+        //         return (res.POSTINGSTATUS != "PENDING");
+        //     });
+        //     console.log(`PostingBatch ${postingBatchId} updated.`);
 
-            if (isPostingFinal) {
-                const isPostingError = postingResults.every((res) => (res.POSTINGSTATUS == "ERROR"));
-                console.log(`PostingBatch ${batchId} final with ${isPostingError ? 'ERROR' : 'POSTED'}`);
-                const resultStagingStatus = await UPDATE(`Staging_UploadHeader`, { ID: batchId }).with({ STATUS: isPostingError ? 'ERROR' : 'POSTED' });
-                return resultStagingStatus;
-            }
-        });
+        //     if (isPostingFinal) {
+        //         const isPostingError = postingResults.every((res) => (res.POSTINGSTATUS == "ERROR"));
+        //         console.log(`PostingBatch ${batchId} final with ${isPostingError ? 'ERROR' : 'POSTED'}`);
+        //         const resultStagingStatus = await UPDATE(`Staging_UploadHeader`, { ID: batchId }).with({ STATUS: isPostingError ? 'ERROR' : 'POSTED' });
+        //         return resultStagingStatus;
+        //     }
+        // });
 
         // required
         await super.init()
