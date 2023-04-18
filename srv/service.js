@@ -5,9 +5,8 @@ const LOG = cds.log('api');
 
 const utils = require('./utils/utils');
 const { HANAUtils } = require('./utils/HANAUtils');
-const { SecurityUtils } = require('./utils/SecurityUtils');
+//const { SecurityUtils } = require('./utils/SecurityUtils');
 const { FDMUtils } = require('./utils/FDMUtils');
-const { data } = require('hdb/lib/protocol');
 
 class PayrollService extends cds.ApplicationService {
     async init() {
