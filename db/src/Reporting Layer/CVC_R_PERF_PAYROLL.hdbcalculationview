@@ -40,6 +40,8 @@
       <viewAttribute id="FMNO_COST_CENTER"/>
       <viewAttribute id="GLCURRENCYCODE"/>
       <viewAttribute id="GLPOSTAMOUNT"/>
+    
+      <viewAttribute id="FCAT"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="CVS_I_PERF_PAYROLL"/>
@@ -102,6 +104,11 @@
     <attribute id="GLCURRENCYCODE" order="14" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="GLCURRENCYCODE"/>
       <keyMapping columnObjectName="Projection_1" columnName="GLCURRENCYCODE"/>
+    </attribute>
+  
+    <attribute id="FCAT" order="18" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FCAT"/>
+      <keyMapping columnObjectName="Projection_1" columnName="FCAT"/>
     </attribute>
   </attributes>
   <calculatedAttributes>
