@@ -5,6 +5,7 @@ sap.ui.define([
     "../model/formatter",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
+    "sap/ui/model/FilterType",
     "sap/m/MessageBox",
     "sap/ui/model/odata/v4/ODataModel",
     "sap/ui/core/Fragment",
@@ -19,7 +20,7 @@ sap.ui.define([
     "sap/m/Label",
     "sap/ui/core/format/DateFormat",
     "cd_cdlitepayrollupload_f/utils/ExportUtil"
-], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat, ExportUtil) {
+], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, FilterType, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat, ExportUtil) {
     "use strict";
 
     var EdmType = exportLibrary.EdmType;
@@ -207,54 +208,34 @@ sap.ui.define([
             }
         },
 
-        setUserScope: function () {
+        updateTableCnt: function (sFilter) {
             var oViewModel = this.getModel("objectView");
-            var sURL = "payroll/StagingUploadItems?$count=true&$filter=parent_ID eq " + this._ID;
+            // var sURL = "payroll/StagingUploadItems?$count=true&$filter=parent_ID eq " + this._ID;
+            var sURL = "payroll/StagingUploadItems?$count=true&$filter=" + sFilter;
             switch (this._sHeaderStatus.toUpperCase()) {
                 case "VALIDATED":
                     this._succCnt = this.getItemCount(sURL, "VALID");
                     this._errorCnt = this.getItemCount(sURL, "INVALID");
-                    if (this._userDelete)
-                        oViewModel.setProperty("/enableDeleteButton", true);
-                    oViewModel.setProperty("/enableRevalButton", true);
-                    if (this._userApprove)
-                        oViewModel.setProperty("/enableApproveButton", true);
                     break;
                 case "STAGED":
                     this._succCnt = this.getItemCount(sURL, "VALID");
                     this._errorCnt = this.getItemCount(sURL, "INVALID");
-                    if (this._userDelete)
-                        oViewModel.setProperty("/enableDeleteButton", true);
-                    oViewModel.setProperty("/enableRevalButton", true);
-                    oViewModel.setProperty("/enableApproveButton", false);
                     break;
                 case "APPROVED":
                     this._succCnt = this.getItemCount(sURL, "APPROVED");
                     this._errorCnt = this.getItemCount(sURL, "SKIPPED");
-                    oViewModel.setProperty("/enableDeleteButton", false);
-                    oViewModel.setProperty("/enableRevalButton", false);
-                    oViewModel.setProperty("/enableApproveButton", false);
                     break;
                 case "POSTED":
                     this._succCnt = this.getItemCount(sURL, "APPROVED");
                     this._errorCnt = this.getItemCount(sURL, "SKIPPED");
-                    oViewModel.setProperty("/enableDeleteButton", false);
-                    oViewModel.setProperty("/enableRevalButton", false);
-                    oViewModel.setProperty("/enableApproveButton", false);
                     break;
                 case "ERROR":
                     this._succCnt = this.getItemCount(sURL, "APPROVED");
                     this._errorCnt = this.getItemCount(sURL, "SKIPPED");
-                    oViewModel.setProperty("/enableDeleteButton", false);
-                    oViewModel.setProperty("/enableRevalButton", false);
-                    oViewModel.setProperty("/enableApproveButton", false);
                     break;
                 default:
                     this._succCnt = this.getItemCount(sURL, "VALID");
                     this._errorCnt = this.getItemCount(sURL, "INVALID");
-                    oViewModel.setProperty("/enableDeleteButton", false);
-                    oViewModel.setProperty("/enableRevalButton", false);
-                    oViewModel.setProperty("/enableApproveButton", false);
             }
             this._succCnt.then((value) => {
                 oViewModel.setProperty("/success", value);
@@ -262,9 +243,48 @@ sap.ui.define([
 
             this._errorCnt.then((value) => {
                 oViewModel.setProperty("/inError", value);
-            });
+            })
 
         },
+
+        setUserScope: function () {
+            var oViewModel = this.getModel("objectView");
+            switch (this._sHeaderStatus.toUpperCase()) {
+                case "VALIDATED":
+                    if (this._userDelete)
+                        oViewModel.setProperty("/enableDeleteButton", true);
+                    oViewModel.setProperty("/enableRevalButton", true);
+                    if (this._userApprove)
+                        oViewModel.setProperty("/enableApproveButton", true);
+                    break;
+                case "STAGED":
+                    if (this._userDelete)
+                        oViewModel.setProperty("/enableDeleteButton", true);
+                    oViewModel.setProperty("/enableRevalButton", true);
+                    oViewModel.setProperty("/enableApproveButton", false);
+                    break;
+                case "APPROVED":
+                    oViewModel.setProperty("/enableDeleteButton", false);
+                    oViewModel.setProperty("/enableRevalButton", false);
+                    oViewModel.setProperty("/enableApproveButton", false);
+                    break;
+                case "POSTED":
+                    oViewModel.setProperty("/enableDeleteButton", false);
+                    oViewModel.setProperty("/enableRevalButton", false);
+                    oViewModel.setProperty("/enableApproveButton", false);
+                    break;
+                case "ERROR":
+                    oViewModel.setProperty("/enableDeleteButton", false);
+                    oViewModel.setProperty("/enableRevalButton", false);
+                    oViewModel.setProperty("/enableApproveButton", false);
+                    break;
+                default:
+                    oViewModel.setProperty("/enableDeleteButton", false);
+                    oViewModel.setProperty("/enableRevalButton", false);
+                    oViewModel.setProperty("/enableApproveButton", false);
+            }
+        },
+
 
         onDownloadSummary: function (oEvent) {
             const oBoundObject = this.getView().getBindingContext().getObject()
@@ -279,6 +299,7 @@ sap.ui.define([
 
             var oViewModel = this.getModel("objectView");
             var oBinding = this.getView().byId("lineItemsList").getBinding("items"),
+                sSearchTerm = this.getView().byId("searchField").getValue(),
                 sTitle,
                 sKey = oEvent.getParameter("selectedKey");
             var sHeaderStatus = this._sHeaderStatus;
@@ -305,10 +326,17 @@ sap.ui.define([
 
             var oFilter = new Filter("parent_ID", FilterOperator.EQ, this._ID);
 
-            var andFilter = new Filter([oFilter, this._mFilters[sKey][0]], true);
+            if (sSearchTerm.length > 0) {
+                var fmnoFilter = new Filter('fmno', FilterOperator.EQ, sSearchTerm);
+                var andFilter = new Filter([oFilter, this._mFilters[sKey][0], fmnoFilter], true);
+                var allFilter = new Filter([oFilter, fmnoFilter], true);
+            } else {
+                var andFilter = new Filter([oFilter, this._mFilters[sKey][0]], true);
+                var allFilter = oFilter;
+            }
 
             if (sKey === 'all')
-                oBinding.filter(oFilter);
+                oBinding.filter(allFilter);
             else
                 oBinding.filter(andFilter);
 
@@ -326,7 +354,6 @@ sap.ui.define([
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
                 oViewModel.setProperty("/lineItemListTitle", sTitle);
             }
-
         },
 
         onSummaryListFinished: function (oEvent) {
@@ -340,8 +367,9 @@ sap.ui.define([
                 iTotalItems = oEvent.getParameter("total"),
                 oViewModel = this.getModel("objectView"),
                 oItemsBinding = oEvent.getSource().getBinding("items");
-              
+
             var that = this;
+            var sFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
 
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
                 sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
@@ -351,6 +379,8 @@ sap.ui.define([
                 oViewModel.setProperty("/countAll", iTotalItems);
                 oViewModel.setProperty("/lineItemListTitle", sTitle);
             }
+
+            that.updateTableCnt(sFilter);
             BusyIndicator.hide();
 
         },
@@ -387,14 +417,27 @@ sap.ui.define([
 
         },
         _applySearch: function (aTableSearchState) {
-            var oTable = this.byId("lineItemsList"),
+
+            var oBinding = this.getView().byId("lineItemsList").getBinding("items"),
                 oViewModel = this.getModel("objectView");
-            oTable.getBinding("items").filter(aTableSearchState, "Application");
             // changes the noDataText of the list in case there are no filter results
+
+            var oFilter = new Filter("parent_ID", FilterOperator.EQ, this._ID);
+
+            const isArray = Array.isArray(aTableSearchState);
+            if (!isArray)
+                var andFilter = new Filter([oFilter, aTableSearchState], true);
+            else
+                var andFilter = oFilter;
+
+            oBinding.filter(andFilter);
+
             if (aTableSearchState.length !== 0) {
                 oViewModel.setProperty("/tableNoDataText", this.getResourceBundle().getText("itemlistNoDataWithSearchText"));
             }
+
         },
+
         onRefresh: function () {
             var oTable = this.byId("lineItemsList");
             oTable.getBinding("items").refresh(true);
