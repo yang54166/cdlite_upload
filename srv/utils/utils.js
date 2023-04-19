@@ -195,7 +195,7 @@ const utils = {
             case "MAPPING_PAYCODEGLMAPPING":
                 return fileRows.map((line) => {
                     let arrCols = utils.CSVtoArray(line);
-                    if (arrCols && (arrCols.length == 14)) {
+                    if (arrCols && (arrCols.length == 15)) {
                         return {
                             LEGALENTITYGROUPCODE: arrCols[0],
                             PAYROLLCODE: arrCols[1],

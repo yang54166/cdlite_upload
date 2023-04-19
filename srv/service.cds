@@ -1,6 +1,8 @@
 using {staging} from '../db/staging';
 using {payroll} from '../db/payroll';
 using {mapping} from '../db/mapping';
+using {config} from '../db/config';
+
 using {
     CV_JOURNALENTRY,
     CV_JOURNALENTRY_ITEM,
@@ -92,6 +94,9 @@ service PayrollService @(requires : 'authenticated-user') {
 
     @(requires : 'admin')
     entity TransactionTypes     as projection on mapping.PayrollLedgerControl;
+
+    @(requires : 'admin')
+    entity PostingConfig     as projection on config.PostingBatch;
 
     @(requires : 'delete')
     action deleteAllMapping(mappingTable : String);
