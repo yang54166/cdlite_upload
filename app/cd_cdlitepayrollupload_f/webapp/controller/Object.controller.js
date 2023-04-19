@@ -72,7 +72,8 @@ sap.ui.define([
         },
 
         getItemCount: async function (sURL, status) {
-            sURL = sURL + " and status eq '" + status + "'";
+            if (status.length > 0)
+                sURL = sURL + " and status eq '" + status + "'";
             let response = await fetch(sURL);
             let result = await response.json();
             if (result.value) {
@@ -105,6 +106,8 @@ sap.ui.define([
             var oLineItemsList = this.getView().byId("lineItemsList");
             var oFilter = new Filter("parent_ID", FilterOperator.EQ, this._ID);
             oLineItemsList.bindAggregation("items", { path: '/StagingUploadItems', template: this.getView().byId("colBatchItems"), filters: [oFilter], parameters: { $count: true } });
+           
+            this.updateTableCnt("");
             this.setUserScope();
             this.setApproveHeader();
 
@@ -211,7 +214,13 @@ sap.ui.define([
         updateTableCnt: function (sFilter) {
             var oViewModel = this.getModel("objectView");
             // var sURL = "payroll/StagingUploadItems?$count=true&$filter=parent_ID eq " + this._ID;
-            var sURL = "payroll/StagingUploadItems?$count=true&$filter=" + sFilter;
+            if (sFilter.length === 0) {
+                var sURL = "payroll/StagingUploadItems?$count=true&$filter=parent_ID eq " + this._ID;
+                this._countAll = this.getItemCount(sURL, "");
+            } else {
+                var sURL = "payroll/StagingUploadItems?$count=true&$filter=" + sFilter;
+                this._countAll = this.getItemCount(sURL, "");
+            }
             switch (this._sHeaderStatus.toUpperCase()) {
                 case "VALIDATED":
                     this._succCnt = this.getItemCount(sURL, "VALID");
@@ -243,6 +252,10 @@ sap.ui.define([
 
             this._errorCnt.then((value) => {
                 oViewModel.setProperty("/inError", value);
+            });
+
+            this._countAll.then((value) => {
+                oViewModel.setProperty("/countAll", value);
             })
 
         },
@@ -369,18 +382,18 @@ sap.ui.define([
                 oItemsBinding = oEvent.getSource().getBinding("items");
 
             var that = this;
-            var sFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
+        //    var sFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
 
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
                 sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
-                oViewModel.setProperty("/countAll", iTotalItems);
+         //       oViewModel.setProperty("/countAll", iTotalItems);
                 oViewModel.setProperty("/lineItemListTitle", sTitle);
-            } else {
-                oViewModel.setProperty("/countAll", iTotalItems);
-                oViewModel.setProperty("/lineItemListTitle", sTitle);
+    //        } else {
+    //            oViewModel.setProperty("/countAll", iTotalItems);
+     //           oViewModel.setProperty("/lineItemListTitle", sTitle);
             }
 
-            that.updateTableCnt(sFilter);
+            //   that.updateTableCnt(sFilter);
             BusyIndicator.hide();
 
         },
@@ -421,16 +434,20 @@ sap.ui.define([
             var oBinding = this.getView().byId("lineItemsList").getBinding("items"),
                 oViewModel = this.getModel("objectView");
             // changes the noDataText of the list in case there are no filter results
+            var sFilter = "parent_ID eq " + this._ID;
 
             var oFilter = new Filter("parent_ID", FilterOperator.EQ, this._ID);
 
             const isArray = Array.isArray(aTableSearchState);
-            if (!isArray)
+            if (!isArray) {
                 var andFilter = new Filter([oFilter, aTableSearchState], true);
-            else
+                sFilter = sFilter + " and fmno eq '" + aTableSearchState.oValue1 + "'";
+            } else {
                 var andFilter = oFilter;
+            }
 
             oBinding.filter(andFilter);
+            this.updateTableCnt(sFilter);
 
             if (aTableSearchState.length !== 0) {
                 oViewModel.setProperty("/tableNoDataText", this.getResourceBundle().getText("itemlistNoDataWithSearchText"));
