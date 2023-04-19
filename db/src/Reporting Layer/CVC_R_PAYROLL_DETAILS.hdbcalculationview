@@ -470,7 +470,28 @@
       <keyMapping columnObjectName="Projection_1" columnName="CURRENT_FCAT"/>
     </attribute>
   </attributes>
-  <calculatedAttributes/>
+  <calculatedAttributes>
+    <calculatedAttribute id="CC_GLPERIOD" order="91" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="10">
+        <formula>TO_CHAR(TO_DATE(&quot;GLDATE&quot;),'Mon-YY')</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+  
+    <calculatedAttribute id="CC_EFFECTIVEPERIOD" order="92" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+  
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="10">
+  
+        <formula>TO_CHAR(TO_DATE(&quot;EFFECTIVEDATE&quot;),'Mon-YY')</formula>
+  
+      </keyCalculation>
+  
+    </calculatedAttribute>
+    <calculatedAttribute id="CC_PAYROLLPERIOD" order="93" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <keyCalculation datatype="NVARCHAR" expressionLanguage="SQL" length="10">
+        <formula>TO_CHAR(TO_DATE(&quot;PAYROLLDATE&quot;),'Mon-YYYY-DD')</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+  </calculatedAttributes>
   <baseMeasures>
     <measure id="CASHAMOUNT" order="17" aggregationType="sum" measureType="simple" restrictionExpressionLanguage="SQL">
       <descriptions defaultDescription="CASHAMOUNT"/>
