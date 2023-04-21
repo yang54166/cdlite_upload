@@ -198,7 +198,7 @@ sap.ui.define([
             var oBinding = this.getView().byId("lineItemsList").getBinding("items"),
                 sTitle,
                 sKey = oEvent.getParameter("selectedKey");
-            var sHeaderStatus = this._sHeaderStatus;
+            var sHeaderStatus = this.getView().getBindingContext().getObject().status;
 
             if (['APPROVED','POSTED','ERROR'].includes(sHeaderStatus.toUpperCase()))
                 this._mFilters = {
@@ -253,7 +253,7 @@ sap.ui.define([
                 oItemsBinding = oEvent.getSource().getBinding("items"),
                 oIconFilter = this.byId("iconTabBar");
 
-            this._sHeaderStatus = this.byId("detailStatusTxt").getText();
+            this._sHeaderStatus = this.getView().getBindingContext().getObject().status;
             var sKey = oIconFilter.getSelectedKey();
             var sFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
             var oAllCurrentContexts = oItemsBinding.getAllCurrentContexts();
@@ -277,7 +277,7 @@ sap.ui.define([
 
                 sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
 
-                switch (that._sHeaderStatus.toUpperCase()) {
+                switch (that.getView().getBindingContext().getObject().status.toUpperCase()) {
                     case "VALIDATED":
                         if (this._userDelete)
                             oViewModel.setProperty("/enableDeleteButton", true);

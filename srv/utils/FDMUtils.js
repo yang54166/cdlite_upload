@@ -17,7 +17,7 @@ class FDMUtils {
     };
 
     async getEmployeeData(companyCode) {
-        let result = await this.apiService.get("S4_FMNO_MASTER_API").where({ client: this.sapClient, branchId: companyCode });
+        let result = await this.apiService.get("S4_FMNO_MASTER_HISTORY_API").where({ client: this.sapClient, branchId: companyCode });
         this.employeeData.push(...result);
         while (result.$nextLink) {
             result = await this.apiService.get(`/${result.$nextLink}`);
