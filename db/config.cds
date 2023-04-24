@@ -1,5 +1,5 @@
 namespace config;
 
 entity PostingBatch {
-   maxFMNO_perPostingBatch: Integer;
+   key maxFMNO_perPostingBatch: Integer;
 }

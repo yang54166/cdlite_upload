@@ -166,7 +166,7 @@ class PayrollService extends cds.ApplicationService {
                     if (!employeeObj) {
                         errorsForRow.push(`FMNO ${item.FMNO} not found in ${stagingHeader.glCompanyCode}, or invalid.`);
                     } else {
-                        if (!employeeObj.costCenter || employeeObj.costCenter == "") {
+                        if (!employeeObj.costCenterCode || employeeObj.costCenterCode == "") {
                             errorsForRow.push(`FMNO ${item.FMNO} does not have cost center.`);
                         } else if (!userFCAT || userFCAT == "" || userFCAT == "000") {
                             errorsForRow.push(`FMNO ${item.FMNO} does not have a valid FCAT (${userFCAT})`);
@@ -245,7 +245,7 @@ class PayrollService extends cds.ApplicationService {
                         ...item,
                         STATUS: rowStatus.STATUS,
                         STATUSMESSAGE: rowStatus.STATUSMESSAGE,
-                        GLCOSTCENTER: employeeObj?.costCenter,
+                        GLCOSTCENTER: employeeObj?.costCenterCode,
                         GLACCOUNT: glAccountObj?.glAccount || null,
                         GLACCOUNTCB: glAccountCBObj?.glAccount || null,
                         GLACCOUNTTYPE: glAccountObj?.glAccountType || null,
