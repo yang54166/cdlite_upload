@@ -1,5 +1,7 @@
+using { cuid } from '@sap/cds/common';
+
 namespace config;
 
-entity PostingBatch {
-   key maxFMNO_perPostingBatch: Integer;
+entity PostingBatch : cuid {
+   maxFMNO_perPostingBatch: Integer;
 }

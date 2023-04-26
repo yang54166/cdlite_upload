@@ -125,7 +125,7 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGBATCHID" source="POSTINGBATCHID"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT" source="GLACCOUNT"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="SOURCEAMOUNT" source="SOURCEAMOUNT"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="GLPOSTCOSTCENTER" source="GLPOSTCOSTCENTER"/>
+      <mapping xsi:type="Calculation:ConstantAttributeMapping" target="GLPOSTCOSTCENTER" null="true"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="BATCHID_BATCHID" source="BATCHID_BATCHID"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="GLCURRENCYCODE" source="GLCURRENCYCODE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="FCAT" source="FCAT"/>
@@ -196,7 +196,7 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="POSTINGAGGREGATION" source="POSTINGAGGREGATION"/>
     </input>
     <function name="ROW_NUMBER"/>
-    <windowFunctionResultColumn>REFERENCEDOCUMENTITEM</windowFunctionResultColumn>
+    <windowFunctionResultColumn datatype="DOUBLE">REFERENCEDOCUMENTITEM</windowFunctionResultColumn>
     <orderAttributes>
       <orderAttribute direction="ASC">BATCHID_BATCHID</orderAttribute>
     </orderAttributes>

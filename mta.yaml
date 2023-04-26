@@ -23,6 +23,9 @@ modules:
       builder: npm-ci
     properties:
       SAP_CLIENT: 200
+    properties-metadata:
+      SAP_CLIENT:
+        overwritable: false
 
   - name: cd_cdlitepayrollupload_fs-db-deployer
     type: hdb
