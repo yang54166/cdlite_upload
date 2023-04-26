@@ -19,9 +19,9 @@
   },
   "scripts": {
     "start": "cds run",
-    "build": "mbt build --mtar $npm_package_name-$npm_package_version.mtar",
+    "build": "mbt build --mtar ${npm_package_name}_${npm_package_version}.mtar",
     "login": "cf login -a https://api.cf.eu10.hana.ondemand.com --sso",
-    "deploy": "cf deploy mta_archives/$npm_package_name-$npm_package_version.mtar",
+    "deploy": "cf deploy mta_archives/${npm_package_name}_${npm_package_version}.mtar -e mta-dev.mtaext",
     "deploy-local": "cds deploy --profile hybrid",
     "start-local": "cds watch --profile hybrid",
     "start-local-ui": "npm run start-local --prefix app/cd_cdlitepayrollupload_f",
