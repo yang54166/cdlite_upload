@@ -250,6 +250,7 @@
                                         <m:Toolbar id="lineItemsToolbar">
                                             <m:Title id="lineItemsHeader" text="{objectView>/lineItemListTitle}" />
                                             <m:ToolbarSpacer id="toolbarspacer" />
+                                            <m:Button id="loadAllBtn" text="Load All" type="Emphasized" press="onLoadAll"  />
                                             <m:Button id="dataExportBtn" icon="sap-icon://download" press="onDownload" visible="{objectView>/showExport}" />
                                             <m:SearchField id="searchField" tooltip="{i18n>itemlistSearchTooltip}" search=".onSearch" width="auto" />
                                         </m:Toolbar>

@@ -6,6 +6,7 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/ui/model/FilterType",
+    "sap/ui/model/Sorter",
     "sap/m/MessageBox",
     "sap/ui/model/odata/v4/ODataModel",
     "sap/ui/core/Fragment",
@@ -20,7 +21,7 @@ sap.ui.define([
     "sap/m/Label",
     "sap/ui/core/format/DateFormat",
     "cd_cdlitepayrollupload_f/utils/ExportUtil"
-], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, FilterType, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat, ExportUtil) {
+], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, FilterType, Sorter, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat, ExportUtil) {
     "use strict";
 
     var EdmType = exportLibrary.EdmType;
@@ -193,6 +194,15 @@ sap.ui.define([
 
             }
 
+        },
+
+        onLoadAll: function() {
+            var oView = this.getView(),
+                oTable = oView.byId("lineItemsList"),
+                sorter = new Sorter({ path: 'fmno', descending: false}); 
+
+            oTable.setGrowingThreshold(oTable.getMaxItemsCount());
+            oTable.getBinding("items").sort(sorter);
         },
 
         setApproveHeader: function () {
@@ -391,6 +401,7 @@ sap.ui.define([
     //        } else {
     //            oViewModel.setProperty("/countAll", iTotalItems);
      //           oViewModel.setProperty("/lineItemListTitle", sTitle);
+     
             }
 
             //   that.updateTableCnt(sFilter);
