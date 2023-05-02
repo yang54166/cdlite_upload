@@ -91,7 +91,7 @@ class FDMUtils {
     };
 
     getWbsElement(wbsElementCode) {
-        return this.wbsElements.find((proj) => proj.wbsElementCode == wbsElementCode);
+        return this.wbsElements.find((proj) => proj.posid == wbsElementCode);
     };
 
     async getExchangeRates(currencyCode, payrollDate) {
