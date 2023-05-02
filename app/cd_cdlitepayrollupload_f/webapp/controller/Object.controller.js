@@ -211,52 +211,44 @@ sap.ui.define([
             }
         },
 
-        updateTableCnt: function (sFilter) {
+        updateTableCnt: async function ( sFilter) {
             var oViewModel = this.getModel("objectView");
             // var sURL = "payroll/StagingUploadItems?$count=true&$filter=parent_ID eq " + this._ID;
             if (sFilter.length === 0) {
                 var sURL = "payroll/StagingUploadItems?$count=true&$filter=parent_ID eq " + this._ID;
-                this._countAll = this.getItemCount(sURL, "");
+                this._countAll = await this.getItemCount(sURL, "");
             } else {
                 var sURL = "payroll/StagingUploadItems?$count=true&$filter=" + sFilter;
-                this._countAll = this.getItemCount(sURL, "");
+                this._countAll = await this.getItemCount(sURL, "");
             }
             switch (this._sHeaderStatus.toUpperCase()) {
                 case "VALIDATED":
-                    this._succCnt = this.getItemCount(sURL, "VALID");
-                    this._errorCnt = this.getItemCount(sURL, "INVALID");
+                    this._succCnt = await  this.getItemCount(sURL, "VALID");
+                    this._errorCnt = await this.getItemCount(sURL, "INVALID");
                     break;
                 case "STAGED":
-                    this._succCnt = this.getItemCount(sURL, "VALID");
-                    this._errorCnt = this.getItemCount(sURL, "INVALID");
+                    this._succCnt = await this.getItemCount(sURL, "VALID");
+                    this._errorCnt = await this.getItemCount(sURL, "INVALID");
                     break;
                 case "APPROVED":
-                    this._succCnt = this.getItemCount(sURL, "APPROVED");
-                    this._errorCnt = this.getItemCount(sURL, "SKIPPED");
+                    this._succCnt = await this.getItemCount(sURL, "APPROVED");
+                    this._errorCnt = await this.getItemCount(sURL, "SKIPPED");
                     break;
                 case "POSTED":
-                    this._succCnt = this.getItemCount(sURL, "APPROVED");
-                    this._errorCnt = this.getItemCount(sURL, "SKIPPED");
+                    this._succCnt = await this.getItemCount(sURL, "APPROVED");
+                    this._errorCnt = await this.getItemCount(sURL, "SKIPPED");
                     break;
                 case "ERROR":
-                    this._succCnt = this.getItemCount(sURL, "APPROVED");
-                    this._errorCnt = this.getItemCount(sURL, "SKIPPED");
+                    this._succCnt = await this.getItemCount(sURL, "APPROVED");
+                    this._errorCnt = await this.getItemCount(sURL, "SKIPPED");
                     break;
                 default:
-                    this._succCnt = this.getItemCount(sURL, "VALID");
-                    this._errorCnt = this.getItemCount(sURL, "INVALID");
+                    this._succCnt = await this.getItemCount(sURL, "VALID");
+                    this._errorCnt = await this.getItemCount(sURL, "INVALID");
             }
-            this._succCnt.then((value) => {
-                oViewModel.setProperty("/success", value);
-            });
-
-            this._errorCnt.then((value) => {
-                oViewModel.setProperty("/inError", value);
-            });
-
-            this._countAll.then((value) => {
-                oViewModel.setProperty("/countAll", value);
-            })
+                oViewModel.setProperty("/success", this._succCnt);
+                oViewModel.setProperty("/inError", this._errorCnt);
+                oViewModel.setProperty("/countAll", this._countAll);
 
         },
 
@@ -354,15 +346,11 @@ sap.ui.define([
                 oBinding.filter(andFilter);
 
             if (sKey === 'success') {
-                this._succCnt.then((value) => {
-                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [value]);
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [this._succCnt]);
                     oViewModel.setProperty("/lineItemListTitle", sTitle);
-                })
             } else if (sKey === 'inError') {
-                this._errorCnt.then((value) => {
-                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [value]);
+                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [this._errorCnt]);
                     oViewModel.setProperty("/lineItemListTitle", sTitle);
-                })
             } else {
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
                 oViewModel.setProperty("/lineItemListTitle", sTitle);
