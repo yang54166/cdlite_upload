@@ -15,6 +15,10 @@ sap.ui.define([], function () {
             }
             return parseFloat(sValue).toFixed(2);
         },
+
+        highlightValid: function (sValue){
+            return sValue == "VALID" ? "Information" : "None";
+        },
         
 
         getStateForStatus: function (sValue){

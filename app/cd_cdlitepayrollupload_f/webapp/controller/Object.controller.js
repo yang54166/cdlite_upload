@@ -483,7 +483,7 @@ sap.ui.define([
             } else {
                 if (validLst.length > 0) {
                     if (totalLst.length > 0) {
-                        if (parseFloat(totalLst[0].TOTAL_AMOUNT) !== 0) {
+                        if (parseFloat(validLst[0].TOTAL_AMOUNT) !== 0) {
                             sHTML = "<h4>Total Valid Amount is not 0</h4>";
                             disableFlag = false;
                         }
