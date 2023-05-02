@@ -35,6 +35,14 @@
     "node": "^16.15"
   },
   "cds": {
+    "log": {
+      "levels": {
+        "cpi": "info",
+        "cds": "info",
+        "fdm": "info",
+        "sec": "info"
+      }
+    },
     "build": {
       "tasks": [
         {
