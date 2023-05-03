@@ -44,7 +44,7 @@
                                     </Column>
                                 </columns>
                                 <items>
-                                    <ColumnListItem >
+                                    <ColumnListItem highlight="{path: 'approvalView>STATUS', formatter: '.formatter.highlightValid'}">
                                         <cells>
                                             <Text text="{approvalView>STATUS}" />
                                             <Text text="{approvalView>LINES_COUNT}" />

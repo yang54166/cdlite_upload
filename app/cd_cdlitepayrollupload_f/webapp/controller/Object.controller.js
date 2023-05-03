@@ -6,7 +6,6 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/ui/model/FilterType",
-    "sap/ui/model/Sorter",
     "sap/m/MessageBox",
     "sap/ui/model/odata/v4/ODataModel",
     "sap/ui/core/Fragment",
@@ -21,7 +20,7 @@ sap.ui.define([
     "sap/m/Label",
     "sap/ui/core/format/DateFormat",
     "cd_cdlitepayrollupload_f/utils/ExportUtil"
-], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, FilterType, Sorter, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat, ExportUtil) {
+], function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, FilterType, MessageBox, ODataModel, Fragment, exportLibrary, Spreadsheet, Export, ExportTypeCSV, BusyIndicator, Text, Column, ColumnListItem, Label, DateFormat, ExportUtil) {
     "use strict";
 
     var EdmType = exportLibrary.EdmType;
@@ -107,32 +106,7 @@ sap.ui.define([
             var oLineItemsList = this.getView().byId("lineItemsList");
             var oFilter = new Filter("parent_ID", FilterOperator.EQ, this._ID);
             oLineItemsList.bindAggregation("items", { path: '/StagingUploadItems', template: this.getView().byId("colBatchItems"), filters: [oFilter], parameters: { $count: true } });
-           
-            this.updateTableCnt("");
-            this.setUserScope();
-            this.setApproveHeader();
 
-            var oPostingData = new JSONModel();
-            var that = this;
-
-            var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(this._ID));
-            var sCostCenterFilter = new Filter('BATCH_ID', FilterOperator.EQ, parseInt(this._ID));
-            var oPostingList = this._oModel.bindList('/PostingBatch', undefined, undefined, sPostingFilter, undefined);
-            var oCostCenterList = this._oModel.bindList('/AmountSummary', undefined, undefined, sCostCenterFilter, undefined);
-            var oPostingData = new JSONModel();
-            var oSummaryData = new JSONModel();
-
-            oCostCenterList.requestContexts().then(function (aContexts) {
-
-                oSummaryData.setData(aContexts.map(oContext => oContext.getObject()));
-                that.setModel(oSummaryData, "costCenterView");
-            });
-
-            oPostingList.requestContexts().then(function (aContexts) {
-
-                oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
-                that.setModel(oPostingData, "postingView");
-            });
         },
 
         /**
@@ -151,9 +125,38 @@ sap.ui.define([
                     dataRequested: function () {
                         oViewModel.setProperty("/busy", true);
                     },
-                    dataReceived: function () {
+                    dataReceived: function (oEvent) {
+                        const oUploadHeader = oEvent.getSource().getBoundContext().getObject();
+                        this._sHeaderStatus = oUploadHeader.status;
+                        
+                        this.updateTableCnt("");
+                        this.setUserScope();
+                        this.setApproveHeader();
+
+                        var oPostingData = new JSONModel();
+                        var that = this;
+
+                        var sPostingFilter = new Filter('batchId', FilterOperator.EQ, parseInt(this._ID));
+                        var sCostCenterFilter = new Filter('BATCH_ID', FilterOperator.EQ, parseInt(this._ID));
+                        var oPostingList = this._oModel.bindList('/PostingBatch', undefined, undefined, sPostingFilter, undefined);
+                        var oCostCenterList = this._oModel.bindList('/AmountSummary', undefined, undefined, sCostCenterFilter, undefined);
+                        var oPostingData = new JSONModel();
+                        var oSummaryData = new JSONModel();
+
+                        oCostCenterList.requestContexts().then(function (aContexts) {
+
+                            oSummaryData.setData(aContexts.map(oContext => oContext.getObject()));
+                            that.setModel(oSummaryData, "costCenterView");
+                        });
+
+                        oPostingList.requestContexts().then(function (aContexts) {
+
+                            oPostingData.setData(aContexts.map(oContext => oContext.getObject()));
+                            that.setModel(oPostingData, "postingView");
+                        });
+
                         oViewModel.setProperty("/busy", false);
-                    }
+                    }.bind(this)
                 }
             });
         },
@@ -196,15 +199,6 @@ sap.ui.define([
 
         },
 
-        onLoadAll: function() {
-            var oView = this.getView(),
-                oTable = oView.byId("lineItemsList"),
-                sorter = new Sorter({ path: 'fmno', descending: false}); 
-
-            oTable.setGrowingThreshold(oTable.getMaxItemsCount());
-            oTable.getBinding("items").sort(sorter);
-        },
-
         setApproveHeader: function () {
             if (['APPROVED', 'POSTED', 'ERROR'].includes(this._sHeaderStatus.toUpperCase())) {
                 var oApproveList = this._oModel.bindContext("/PayrollHeader(" + this._ID + ")");
@@ -221,52 +215,44 @@ sap.ui.define([
             }
         },
 
-        updateTableCnt: function (sFilter) {
+        updateTableCnt: async function (sFilter) {
             var oViewModel = this.getModel("objectView");
             // var sURL = "payroll/StagingUploadItems?$count=true&$filter=parent_ID eq " + this._ID;
             if (sFilter.length === 0) {
                 var sURL = "payroll/StagingUploadItems?$count=true&$filter=parent_ID eq " + this._ID;
-                this._countAll = this.getItemCount(sURL, "");
+                this._countAll = await this.getItemCount(sURL, "");
             } else {
                 var sURL = "payroll/StagingUploadItems?$count=true&$filter=" + sFilter;
-                this._countAll = this.getItemCount(sURL, "");
+                this._countAll = await this.getItemCount(sURL, "");
             }
             switch (this._sHeaderStatus.toUpperCase()) {
                 case "VALIDATED":
-                    this._succCnt = this.getItemCount(sURL, "VALID");
-                    this._errorCnt = this.getItemCount(sURL, "INVALID");
+                    this._succCnt = await this.getItemCount(sURL, "VALID");
+                    this._errorCnt = await this.getItemCount(sURL, "INVALID");
                     break;
                 case "STAGED":
-                    this._succCnt = this.getItemCount(sURL, "VALID");
-                    this._errorCnt = this.getItemCount(sURL, "INVALID");
+                    this._succCnt = await this.getItemCount(sURL, "VALID");
+                    this._errorCnt = await this.getItemCount(sURL, "INVALID");
                     break;
                 case "APPROVED":
-                    this._succCnt = this.getItemCount(sURL, "APPROVED");
-                    this._errorCnt = this.getItemCount(sURL, "SKIPPED");
+                    this._succCnt = await this.getItemCount(sURL, "APPROVED");
+                    this._errorCnt = await this.getItemCount(sURL, "SKIPPED");
                     break;
                 case "POSTED":
-                    this._succCnt = this.getItemCount(sURL, "APPROVED");
-                    this._errorCnt = this.getItemCount(sURL, "SKIPPED");
+                    this._succCnt = await this.getItemCount(sURL, "APPROVED");
+                    this._errorCnt = await this.getItemCount(sURL, "SKIPPED");
                     break;
                 case "ERROR":
-                    this._succCnt = this.getItemCount(sURL, "APPROVED");
-                    this._errorCnt = this.getItemCount(sURL, "SKIPPED");
+                    this._succCnt = await this.getItemCount(sURL, "APPROVED");
+                    this._errorCnt = await this.getItemCount(sURL, "SKIPPED");
                     break;
                 default:
-                    this._succCnt = this.getItemCount(sURL, "VALID");
-                    this._errorCnt = this.getItemCount(sURL, "INVALID");
+                    this._succCnt = await this.getItemCount(sURL, "VALID");
+                    this._errorCnt = await this.getItemCount(sURL, "INVALID");
             }
-            this._succCnt.then((value) => {
-                oViewModel.setProperty("/success", value);
-            });
-
-            this._errorCnt.then((value) => {
-                oViewModel.setProperty("/inError", value);
-            });
-
-            this._countAll.then((value) => {
-                oViewModel.setProperty("/countAll", value);
-            })
+            oViewModel.setProperty("/success", this._succCnt);
+            oViewModel.setProperty("/inError", this._errorCnt);
+            oViewModel.setProperty("/countAll", this._countAll);
 
         },
 
@@ -364,15 +350,11 @@ sap.ui.define([
                 oBinding.filter(andFilter);
 
             if (sKey === 'success') {
-                this._succCnt.then((value) => {
-                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [value]);
-                    oViewModel.setProperty("/lineItemListTitle", sTitle);
-                })
+                sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [this._succCnt]);
+                oViewModel.setProperty("/lineItemListTitle", sTitle);
             } else if (sKey === 'inError') {
-                this._errorCnt.then((value) => {
-                    sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [value]);
-                    oViewModel.setProperty("/lineItemListTitle", sTitle);
-                })
+                sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [this._errorCnt]);
+                oViewModel.setProperty("/lineItemListTitle", sTitle);
             } else {
                 sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
                 oViewModel.setProperty("/lineItemListTitle", sTitle);
@@ -392,16 +374,15 @@ sap.ui.define([
                 oItemsBinding = oEvent.getSource().getBinding("items");
 
             var that = this;
-        //    var sFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
+            //    var sFilter = oItemsBinding.mAggregatedQueryOptions.$filter;
 
             if (iTotalItems && oItemsBinding.isLengthFinal()) {
                 sTitle = that.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
-         //       oViewModel.setProperty("/countAll", iTotalItems);
+                //       oViewModel.setProperty("/countAll", iTotalItems);
                 oViewModel.setProperty("/lineItemListTitle", sTitle);
-    //        } else {
-    //            oViewModel.setProperty("/countAll", iTotalItems);
-     //           oViewModel.setProperty("/lineItemListTitle", sTitle);
-     
+                //        } else {
+                //            oViewModel.setProperty("/countAll", iTotalItems);
+                //           oViewModel.setProperty("/lineItemListTitle", sTitle);
             }
 
             //   that.updateTableCnt(sFilter);
@@ -506,7 +487,7 @@ sap.ui.define([
             } else {
                 if (validLst.length > 0) {
                     if (totalLst.length > 0) {
-                        if (parseFloat(totalLst[0].TOTAL_AMOUNT) !== 0) {
+                        if (parseFloat(validLst[0].TOTAL_AMOUNT) !== 0) {
                             sHTML = "<h4>Total Valid Amount is not 0</h4>";
                             disableFlag = false;
                         }

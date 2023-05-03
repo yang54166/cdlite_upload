@@ -19,6 +19,9 @@
   <DataSource id="Proj_Details$$$$CV_STAGINGDETAILS_MAPPED$$">
     <resourceUri>CV_STAGINGDETAILS_MAPPED</resourceUri>
   </DataSource>
+  <DataSource id="Proj_Details_Status$$$$CV_STAGINGDETAILS_MAPPED$$">
+    <resourceUri>CV_STAGINGDETAILS_MAPPED</resourceUri>
+  </DataSource>
 </dataSources>
 <snapshotProcedures/>
 <calculationViews>
@@ -85,10 +88,22 @@
       <viewAttribute id="BATCH_ID"/>
       <viewAttribute id="AMOUNT"/>
       <viewAttribute id="PAYROLLCODETYPE"/>
+    
+      <viewAttribute id="STATUS"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="Proj_Details$$$$CV_STAGINGDETAILS_MAPPED$$"/>
-  
+    <filter>&quot;PAYROLLCODETYPE&quot;!='NOTIONAL'</filter>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Proj_Details_Status" filterExpressionLanguage="SQL">
+    <viewAttributes>
+      <viewAttribute id="BATCH_ID"/>
+      <viewAttribute id="AMOUNT"/>
+      <viewAttribute id="PAYROLLCODETYPE"/>
+      <viewAttribute id="STATUS"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Proj_Details_Status$$$$CV_STAGINGDETAILS_MAPPED$$"/>
     <filter>&quot;PAYROLLCODETYPE&quot;!='NOTIONAL'</filter>
   </calculationView>
   <calculationView xsi:type="Calculation:UnionView" id="Lines">
@@ -131,10 +146,43 @@
     <viewAttributes>
       <viewAttribute id="BATCH_ID"/>
       <viewAttribute id="AMOUNT" aggregationType="sum"/>
+    
+      <viewAttribute id="STATUS"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <restrictedViewAttributes/>
     <input node="Proj_Details"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:AggregationView" id="Total_Amount_Status">
+    <viewAttributes>
+      <viewAttribute id="BATCH_ID"/>
+      <viewAttribute id="AMOUNT" aggregationType="sum"/>
+    </viewAttributes>
+    <calculatedViewAttributes>
+      <calculatedViewAttribute id="STATUS" datatype="NVARCHAR" length="13" expressionLanguage="SQL">
+        <formula>'TOTAL'</formula>
+      </calculatedViewAttribute>
+    </calculatedViewAttributes>
+    <restrictedViewAttributes/>
+    <input node="Proj_Details_Status"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:UnionView" id="Total_Amounts">
+    <viewAttributes>
+      <viewAttribute id="BATCH_ID"/>
+      <viewAttribute id="AMOUNT"/>
+      <viewAttribute id="STATUS"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Total_Amount_Status">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCH_ID" source="BATCH_ID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+    </input>
+    <input node="Total_Amount">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BATCH_ID" source="BATCH_ID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+    </input>
   </calculationView>
   <calculationView xsi:type="Calculation:JoinView" id="Join_1_1" cardinality="CN_N" joinType="inner" multiJoinNode="Join_1" multiJoinCentralTable="Lines" multiJoinOrder="Outside In">
     <viewAttributes>
@@ -148,14 +196,16 @@
     <input node="Lines">
       <mapping xsi:type="Calculation:AttributeMapping" target="BATCH_ID" source="BATCH_ID"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="LINES_COUNT" source="LINES_STATUS_COUNT"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="LINES_STATUS"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="LINES_STATUS" source="LINES_STATUS"/>
     </input>
-    <input node="Total_Amount">
+    <input node="Total_Amounts">
       <mapping xsi:type="Calculation:AttributeMapping" target="TOTAL_AMOUNT" source="AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="BATCH_ID" source="BATCH_ID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LINES_STATUS" source="STATUS"/>
     </input>
     <joinAttribute name="BATCH_ID"/>
+    <joinAttribute name="LINES_STATUS"/>
   </calculationView>
   <calculationView xsi:type="Calculation:JoinView" id="Join_1_2" cardinality="CN_N" joinType="inner" multiJoinNode="Join_1" multiJoinCentralTable="Lines" multiJoinOrder="Outside In">
     <viewAttributes>
@@ -239,10 +289,6 @@
       <upperLeftCorner x="303" y="516"/>
       <rectangleSize width="160"/>
     </shape>
-    <shape expanded="true" modelObjectName="Total_Amount" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="-127" y="338"/>
-      <rectangleSize height="30" width="160"/>
-    </shape>
     <shape expanded="true" modelObjectName="Proj_Details" modelObjectNameSpace="CalculationView">
       <upperLeftCorner x="-190" y="446"/>
       <rectangleSize height="30" width="160"/>
@@ -259,22 +305,39 @@
       <upperLeftCorner x="223" y="381"/>
       <rectangleSize height="30" width="160"/>
     </shape>
+    <shape expanded="true" modelObjectName="Total_Amount" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-127" y="338"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
   
     <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
       <upperLeftCorner x="501" y="217"/>
       <rectangleSize height="30" width="160"/>
     </shape>
     <shape modelObjectName="Fmno" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
-      <upperLeftCorner x="926" y="30"/>
-      <rectangleSize width="250"/>
+      <upperLeftCorner x="935" y="115"/>
+      <rectangleSize width="163.60693359375"/>
     </shape>
     <shape modelObjectName="Lines" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
       <upperLeftCorner x="626" y="30"/>
       <rectangleSize width="250"/>
     </shape>
-    <shape modelObjectName="Total_Amount" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
-      <upperLeftCorner x="1226" y="30"/>
-      <rectangleSize width="250"/>
-    </shape></shapes>
+    <shape modelObjectName="Total_Amounts" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="1017" y="14"/>
+      <rectangleSize width="150.443359375"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Proj_Details_Status" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-402" y="470"/>
+      <rectangleSize width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Total_Amount_Status" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-382" y="351"/>
+      <rectangleSize width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Total_Amounts" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-245" y="255"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+  </shapes>
 </layout>
 </Calculation:scenario>
